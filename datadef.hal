@@ -1,0 +1,1058 @@
+SourceFile("halcust\\halpatch",0);
+SourceFile("halcust\\Import",0);
+SourceFile("halcust\\Report",0);
+SourceFile("halcust\\RemoteWA",0);
+SourceFile("halcust\\Windows",0);
+SourceFile("halcust\\WAction",0);
+SourceFile("halcust\\Web",0);
+SourceFile("halcust\\Print",0);
+SourceFile("halcust\\Tools",0);
+SourceFile("halcust\\RActions",0);
+SourceFile("halcust\\Synchronization",0);
+SourceFile("halcust\\FPrinter",0);
+SourceFile("halcust\\LabelPrint",0);
+SourceFile("halcust\\WebShop",0);// Edit ************************** Thursday, 26 March 2015 10:36:06
+SourceFile("halcust\\SetComp",0);
+
+begin 
+  RecordAddBegin(CUVc,"CUVc_Custom");
+    // record field "Partner" already added in 8.3
+    //RecordField(Partner,M4Mark,0,0); 
+  EndRecordAdd; 
+  
+  RecordAddBegin(ItemHistVc,"ItemHistVc_Custom");
+    RecordField(PUCurncyCode,M4Str,20,0);// Edit ************************** Tuesday, 12 August 2014 16:32:04
+    RecordField(InFileName,M4Str,20,0);// Edit ************************** Tuesday, 12 August 2014 16:32:04
+    RecordField(InSerNr,M4Long,0,0);// Edit ************************** Tuesday, 12 August 2014 16:32:04
+    RecordField(InRow,M4Int,0,0);// Edit ************************** Tuesday, 12 August 2014 16:32:04
+    RecordField(TotCostPriceCurncy,M45Val,0,0);// Edit ************************** Tuesday, 12 August 2014 16:41:46
+    RecordField(RemCostPriceCurncy,M45Val,0,0);// Edit ************************** Tuesday, 12 August 2014 16:41:47
+    
+    KeyBegin(CodeSerialNrArtCode);// Edit ************************** Thursday, 14 August 2014 16:13:01
+    KeySegment(SerialNr);
+    KeySegment(ArtCode);
+    KeySegment(TransDate);
+    KeySegment(SerNr);
+  EndRecordAdd; 
+  
+  RecordAddBegin(StockMovVc,"StockMovVc_Custom");
+    ArrayField(ORRow,M4Long,0,0);//Edit***************************Sasha2,13:35 01.09.2014
+  EndRecordAdd; 
+  
+  RecordAddBegin(ORVc,"ORVc_Custom");
+    ChangeField(Reserved,M4Mark,0,0);
+    RecordField(ReservToDate,M4Date,0,0);// Edit ************************** Tuesday, 23 September 2014 21:46:08
+    RecordField(ShopsMark,M4Mark,0,0);// Edit ************************** Friday, 31 October 2014 15:51:47
+    RecordField(RahSplatNom,M4Str,0,100);// Edit ************************** Friday, 31 October 2014 15:51:47
+    RecordField(DogPostNom,M4Str,0,100);// Edit ************************** Friday, 31 October 2014 15:51:47
+    ArrayField(Shopd,M4UVal,0,0);// Edit ************************** Friday, 31 October 2014 15:52:28
+    
+    SubsetKeyBegin2(Location);// Edit ************************** Monday, 8 September 2014 09:11:39
+    StoreInBaseKey;
+    AppendListFieldToKeyName(SalesMan);
+    AppendListFieldToKeyName(SalesGroup);
+    KeySegment(Location);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(ShopsMark);// Edit ************************** Friday, 31 October 2014 15:54:02
+    StoreInBaseKey;
+    AppendListFieldToKeyName(SalesMan);
+    AppendListFieldToKeyName(SalesGroup);
+    KeySegment(ShopsMark);
+    KeySegment(SerNr);
+  EndRecordAdd;
+
+	BlockBegin(SeqNrBlock,-,"");
+    BlockForAllCompanies; // stored in client
+    RecordField(IVCashVcSeqNr,M4Long,0,0);
+    RecordField(AccVcSeqNr,M4Long,0,0);
+    RecordField(OTVcSeqNr,M4Long,0,0);
+    RecordField(ObjVcSeqNr,M4Long,0,0);
+    RecordField(LocationVcSeqNr,M4Long,0,0);
+    RecordField(AccessVcSeqNr,M4Long,0,0);
+    RecordField(UnitVcSeqNr,M4Long,0,0);
+    RecordField(PLQVcSeqNr,M4Long,0,0);
+    RecordField(RebVcSeqNr,M4Long,0,0);
+    RecordField(ITVcSeqNr,M4Long,0,0);
+    RecordField(PLVcSeqNr,M4Long,0,0);
+    RecordField(INVcSeqNr,M4Long,0,0);
+    RecordField(CUVcSeqNr,M4Long,0,0);
+    RecordField(PLDefVcSeqNr,M4Long,0,0);
+    RecordField(UserVcSeqNr,M4Long,0,0);
+    RecordField(DIVcSeqNr,M4Long,0,0);
+    RecordField(CTypeVcSeqNr,M4Long,0,0);
+    RecordField(StyleVcSeqNr,M4Long,0,0);
+    RecordField(DocVcSeqNr,M4Long,0,0);
+    RecordField(POSSalesVcSeqNr,M4Long,0,0);
+    RecordField(ArtUpdStockVcSeqNr,M4Long,0,0);
+    RecordField(RecVcSeqNr,M4Long,0,0);
+    RecordField(CCatVcSeqNr,M4Long,0,0);
+    RecordField(VGVcSeqNr,M4Long,0,0);
+    RecordField(CurncyCodeVcSeqNr,M4Long,0,0);
+    RecordField(ModifiersVcSeqNr,M4Long,0,0);
+    RecordField(PDVcSeqNr,M4Long,0,0);
+    RecordField(MixMatchVcSeqNr,M4Long,0,0);
+    RecordField(LocalMachineVcSeqNr,M4Long,0,0);
+    RecordField(DrawerVcSeqNr,M4Long,0,0);
+    RecordField(ItemStatusVcSeqNr,M4Long,0,0);
+    RecordField(Custom1VcSeqNr,M4Long,0,0);
+    RecordField(Custom2VcSeqNr,M4Long,0,0);
+    RecordField(Custom3VcSeqNr,M4Long,0,0);
+    RecordField(Custom4VcSeqNr,M4Long,0,0);
+    RecordField(Custom5VcSeqNr,M4Long,0,0);
+    RecordField(Custom6VcSeqNr,M4Long,0,0);
+    RecordField(Custom7VcSeqNr,M4Long,0,0);
+    RecordField(Custom8VcSeqNr,M4Long,0,0);
+    RecordField(Custom9VcSeqNr,M4Long,0,0);
+    RecordField(Custom10VcSeqNr,M4Long,0,0);
+    RecordField(SerBalVcSeqNr,M4Long,0,0); //Edit***************************Sasha2,16:03 22.09.2014
+  EndBlock;
+  
+  RecordAddBegin(IVCashVc,"IVCashVc_Custom");
+    RecordField(MachineTimeStamp,M4Str,50,0); //Edit***************************Sasha2,11:11 24.09.2014
+    RecordField(PayDeal3,M4Code,2,0);// Edit ************************** Monday, 15 April 2013 16:51:49
+    RecordField(RecValue3,M4Val,0,0);// Edit ************************** Monday, 15 April 2013 16:51:49
+    RecordField(CreditCard3,M4UStr,20,CreditCardVc);// Edit ************************** Monday, 15 April 2013 16:51:48
+    RecordField(AuthorizationCode3,M4UStr,10,0);// Edit ************************** Monday, 15 April 2013 16:51:47
+    RecordField(SalesGroup,M4UStr,30,SalesGroupVc);// Edit ************************** Wednesday, 22 July 2015 15:46:11
+    ArrayField(IMEI,M4Str,30,0); //Edit***************************Sasha2,14:25 15.04.2016
+    DisableIndex("SerNr");
+    DisableIndex("CustCode");
+    DisableIndex("OKFlag");
+    DisableIndex("InvDate");
+    DisableIndex("Name");
+    DisableIndex("Sum4");
+    
+    MainKeyBegin(SerNr,1);// Edit ************************** Wednesday, 22 July 2015 15:38:21
+    StoreInBaseKey;
+    AppendListFieldToKeyName(SalesMan);// Edit ************************** Wednesday, 22 July 2015 15:41:58
+    AppendListFieldToKeyName(SalesGroup);// Edit ************************** Wednesday, 22 July 2015 15:41:58
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(CustCode);
+    StoreInBaseKey;
+    AppendListFieldToKeyName(SalesMan);// Edit ************************** Wednesday, 22 July 2015 15:41:59
+    AppendListFieldToKeyName(SalesGroup);// Edit ************************** Wednesday, 22 July 2015 15:42:00
+    KeySegment(CustCode);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(OKFlag);// Edit ************************** Wednesday, 22 July 2015 15:41:38
+    StoreInBaseKey;
+    AppendListFieldToKeyName(SalesMan);// Edit ************************** Wednesday, 22 July 2015 15:41:59
+    AppendListFieldToKeyName(SalesGroup);// Edit ************************** Wednesday, 22 July 2015 15:42:00
+    KeySegment(OKFlag);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(InvDate);
+    StoreInBaseKey;
+    AppendListFieldToKeyName(SalesMan);// Edit ************************** Wednesday, 22 July 2015 15:41:59
+    AppendListFieldToKeyName(SalesGroup);// Edit ************************** Wednesday, 22 July 2015 15:42:00
+    KeySegment(InvDate);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(Name);// Edit ************************** Wednesday, 22 July 2015 15:43:25
+    StoreInBaseKey;
+    AppendListFieldToKeyName(SalesMan);// Edit ************************** Wednesday, 22 July 2015 15:41:59
+    AppendListFieldToKeyName(SalesGroup);// Edit ************************** Wednesday, 22 July 2015 15:42:00
+    KeySegment(Addr0);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(Sum4);
+    StoreInBaseKey;
+    AppendListFieldToKeyName(SalesMan);// Edit ************************** Wednesday, 22 July 2015 15:41:59
+    AppendListFieldToKeyName(SalesGroup);// Edit ************************** Wednesday, 22 July 2015 15:42:00
+    KeySegment(Sum4);
+    KeySegment(SerNr);
+    
+    KeyBegin(MachineTimeStamp); //Edit***************************Sasha2,11:17 24.09.2014
+    KeySegment(MachineTimeStamp); //Edit***************************Sasha2,11:17 24.09.2014
+    KeySegment(SerNr); //Edit***************************Sasha2,11:17 24.09.2014
+  EndRecordAdd; 
+  
+  RecordAddBegin(SVOVc,"SVOVc_Custom");
+    RecordField(Vlastnik,M4Str,255,0);
+    RecordField(Priynato,M4Str,255,0);
+    RecordField(Kontinfo1,M4Str,255,0);
+    RecordField(Kontinfo2,M4Str,255,0);
+    RecordField(Kontinfo3,M4Str,255,0);
+    RecordField(Batary,M4Str,255,0);
+    RecordField(Zaryadka,M4Str,255,0);
+    RecordField(Scarga,M4Str,255,0);
+    RecordField(Inshe,M4Str,255,0);
+    RecordField(Defects,M4Str,255,0);
+    RecordField(Garanty,M4Str,255,0);
+    RecordField(GarNo,M4Str,255,0);
+    RecordField(GarDate,M4Str,255,0);
+    RecordField(CustomField1,M4Str,255,0);
+    RecordField(CustomField2,M4Str,255,0);
+    RecordField(CustomField3,M4Str,255,0);
+    RecordField(CustomField4,M4Str,255,0);
+    RecordField(CustomField5,M4Str,255,0);
+    RecordField(CustomField6,M4Str,255,0);
+    RecordField(CustomField7,M4Str,255,0);  
+    RecordField(CustomField8,M4Str,255,0);// Edit ************************** Friday, 27 December 2013 12:21:47
+    RecordField(CustomField9,M4Str,255,0);// Edit ************************** Friday, 27 December 2013 12:21:47
+    RecordField(CustomField10,M4Str,255,0);// Edit ************************** Friday, 27 December 2013 12:21:48
+    RecordField(CustomField11,M4Str,255,0);// Edit ************************** Friday, 27 December 2013 12:21:49
+    RecordField(CustomField12,M4Str,255,0);// Edit ************************** Friday, 27 December 2013 12:21:49
+    RecordField(CustomField13,M4Str,255,0);// Edit ************************** Friday, 27 December 2013 12:21:50
+    RecordField(CustomField14,M4Str,255,0);// Edit ************************** Friday, 27 December 2013 12:21:51
+    RecordField(ServiceManager,M4Str,100,0);// Edit ************************** Tuesday, 8 September 2015 10:47:24
+    RecordField(OrderStatus,M4Int,0,0);// Edit ************************** Tuesday, 8 September 2015 10:47:24
+    RecordField(VIPStatus,M4Mark,0,0);
+    RecordField(ItemName,M4Str,200,0);
+    RecordField(ItemFrPartner,M4Mark,0,0); //Edit***************************Sasha2,13:47 08.12.2015
+    RecordField(WSCost,M4Val,0,0);
+    RecordField(DoneTime,M4Time,0,0);// Edit ************************** Monday, 24 October 2016 17:55:42
+    RecordField(OutTime,M4Time,0,0);// Edit ************************** Monday, 24 October 2016 17:55:42
+    RecordField(EndDiagnDate,M4Date,0,0);
+    RecordField(EndDiagnTime,M4Time,0,0);
+    RecordField(NoSMS,M4Int,0,0);
+    RecordField(FastCash,M4Val,0,0);
+    RecordField(FastTerm,M4Val,0,0);
+    RecordField(Phone2,M4Str,20,0);
+    RecordField(ArtCodeTextSearch,M4Str,255,0); //Edit***************************Sasha2,13:28 19.12.2016
+    RecordField(SpecTextSearch,M4Str,255,0); //Edit***************************Sasha2,13:28 19.12.2016
+    RecordField(SerialNrTextSearch,M4Str,255,0); //Edit***************************Sasha2,13:28 19.12.2016
+    RecordField(OldPhone,M4Str,255,0);// Edit ************************** Monday, 27 February 2017 11:23:05
+    RecordField(Name,M4Str,255,0);// Edit ************************** Monday, 27 February 2017 11:23:43
+    RecordField(MiddleName,M4Str,255,0);// Edit ************************** Monday, 27 February 2017 11:23:43
+    
+    SubsetKeyBegin2(RegDate);// Edit ************************** Wednesday, 15 February 2017 19:31:45
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    KeySegment(RegDate);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(EndDiagnDate);// Edit ************************** Wednesday, 15 February 2017 19:31:45
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    KeySegment(EndDiagnDate);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(Kontinfo1);// Edit ************************** Monday, 6 February 2017 14:21:07
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    KeySegment(Kontinfo1);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(Phone2);
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    KeySegment(Phone2);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(SerialNrTextSearch);
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    KeySegment(SerialNrTextSearch);
+    KeySegment(SerNr);  
+    
+    //Ключи для необработанных заказов без сервисного менеджера для распределяющего
+    SubsetKeyBegin2(UnServSerNr);
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    KeySegment(SerNr);
+    SubsetKeyBegin2(UnServTransDate);
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    KeySegment(TransDate);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(UnServItemName);
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    KeySegment(ItemName);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(UnServGaranty);
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    KeySegment(Garanty);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(UnServVIPStatus);
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    KeySegment(VIPStatus);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(UnServOrderStatus);
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    KeySegment(OrderStatus);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(UnServServiceManager);
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    KeySegment(ServiceManager);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(UnServPhone2);// Edit ************************** Monday, 6 February 2017 14:20:13
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    KeySegment(Phone2);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(UnServKontinfo1);// Edit ************************** Monday, 6 February 2017 14:20:11
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    KeySegment(Kontinfo1);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(UnServSerialNrTextSearch);// Edit ************************** Monday, 6 February 2017 14:20:11
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    KeySegment(SerialNrTextSearch);
+    KeySegment(SerNr);
+    
+    //Ключи для ВСех не закрытых заказов на обслуживание для распределяющего
+    SubsetKeyBegin2(AllUnServSerNr);
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(AllUnServTransDate);
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    KeySegment(TransDate);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(AllUnServItemName);
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    KeySegment(ItemName);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(AllUnServGaranty);
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    KeySegment(Garanty);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(AllUnServVIPStatus);
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    KeySegment(VIPStatus);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(AllUnServOrderStatus);
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    KeySegment(OrderStatus);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(AllUnServServiceManager);
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    KeySegment(ServiceManager);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(AllUnServKontinfo1);// Edit ************************** Monday, 6 February 2017 14:19:18
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    KeySegment(Kontinfo1);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(AllUnServPhone2);// Edit ************************** Monday, 6 February 2017 14:19:19
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    KeySegment(Phone2);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(AllUnServSerialNrTextSearch);// Edit ************************** Monday, 6 February 2017 14:19:19
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    KeySegment(SerialNrTextSearch);
+    KeySegment(SerNr);
+    
+    //Ключи для ВСех не закрытых заказов на обслуживание для сервисного менеджера
+    SubsetKeyBegin2(AllServSerNr);
+    StoreInBaseKey;
+    AppendFieldToKeyName(ServiceManager);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(AllServTransDate);
+    StoreInBaseKey;
+    AppendFieldToKeyName(ServiceManager);
+    KeySegment(TransDate);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(AllServItemName);
+    StoreInBaseKey;
+    AppendFieldToKeyName(ServiceManager);
+    KeySegment(ItemName);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(AllServGaranty);
+    StoreInBaseKey;
+    AppendFieldToKeyName(ServiceManager);
+    KeySegment(Garanty);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(AllServVIPStatus);
+    StoreInBaseKey;
+    AppendFieldToKeyName(ServiceManager);
+    KeySegment(VIPStatus);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(AllServOrderStatus);
+    StoreInBaseKey;
+    AppendFieldToKeyName(ServiceManager);
+    KeySegment(OrderStatus);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(AllServServiceManager);
+    StoreInBaseKey;
+    AppendFieldToKeyName(ServiceManager);
+    KeySegment(ServiceManager);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(AllServPhone2);// Edit ************************** Monday, 6 February 2017 14:16:52
+    StoreInBaseKey;
+    AppendFieldToKeyName(ServiceManager);
+    KeySegment(Phone2);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(AllServKontinfo1);// Edit ************************** Monday, 6 February 2017 14:16:52
+    StoreInBaseKey;
+    AppendFieldToKeyName(ServiceManager);
+    KeySegment(Kontinfo1);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(AllServSerialNrTextSearch);// Edit ************************** Monday, 6 February 2017 14:16:52
+    StoreInBaseKey;
+    AppendFieldToKeyName(ServiceManager);
+    KeySegment(SerialNrTextSearch);
+    KeySegment(SerNr);
+  EndRecordAdd; 
+  
+  RecordAddBegin(INVc,"INVc_Custom");
+    RecordField(GigieneText1,M4Str,200,0);// Edit ************************** Friday, 17 October 2014 10:22:17
+    RecordField(GigieneText2,M4Str,200,0);// Edit ************************** Friday, 17 October 2014 10:22:17
+    RecordField(GigieneText3,M4Str,200,0);// Edit ************************** Friday, 17 October 2014 10:22:17
+    RecordField(GigieneText4,M4Str,200,0);// Edit ************************** Friday, 17 October 2014 10:22:17
+    RecordField(GigieneText5,M4Str,200,0);// Edit ************************** Friday, 17 October 2014 10:22:17
+    RecordField(GigieneText6,M4Str,200,0);// Edit ************************** Friday, 17 October 2014 10:22:17
+    RecordField(GigieneText7,M4Str,200,0);// Edit ************************** Friday, 17 October 2014 10:22:17
+    RecordField(GigieneText8,M4Str,200,0);// Edit ************************** Friday, 17 October 2014 10:22:17
+    RecordField(GigieneText9,M4Str,200,0);// Edit ************************** Friday, 17 October 2014 10:22:17
+    RecordField(GigieneText10,M4Str,200,0);// Edit ************************** Friday, 17 October 2014 10:22:17
+    RecordField(GigieneText11,M4Str,200,0);// Edit ************************** Friday, 17 October 2014 10:22:17
+    RecordField(GigieneText12,M4Str,200,0);// Edit ************************** Friday, 17 October 2014 10:22:17
+    RecordField(GigieneText13,M4Str,200,0);// Edit ************************** Friday, 17 October 2014 10:22:17
+    RecordField(GigieneText14,M4Str,200,0);// Edit ************************** Friday, 17 October 2014 10:22:17
+    RecordField(GigieneText15,M4Str,200,0);// Edit ************************** Friday, 17 October 2014 10:22:17
+    RecordField(GigieneText16,M4Str,200,0);// Edit ************************** Friday, 17 October 2014 10:22:17
+    RecordField(GigieneText17,M4Str,200,0);// Edit ************************** Friday, 17 October 2014 10:22:17
+    RecordField(GigieneText18,M4Str,200,0);// Edit ************************** Friday, 17 October 2014 10:22:17
+    RecordField(GigieneText19,M4Str,200,0);// Edit ************************** Friday, 17 October 2014 10:22:17
+    RecordField(GigieneText20,M4Str,200,0);// Edit ************************** Friday, 17 October 2014 10:22:17
+    RecordField(LPriceList,M4Code,5,0); //Edit***************************Sasha2,13:15 22.10.2014 { etiketka 
+    RecordField(LName,M4Str,200,0);
+    RecordField(LDefFormCode,M4Code,20,0);
+    RecordField(LComment,M4Str,200,0);
+    RecordField(LCurncyCode,M4Code,5,CurncyCodeVc);
+    RecordField(LSize,M4Int,0,0);
+    RecordField(LCust1,M4Str,200,0);//custcode
+    RecordField(LCust2,M4Str,200,0);
+    RecordField(LCust3,M4Str,200,0);
+    RecordField(LCust4,M4Str,200,0);
+    RecordField(LCust5,M4Str,200,0);
+    RecordField(LCustInt1,M4Int,0,0);
+    RecordField(LCustInt2,M4Int,0,0);
+    RecordField(LCustInt3,M4Int,0,0);
+    RecordField(LCustInt4,M4Int,0,0);
+    RecordField(LCustInt5,M4Int,0,0); //Edit***************************Sasha2,13:15 22.10.2014 }
+    ArrayField(LParam,M4Str,200,0); //Edit***************************Sasha2,13:19 22.10.2014 {
+    ArrayField(LName,M4Str,200,0);
+    ArrayField(LComment1,M4Str,200,0);
+    ArrayField(LComment2,M4Str,200,0);
+    ArrayField(LComment3,M4Str,200,0);
+    ArrayField(LComment4,M4Str,200,0);
+    ArrayField(LComment5,M4Str,200,0);
+    ArrayField(LComment6,M4Str,200,0);
+    ArrayField(LComment7,M4Str,200,0);
+    ArrayField(LComment8,M4Str,200,0);
+    ArrayField(LArInt1,M4int,0,0);
+    ArrayField(LArInt2,M4int,0,0);
+    ArrayField(LArInt3,M4int,0,0);
+    ArrayField(LArInt4,M4int,0,0); //Edit***************************Sasha2,13:19 22.10.2014 }
+  EndRecordAdd; 
+  
+  RecordAddBegin(CCatVc,"CCatVc_Custom");
+    RecordField(CostAcc,M4Code,10,AccVc); //Edit***************************Sasha2,15:53 22.01.2015
+    RecordField(RetCostAcc,M4Code,10,AccVc); //Edit***************************Sasha2,15:53 22.01.2015
+  EndRecordAdd;
+  
+  RecordAddBegin(SalesGroupVc,"SalesGroupVc_Custom");
+    RecordField(SGroupSeries,M4Long,0,0);// Edit ************************** Friday, 22 November 2013 13:51:41
+  EndRecordAdd;
+  
+  RecordAddBegin(PUVc,"PUVc_Custom");
+    ArrayField(AlternativeCode,M4Str,40,0); //Edit***************************Sasha2,14:27 23.01.2015
+    ArrayField(RetailPrice,M45Val,0,0); //Edit***************************Sasha2,15:16 25.01.2016
+  EndRecordAdd;
+  
+  RecordAddBegin(UserVc,"UserVc_Custom");
+    RecordField(ThroughLocation,M4Str,10,0);	//Edit----------------------Dima  10.12.2015
+    RecordField(AdditionalLocations,M4Str,200,0);	//Edit----------------------Dima  10.12.2015
+    RecordField(ServDays,M4Int,0,0);//Edit-------------------Vitalii 12:21 26.08.2016
+  EndRecordAdd;
+  
+  RecordAddBegin(IVVc,"IVVc_Custom");
+    RecordField(PrintedFlag,M4Mark,0,0); //Edit***************************Sasha2,10:36 11.01.2016
+    RecordField(PrintedSum4,M4Val,0,0); //Edit***************************Sasha2,10:35 11.01.2016
+  	RecordField(IgnoreBlankFIFO,M4Mark,0,0);//Edit----------------------Dima  09.02.2016
+  EndRecordAdd;
+  
+  RecordAddBegin(SHVc,"SHVc_Custom");
+    ArrayField(IMEI,M4Str,30,0); //Edit***************************Sasha2,14:25 15.04.2016
+  EndRecordAdd;
+  
+  ////------------------------------------------------PRICE ETICETKA
+  RecordBegin(MyLabelItemVc,-,""); //Edit***************************Sasha2,12:57 22.10.2014 {
+  	RecordField(ArtCode,M4Code,20,INVc);
+  	RecordField(PriceList,M4Code,5,0);
+  	RecordField(Name,M4Str,200,0);
+  	RecordField(DefFormCode,M4Code,20,0);
+  	RecordField(Comment,M4Str,200,0);
+  	RecordField(CurncyCode,M4Code,5,CurncyCodeVc);
+  	RecordField(Size,M4Int,0,0);
+  	RecordField(Cust1,M4Str,200,0);//custcode
+  	RecordField(Cust2,M4Str,200,0);
+  	RecordField(Cust3,M4Str,200,0);
+  	RecordField(Cust4,M4Str,200,0);
+  	RecordField(Cust5,M4Str,200,0);
+  	RecordField(CustInt1,M4Int,0,0);
+  	RecordField(CustInt2,M4Int,0,0);
+  	RecordField(CustInt3,M4Int,0,0);
+  	RecordField(CustInt4,M4Int,0,0);
+  	RecordField(CustInt5,M4Int,0,0);
+  	RecordField(Math,M4Matrix,0,0);
+  	ArrayBegin(Math,-,1);
+  	ArrayField(Param,M4Str,200,0);
+  	ArrayField(Name,M4Str,200,0);
+  	ArrayField(Comment1,M4Str,200,0);
+  	ArrayField(Comment2,M4Str,200,0);
+  	ArrayField(Comment3,M4Str,200,0);
+  	ArrayField(Comment4,M4Str,200,0);
+  	ArrayField(Comment5,M4Str,200,0);
+  	ArrayField(Comment6,M4Str,200,0);
+  	ArrayField(Comment7,M4Str,200,0);
+  	ArrayField(Comment8,M4Str,200,0);
+  	ArrayField(ArInt1,M4int,0,0);
+  	ArrayField(ArInt2,M4int,0,0);
+  	ArrayField(ArInt3,M4int,0,0);
+  	ArrayField(ArInt4,M4int,0,0);
+  	EndArray;
+  	MainKeyBegin(ArtCode,0);
+  	KeySegment(ArtCode);
+  	KeySegment(PriceList);
+  	KeySegment(DefFormCode);
+  EndRecord; //Edit***************************Sasha2,12:57 22.10.2014 }
+	
+	RecordBegin(MyRepricingVc,-,"");
+  	RecordField(SerNr,M4Long,0,0);
+  	RecordField(TransDate,M4Date,0,0);
+  	RecordField(Comment,M4Str,200,0);
+  	RecordField(SalesMan,M4Code,10,UserVc);
+  	RecordField(Location,M4Code,10,0);
+  	RecordField(OKFlag,M4Int,0,0);
+  	RecordField(Closed,M4Int,0,0);
+  	RecordField(DefFormCode,M4Code,20,0);
+  	RecordField(DefFormName,M4Str,60,0);
+  	RecordField(DefPriceCode,M4Code,5,0);
+  	RecordField(Size,M4Int,0,0);
+  	RecordField(Cust1,M4Str,200,0);
+  	RecordField(Cust2,M4Str,200,0);
+  	RecordField(Cust3,M4Str,200,0);
+  	RecordField(Cust4,M4Str,200,0);
+  	RecordField(Cust5,M4Str,200,0);
+  	RecordField(CustInt1,M4Int,0,0);
+  	RecordField(CustInt2,M4Int,0,0);
+  	RecordField(CustInt3,M4Int,0,0);
+  	RecordField(CustInt4,M4Int,0,0);
+  	RecordField(CustInt5,M4Int,0,0);
+  	RecordField(Math,M4Matrix,0,0);
+  	ArrayBegin(Math,-,1);
+  	ArrayField(ArtCode,M4Code,20,INVc);
+  	ArrayField(PriceList,M4Code,5,0);
+  	ArrayField(Spec,M4Str,100,0);
+  	ArrayField(Quant,M4UVal,0,0);
+  	ArrayField(FormCode,M4Code,20,0);
+  	ArrayField(Size,M4int,0,0);
+  	ArrayField(Price,M4val,0,0);
+  	ArrayField(Comment1,M4Str,200,0);
+  	ArrayField(Comment2,M4Str,200,0);
+  	ArrayField(Comment3,M4Str,200,0);
+  	ArrayField(Comment4,M4Str,200,0);
+  	ArrayField(ArInt1,M4int,0,0);
+  	ArrayField(ArInt2,M4int,0,0);
+  	ArrayField(ArInt3,M4int,0,0);
+  	ArrayField(ArInt4,M4int,0,0);
+  	EndArray;
+  	MainKeyBegin(SerNr,0);
+  	KeySegment(SerNr);
+	EndRecord;
+	
+	RecordBegin(GigieneTextVc,-,"");
+    RecordField(ArtCode,M4Code,20,INVc);
+    RecordField(Math,M4Matrix,0,0);
+    ArrayBegin(Math,-,1);
+    ArrayField(Str1,M4Str,200,0);
+    ArrayField(Str2,M4Str,200,0);
+    ArrayField(Str3,M4Str,200,0);
+    ArrayField(Str4,M4Str,200,0);
+    EndArray;
+    MainKeyBegin(ArtCode,0);
+    KeySegment(ArtCode);	
+  EndRecord;
+
+  BlockBegin(ZebraPrinterBlock,-,"");
+    BlockForAllCompanies;
+    RecordField(PrinterName,M4Str,200,0);
+    RecordField(ParamIn1,M4Int,0,0);
+    RecordField(ParamIn2,M4Int,0,0);
+    RecordField(ParamStr1,M4Str,200,0);
+    RecordField(ParamStr2,M4Str,200,0);
+    RecordField(ParamVal1,M4Val,0,0);
+    RecordField(ParamVal2,M4Val,0,0);
+  EndBlock;
+  
+  RecordBegin(INNnum1Vc,-,"");
+    ImpExpLevel(0);
+  	RegisterForAllCompanies(true);
+  	RecordField(ArtCode,M4Str,20,0);
+  	RecordField(ItemNo,M4Int,0,0);
+  	MainKeyBegin(ArtCode,0);
+  	KeySegment(ArtCode);
+  	KeySegment(ItemNo);
+  	KeyBegin(ItemNo);
+  	KeySegment(ItemNo);
+  	KeySegment(ArtCode);
+  EndRecord;
+  
+  RecordBegin(SVOHistSerialVc,-,"");		//Edit----------------------Dima  14.05.2015
+    //ImpExpLevel(0);
+  	RecordField(SerialNr,M4Str,30,0);
+  	RecordField(ArtCode,M4Code,20,INVc);
+  	RecordField(Qty,M4Int,0,0);
+  	RecordField(TransNr,M4Long,0,0);
+  	RecordField(FileName,M4Str,20,0);
+  	RecordField(OKFlag,M4Int,0,0);
+  	RecordField(Type,M4Int,0,0);
+  	RecordField(TransDate,M4Date,0,0);
+  	RecordField(OkDate,M4Date,0,0);
+  	RecordField(ReturnDate,M4Date,0,0);
+  	RecordField(SalesMan,M4Code,10,UserVc);
+  	RecordField(Client,M4Code,50,CUVc);
+  	RecordField(Vlastnik,M4Str,200,CUVc);
+  	MainKeyBegin(SerialNr,0);
+  	KeySegment(SerialNr);
+  	KeySegment(TransNr);
+  	KeyBegin(OKFlag);
+  	KeySegment(OKFlag);
+  	KeySegment(SerialNr);
+  	KeySegment(TransNr);
+  	KeyBegin(Type);
+  	KeySegment(Type);
+  	KeySegment(SerialNr);
+  	KeySegment(TransNr);
+  	KeyBegin(TransDate);
+  	KeySegment(TransDate);
+  	KeySegment(SerialNr);
+  	KeySegment(TransNr);
+  	KeyBegin(Vlastnik);
+  	KeySegment(Vlastnik);
+  	KeySegment(SerialNr);
+  	KeySegment(TransNr);
+  	KeyBegin(Client);
+  	KeySegment(Client);
+  	KeySegment(SerialNr);
+  	KeySegment(TransNr);
+  	KeyBegin(FileName);
+  	KeySegment(FileName);
+  	KeySegment(SerialNr);
+  	KeySegment(TransNr);
+  EndRecord;
+  
+  RecordBegin(WebSyncRegVc,-,"");
+		RecordField(ArtCode,M4Code,20,INVc);
+		RecordField(Price,M4Val,0,0);
+		RecordField(Available,M4Str,100,0);
+		RecordField(DateChange,M4Date,0,0);
+		RecordField(ParamInt1,M4Int,0,0);
+		RecordField(ParamInt2,M4Int,0,0);
+		RecordField(ParamStr1,M4Str,200,0);
+		RecordField(ParamStr2,M4Str,200,0);
+		RecordField(ParamVal1,M4Val,0,0);
+		RecordField(ParamVal2,M4Val,0,0);
+		RecordField(Math,M4Matrix,0,0);
+		ArrayBegin(Math,-,1);
+		ArrayField(Location,M4Str,200,0);
+		ArrayField(Qty,M4Int,0,0);
+		ArrayField(ID,M4Int,0,0);
+		ArrayField(Price,M4Val,0,0);
+		ArrayField(MyVal,M4Val,0,0);
+		ArrayField(MyInt,M4Int,0,0);
+		ArrayField(MyStr,M4Str,200,0);
+		EndArray;
+		MainKeyBegin(ArtCode,0);
+		KeySegment(ArtCode);
+		KeyBegin(DateChange);
+		KeySegment(DateChange);
+		KeySegment(ArtCode);
+	EndRecord;  
+  
+  BlockBegin(LocalMachineAccBlock,-,""); //Edit***************************Sasha2,17:27 11.09.2014 {
+  	RecordField(Math,M4Matrix,0,0);
+  	ArrayBegin(Math,-,1);
+  	ArrayField(LocalMachine,M4Code,20,0);
+  	ArrayField(Name,M4Str,200,0);
+  	ArrayField(CustCode,M4UStr,60,CUVc);
+  	ArrayField(SaleAcc,M4Code,10,AccVc);
+  	ArrayField(RecAcc,M4Code,10,AccVc);
+  	ArrayField(RetAcc,M4Code,10,AccVc);
+  	ArrayField(StockAcc,M4Code,10,AccVc);
+  	ArrayField(ServAcc,M4Code,10,AccVc);
+  	ArrayField(CurDiffCred,M4Code,10,AccVc);
+  	ArrayField(CurDiffDeb,M4Code,10,AccVc);
+  	ArrayField(Objects,M4UStr,60,ObjVc);
+  	ArrayField(PayDeal,M4Code,2,0);
+  	ArrayField(Acc01,M4Code,10,AccVc);
+  	ArrayField(Acc02,M4Code,10,AccVc);
+  	ArrayField(Acc03,M4Code,10,AccVc);
+  	ArrayField(Acc04,M4Code,10,AccVc);
+  	ArrayField(Acc05,M4Code,10,AccVc);
+  	ArrayField(Str01,M4Str,100,0);//PriceCurant
+  	ArrayField(Str02,M4Str,100,0);
+  	ArrayField(Str03,M4Str,100,0);
+  	ArrayField(Str04,M4Str,100,0);
+  	ArrayField(Str05,M4Str,100,0);
+    ArrayField(ArInt1,M4int,0,0);
+    ArrayField(ArInt2,M4int,0,0);
+    ArrayField(ArInt3,M4int,0,0);
+    ArrayField(ArInt4,M4int,0,0);
+  	ArrayField(ArInt5,M4int,0,0);
+  	ArrayField(UserCode,M4Str,50,0);// Edit ************************** Wednesday, 6 June 2012 14:34:32
+  	ArrayField(DefLoc,M4Str,50,0);
+  	ArrayField(DefLocRet,M4Str,50,0);
+  	ArrayField(Drawer,M4Str,10,0);
+  	ArrayField(CashID,M4Str,10,0);
+  	ArrayField(TermID,M4Str,10,0);
+  	ArrayField(SertID,M4Str,10,0);
+  	ArrayField(Oth01ID,M4Str,10,0);
+  	ArrayField(Oth02ID,M4Str,10,0);
+  	ArrayField(Oth03ID,M4Str,10,0);
+  	ArrayField(Oth04ID,M4Str,10,0);
+  	ArrayField(Oth05ID,M4Str,10,0);
+  	EndArray;
+	EndBlock; //Edit***************************Sasha2,17:27 11.09.2014 }
+	
+	RecordBegin(IssueVc,-,"");
+    RecordField(IssueName,M4Str,60,IssueVc);
+    MainKeyBegin(IssueName,0);
+    KeySegment(IssueName);
+  EndRecord;
+
+	RecordBegin(DefectVc,-,"");
+		RecordField(DefectName,M4Str,60,DefectVc);
+		MainKeyBegin(DefectName,0);
+		KeySegment(DefectName);
+  EndRecord;
+  
+  RecordBegin(MonthsStructVc,-,"");	//Edit----------------------Dima  02.02.2016
+    RecordField(Jan,M4Val,0,0);
+    RecordField(Feb,M4Val,0,0);
+    RecordField(Mar,M4Val,0,0);
+    RecordField(Apr,M4Val,0,0);
+    RecordField(May,M4Val,0,0);
+    RecordField(Jun,M4Val,0,0);
+    RecordField(Jul,M4Val,0,0);
+    RecordField(Aug,M4Val,0,0);
+    RecordField(Sep,M4Val,0,0);
+    RecordField(Oct,M4Val,0,0);
+    RecordField(Nov,M4Val,0,0);
+    RecordField(Dec,M4Val,0,0); 
+  EndRecord; 
+  
+  RecordBegin(MoveForServiceVc,-,"MoveForServiceVc"); //Edit***************************Sasha2,11:15 04.05.2016 {
+    RecordField(SerNr,M4Long,0,0);
+    RecordField(TransDate,M4Date,0,0);
+    RecordField(FromCompNr,M4Str,5,0);
+    RecordField(ToCompNr,M4Str,5,0);
+    RecordField(FromCompName,M4Str,100,0);
+    RecordField(ToCompName,M4Str,100,0);
+    RecordField(Closed,M4Mark,0,0);
+    RecordField(Comment,M4Str,200,0);
+    RecordField(StockMovSerNr,M4Long,0,0);
+    RecordField(SVOSerNr,M4Long,0,0);
+    RecordField(Math,M4Matrix,0,0);
+    RecordField(FromLocation,M4Code,10,LocationVc);
+    RecordField(ToLocation,M4Code,10,LocationVc);
+    ArrayBegin(Math,-,1);
+    ArrayField(ArtCode,M4Code,20,INVc);
+    ArrayField(Spec,M4Str,100,0);
+    ArrayField(SerialNr,M4Str,30,0);
+    ArrayField(SendQuant,M4UVal,0,0);
+    ArrayField(ReceivedQuant,M4UVal,0,0);
+    ArrayField(SendBackQuant,M4UVal,0,0);
+    ArrayField(ReceivedBackQuant,M4UVal,0,0);
+    ArrayField(SendUser,M4UStr,60,UserVc);
+    ArrayField(ReceivedUser,M4UStr,60,UserVc);
+    ArrayField(SendBackUser,M4UStr,60,UserVc);
+    ArrayField(ReceivedBackUser,M4UStr,60,UserVc);
+    ArrayField(Comment,M4Str,200,0);
+    ArrayField(ServiceSerialNr,M4Str,30,0);
+    ArrayField(SendDate,M4Date,0,0);
+    ArrayField(ReceivedDate,M4Date,0,0);
+    ArrayField(SendBackDate,M4Date,0,0);
+    ArrayField(ReceivedBackDate,M4Date,0,0);
+    EndArray;
+    MainKeyBegin(SerNr,1);
+    StoreInBaseKey;
+    AppendFieldToKeyName(FromCompNr);
+    KeySegment(SerNr);
+    SubsetKeyBegin2(FromCompNr);
+    StoreInBaseKey;
+    AppendFieldToKeyName(FromCompNr);
+    KeySegment(FromCompNr);
+    KeySegment(SerNr);
+  EndRecord; //Edit***************************Sasha2,11:15 04.05.2016 }
+			
+  RecordBegin(SamsungSendLog1Vc,-,""); //Edit***************************Sasha2,11:15 04.05.2016 {
+    RecordField(SerNr,M4Long,0,0);
+    RecordField(TransDate,M4Date,0,0);
+    RecordField(CurDate,M4Date,0,0);
+    RecordField(TransTime,M4Time,0,0);
+    RecordField(FileName1,M4Str,100,0);
+    RecordField(FileName2,M4Str,100,0);
+    RecordField(FileName3,M4Str,100,0);
+    MainKeyBegin(SerNr,0);
+    KeySegment(SerNr);
+    KeyBegin(TransDate);
+    KeySegment(TransDate);
+    KeySegment(SerNr);
+  EndRecord; //Edit***************************Sasha2,11:15 04.05.2016 }
+  
+  RecordBegin(PhoneVc,-,"");//Edit-------------------Vitalii 17:10 03.11.2016
+    RecordField(PhoneNum,M4Str,50,0);
+    RecordField(Vlastnik,M4Str,100,0);
+    RecordField(Priynato,M4Str,100,0);
+    MainKeyBegin(PhoneNum,0);
+    KeySegment(PhoneNum);
+    KeyBegin(Vlastnik);
+    KeySegment(Vlastnik);
+    KeySegment(PhoneNum);
+    KeyBegin(Priynato);
+    KeySegment(Priynato);
+    KeySegment(PhoneNum);
+  EndRecord;
+  
+  RecordBegin(Phone1Vc,-,"");//Edit-------------------Vitalii 17:10 03.11.2016
+    RecordField(PhoneNum,M4Str,50,0);
+    RecordField(Vlastnik,M4Str,100,0);
+    RecordField(Priynato,M4Str,100,0);
+    RecordField(SVONrs,M4Str,255,0);
+    RecordField(FirstName,M4Str,50,0); //Edit***************************Sasha2,15:51 22.02.2017
+    RecordField(LastName,M4Str,50,0); //Edit***************************Sasha2,15:51 22.02.2017
+    RecordField(MiddleName,M4Str,50,0); //Edit***************************Sasha2,15:51 22.02.2017
+    RecordField(RepairsSum,M4Val,0,0); //Edit***************************Sasha2,15:51 22.02.2017
+    RecordField(PersonalRebate,M4Val,0,0); //Edit***************************Sasha2,15:51 22.02.2017
+    RecordField(PersonalRebCode,M4Code,5,0); //Edit***************************Sasha2,16:34 28.02.2017
+    MainKeyBegin(PhoneNum,0);
+    KeySegment(PhoneNum);
+    KeyBegin(Vlastnik);
+    KeySegment(Vlastnik);
+    KeySegment(PhoneNum);
+    KeyBegin(Priynato);
+    KeySegment(Priynato);
+    KeySegment(PhoneNum);
+  EndRecord;
+  
+  RecordBegin(SVOPrintDataVc,-,"");//Edit-------------------Vitalii 17:10 03.11.2016
+    RecordField(Code,M4Code,50,0);
+    RecordField(Comment,M4Str,200,0);
+    RecordField(DocName,M4Code,20,DocVc);
+    RecordField(Closed,M4Int,0,0);
+    
+    RecordField(Header1,M4Str,255,0);
+    RecordField(Header2,M4Str,255,0);
+    RecordField(Header3,M4Str,255,0);
+    RecordField(Header4,M4Str,255,0);
+    RecordField(Header5,M4Str,255,0);
+    RecordField(Header6,M4Str,255,0);
+    RecordField(Header7,M4Str,255,0);
+    RecordField(Header8,M4Str,255,0);
+    RecordField(Header9,M4Str,255,0);
+    RecordField(Header10,M4Str,255,0);
+    
+    RecordField(Body1,M4Str,255,0);
+    RecordField(Body2,M4Str,255,0);
+    RecordField(Body3,M4Str,255,0);
+    RecordField(Body4,M4Str,255,0);
+    RecordField(Body5,M4Str,255,0);
+    RecordField(Body6,M4Str,255,0);
+    RecordField(Body7,M4Str,255,0);
+    RecordField(Body8,M4Str,255,0);
+    RecordField(Body9,M4Str,255,0);
+    RecordField(Body10,M4Str,255,0);
+    
+    RecordField(Footer1,M4Str,255,0);
+    RecordField(Footer2,M4Str,255,0);
+    RecordField(Footer3,M4Str,255,0);
+    RecordField(Footer4,M4Str,255,0);
+    RecordField(Footer5,M4Str,255,0);
+    RecordField(Footer6,M4Str,255,0);
+    RecordField(Footer7,M4Str,255,0);
+    RecordField(Footer8,M4Str,255,0);
+    RecordField(Footer9,M4Str,255,0);
+    RecordField(Footer10,M4Str,255,0);
+    
+    MainKeyBegin(Code,0);
+    KeySegment(Code);
+    KeyBegin(Comment);
+    KeySegment(Comment);
+    KeySegment(Code);
+  EndRecord;
+	
+	BlockBegin(POSCurncyBlock,-,""); //Edit***************************Sasha2,17:26 11.09.2014 {
+    RecordField(CurncyCode,M4Code,5,CurncyCodeVc);
+  EndBlock; //Edit***************************Sasha2,17:26 11.09.2014 }
+  
+  BlockBegin(WebSyncBlock,-,"");
+		RecordField(DateLastTime,M4Date,0,0);
+		RecordField(DefPriceList,M4Str,10,0);
+		RecordField(ParamIn1,M4Int,0,0);
+		RecordField(ParamIn2,M4Int,0,0);
+		RecordField(ParamStr1,M4Str,200,0);
+		RecordField(ParamStr2,M4Str,200,0);
+		RecordField(ParamVal1,M4Val,0,0);
+		RecordField(ParamVal2,M4Val,0,0);
+	EndBlock;
+
+	BlockBegin(WebSyncMatBlock,-,"");
+		RecordField(Math,M4Matrix,0,0);
+		ArrayBegin(Math,-,1);
+		ArrayField(Location,M4Str,200,0);
+		ArrayField(ID,M4INt,0,0);
+		ArrayField(LocPrice,M4Val,0,0);
+		ArrayField(MyVal,M4Val,0,0);
+		ArrayField(MyInt,M4Int,0,0);
+		ArrayField(MyStr,M4Str,200,0);
+		EndArray;
+	EndBlock;
+	
+	BlockBegin(ObjectsAccBlock,-,"");
+		RecordField(Math,M4Matrix,0,0);
+		ArrayBegin(Math,-,1);
+		ArrayField(Objects,M4UStr,60,ObjVc);
+		ArrayField(AccCode,M4Code,10,AccVc);
+		ArrayField(SaleAccCode,M4Code,10,AccVc);
+		EndArray;
+	EndBlock;	
+	
+	BlockBegin(TermoPrinterBlock,-,"");
+		RecordField(CompNameWin,M4Str,100,0);
+		RecordField(PrinterNameWin,M4Str,100,0);
+		RecordField(PrinterNameMac,M4Str,100,0);
+	EndBlock;
+	
+	BlockBegin(ReceiptPrinterBlock,-,"");		
+  BlockForAllCompanies;
+		RecordField(CompNameWin,M4Str,100,0);
+		RecordField(PrinterNameWin,M4Str,100,0);
+		RecordField(PrinterNameMac,M4Str,100,0);  
+	EndBlock;	
+	
+	
+  BlockBegin(MyCashFlowBlock,-,"");
+		RecordField(Math,M4Matrix,0,0);
+		ArrayBegin(Math,-,1);
+		ArrayField(SerNr,M4Long,0,0);
+    ArrayField(FrAcc,M4Code,20,AccVc);
+    ArrayField(ToAcc,M4Code,20,AccVc);
+    ArrayField(DebCred,M4Int,0,0);
+    ArrayField(TurnBal,M4Int,0,0);
+    ArrayField(Comment,M4Str,200,0);
+    ArrayField(SumUp,M4Int,0,0);
+    ArrayField(CalcStr,M4Str,200,0);
+    ArrayField(ComCoord,M4Int,0,0);
+    ArrayField(ComAlign,M4Int,0,0);
+		EndArray;
+	EndBlock;
+	
+	BlockBegin(MyCashFlowDRBlock,-,"");
+		RecordField(Math,M4Matrix,0,0);
+		ArrayBegin(Math,-,1);
+		ArrayField(SerNr,M4Long,0,0);
+    ArrayField(FrAcc,M4Code,20,AccVc);
+    ArrayField(ToAcc,M4Code,20,AccVc);
+    ArrayField(DebCred,M4Int,0,0);
+    ArrayField(TurnBal,M4Int,0,0);
+    ArrayField(Comment,M4Str,200,0);
+    ArrayField(SumUp,M4Int,0,0);
+    ArrayField(CalcStr,M4Str,200,0);
+    ArrayField(ComCoord,M4Int,0,0);
+    ArrayField(ComAlign,M4Int,0,0);
+		EndArray;
+	EndBlock;	
+	
+	BlockBegin(SamsungSettingsBlock,-,"" ) //Edit***************************Sasha2,10:01 12.04.2016 
+    //BlockInServer;
+    //BlockForAllCompanies;
+    RecordField(FileName,M4Str,100,0);
+    RecordField(DirName,M4Str,100,0);
+    RecordField(PLCode,M4Str,60,0);
+    RecordField(Locations,M4Str,60,0);
+    RecordField(Qty,M4Val,0,0);
+    RecordField(HostIP,M4Str,60,0);
+    RecordField(Port,M4Int,0,0);
+    RecordField(Login,M4Str,60,0);
+    RecordField(Password,M4Str,60,0);
+    RecordField(SenderCode,M4Str,60,0);
+    RecordField(SenderName,M4Str,60,0);
+    RecordField(SalesNextDocNum,M4Long,0,0);
+    RecordField(SalesNextDocNum2,M4Long,0,0);
+    RecordField(SalesNextDocNum3,M4Long,0,0);
+    RecordField(LocationCode,M4Str,60,0);
+  EndBlock;
+  
+  BlockBegin(SamsungItemsBlock,-,"");
+		RecordField(Math,M4Matrix,0,0);
+		ArrayBegin(Math,-,1);
+		ArrayField(ArtCode,M4Str,200,0);
+    ArrayField(Name,M4Str,200,0);
+    ArrayField(EAN,M4Str,200,0);
+		EndArray;
+	EndBlock;
+  
+return;
+end;

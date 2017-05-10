@@ -71,7 +71,6 @@ external function Integer CountCountries();
 
 // Language functions ENG
 external function Boolean DisplayLoginKeyPad_ENG();
-external function string 255 VATZoneEditFieldLabelENG(Integer);
 external function real VATZoneButtonsLabelsENG(real,real,real,real);
 external procedure LoginButtons2_ENG(Real,Real);
 external procedure FORMDEF_ENG();
@@ -6123,7 +6122,7 @@ begin
         EditField(h,v+=vs,f,VATZoneEditFieldLabelRUS(2) & "Счёт реализации ЕС",Normal,ExpSalesAcc,false,AccSClass);
         if (HasTaxMatrix) then begin
           EditField(h2+100,v=vm,50,"#Dom.# Tax Temp.",Normal,TaxTemplateCode,false,TaxTemplateSClass); 
-          EditField(h2+100,v+=vs,50,VATZoneEditFieldLabelENG(1) & "Tax Temp.",Normal,TaxTemplateCodeEU,false,TaxTemplateSClass); 
+          EditField(h2+100,v+=vs,50,VATZONEEDITFIELDLABELRUS(1) & "Tax Temp.",Normal,TaxTemplateCodeEU,false,TaxTemplateSClass); 
           EditField(h2+100,v+=vs,50,"Export Tax Temp.",Normal,TaxTemplateCodeExp,false,TaxTemplateSClass); 
         end else begin
         if (HasLocalization("POL")) then begin
@@ -6196,8 +6195,8 @@ begin
   if (HasVATZone) then begin
     ButtonFrame(h,v,123,3,"#VAT# Zone"); 
     CheckBox(h,v,0,"#Domestic#",flags[7]); 
-    CheckBox(h,v+=16,0,VATZoneEditFieldLabelENG(1),flags[8]);
-    CheckBox(h,v+=16,0,VATZoneEditFieldLabelENG(2),flags[9]);
+    CheckBox(h,v+=16,0,VATZONEEDITFIELDLABELRUS(1),flags[8]);
+    CheckBox(h,v+=16,0,VATZONEEDITFIELDLABELRUS(2),flags[9]);
   end;
 /*
   ButtonFrame(h=20,vm=(v+=40),100,2,"Specify"); 
@@ -6273,8 +6272,8 @@ begin
   if (HasVATZone) then begin
     ButtonFrame(h=50,v+=16,100,3,"#VAT# Zone"); 
     CheckBox(h,vm=v,0,"#Domestic#",flags[7]); 
-    CheckBox(h,v+=16,0,VATZoneEditFieldLabelENG(1),flags[8]);
-    CheckBox(h,v+=16,0,VATZoneEditFieldLabelENG(2),flags[9]);
+    CheckBox(h,v+=16,0,VATZONEEDITFIELDLABELRUS(1),flags[8]);
+    CheckBox(h,v+=16,0,VATZONEEDITFIELDLABELRUS(2),flags[9]);
     CheckBox(h=200,v=vm,0,"All #VAT# Codes",flags[0]); 
   end else begin
     CheckBox(h=200,v+=16,0,"All #VAT# Codes",flags[0]); 

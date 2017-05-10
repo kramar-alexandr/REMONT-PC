@@ -1,0 +1,45 @@
+global 
+function Boolean ERVcRecordShouldBeSynchronised(record ERVc Drawerr,string tagstr)
+begin
+  Boolean res;
+  
+  res = true;
+  ERVcRecordShouldBeSynchronised = res;
+  return;
+end;
+
+global 
+function Boolean ERVcRecordSync(record ERVc Drawerr,string tagstr)
+begin
+  Boolean res;
+  
+  res = true;
+  ERVcRecordSync = res;
+  return;
+end;
+
+global 
+function Boolean SerBalVcRecordShouldBeSynchronised(record SerBalVc Drawerr,string tagstr)
+begin
+  Boolean res;
+ 
+  if(tagstr==Drawerr.Location)then begin
+    res = true;
+  end else begin
+    res = false;
+  end;
+
+  SerBalVcRecordShouldBeSynchronised = res;
+  return;
+end;
+
+global 
+function Boolean SerBalVcRecordSync(record SerBalVc Drawerr,string tagstr)
+begin
+  Boolean res;
+    
+  res = true;
+  SerBalVcRecordSync = res;
+  return;
+end;
+

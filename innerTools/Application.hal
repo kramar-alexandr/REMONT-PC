@@ -1,0 +1,38 @@
+remote function string 50 TestCurrentUserOnServer();
+remote function integer ExpiredMoveForServDays();
+
+// After Login or after the server has been started
+global
+updating procedure OnApplicationStartupComplete()
+begin
+	record RcVc RepSpec;
+  record UserVc User;
+  integer days;
+	
+	inner.OnApplicationStartupComplete;
+	messagebox(0,"sadas");
+  millisleep(100);
+  if (!ServerMode) then begin
+		if(CurrentCompany==4 or CurrentCompany==14  or CurrentCompany==15  or CurrentCompany==16) then begin
+			if(nonblank(TestCurrentUserOnServer))then begin
+				recordnew(RepSpec);
+				ReportDefaults(RepSpec,"CurrentUserStockMovsRn");
+				millisleep(100);
+				RepSpec.Media = mtScreen;
+				RepSpec.repname = "CurrentUserStockMovsRn";
+				RunReport(RepSpec,0);
+			end;
+		end;
+    days = ExpiredMoveForServDays;
+    if (days!=0) then begin
+      recordnew(RepSpec);
+			ReportDefaults(RepSpec,"ExpiredMoveForServRn");
+      millisleep(100);
+      RepSpec.flags[1] = days;
+      RepSpec.Media = mtScreen;
+      RepSpec.repname = "ExpiredMoveForServRn";
+      RunReport(RepSpec,0);
+    end;
+	end;
+  return;
+end;

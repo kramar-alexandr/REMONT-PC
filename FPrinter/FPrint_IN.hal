@@ -1,0 +1,440 @@
+remote procedure ReadSer(var integer,string,var array val,var array string,var array string,var array string,var array real,var array date,date);
+external procedure DellSUPP();
+remote procedure DellINMn();
+external procedure SynchServToOfflineSettingsm();
+external function boolean PrintFiscalReceipt(record IVCashVc);
+remote function MyServLog(string);
+external procedure prt(string,string,boolean);
+remote procedure MyConvertCur(var record CashVc);
+external procedure MyCashInOutClient(val);
+remote procedure SavingCash(var record CashVc);
+external updating function Boolean SendServiceRequest(string,Boolean,area,var Area);
+external updating function Boolean ServiceRequestAsync(string,string,Boolean,area,string);
+external procedure ReadTXServiceReply(var record TXServiceReplyVc,var Area,Boolean);
+external procedure prt(string,string,var boolean);
+
+
+//----------------------------------------------------------------------------------------------------
+
+global updating procedure MyCashInMn()
+begin
+  record RcVc RepSpec;
+  integer wn,i,mtrw;
+  record CashVc Cashr,oldCashr;
+  row CashVc Cashrw;
+  record LocalMachineBlock LMb;
+  record RestPMBlock RPMb;
+  row RestPMBlock RPMrw;
+  string 10 PayMode;
+  record DefCashBlock DCb;
+  
+  wn = curwindow;
+  deselectwindow(wn,true);
+  GetWindowRecord(wn,RepSpec);
+  BlockLoad(LMb);
+  BlockLoad(RPMb);
+  PayMode = "";
+  mtrw = matrowcnt(RPMb);
+  for(i=0;i<mtrw;i=i+1)begin
+    matrowget(RPMb,i,RPMrw);
+    if(RPMrw.MachineName==LMb.LocalMachineCode)then begin
+      PayMode = RPMrw.PMCode;
+    end;
+  end;
+  
+  if(blank(PayMode))then begin
+    blockload(DCb);
+    PayMode = DCb.DefCashPayMode;
+  end;
+  
+  if(nonblank(PayMode))then begin
+    
+    recordNew(Cashr);
+    Cashr.TransDate=CurrentDate;
+    Cashr.TransTime=CurrentTime;
+    Cashr.MachineName=LMb.LocalMachineCode;
+    
+    oldCashr.MachineName = LMb.LocalMachineCode;
+    readlastkey("MachineName",oldCashr,1,true);
+    Cashr.Total=RepSpec.vals0;
+    Cashr.Drawer=oldCashr.Drawer;
+    Cashr.Event=1;
+    Cashr.OKFlag=1;
+    
+    Cashrw.PMCode = PayMode;
+    Cashrw.Amount = RepSpec.vals0;
+    matrowput(Cashr,0,Cashrw);
+    
+    SavingCash(Cashr);
+    
+    MyCashInOutClient(Cashr.Total);
+    MyConvertCur(Cashr);
+    
+  end else begin
+    MessageBox(1101,"");
+  end;
+  
+  selectwindow(wn);
+  
+  closewindow(wn);
+  
+return;
+end;
+
+global updating procedure MyCashOutMn()
+begin
+  record RcVc RepSpec;
+  integer wn,i,mtrw;
+  record CashVc Cashr,oldCashr;
+  row CashVc Cashrw;
+  record LocalMachineBlock LMb;
+  record RestPMBlock RPMb;
+  row RestPMBlock RPMrw;
+  string 10 PayMode;
+  record DefCashBlock DCb;
+  
+  wn = curwindow;
+  deselectwindow(wn,true);
+  GetWindowRecord(wn,RepSpec);
+  BlockLoad(LMb);
+  BlockLoad(RPMb);
+  PayMode = "";
+  mtrw = matrowcnt(RPMb);
+  for(i=0;i<mtrw;i=i+1)begin
+    matrowget(RPMb,i,RPMrw);
+    if(RPMrw.MachineName==LMb.LocalMachineCode)then begin
+      PayMode = RPMrw.PMCode;
+    end;
+  end;
+  
+  if(blank(PayMode))then begin
+    blockload(DCb);
+    PayMode = DCb.DefCashPayMode;
+  end;
+  
+  if(nonblank(PayMode))then begin
+    
+    recordNew(Cashr);
+    Cashr.TransDate=CurrentDate;
+    Cashr.TransTime=CurrentTime;
+    Cashr.MachineName=LMb.LocalMachineCode;
+    
+    oldCashr.MachineName = LMb.LocalMachineCode;
+    readlastkey("MachineName",oldCashr,1,true);
+    Cashr.Total=RepSpec.vals0;
+    Cashr.Drawer=oldCashr.Drawer;
+    Cashr.Event=0;
+    Cashr.OKFlag=1;
+    
+    Cashrw.PMCode = PayMode;
+    Cashrw.Amount = RepSpec.vals0;
+    matrowput(Cashr,0,Cashrw);
+    
+    SavingCash(Cashr);
+    
+    MyCashInOutClient(-Cashr.Total);
+    MyConvertCur(Cashr);
+    
+  end else begin
+    MessageBox(1101,"");
+  end;
+  
+  
+  selectwindow(wn);
+  
+  closewindow(wn);
+  
+return;
+end;
+
+
+global
+updating function SynkSerNo()
+begin
+	
+	SynchServToOfflineSettingsm;
+		
+	RETURN;
+END;
+
+//----------------------------------------------------------------------------------------------------
+
+global
+procedure MyCancelMn()
+begin
+  boolean successf;
+	
+	//RunProgram("Datecs/prt.exe","cancel");
+	prt("cancel","",successf);
+	RETURN;
+END;
+
+//----------------------------------------------------------------------------------------------------
+
+global
+procedure MyBigReportMn()
+begin
+	boolean successf;
+	//RunProgram("Datecs/prt.exe","bigreport");
+	prt("bigreport","",successf);
+	RETURN;
+END;
+
+
+//----------------------------------------------------------------------------------------------------
+
+global
+function ZreportSt()
+begin
+	integer wn;
+	record RcVc RecSpec;
+	boolean successf;
+	
+	wn=CurWindow;
+	GetWindowRecord(wn,RecSpec);
+	
+	if ((RecSpec.flags[1]==1)and (RecSpec.flags[2]==1) and (RecSpec.flags[3]==1)) then begin
+		if(RecSpec.flags[4]!=1) then begin
+			//RunProgram("Datecs/prt.exe","nullcheck");
+			prt("nullcheck","",successf);
+			Sleep(3);
+		end;
+		
+		//RunProgram("Datecs/prt.exe","zreport");
+		prt("zreport","",successf);
+		DellSUPP;
+	end;
+	
+	RETURN;
+END;
+
+//----------------------------------------------------------------------------------------------------
+
+global
+function PeriodReportSt()
+begin
+	integer wn;
+	record RcVc RecSpec;
+	string 4 ds,de,ms,me,ys,ye;
+	string 20 command;
+	boolean successf;
+	
+	wn=CurWindow;
+	deselectwindow(wn,true);
+	GetWindowRecord(wn,RecSpec);
+	
+	if ((nonblank(RecSpec.d1))and (nonblank(RecSpec.d2)))then begin
+	
+		ds = getday(RecSpec.d1);
+		if (len(ds)==1) then begin ds = "0" & ds; end;
+		
+		de = getday(RecSpec.d2);
+		if (len(de)==1) then begin de = "0" & de; end;
+		
+		ms = getmonth(RecSpec.d1);
+		if (len(ms)==1) then begin ms = "0" & ms; end;
+		
+		me = getmonth(RecSpec.d2);
+		if (len(me)==1) then begin me = "0" & me; end;
+		
+		ys = getyear(RecSpec.d1);
+		ys = right(ys,2);
+		
+		ye = getyear(RecSpec.d2);
+		ye = right(ye,2);
+		
+		//command = "periodreportshort " & ds & ms & ys & " " & de & me & ye;
+		//StopAlert(ds & ms & ys & " " & de & me & ye);
+		prt("periodreportshort",ds & ms & ys & " " & de & me & ye,successf);
+		//RunProgram("Datecs/prt.exe",command);
+		
+	end;
+	RETURN;
+END;
+
+//----------------------------------------------------------------------------------------------------
+
+global
+function MyPrintRepSt()
+begin
+	record IVCashVc IVCashr;
+	integer wn;
+	record RcVc RecSpec;
+	
+	wn=CurWindow;
+	deselectwindow(wn,true);
+	GetWindowRecord(wn,RecSpec);
+	if ((RecSpec.flags[1]==1)) then begin
+		IVCashr.SerNr=RecSpec.long2;
+		if (ReadFirstMain(IVCashr,1,true)==true) then begin
+			PrintFiscalReceipt(IVCashr);
+			CloseWindow(wn);
+		end;
+	end;
+	
+	RETURN;
+END;
+
+//----------------------------------------------------------------------------------------------------
+
+global
+function XreportSt()
+begin
+area command;
+string 255 com;
+integer sq;
+boolean successf;
+
+  prt("xreport","",successf);
+	
+	
+	RETURN;
+END;	
+
+//----------------------------------------------------------------------------------------------------
+
+global
+function NullReciept()
+begin
+  boolean successf;
+	
+	//RunProgram("Datecs/prt.exe","nullcheck");
+	prt("nullcheck","",successf);
+	RETURN;
+END;	
+
+
+global
+function errorfix()
+begin
+  boolean successf;
+	
+	//RunProgram("Datecs/prt.exe","nullcheck");
+	prt("errorfix","",successf);
+	RETURN;
+END; 
+
+//----------------------------------------------------------------------------------------------------
+
+global
+updating function SetTimePrinter()
+begin
+  boolean successf;
+
+	prt("settimeprinter","",successf);
+	
+	RETURN;
+END;	 
+//----------------------------------------------------------------------------------------------------
+
+global
+updating function DelNul()
+begin
+  boolean successf;
+	record POSEventVc PEr;
+	Boolean TrHs;
+	PEr.Drawer="";
+	TrHs=true;
+
+	while (LoopKey("Drawer",PEr,1,TrHs)) begin
+		if (TrHs) then begin
+		 if ((PEr.SerNr == -1)) then begin
+			 StopAlert("Record Delete");
+			 RecordDelete(PEr);
+			 TrHs=False;
+		 end;
+		end;
+	end;
+	
+	RETURN;
+END;
+	
+//----------------------------------------------------------------------------------------------------
+
+global
+function SetPrinterUPString()
+begin
+  boolean successf;
+
+	
+	prt("UPString",USetStr(31001),successf);
+	
+	RETURN;
+END;	 
+//----------------------------------------------------------------------------------------------------
+
+global
+function SetPrinterDOWNString()
+begin
+  boolean successf;
+
+	
+	prt("DOWNString",USetStr(31001),successf);
+	
+	RETURN;
+END;
+
+
+global	
+procedure PrintCashInEvent()		//Edit----------------------Dima--08.01.2015
+begin
+	record RcVc RepSpec;
+	integer wn;
+	string 40 comand;
+	longint cash;
+	Boolean res;
+ 	record SysFormatBlock SysFormatRec;
+  
+	BlockLoad(SysFormatRec);  
+	wn = curwindow;
+	deselectwindow(wn,true);
+	GetWindowRecord(wn,RepSpec);
+	cash = RepSpec.vals0*100;
+	//comand=valtostring(cash,M4Val,"",SysFormatRec.decimalPt,0);
+	prt("cashin",cash,res);
+	selectwindow(wn);  
+	closewindow(wn);
+
+return;
+end;
+
+global	
+procedure PrintCashOutEvent()		//Edit----------------------Dima--08.01.2015
+begin
+	record RcVc RepSpec;
+	integer wn;
+	string 40 comand;
+	longint cash;
+	Boolean res;
+ 	record SysFormatBlock SysFormatRec;
+  
+	BlockLoad(SysFormatRec);  
+	wn = curwindow;
+	deselectwindow(wn,true);
+	GetWindowRecord(wn,RepSpec);	
+	cash = -RepSpec.vals0*100;
+	//comand=valtostring(cash,M4Val,"",SysFormatRec.decimalPt,0);
+	prt("cashin",cash,res);
+	selectwindow(wn);  
+	closewindow(wn);	
+
+return;
+end;
+
+
+global
+function Boolean CashEventsTClassOnOpenWindow(Integer wn)	//Edit----------------------Dima--09.01.2015
+begin
+  record RcVc RepSpec;
+
+  DeselectWindow(wn,false);
+  GetWindowRecord(wn,RepSpec);
+  if (CurrentCompany==4 or CurrentCompany==14  or CurrentCompany==15  or CurrentCompany==16) then begin
+    RepSpec.vals0 = 500;//Edit***************************Sasha2,9:57 19.04.2016
+  end else begin
+    RepSpec.vals0 = 460;
+  end;
+  PutWindowRecord(wn,RepSpec);
+  CashEventsTClassOnOpenWindow = false;
+  return;
+end;

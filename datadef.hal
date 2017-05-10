@@ -11,7 +11,7 @@ SourceFile("halcust\\RActions",0);
 SourceFile("halcust\\Synchronization",0);
 SourceFile("halcust\\FPrinter",0);
 SourceFile("halcust\\LabelPrint",0);
-SourceFile("halcust\\WebShop",0);// Edit ************************** Thursday, 26 March 2015 10:36:06
+SourceFile("halcust\\WebShop",0);
 SourceFile("halcust\\SetComp",0);
 
 begin 

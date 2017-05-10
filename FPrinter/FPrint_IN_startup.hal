@@ -1,0 +1,23 @@
+event startup
+begin
+
+	SetLangMode(LangRussian,"RUS",0);
+  
+	Setting("Добавить товары в принтер",InsArtTClass,modPOS);
+	Setting("Z-Отчет",ZRepTClass,modPOS);
+	Setting("X-Отчет",XRepTClass,modPOS);
+	Setting("Отменить чек",MyCancelTClass,modPOS);
+	Setting("Отчет по товарам за день",MyBigReportTClass,modPOS);
+	Setting("Синхронизировать базовые настройки",MySyncSNTClass,modPOS);
+	Setting("Напечатать чек к инвойсу",MyPrintRepTClass,modPOS);
+	Setting("Удалить пустую сессию",MyDelSessTClass,modPOS);
+	Setting("Напечатать нулевой чек",MyNullRecieptTClass,modPOS);
+	Setting("Отчет по кассе за период",MyPeriodReportTClass,modPOS);
+	Setting("Добавить подпись чека чека",AddDownStringTClass,modPOS);
+	Setting("Время на принтере",My1NullRecieptTClass,modPOS);
+	Setting("Внесение наличных",CashEventsTClass,modPOS); //Edit***************************Dima 08.01.2015
+
+
+	
+ RETURN;
+END;  

@@ -1,0 +1,116 @@
+global updating procedure SavingCash(var record CashVc Cashr)
+begin
+
+  Cashr.SerNr = NextSerNr("CashVc",Cashr.TransDate,-1,true,"");
+  recordInsert(Cashr,true);
+  
+return;
+end;
+
+
+global function MyServLog(string log)
+begin
+
+logtext(0,log);
+
+return;
+end;
+
+
+global
+updating procedure DellSUPP()
+begin
+  boolean TrHs;
+  Record INNnum1Vc INSUPr;
+  
+  TrHs = true;
+  while (LoopMain(INSUPr,0,TrHs)) begin
+    if (TrHs) then begin
+      RecordDelete(INSUPr);
+      StepBack(INSUPr);
+    end;
+  end;
+RETURN;
+END;
+
+//----------------------------------------------------------------------------------------------------
+
+
+global
+updating procedure DellINMn()
+begin
+  boolean TrHs;
+  Record INVc INSUPr;
+  
+  TrHs = true;
+  while (LoopMain(INSUPr,0,TrHs)) begin
+    if (TrHs) then begin
+      RecordDelete(INSUPr);
+      StepBack(INSUPr);
+    end;
+  end;
+  RETURN;
+END;
+
+//----------------------------------------------------------------------------------------------------
+
+global procedure PasteSernr(string ArtCode,record SHVc SHr,record ORVc ORr,var string SerialNr)
+begin
+	record StockMovVc SMr;
+	row StockMovVc SMrw;
+	boolean testf,testf1;
+	integer cnt,cnt1,i,k,SMcnt,SHcnt;
+	record SHVc newSHr;
+	row SHVc SHrw;
+	record RLinkVc RLr;
+
+	//SHcnt = MatRowCnt(SHr);
+	SerialNr = "";
+	cnt = 1;
+	testf1 = true;
+	
+	while(ReadRecordLink(ORr,cnt,SMr,RLr)) begin
+		cnt = cnt+1;
+		if (testf1) then begin
+      SMcnt = MatRowCnt(SMr);
+      for(i=0;i<SMcnt;i=i+1)begin
+        if(testf1) then begin
+          MatRowGet(SMr,i,SMrw);
+          if(ArtCode == SMrw.ArtCode) then begin
+            
+            SHcnt = MatRowCnt(SHr);
+            testf = true;
+            for(k=0;k<SHcnt;k=k+1) begin
+              MatRowGet(SHr,k,SHrw);
+              if(SHrw.SerialNr == SMrw.SerialNr) then begin
+               testf = false;
+              end;
+            end;
+            
+            if(testf) then begin
+              cnt1 = 1;
+              while(ReadRecordLink(ORr,cnt1,newSHr,RLr)) begin
+                cnt1 = cnt1+1;
+                SHcnt = MatRowCnt(newSHr);
+                for(k=0;k<SHcnt;k=k+1) begin
+                  MatRowGet(newSHr,k,SHrw);
+                  if(SHrw.SerialNr == SMrw.SerialNr) then begin
+                   testf = false;
+                  end;
+                end;
+              end;
+            end;
+            
+            if(testf) then begin
+              SerialNr = SMrw.SerialNr;
+              //messageBox(0,SerialNr);
+              testf1 = false;
+            end;
+          end;
+        end;
+      end;
+		end;
+	end;
+//messageBox(0,SerialNr);
+return;
+end;

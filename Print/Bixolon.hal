@@ -1,0 +1,389 @@
+external procedure M4PadString(string,Integer,string,Boolean,var string);
+external procedure  FindPhonePerson(var record Phone1Vc,string);
+
+SetLangMode(LangUkrainian,"RUS",0);
+
+
+
+
+global updating procedure HandleWSReceiptPrinting(record WSVc WSr,var area aFile)		//Edit----------------------Dima  21.09.2015
+begin
+	string 10 SetLeftAlignment,SetRightAlignment,SetMiddleAlignment,SetTextSize;
+	string 10 SetBoldOn,SetBoldOff,SetUnderlineOn,SetUnderlineOff;
+	string 10 BigLetterOn,BigLetterOff,SmallLetterOn;
+	string 100 s1,s2,s3, sTot,sVAT,sPay;
+	string 200 Name,Address,Phone;
+	integer rowLength;
+	record SVOVc SVOr,SVO2r;
+	string 10 rebate;
+	record Phone1Vc Phoner;
+	val sumreb;
+	record SalesGroupVc SGr;
+	record ReceiptPrinterSBlock RPSb;
+	
+	blockload(RPSb);
+	
+	SetLeftAlignment = chr(27) & chr(97) & "0";
+	SetMiddleAlignment = chr(27) & chr(97) & "1";
+	SetRightAlignment = chr(27) & chr(97) & "2";
+	//SetTextSize = chr(29) & chr(33) & "1";
+	SetBoldOn = chr(27) & chr(69) & "1";
+	SetBoldOff = chr(27) & chr(69) & "0";
+	SetUnderlineOn = chr(27) & chr(45) & "2";
+	SetUnderlineOff = chr(27) & chr(45) & "0";
+	BigLetterOn = chr(27) & chr(33)  & chr(32);
+	SmallLetterOn = chr(27) & chr(33)  & chr(1);
+	BigLetterOff = chr(27) & chr(33) & chr(0);
+	
+	rowLength = 32;
+	
+	SVOr.SerNr = WSr.SVONr;
+	ReadFirstMain(SVOr,1,true);
+	RecordCopy(SVO2r,SVOr);// Edit ************************** Wednesday, 28 October 2015 14:30:40
+	SVOr.RegDate = currentDate;// Edit ************************** Wednesday, 28 October 2015 14:28:31
+	SVOr.OutTime = CurrentTime; //Edit***************************Sasha2,17:10 25.10.2016
+	RecordUpdate(SVO2r,SVOr,true);// Edit ************************** Wednesday, 28 October 2015 14:30:39
+	
+	if(nonblank(SVOr.Kontinfo1))then begin
+		FindPhonePerson(Phoner,SVOr.Kontinfo1);
+		rebate = Phoner.PersonalRebCode;
+	end;
+	
+	if(blank(rebate))then begin
+		if(nonblank(SVOr.Phone2))then begin
+			FindPhonePerson(Phoner,SVOr.Phone2);
+			rebate = Phoner.PersonalRebCode;
+		end;
+	end;
+	
+	if(nonblank(WSr.SalesGroup))then begin
+		SGr.SGroupCode = WSr.SalesGroup;
+		if(readfirstmain(SGr,1,true))then begin
+			Name = SGr.BixName;
+			Address = SGr.BixAddress;
+			Phone = SGr.BixPhone;
+		end else begin
+			Name = RPSb.DefName;
+			Address = RPSb.DefAddress;
+			Phone = RPSb.DefPhone;
+		end;
+	end else begin
+		Name = RPSb.DefName;
+		Address = RPSb.DefAddress;
+		Phone = RPSb.DefPhone;
+	end;
+	
+
+	SetAreaZeroSize(aFile);
+
+	
+//Header	
+	addtexttoarea(SetMiddleAlignment,aFile);
+	addtexttoarea(Name & chr(13) & chr(10),aFile);
+	addtexttoarea(SetLeftAlignment,aFile);	
+	addtexttoarea(Address & chr(13) & chr(10),aFile);
+	addtexttoarea(Phone & chr(13) & chr(10) ,aFile);
+	addtexttoarea("________________________________" & chr(13) & chr(10) ,aFile);
+	addtexttoarea(chr(13) & chr(10),aFile);	
+	
+//Body	
+	addtexttoarea("Сервісне обслуговування" & chr(13) & chr(10) ,aFile);
+	addtexttoarea(chr(13) & chr(10),aFile);
+	addtexttoarea(SetRightAlignment,aFile);
+	if(blank(rebate))then begin
+		addtexttoarea("1.0 x " & WSr.Sum4 & " = " & WSr.Sum4 & chr(13) & chr(10),aFile);
+	end else begin
+		sumreb = WSr.Sum4/(1-stringtoval(rebate,M4Val)/100);
+		//addtexttoarea("1.0 x " & sumreb & " = " & sumreb & chr(13) & chr(10),aFile);
+		addtexttoarea("Сума без знижки: " & sumreb & chr(13) & chr(10),aFile);
+		addtexttoarea("Персональна знижка: " & rebate & "%" & chr(13) & chr(10),aFile);
+		addtexttoarea("Сума зі знижкою: " & WSr.Sum4 & chr(13) & chr(10),aFile);
+	end;
+	addtexttoarea("--------------------------------" & chr(13) & chr(10) ,aFile);	
+
+	addtexttoarea(SetLeftAlignment,aFile);
+	s1 = "Разом без ПДВ";
+	s2 = "ПДВ";
+	s3 = "Разом до сплати";	
+	M4PadString(ValToString(WSr.Sum4,M4Val,"",".",0),rowLength - Len(s1)," ",true,sTot);
+	sTot = s1 & sTot;
+	M4PadString(ValToString(WSr.Sum3,M4Val,"",".",0),rowLength - Len(s2)," ",true,sVAT);
+	sVAT = s2 & sVAT;
+	M4PadString(ValToString(WSr.Sum4,M4Val,"",".",0),rowLength - Len(s3)," ",true,sPay);
+	sPay = s3 & sPay;
+	addtexttoarea(sTot & chr(13) & chr(10) ,aFile);
+	addtexttoarea(sVAT & chr(13) & chr(10) ,aFile);
+	addtexttoarea(SetBoldOn,aFile);
+	addtexttoarea(sPay & chr(13) & chr(10) ,aFile);
+	addtexttoarea(SetBoldOff,aFile);
+	addtexttoarea("________________________________" & chr(13) & chr(10) ,aFile);
+	
+//Signature	
+	addtexttoarea(chr(13) & chr(10),aFile);
+	addtexttoarea(SetLeftAlignment,aFile);
+	addtexttoarea(SmallLetterOn,aFile);	
+		
+	addtexttoarea(SetLeftAlignment,aFile);
+	addtexttoarea("Замовлення № " & WSr.SVONr & chr(13) & chr(10) ,aFile);
+	addtexttoarea("Дата " & CurrentDate & chr(13) & chr(10) ,aFile);
+	addtexttoarea("Час " & CurrentTime & chr(13) & chr(10) ,aFile);	
+	addtexttoarea(chr(13) & chr(10),aFile);
+	
+	addtexttoarea(SetMiddleAlignment,aFile);
+	addtexttoarea(BigLetterOn,aFile);
+	addtexttoarea("НЕФІСКАЛЬНИЙ ЧЕК" & chr(13) & chr(10) ,aFile);
+	addtexttoarea(BigLetterOff,aFile);			
+	addtexttoarea(chr(13) & chr(10),aFile);
+	addtexttoarea(chr(13) & chr(10),aFile);
+	addtexttoarea(chr(13) & chr(10),aFile);
+	
+
+//Cut receipt  
+  addtexttoarea(chr(29) & chr(86) & "1",aFile);
+  
+end;
+
+
+
+
+global procedure HandleIVReceiptPrinting(record IVVc IVr,var area aFile)		//Edit----------------------Dima  21.09.2015
+begin
+	string 10 SetLeftAlignment,SetRightAlignment,SetMiddleAlignment,SetTextSize;
+	string 10 SetBoldOn,SetBoldOff,SetUnderlineOn,SetUnderlineOff;
+	string 10 BigLetterOn,BigLetterOff,SmallLetterOn;
+	string 100 s1,s2,s3, sTot,sVAT,sPay;
+	integer rowLength,i,rwcnt;
+	row IVVc IVrw;
+	string 200 Name,Address,Phone;
+	record SalesGroupVc SGr;
+	record ReceiptPrinterSBlock RPSb;
+	
+	blockload(RPSb);
+	
+	SetLeftAlignment = chr(27) & chr(97) & "0";
+	SetMiddleAlignment = chr(27) & chr(97) & "1";
+	SetRightAlignment = chr(27) & chr(97) & "2";
+	//SetTextSize = chr(29) & chr(33) & "1";
+	SetBoldOn = chr(27) & chr(69) & "1";
+	SetBoldOff = chr(27) & chr(69) & "0";
+	SetUnderlineOn = chr(27) & chr(45) & "2";
+	SetUnderlineOff = chr(27) & chr(45) & "0";
+	BigLetterOn = chr(27) & chr(33)  & chr(32);
+	SmallLetterOn = chr(27) & chr(33)  & chr(1);
+	BigLetterOff = chr(27) & chr(33) & chr(0);
+	
+	rowLength = 32;
+
+	
+	if(nonblank(IVr.SalesGroup))then begin
+		SGr.SGroupCode = IVr.SalesGroup;
+		if(readfirstmain(SGr,1,true))then begin
+			Name = SGr.BixName;
+			Address = SGr.BixAddress;
+			Phone = SGr.BixPhone;
+		end else begin
+			Name = RPSb.DefName;
+			Address = RPSb.DefAddress;
+			Phone = RPSb.DefPhone;
+		end;
+	end else begin
+		Name = RPSb.DefName;
+		Address = RPSb.DefAddress;
+		Phone = RPSb.DefPhone;
+	end;
+
+	SetAreaZeroSize(aFile);
+
+	
+//Header	
+	addtexttoarea(SetMiddleAlignment,aFile);
+	addtexttoarea(Name & chr(13) & chr(10),aFile);
+	addtexttoarea(SetLeftAlignment,aFile);	
+	addtexttoarea(Address & chr(13) & chr(10),aFile);
+	addtexttoarea(Phone & chr(13) & chr(10) ,aFile);
+	addtexttoarea("________________________________" & chr(13) & chr(10) ,aFile);
+	addtexttoarea(chr(13) & chr(10),aFile);	
+	
+//Body	
+	rwcnt = MatRowCnt(IVr);
+	for(i=0;i<rwcnt;i=i+1) begin
+		MatRowGet(IVr,i,IVrw);		
+		if (IVrw.stp==kInvoiceRowTypeNormal and nonblank(IVrw.ArtCode)) then begin
+			addtexttoarea(SetLeftAlignment,aFile);
+			addtexttoarea(IVrw.Spec & chr(13) & chr(10) ,aFile);
+			addtexttoarea(IVrw.SerialNr & chr(13) & chr(10) ,aFile);
+			addtexttoarea(SetRightAlignment,aFile);
+			if (nonblank(IVrw.vRebate)) then begin
+				addtexttoarea("Знижка " & IVrw.vRebate & "%" & chr(13) & chr(10),aFile);
+			end;
+			addtexttoarea(IVrw.Quant & " x " & IVrw.Price & " = " & IVrw.Sum & chr(13) & chr(10),aFile);
+		end;
+	end;	
+	
+	addtexttoarea("--------------------------------" & chr(13) & chr(10) ,aFile);
+	addtexttoarea(SetLeftAlignment,aFile);
+	s1 = "Разом без ПДВ";
+	s2 = "ПДВ";
+	s3 = "Разом до сплати";	
+	M4PadString(ValToString(IVr.Sum4,M4Val,"",".",0),rowLength - Len(s1)," ",true,sTot);
+	sTot = s1 & sTot;
+	M4PadString(ValToString(IVr.Sum3,M4Val,"",".",0),rowLength - Len(s2)," ",true,sVAT);
+	sVAT = s2 & sVAT;
+	M4PadString(ValToString(IVr.Sum4,M4Val,"",".",0),rowLength - Len(s3)," ",true,sPay);
+	sPay = s3 & sPay;
+	addtexttoarea(sTot & chr(13) & chr(10) ,aFile);
+	addtexttoarea(sVAT & chr(13) & chr(10) ,aFile);
+	addtexttoarea(SetBoldOn,aFile);
+	addtexttoarea(sPay & chr(13) & chr(10) ,aFile);
+	addtexttoarea(SetBoldOff,aFile);
+	
+
+	
+	
+	addtexttoarea("________________________________" & chr(13) & chr(10) ,aFile);
+	
+//Signature	
+
+	addtexttoarea("Чек № " & IVr.SerNr & chr(13) & chr(10) ,aFile);
+	addtexttoarea("Дата " & CurrentDate & chr(13) & chr(10) ,aFile);
+	addtexttoarea("Час " & CurrentTime & chr(13) & chr(10) ,aFile);	
+	addtexttoarea(chr(13) & chr(10),aFile);
+	
+	addtexttoarea(SetMiddleAlignment,aFile);
+	addtexttoarea(BigLetterOn,aFile);
+	addtexttoarea("НЕФІСКАЛЬНИЙ ЧЕК" & chr(13) & chr(10) ,aFile);
+	addtexttoarea(BigLetterOff,aFile);			
+	addtexttoarea(chr(13) & chr(10),aFile);
+	addtexttoarea(chr(13) & chr(10),aFile);
+	addtexttoarea(chr(13) & chr(10),aFile);
+	
+
+//Cut receipt  
+  addtexttoarea(chr(29) & chr(86) & "1",aFile);
+  
+end;
+
+global 
+updating procedure HandleSVOReceiptPrinting(record SVOVc SVOr,var area aFile)		//Edit----------------------Dima  21.09.2015
+begin
+	string 10 SetLeftAlignment,SetRightAlignment,SetMiddleAlignment,SetTextSize;
+	string 10 SetBoldOn,SetBoldOff,SetUnderlineOn,SetUnderlineOff;
+	string 10 BigLetterOn,BigLetterOff,SmallLetterOn;
+	string 100 s1,s2,s3, sTot,sVAT,sPay;
+	string 200 Name,Address,Phone;
+	integer rowLength;
+	string 10 rebate;
+	record Phone1Vc Phoner;
+	val sumreb;
+	record SalesGroupVc SGr;
+	record ReceiptPrinterSBlock RPSb;
+	
+	blockload(RPSb);
+	
+	SetLeftAlignment = chr(27) & chr(97) & "0";
+	SetMiddleAlignment = chr(27) & chr(97) & "1";
+	SetRightAlignment = chr(27) & chr(97) & "2";
+	//SetTextSize = chr(29) & chr(33) & "1";
+	SetBoldOn = chr(27) & chr(69) & "1";
+	SetBoldOff = chr(27) & chr(69) & "0";
+	SetUnderlineOn = chr(27) & chr(45) & "2";
+	SetUnderlineOff = chr(27) & chr(45) & "0";
+	BigLetterOn = chr(27) & chr(33)  & chr(32);
+	SmallLetterOn = chr(27) & chr(33)  & chr(1);
+	BigLetterOff = chr(27) & chr(33) & chr(0);
+	
+	rowLength = 32;
+	
+	if(nonblank(SVOr.Kontinfo1))then begin
+		FindPhonePerson(Phoner,SVOr.Kontinfo1);
+		rebate = Phoner.PersonalRebCode;
+	end;
+	
+	if(blank(rebate))then begin
+		if(nonblank(SVOr.Phone2))then begin
+			FindPhonePerson(Phoner,SVOr.Phone2);
+			rebate = Phoner.PersonalRebCode;
+		end;
+	end;
+	
+	if(nonblank(SVOr.SalesGroup))then begin
+		SGr.SGroupCode = SVOr.SalesGroup;
+		if(readfirstmain(SGr,1,true))then begin
+			Name = SGr.BixName;
+			Address = SGr.BixAddress;
+			Phone = SGr.BixPhone;
+		end else begin
+			Name = RPSb.DefName;
+			Address = RPSb.DefAddress;
+			Phone = RPSb.DefPhone;
+		end;
+	end else begin
+		Name = RPSb.DefName;
+		Address = RPSb.DefAddress;
+		Phone = RPSb.DefPhone;
+	end;
+	SetAreaZeroSize(aFile);
+
+	
+//Header	
+	addtexttoarea(SetMiddleAlignment,aFile);
+	addtexttoarea(Name & chr(13) & chr(10),aFile);
+	addtexttoarea(SetLeftAlignment,aFile);	
+	addtexttoarea(Address & chr(13) & chr(10),aFile);
+	addtexttoarea(Phone & chr(13) & chr(10) ,aFile);
+	addtexttoarea("________________________________" & chr(13) & chr(10) ,aFile);
+	addtexttoarea(chr(13) & chr(10),aFile);	
+	
+//Body	
+	addtexttoarea("Сервісне обслуговування" & chr(13) & chr(10) ,aFile);
+	addtexttoarea(chr(13) & chr(10),aFile);
+	addtexttoarea(SetRightAlignment,aFile);
+	
+	
+	//addtexttoarea("1.0 x " & SVOr.WSCost & " = " & SVOr.WSCost & chr(13) & chr(10),aFile);
+	if(blank(rebate))then begin
+		addtexttoarea("1.0 x " & SVOr.WSCost & " = " & SVOr.WSCost & chr(13) & chr(10),aFile);
+	end else begin
+		sumreb = SVOr.WSCost/(1-stringtoval(rebate,M4Val)/100);
+		//addtexttoarea("1.0 x " & sumreb & " = " & sumreb & chr(13) & chr(10),aFile);
+		addtexttoarea("Сума без знижки: " & sumreb & chr(13) & chr(10),aFile);
+		addtexttoarea("Персональна знижка: " & rebate & "%" & chr(13) & chr(10),aFile);
+		addtexttoarea("Сума зі знижкою: " & SVOr.WSCost & chr(13) & chr(10),aFile);
+	end;
+	
+	addtexttoarea("--------------------------------" & chr(13) & chr(10) ,aFile);	
+
+	addtexttoarea(SetLeftAlignment,aFile);
+	s1 = "Разом без ПДВ";
+	s2 = "ПДВ";
+	s3 = "Разом до сплати";	
+	M4PadString(ValToString(SVOr.WSCost,M4Val,"",".",0),rowLength - Len(s3)," ",true,sPay);
+	sPay = s3 & sPay;
+	addtexttoarea(SetBoldOn,aFile);
+	addtexttoarea(sPay & chr(13) & chr(10) ,aFile);
+	addtexttoarea(SetBoldOff,aFile);
+	addtexttoarea("________________________________" & chr(13) & chr(10) ,aFile);
+	
+//Signature	
+	addtexttoarea(chr(13) & chr(10),aFile);
+	addtexttoarea(SetLeftAlignment,aFile);
+	addtexttoarea(SmallLetterOn,aFile);
+
+	addtexttoarea(SetLeftAlignment,aFile);
+	addtexttoarea("Замовлення № " & SVOr.SerNr & chr(13) & chr(10) ,aFile);
+	addtexttoarea("Дата " & CurrentDate & chr(13) & chr(10) ,aFile);
+	addtexttoarea("Час " & CurrentTime & chr(13) & chr(10) ,aFile);	
+	addtexttoarea(chr(13) & chr(10),aFile);
+	
+	addtexttoarea(SetMiddleAlignment,aFile);
+	addtexttoarea(BigLetterOn,aFile);
+	addtexttoarea("НЕФІСКАЛЬНИЙ ЧЕК" & chr(13) & chr(10) ,aFile);
+	addtexttoarea(BigLetterOff,aFile);			
+	addtexttoarea(chr(13) & chr(10),aFile);
+	addtexttoarea(chr(13) & chr(10),aFile);
+	addtexttoarea(chr(13) & chr(10),aFile);
+	
+//Cut receipt  
+  addtexttoarea(chr(29) & chr(86) & "1",aFile);
+  
+end;

@@ -513,6 +513,9 @@ begin
   
   RecordAddBegin(SalesGroupVc,"SalesGroupVc_Custom");
     RecordField(SGroupSeries,M4Long,0,0);// Edit ************************** Friday, 22 November 2013 13:51:41
+    RecordField(BixName,M4Str,255,0);// Edit ************************** Wednesday, 10 May 2017 15:18:07
+    RecordField(BixAddress,M4Str,255,0);// Edit ************************** Wednesday, 10 May 2017 15:18:07
+    RecordField(BixPhone,M4Str,255,0);// Edit ************************** Wednesday, 10 May 2017 15:18:07
   EndRecordAdd;
   
   RecordAddBegin(PUVc,"PUVc_Custom");
@@ -990,6 +993,13 @@ begin
 		RecordField(CompNameWin,M4Str,100,0);
 		RecordField(PrinterNameWin,M4Str,100,0);
 		RecordField(PrinterNameMac,M4Str,100,0);  
+	EndBlock;	
+	
+	
+	BlockBegin(ReceiptPrinterSBlock,-,"");		 
+		RecordField(DefName,M4Str,255,0);
+		RecordField(DefAddress,M4Str,255,0);
+		RecordField(DefPhone,M4Str,255,0);
 	EndBlock;	
 	
 	

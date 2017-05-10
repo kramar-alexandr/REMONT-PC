@@ -1,0 +1,82 @@
+external function string 255 GetTextForPrint(integer,string);
+remote function Boolean Getformcode(Integer,Integer,string,string,string,LongInt,LongInt,string,string,Integer,string,var string);
+external procedure GetUserAccessGroup(string,var string);
+
+
+SetLangMode(LangUkrainian,"RUS",0);
+
+
+window MyPrintTClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+string 255 tstr;
+integer v,i,mtrw,h,vm,heiz;
+integer mwn,wn; //Edit***************************Sasha2,12:04 20.01.2015
+record FormDefVc FDr;
+row FormDefVc FDrw;
+string 200 formcode;
+string 20 winclass,recname,printfunc,usergroup; //Edit***************************Sasha2,11:20 20.01.2015
+
+
+GetUserAccessGroup(CurrentUser,usergroup);
+
+  WindowBegin("Печать",MyPrintTClass,CGother,RcType);
+	UseView(RcVc);
+	DynamicWindow;
+	wn = curwindow;
+	mwn = MotherWindow(wn);
+	winclass = GetWindowClass(mwn);
+	if (blank(winclass)) then begin goto L99; end;
+	
+	switch (winclass) begin //Edit***************************Sasha2,11:20 20.01.2015 {
+	 case "ORDClass": 
+	       FDr.repname = "OrdForm";
+	       recname  = "ORVc";
+	       printfunc = "PrintDoOrdForm";
+	 case "StockMovDClass": 
+	       FDr.repname = "StockMovForm";
+	       recname  = "StockMovVc";
+	       printfunc = "PrintDoStockMovForm";
+	 case "SVODClass": 
+	       FDr.repname = "SVOForm";
+	       recname  = "SVOVc";			//Edit----------------------Dima  09.02.2015
+	       printfunc = "PrintDoSVOForm";
+	 case "IVDClass": 
+	       FDr.repname = "InvForm";
+	       recname  = "IVVc";
+	       printfunc = "PrintDoInvForm"; 
+	 otherwise 
+	       MessageBox(0,"Undefined window class");
+	       goto L99;
+	end; //Edit***************************Sasha2,11:20 20.01.2015 }
+	
+	if (ReadFirstMain(FDr,1,true)==false) then begin
+		MessageBox(1624, " " & USetStr(1623));
+		goto L99;
+	end;
+	mtrw = matrowcnt(FDr);
+	heiz = 80 + 20 + 18 + mtrw*18;
+	SetWRect(90,80,500,heiz);
+	v=10;
+	ButtonFrame(20,20,350,mtrw,"Формы документов");
+	h=20;v=20; 
+	for(i=0;i<mtrw;i=i+1)begin
+		matrowget(FDr,i,FDrw);
+		formcode = ""; 
+		if(Getformcode(i,FDrw.intdocnr,FDrw.FPCode,FDrw.UserGroup,FDrw.LangCode,FDrw.SerNr,-1,FDrw.PrintGroupCode,"",i+1,recname,formcode))then begin
+			if(usergroup=="ISTUD")then begin
+				if(FDrw.UserGroup=="ISTUD")then begin
+					RadioButton(h,v,FDrw.intdocnr,0,GetTextForPrint(i,recname),flags[0]); //Edit***************************Sasha2,11:21 20.01.2015
+					v=v+16;
+				end;
+			end else begin
+				RadioButton(h,v,FDrw.intdocnr,0,GetTextForPrint(i,recname),flags[0]); //Edit***************************Sasha2,11:21 20.01.2015
+				v=v+16;
+			end;
+		end;
+	end;
+	v=v+16;
+	HalPushButton(h,v,h+100,v+50,printfunc,"Печать"); //Edit***************************Sasha2,11:21 20.01.2015
+L99:;
+  EndWindow;
+end;

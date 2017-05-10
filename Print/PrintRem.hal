@@ -1,0 +1,78 @@
+external function string 255 GetTextForPrint(integer,string);
+
+global
+updating procedure AddTextToNote(var record NotepadVc Noter,string tstr)
+BEGIN
+    AddToText(tstr,Noter);
+    AddToText(Chr(13) & Chr(10),Noter);
+    
+  RETURN;
+END;
+
+updating procedure AddPrintStringToNote(record RcVc RepSpec,var record NotepadVc Noter)
+begin
+
+  
+  USetStr(8136);
+  if(RepSpec.flags[0]>0) then begin	AddTextToNote(Noter,USetStr(8136) & ": '" & GetTextForPrint(0,"ORVc") & "' " & Currentdate & " " & currenttime); end;
+  if(RepSpec.flags[1]>0) then begin	AddTextToNote(Noter,USetStr(8136) & ": '" & GetTextForPrint(1,"ORVc") & "' " & Currentdate & " " & currenttime); end;
+  if(RepSpec.flags[2]>0) then begin	AddTextToNote(Noter,USetStr(8136) & ": '" & GetTextForPrint(2,"ORVc") & "' " & Currentdate & " " & currenttime); end;
+  if(RepSpec.flags[3]>0) then begin	AddTextToNote(Noter,USetStr(8136) & ": '" & GetTextForPrint(3,"ORVc") & "' " & Currentdate & " " & currenttime); end;
+  if(RepSpec.flags[4]>0) then begin	AddTextToNote(Noter,USetStr(8136) & ": '" & GetTextForPrint(4,"ORVc") & "' " & Currentdate & " " & currenttime); end;
+  if(RepSpec.flags[5]>0) then begin	AddTextToNote(Noter,USetStr(8136) & ": '" & GetTextForPrint(5,"ORVc") & "' " & Currentdate & " " & currenttime); end;
+  if(RepSpec.flags[6]>0) then begin	AddTextToNote(Noter,USetStr(8136) & ": '" & GetTextForPrint(6,"ORVc") & "' " & Currentdate & " " & currenttime); end;
+  if(RepSpec.flags[7]>0) then begin	AddTextToNote(Noter,USetStr(8136) & ": '" & GetTextForPrint(7,"ORVc") & "' " & Currentdate & " " & currenttime); end;
+  if(RepSpec.flags[8]>0) then begin	AddTextToNote(Noter,USetStr(8136) & ": '" & GetTextForPrint(8,"ORVc") & "' " & Currentdate & " " & currenttime); end;
+  if(RepSpec.flags[9]>0) then begin	AddTextToNote(Noter,USetStr(8136) & ": '" & GetTextForPrint(9,"ORVc") & "' " & Currentdate & " " & currenttime); end;
+  if(RepSpec.flags[10]>0) then begin	AddTextToNote(Noter,USetStr(8136) & ": '" & GetTextForPrint(10,"ORVc") & "' " & Currentdate & " " & currenttime); end;  
+  if(RepSpec.flags[11]>0) then begin	AddTextToNote(Noter,USetStr(8136) & ": '" & GetTextForPrint(11,"ORVc") & "' " & Currentdate & " " & currenttime); end;
+  if(RepSpec.flags[12]>0) then begin	AddTextToNote(Noter,USetStr(8136) & ": '" & GetTextForPrint(12,"ORVc") & "' " & Currentdate & " " & currenttime); end;
+  if(RepSpec.flags[13]>0) then begin	AddTextToNote(Noter,USetStr(8136) & ": '" & GetTextForPrint(13,"ORVc") & "' " & Currentdate & " " & currenttime); end;
+  if(RepSpec.flags[14]>0) then begin	AddTextToNote(Noter,USetStr(8136) & ": '" & GetTextForPrint(14,"ORVc") & "' " & Currentdate & " " & currenttime); end;
+return;
+end;
+
+
+
+global updating procedure CreatePrintNoter(record RcVc RepSpec, record ORVc ORr)
+begin
+record NotepadVc Noter;
+record RLinkVc RLinkr;
+Integer notenr;
+boolean findf;
+string 200 tstr;
+
+    notenr = 1;
+    findf = false;
+    while (ReadRecordLink(ORr,notenr,Noter,RLinkr)) begin
+       if(RLinkr.Comment==USetStr(8136))then begin 
+         findf = true;
+         goto Lfindnoter; 
+       end;
+       notenr = notenr + 1;
+    end;
+Lfindnoter:;
+    if(findf)then begin
+      AddPrintStringToNote(RepSpec,Noter);
+      //AddTextToNote(Noter,tstr);// Edit ************************** Wednesday, 8 June 2011 11:45:42
+      if (RecordStore(Noter,true)) then begin  end;
+    end else begin
+      recordNew(Noter);
+      AddPrintStringToNote(RepSpec,Noter);
+      //AddTextToNote(Noter,tstr);// Edit ************************** Wednesday, 8 June 2011 11:45:46
+      Noter.SerNr = NextSerNr("NotepadVc",CurrentDate,-1,false,"");
+      if (RecordStore(Noter,false)) then begin
+        CreateRecordLink(ORr,CurrentCompany,Noter,CurrentCompany);  
+        notenr = 1;
+        while (ReadRecordLink(ORr,notenr,Noter,RLinkr)) begin
+          notenr = notenr + 1;
+        end;
+        if (ReadRecordLink(ORr,notenr-1,Noter,RLinkr)) then begin
+          RLinkr.Comment = USetStr(8136);//"Printed Docs";   
+          if (RecordStore(RLinkr,true)) then begin  end;
+        end;
+      end;
+    end;
+  
+return;
+end;

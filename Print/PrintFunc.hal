@@ -1,0 +1,198 @@
+remote procedure CreatePrintNoter(record RcVc, record ORVc);
+
+global function string 255 GetTextForPrint(integer i, string rec)
+begin
+record FormDefVc FDr;
+row FormDefVc FDrw;
+record DocVc Docr;
+integer wn;
+record RcVc RepSpec;
+string 255 res,comentdata;
+Boolean foundf; //Edit***************************Sasha2,11:43 20.01.2015
+record SVOPrintDataVc SVOPr;
+
+  
+  foundf = false;
+  wn = CurWindow;
+//  GetWindowRecord(wn,RepSpec);
+  res = "";
+  switch(rec) begin //Edit***************************Sasha2,12:03 20.01.2015 {
+    case "ORVc":
+                FDr.repname = "OrdForm";
+    						foundf = true;
+    case "StockMovVc":
+                FDr.repname = "StockMovForm";
+    						foundf = true;
+    case "IVVc":
+                FDr.repname = "InvForm";
+    						foundf = true;
+    case "SVOVc":
+                FDr.repname = "SVOForm";	//Edit----------------------Dima  09.02.2015
+                
+    						foundf = true;
+  end;
+  
+  comentdata = "";
+  if (foundf) then begin
+    readfirstmain(FDr,1,true);
+    MatRowGet(FDr,i,FDrw);
+    	SVOPr.Code = FDrw.EformCode;
+    	if(readfirstmain(SVOPr,1,true))then begin
+    		comentdata = SVOPr.Comment;
+    	end;
+    if(nonblank(FDrw.FPCode)) begin
+      Docr.Code = FDrw.FPCode;
+      ReadFirstMain(Docr,1,true);
+      if(blank(comentdata))then begin
+				res = FDrw.FPCode & " " & Docr.Comment;
+      end else begin
+      	res = FDrw.FPCode & " " & comentdata;
+      end;
+    end;
+  end; //Edit***************************Sasha2,12:03 20.01.2015 }
+  
+  
+  GetTextForPrint = res;
+
+return;
+end;
+
+global
+procedure PrintDoOrdFormButton()
+BEGIN
+integer wn,nwn;
+record RcVc RepSpec;
+record ORVc ORr;
+    
+		wn = CurWindow;
+		getWindowRecord(wn,ORr);
+    RepSpec.long1 = ORr.SerNr;
+    RepSpec.f1 = WindowFormName(wn);
+  	nwn = OpenWindow("MyPrintTClass",0,wn,"","",RepSpec);
+RETURN;
+END;
+
+global
+procedure PrintDoStockMovFormButton()
+BEGIN
+integer wn,nwn;
+record RcVc RepSpec;
+record StockMovVc SMr;
+    
+		wn = CurWindow;
+		getWindowRecord(wn,SMr);
+    RepSpec.long1 = SMr.SerNr;
+  	nwn = OpenWindow("MyPrintTClass",0,wn,"","",RepSpec); //Edit***************************Sasha2,12:03 20.01.2015
+RETURN;
+END;
+
+
+
+global procedure PrintDoSVOFormButton()	//Edit----------------------Dima  09.02.2015
+begin
+integer wn,nwn;
+record RcVc RepSpec; 
+record SVOVc SVOr;
+
+		wn = CurWindow;
+		getWindowRecord(wn,SVOr);
+    RepSpec.long1 = SVOr.SerNr;
+    RepSpec.f1 = WindowFormName(wn);
+  	nwn = OpenWindow("MyPrintTClass",0,wn,"","",RepSpec);
+return;
+end;
+
+global
+procedure PrintDoInvFormButton()
+BEGIN
+integer wn,nwn;
+record RcVc RepSpec;
+record IVVc IVr;
+    
+		wn = CurWindow;
+		getWindowRecord(wn,IVr);
+    RepSpec.long1 = IVr.SerNr;
+  	nwn = OpenWindow("MyPrintTClass",0,wn,"","",RepSpec);
+RETURN;
+END;
+
+
+global updating procedure PrintDoOrdForm()
+begin
+integer wn;
+record RcVc RepSpec; 
+record ORVc ORr;
+
+	wn = curwindow;
+	GetWindowRecord(wn,RepSpec);
+	CloseWindow(wn);
+	
+	RepSpec.f1 = RepSpec.long1;
+  RepSpec.Media = mtPrinter;
+  ORr.SerNr = RepSpec.f1;
+  readfirstmain(ORr,1,true);
+    
+  if (PrintDocument(RepSpec,"OrdForm1",false)) then begin  
+    CreatePrintNoter(RepSpec,ORr);
+  end;
+return;
+end;
+
+global updating procedure PrintDoStockMovForm()
+begin
+integer wn;
+record RcVc RepSpec; 
+
+	wn = curwindow;
+	GetWindowRecord(wn,RepSpec);
+	CloseWindow(wn);
+	
+	RepSpec.f1 = RepSpec.long1;
+  RepSpec.Media = mtPrinter;
+    
+  if (PrintDocument(RepSpec,"StockMovForm1",false)) then begin  
+
+  end;
+return;
+end;
+
+global updating procedure PrintDoInVForm()
+begin
+integer wn;
+record RcVc RepSpec; 
+
+	wn = curwindow;
+	GetWindowRecord(wn,RepSpec);
+	CloseWindow(wn);
+	
+	RepSpec.f1 = RepSpec.long1;
+  RepSpec.Media = mtPrinter;
+    
+  if (PrintDocument(RepSpec,"InvForm1",false)) then begin  
+
+  end;
+return;
+end;
+
+
+global updating procedure PrintDoSVOForm()	  //Edit----------------------Dima  09.02.2015
+begin
+integer wn;
+record RcVc RepSpec; 
+record SVOVc SVOr;
+
+	wn = curwindow;
+	GetWindowRecord(wn,RepSpec);
+	CloseWindow(wn);
+	
+	RepSpec.f1 = RepSpec.long1;
+  RepSpec.Media = mtPrinter;
+  SVOr.SerNr = RepSpec.f1;
+  readfirstmain(SVOr,1,true);
+    
+  if (PrintDocument(RepSpec,"SVOForm1",false)) then begin  
+    CreatePrintNoter(RepSpec,SVOr);
+  end;
+return;
+end;
+

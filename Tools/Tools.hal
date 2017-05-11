@@ -1,0 +1,935 @@
+external updating procedure AddTextToNote(var record NotepadVc,string);
+external procedure UpdateMasterWClassOnKPIs(string);// Edit ************************** Monday, 17 October 2016 19:05:28
+
+global
+updating procedure CleaningMn()
+BEGIN
+/* modIN - Склад */
+	record SHVc SHr;
+	record PUVc PUr;
+	record SDVc SDr;
+	record StockMovVc StockMovr;
+	record RetVc Retr;
+	record RetPUVc RetPUr;
+	record StockTakeVc StockTaker;
+	record SRVc SRr;
+/* modSL - Расчеты с клиентами*/
+	record IVVc IVr;
+	record IPVc IPr;
+	record CUVc CUr;
+	record INVc INr;
+	record ITVc ITr;
+	record IntIVVc IntIVr;
+/* modCL - Касса*/
+	record CLOutVc CLOutr;
+	record CLInVc CLInr;
+	record OPVc OPr;
+	record PPVc PPr;
+	record SMVc SMr;
+/* modPL - Расчеты с поставщиками*/
+	record VIVc VIr;
+	record POCOVc POCOr;
+	record VEIVVc VEIVr;
+	record BuyBackVc BuyBackr;
+/* modPO - Заказы поставщикам*/
+	record POVc POr;
+	record POQTVc POQTr;
+	record IntORVc IntORr;
+	record PIVc PIr;
+	record POCQStatVc POCQStatr;
+	record DropSHVc DropSHr;
+/* modSO - Счета клиентам*/
+	record ORVc ORr;
+	record PLVc PLr;
+	record ORCOVc ORCOr;
+/* modNL - Финансы */
+	record TRVc TRr;
+	record MainVc Mainr;
+	record ObjVc Objr;
+	record Bud1Vc Bud1r;
+	record Bud2Vc Bud2r;
+	record FBVc FBr;
+/* modDI - Ценообразование*/
+	record CPMVc CPMr;
+	record RebVc Rebr;
+	record MultiBuyRebVc MultiBuyRebr;
+	record PLDefVc PLDefr;
+	record PFormVc PFormr;
+	record StaffVc Staffr;
+/* modWHM - Управление складом*/
+	record LocationVc Locationr;
+	record LocAreaVc LocArear;
+
+	record ItemHistVc IHr;
+	record ItemStatusVc ISr;
+	Boolean TrHs;
+
+	TrHs = true;
+	while (LoopMain(CLInr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(CLInr);
+			StepBack(CLInr);
+		end;
+	end;
+	logtext(0,"record CLInVc deleted");
+
+	TrHs = true;
+	while (LoopMain(BuyBackr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(BuyBackr);
+			StepBack(BuyBackr);
+		end;
+	end;
+	logtext(0,"record BuyBackVc deleted");
+
+	TrHs = true;
+	while (LoopMain(CLOutr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(CLOutr);
+			StepBack(CLOutr);
+		end;
+	end;
+	logtext(0,"record CLOutVc deleted");
+
+	TrHs = true;
+	while (LoopMain(IPr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(IPr);
+			StepBack(IPr);
+		end;
+	end;
+	logtext(0,"record IPVc deleted");
+
+	TrHs = true;
+	while (LoopMain(IVr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(IVr);
+			StepBack(IVr);
+		end;
+	end;
+	logtext(0,"record IVVc deleted");
+
+	TrHs = true;
+	while (LoopMain(VIr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(VIr);
+			StepBack(VIr);
+		end;
+	end;
+	logtext(0,"record VIVc deleted");
+
+	TrHs = true;
+	while (LoopMain(POr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(POr);
+			StepBack(POr);
+		end;
+	end;
+	logtext(0,"record POVc deleted");
+
+	TrHs = true;
+	while (LoopMain(OPr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(OPr);
+			StepBack(OPr);
+		end;
+	end;
+	logtext(0,"record OPVc deleted");
+
+	TrHs = true;
+	while (LoopMain(SHr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(SHr);
+			StepBack(SHr);
+		end;
+	end;
+	logtext(0,"record SHVc deleted");
+
+	TrHs = true;
+	while (LoopMain(PUr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(PUr);
+			StepBack(PUr);
+		end;
+	end;
+	logtext(0,"record PUVc deleted");
+
+	TrHs = true;
+	while (LoopMain(SDr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(SDr);
+			StepBack(SDr);
+		end;
+	end;
+	logtext(0,"record SDVc deleted");
+
+	TrHs = true;
+	while (LoopMain(StockMovr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(StockMovr);
+			StepBack(StockMovr);
+		end;
+	end;
+	logtext(0,"record StockMovVc deleted");
+
+	TrHs = true;
+	while (LoopMain(Retr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(Retr);
+			StepBack(Retr);
+		end;
+	end;
+	logtext(0,"record RetVc deleted");
+
+	TrHs = true;
+	while (LoopMain(RetPUr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(RetPUr);
+			StepBack(RetPUr);
+		end;
+	end;
+	logtext(0,"record RetPUVc deleted");
+
+	TrHs = true;
+	while (LoopMain(ORr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(ORr);
+			StepBack(ORr);
+		end;
+	end;
+	logtext(0,"record ORVc deleted");
+
+	TrHs = true;
+	while (LoopMain(TRr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(TRr);
+			StepBack(TRr);
+		end;
+	end;
+	logtext(0,"record TRVc deleted");
+
+	TrHs = true;
+	while (LoopMain(FBr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(FBr);
+			StepBack(FBr);
+		end;
+	end;
+	logtext(0,"record FBVc deleted");
+
+	TrHs = true;
+	while (LoopMain(IHr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(IHr);
+			StepBack(IHr);
+		end;
+	end;
+	logtext(0,"record ItemHistVc deleted");
+
+	TrHs = true;
+	while (LoopMain(ISr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(ISr);
+			StepBack(ISr);
+		end;
+	end;
+	logtext(0,"record ItemStatusVc deleted");
+
+	TrHs = true;
+	while (LoopMain(PPr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(PPr);
+			StepBack(PPr);
+		end;
+	end;
+	logtext(0,"record PPVc deleted");
+
+	TrHs = true;
+	while (LoopMain(CUr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(CUr);
+			StepBack(CUr);
+		end;
+	end;
+	logtext(0,"record CUVc deleted");
+
+	TrHs = true;
+	while (LoopMain(INr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(INr);
+			StepBack(INr);
+		end;
+	end;
+	logtext(0,"record INVc deleted");
+
+	TrHs = true;
+	while (LoopMain(StockTaker,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(StockTaker);
+			StepBack(StockTaker);
+		end;
+	end;
+	logtext(0,"record StockTakeVc deleted");
+
+	TrHs = true;
+	while (LoopMain(SRr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(SRr);
+			StepBack(SRr);
+		end;
+	end;
+	logtext(0,"record SRVc deleted");
+
+	TrHs = true;
+	while (LoopMain(ITr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(ITr);
+			StepBack(ITr);
+		end;
+	end;
+	logtext(0,"record ITVc deleted");
+
+	TrHs = true;
+	while (LoopMain(IntIVr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(IntIVr);
+			StepBack(IntIVr);
+		end;
+	end;
+	logtext(0,"record IntIVVc deleted");
+
+	TrHs = true;
+	while (LoopMain(SMr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(SMr);
+			StepBack(SMr);
+		end;
+	end;
+	logtext(0,"record SMVc deleted");
+
+	TrHs = true;
+	while (LoopMain(POCOr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(POCOr);
+			StepBack(POCOr);
+		end;
+	end;
+	logtext(0,"record POCOVc deleted");
+
+	TrHs = true;
+	while (LoopMain(VEIVr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(VEIVr);
+			StepBack(VEIVr);
+		end;
+	end;
+	logtext(0,"record VEIVVc deleted");
+
+	TrHs = true;
+	while (LoopMain(POQTr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(POQTr);
+			StepBack(POQTr);
+		end;
+	end;
+	logtext(0,"record POQTVc deleted");
+
+	TrHs = true;
+	while (LoopMain(IntORr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(IntORr);
+			StepBack(IntORr);
+		end;
+	end;
+	logtext(0,"record IntORVc deleted");
+
+	TrHs = true;
+	while (LoopMain(PIr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(PIr);
+			StepBack(PIr);
+		end;
+	end;
+	logtext(0,"record PIVc deleted");
+
+	TrHs = true;
+	while (LoopMain(POCQStatr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(POCQStatr);
+			StepBack(POCQStatr);
+		end;
+	end;
+	logtext(0,"record POCQStatVc deleted");
+
+	TrHs = true;
+	while (LoopMain(DropSHr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(DropSHr);
+			StepBack(DropSHr);
+		end;
+	end;
+	logtext(0,"record DropSHVc deleted");
+
+	TrHs = true;
+	while (LoopMain(PLr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(PLr);
+			StepBack(PLr);
+		end;
+	end;
+	logtext(0,"record PLVc deleted");
+
+	TrHs = true;
+	while (LoopMain(ORCOr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(ORCOr);
+			StepBack(ORCOr);
+		end;
+	end;
+	logtext(0,"record ORCOVc deleted");
+
+	TrHs = true;
+	while (LoopMain(Mainr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(Mainr);
+			StepBack(Mainr);
+		end;
+	end;
+	logtext(0,"record MainVc deleted");
+
+	TrHs = true;
+	while (LoopMain(Objr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(Objr);
+			StepBack(Objr);
+		end;
+	end;
+	logtext(0,"record ObjVc deleted");
+
+	TrHs = true;
+	while (LoopMain(Bud1r,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(Bud1r);
+			StepBack(Bud1r);
+		end;
+	end;
+	logtext(0,"record Bud1Vc deleted");
+
+	TrHs = true;
+	while (LoopMain(Bud2r,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(Bud2r);
+			StepBack(Bud2r);
+		end;
+	end;
+	logtext(0,"record Bud2Vc deleted");
+
+	TrHs = true;
+	while (LoopMain(CPMr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(CPMr);
+			StepBack(CPMr);
+		end;
+	end;
+	logtext(0,"record CPMVc deleted");
+
+	TrHs = true;
+	while (LoopMain(Rebr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(Rebr);
+			StepBack(Rebr);
+		end;
+	end;
+	logtext(0,"record RebVc deleted");
+
+	TrHs = true;
+	while (LoopMain(MultiBuyRebr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(MultiBuyRebr);
+			StepBack(MultiBuyRebr);
+		end;
+	end;
+	logtext(0,"record MultiBuyRebVc deleted");
+
+	TrHs = true;
+	while (LoopMain(PLDefr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(PLDefr);
+			StepBack(PLDefr);
+		end;
+	end;
+	logtext(0,"record PLDefVc deleted");
+
+	TrHs = true;
+	while (LoopMain(PFormr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(PFormr);
+			StepBack(PFormr);
+		end;
+	end;
+	logtext(0,"record PFormVc deleted");
+
+	TrHs = true;
+	while (LoopMain(Staffr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(Staffr);
+			StepBack(Staffr);
+		end;
+	end;
+	logtext(0,"record StaffVc deleted");
+
+	TrHs = true;
+	while (LoopMain(Locationr,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(Locationr);
+			StepBack(Locationr);
+		end;
+	end;
+	logtext(0,"record LocationVc deleted");
+
+	TrHs = true;
+	while (LoopMain(LocArear,1,TrHs)) begin
+		if (TrHs) then begin
+			RecordDelete(LocArear);
+			StepBack(LocArear);
+		end;
+	end;
+	logtext(0,"record LocAreaVc deleted");
+
+	RETURN;
+END;
+
+global
+updating procedure ImportOfRegister(record RcVc RepSpec)
+BEGIN
+string 100 tag;
+		tag = ImportField;
+    RegisterImport(tag);
+  RETURN;
+END;
+
+
+
+global
+updating procedure ImportOfRegisterRewriting(record RcVc RepSpec)
+BEGIN
+string 100 tag;
+string 50 registerVc;
+	record LocClVc LocClr,oldLocClr;
+	record INVc INr;
+	record CLInVc CLInr;
+	record CLOutVc CLOutr;
+	record IPVc IPr;
+	record OPVc OPr;
+	record IVVc IVr;
+	record VIVc VIr;
+	record POVc POr;
+	record SHVc SHr;
+	record PUVc PUr;
+	record SDVc SDr;
+	record StockMovVc StockMovr;
+	record RetVc Retr;
+	record RetPUVc RetPUr;
+	record ORVc ORr;
+	record TRVc TRr;
+	record FBVc FBr;
+	record ItemHistVc IHr;
+	record ItemStatusVc ISr;
+	record AccVc Accr;
+
+	registerVc = UpperCase(RepSpec.f1);
+	tag = ImportField;
+
+	if (nonblank(registerVc))	then begin
+		while (NextImportLine(false)) begin
+			switch(registerVc) begin
+				case "LOCCLVC": 					 	
+ 			  	  ImportOneRecord(LocClr,tag);
+ 			  	  oldLocClr.Code = LocClr.Code;
+ 			  	  if (ReadFirstMain(oldLocClr,1,true)) then begin  	  
+							RecordUpdate(oldLocClr,LocClr,false);
+						end else begin
+							RecordStore(LocClr,false);
+						end;
+						
+				case "INVC": 					 	
+ 			  	  ImportOneRecord(INr,tag);
+ 			  	  RecordStore(INr,true);
+ 			  	  
+				case "CLINVC": 					 	
+ 			  	  ImportOneRecord(CLInr,tag);
+ 			  	  RecordStore(CLInr,true); 
+ 			  	  
+				case "CLOUTVC": 					 	
+ 			  	  ImportOneRecord(CLOutr,tag);
+ 			  	  RecordStore(CLOutr,true); 
+ 			  	  
+				case "IPVC": 					 	
+ 			  	  ImportOneRecord(IPr,tag);
+ 			  	  RecordStore(IPr,true); 
+ 			  	  
+				case "OPVC": 					 	
+ 			  	  ImportOneRecord(OPr,tag);
+ 			  	  RecordStore(OPr,true); 
+ 			  	  
+				case "IVVC": 					 	
+ 			  	  ImportOneRecord(IVr,tag);
+ 			  	  RecordStore(IVr,true); 
+ 			  	  
+				case "VIVC": 					 	
+ 			  	  ImportOneRecord(VIr,tag);
+ 			  	  RecordStore(VIr,true); 
+ 			  	  
+				case "POVC": 					 	
+ 			  	  ImportOneRecord(POr,tag);
+ 			  	  RecordStore(POr,true); 
+ 			  	  
+				case "PUVC": 					 	
+ 			  	  ImportOneRecord(PUr,tag);
+ 			  	  RecordStore(PUr,true); 
+ 			  	  
+				case "SDVC": 					 	
+ 			  	  ImportOneRecord(SDr,tag);
+ 			  	  RecordStore(SDr,true); 
+ 			  	  
+				case "STOCKMOVVC": 					 	
+ 			  	  ImportOneRecord(StockMovr,tag);
+ 			  	  RecordStore(StockMovr,true); 
+ 			  	  
+				case "RETVC": 					 	
+ 			  	  ImportOneRecord(Retr,tag);
+ 			  	  RecordStore(Retr,true); 
+ 			  	  
+				case "RETPUVC": 					 	
+ 			  	  ImportOneRecord(RetPUr,tag);
+ 			  	  RecordStore(RetPUr,true);
+ 			  	  
+				case "ORVC": 					 	
+ 			  	  ImportOneRecord(ORr,tag);
+ 			  	  RecordStore(ORr,true);
+ 			  	  
+				case "TRVC": 					 	
+ 			  	  ImportOneRecord(TRr,tag);
+ 			  	  RecordStore(TRr,true); 
+ 			  	  
+				case "FBVC": 					 	
+ 			  	  ImportOneRecord(FBr,tag);
+ 			  	  RecordStore(FBr,true);
+ 			  	  
+				case "ITEMHISTVC": 					 	
+ 			  	  ImportOneRecord(IHr,tag);
+ 			  	  RecordStore(IHr,true); 
+ 			  	  
+				case "ITEMSTATUSVC": 					 	
+ 			  	  ImportOneRecord(ISr,tag);
+ 			  	  RecordStore(ISr,true); 
+ 			  	   	
+ 			  case "ACCVC": 					 	
+ 			  	  ImportOneRecord(Accr,tag);
+ 			  	  RecordStore(Accr,true);  			  	   			  	   			  	  			  	   			  	   			  	   			  	   			  	   			  	   			  	   			  	   			  	   			  	   			  	   			  	   			  	  			  	  
+					
+			end;
+		end;	
+  end;  
+
+  RETURN;
+END;
+
+
+global updating
+procedure UpdateSalesGroupsInInvoicesMn()	//Edit----------------------Dima  29.07.2015
+begin
+	record IVCashVc IVCashr;
+	record LocalMachineAccBlock LAccblock;
+	row	LocalMachineAccBlock LAccrw;
+	record UserVc Userr;
+	string 20 customer;
+	vector string 30 SalesGroups;
+	integer i,rwcnt;
+	
+	BlockLoad(LAccblock);
+	rwcnt = MatRowCnt(LAccblock);
+	for(i=0;i<rwcnt;i=i+1) begin
+		MatRowGet(LAccblock,i,LAccrw);
+		Userr.Code = LAccrw.UserCode;
+		if (ReadFirstMain(Userr,1,true)) then begin
+			SalesGroups[LAccrw.CustCode] = Userr.SalesGroup;
+		end;
+	end;
+		
+	while(LoopMain(IVCashr,1,true)) begin
+		IVCashr.SalesGroup = SalesGroups[IVCashr.CustCode];
+		RecordStore(IVCashr,true);
+	end;  
+end;
+
+
+global function string 50 CurrentUserOnServer()
+begin
+	
+	CurrentUserOnServer = currentuser;
+
+return;
+end;
+
+global function string 50 TestCurrentUserOnServer()
+begin
+	record UserVc User;
+	string 20 res;
+	
+	res = "";
+	User.Code = currentuser;
+	if(readfirstmain(User,1,true))then begin
+		res = User.Location;
+	end;
+	TestCurrentUserOnServer = res;
+return;
+end;
+
+
+global
+updating procedure CreateNoterChangeInSVO(record SVOVc SVOr, string tstr, string comment)
+begin
+record NotepadVc Noter;
+record RLinkVc RLinkr;
+Integer notenr;
+boolean findf;
+
+	notenr = 1;
+    findf = false;
+    while (ReadRecordLink(SVOr,notenr,Noter,RLinkr)) begin
+	   if(RLinkr.Comment==comment)then begin
+         findf = true;
+         goto Lfindnoter; 
+       end;
+       notenr = notenr + 1;
+    end;
+Lfindnoter:;
+    if(findf)then begin
+      AddTextToNote(Noter,tstr);
+      if (RecordStore(Noter,true)) then begin  end;
+    end else begin
+      recordNew(Noter);
+      AddTextToNote(Noter,tstr);
+      Noter.SerNr = NextSerNr("NotepadVc",CurrentDate,-1,false,"");
+      if (RecordStore(Noter,false)) then begin
+        CreateRecordLink(SVOr,CurrentCompany,Noter,CurrentCompany);  
+        notenr = 1;
+        while (ReadRecordLink(SVOr,notenr,Noter,RLinkr)) begin
+          notenr = notenr + 1;
+        end;
+        if (ReadRecordLink(SVOr,notenr-1,Noter,RLinkr)) then begin
+          RLinkr.Comment = comment;
+          if (RecordStore(RLinkr,true)) then begin  end;
+        end;
+      end;
+    end;
+  
+return;
+end;
+/*
+global updating procedure FixUUIDMn()
+begin
+record AccVc Accr,tAccr;
+
+while(loopmain(Accr,1,true))begin
+	Accr.UUID = makeuuid;
+	logtext(0,Accr.UUID);
+	recordstore(Accr,true);
+end;
+
+
+return;
+end;
+procedure ReadImportTagkonto5Record(record AccVc Accr)
+begin
+  string 255 tstr;
+  row AccVc Accrw;
+  integer rwcnt;
+  
+  RecordNew(Accr);
+  ImportField; // NewAutosyncRegister
+  ImportField; // NewAutosyncRegister
+  ImportField; // NewAutosyncRegister
+  Accr.AccNumber = ImportField;
+  Accr.Comment = ImportField;
+  Accr.AccType = StringToInt(ImportField);
+  Accr.NVD = StringToInt(ImportField);
+  Accr.NVC = StringToInt(ImportField);
+  Accr.AutCode = ImportField;
+  Accr.blockedFlag = StringToInt(ImportField);
+  Accr.VATCode = ImportField;
+  Accr.ControlType = StringToInt(ImportField);
+  Accr.Curncy = ImportField;
+  Accr.ConsAccNumber = ImportField;
+  Accr.Conspr = StringToInt(ImportField);
+  Accr.Objects = ImportField;
+  Accr.SRUCode = ImportField;
+  Accr.ExclFrRep = StringToInt(ImportField);
+  Accr.PeriodCode = ImportField;
+  Accr.GroupAcc = StringToInt(ImportField);
+  Accr.TransAutCode = ImportField;
+  Accr.TaxTemplateCode = ImportField;
+  Accr.AccClass = ImportField;
+  
+  rwcnt = 0;
+  
+  while (NextImportLine(false)) begin
+    ClearRow(Accr,Accrw,1);
+    Accrw.LangCode = ImportField;
+    Accrw.Text = ImportField;
+    MatRowPut(Accr,rwcnt,Accrw);
+    rwcnt = rwcnt + 1;
+  end;
+  
+  return;
+end;
+
+global
+updating procedure ReadImportTagkonto5(string thetag)
+begin
+  record AccVc Accr;
+  
+  while (NextImportLine(false)) begin
+    ReadImportTagkonto5Record(Accr);
+    RecordImportStore(Accr,false);
+  end;
+  
+  return;
+end;*/
+/*
+global
+function string 120 ReadRecordIdStrkonto5(Integer compnr,string thetag)
+begin
+  record AccVc Accr;
+  
+  Accr.AccNumber = ImportField;
+  ReadRecordIdStrkonto5 = BuildRecordIdStr(Accr,compnr);
+  return;
+end;*/
+
+global
+function integer ExpiredMoveForServDays()//Edit-------------------Vitalii 12:21 26.08.2016
+begin
+	record UserVc User;
+	integer res;
+	
+	res = 0;
+	User.Code = currentuser;
+	if(readfirstmain(User,1,true))then begin
+		res = User.ServDays;
+	end;
+	ExpiredMoveForServDays = res;
+return;
+end;
+
+
+global updating procedure CreateActFromSVOToEnginer(record SVOVc SVOr)
+begin
+	record ActVc Actr,oldActr;
+	string 50 sernum;
+	row SVOVc SVOrw;
+	record INVc INr;
+	boolean creaetf;
+	
+	
+	
+	
+	sernum = SVOr.SerNr;
+	if(left(sernum,1)=="1" and SVOr.OrderStatus==0 and SVOr.DoneMark==0)then begin
+		Actr.SVOSerNr = SVOr.SerNr;
+		if(!readfirstkey("SVOSerNr",Actr,1,true))then begin
+			creaetf = true;
+			recordnew(Actr);
+			Actr.Comment = SVOr.SerNr & " " & SVOr.Comment1;
+			//Actr.AlarmType = kAlarmTypeMessage; //Edit-------------------Vitalii 11:31 23.12.2016
+      Actr.AlarmType = kAlarmTypeNone;
+			Actr.SVOSerNr = SVOr.SerNr;
+			Actr.TodoFlag = kTodoFlagTodo;
+			Actr.SymbNr = 3;
+			if(matrowcnt(SVOr)>0)then begin
+				matrowget(SVOr,0,SVOrw);
+				INr.Code = SVOrw.ArtCode;
+				if(readfirstmain(INr,1,true))then begin
+					Actr.Comment = INr.Code & " " & Actr.Comment;
+					Actr.Phone = SVOrw.Spec;
+					switch(INr.Group)begin
+						case"APP1":Actr.MainPersons = "BATCHENKO,MOISEEV,DIMA,KAYZER";
+											 Actr.Comment = addhours(currenttime,2) & " " & Actr.Comment;
+						case"APP2":Actr.MainPersons = "TRIKOPA,SAO,RABCHUN,KAYZER";
+											 Actr.Comment = addhours(currenttime,5) & " " & Actr.Comment;
+						case"APP3":Actr.MainPersons = "TRIKOPA,SAO,RABCHUN,KAYZER";
+											 Actr.Comment = addhours(currenttime,5) & " " & Actr.Comment;
+					end;
+					switch(INr.Code)begin
+						case "IPAD":	Actr.MainPersons = "POGEDAEV,KAYZER";
+												 Actr.Comment = addhours(currenttime,5) & " " & Actr.Comment;
+						case "IPHONE3":	Actr.MainPersons = "MOISEEV";
+												 		Actr.Comment = addhours(currenttime,5) & " " & Actr.Comment;
+					end;
+					
+				end;	
+			end;			
+		end else begin
+			Actr.Comment = SVOr.SerNr & " " & SVOr.Comment1;
+			if(matrowcnt(SVOr)>0)then begin
+				matrowget(SVOr,0,SVOrw);
+				INr.Code = SVOrw.ArtCode;
+				if(readfirstmain(INr,1,true))then begin
+					Actr.Comment = INr.Code & " " & Actr.Comment;
+					Actr.Phone = SVOrw.Spec;
+					switch(INr.Group)begin
+						case"APP1":Actr.MainPersons = "BATCHENKO,MOISEEV,DIMA,KAYZER";
+											 Actr.Comment = addhours(Actr.StartTime,2) & " " & Actr.Comment;
+						case"APP2":Actr.MainPersons = "TRIKOPA,SAO,RABCHUN,KAYZER";
+											 Actr.Comment = addhours(Actr.StartTime,5) & " " & Actr.Comment;
+						case"APP3":Actr.MainPersons = "TRIKOPA,SAO,RABCHUN,KAYZER";
+											 Actr.Comment = addhours(Actr.StartTime,5) & " " & Actr.Comment;
+					end;
+					switch(INr.Code)begin
+						case "IPAD":	Actr.MainPersons = "POGEDAEV,KAYZER";
+					 								Actr.Comment = addhours(currenttime,5) & " " & Actr.Comment;
+						case "IPHONE3":	Actr.MainPersons = "MOISEEV";
+												 		Actr.Comment = addhours(currenttime,5) & " " & Actr.Comment;
+					end;
+				end;	
+			end;
+			recordstore(Actr,true);
+		end;
+	end;
+	if(left(sernum,1)=="1" and (SVOr.OrderStatus>0 or SVOr.DoneMark>0))then begin
+		Actr.SVOSerNr = SVOr.SerNr;
+		if(readfirstkey("SVOSerNr",Actr,1,true))then begin
+			if(Actr.OKFlag==0)then begin
+				RecordCopy(oldActr,Actr);
+				Actr.OKFlag = 1;		
+				RecordUpdate(oldActr,Actr,true);
+			end;
+		end;
+	end;
+	
+	if(creaetf)then begin	
+		Actr.SerNr = NextSerNr("ActVc",Actr.TransDate,-1,false,"");
+		if(recordstore(Actr,true))then begin
+			CreateRecordLink(SVOr,CurrentCompany,Actr,CurrentCompany);  
+			CreateRecordLink(Actr,CurrentCompany,SVOr,CurrentCompany); 
+		end;
+	end;
+	
+return;
+end;
+
+
+global procedure UpdateToDoWclass()
+	begin
+    AllClientsRemoteAsync.UpdateMasterWClassOnKPIs("");
+end;
+
+
+global function Boolean HasProjects() 
+begin 
+
+HasProjects = /*HasBooleanWTag("HasProjects");*/ false;
+
+return;
+end;

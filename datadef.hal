@@ -17,7 +17,7 @@ SourceFile("halcust\\SetComp",0);
 begin 
   RecordAddBegin(CUVc,"CUVc_Custom");
     // record field "Partner" already added in 8.3
-    //RecordField(Partner,M4Mark,0,0); 
+    RecordField(IsPartner,M4Mark,0,0); 
   EndRecordAdd; 
   
   RecordAddBegin(ItemHistVc,"ItemHistVc_Custom");

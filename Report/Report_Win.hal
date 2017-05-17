@@ -1,0 +1,395 @@
+event DefineWindows
+begin
+	Real h,h1,h2,h3,h4,h5,h6,h7,hs,hm,v,v3,l,vs,vm,f,t,x,v2;
+	string 60 label;
+	//record RcVc RepSpec1;
+	SetLangMode(LangRussian,"RUS",0);
+
+  //------------------------------------------------------------------------------------------
+  WindowBegin("Отчет по стоку",MyRepSenderTClass,CGother,RcType);
+    UseView(RcVc);
+    SetWRect(90,80,270,140);
+    HalPushButton(10,15,160,130,"RunItemReport","Запустить отчет");
+  EndWindow;
+
+  WindowBegin("Отчет по стоку",MyRepSenderVClass,CGMnt,RcType);
+    UseView(RcVc);
+    SetWRect(90,80,270,140);
+   // HalPushButton(10,15,160,130,"RunItemReport","Запустить отчет");
+  EndWindow;
+
+  WindowBegin("Отчет по стоку",MyRepSender2EClass,CGEc2W,RcType);
+    UseView(RcVc);
+    SetWRect(90,80,270,140);
+   // HalPushButton(10,15,160,130,"RunItemReport","Запустить отчет");
+  EndWindow;
+
+  WindowBegin("Отчет по стоку",MyFullStockRClass,CGRcW,RcType);
+    UseView(RcVc);
+    SetWRect(90,80,470,140);
+    EditField(50,15,-50,"Склади",Normal,f1,false,LocationSClass);
+    EditField(50,35,50,"Прайс",Normal,f3,false,PLDefSClass);
+   // HalPushButton(10,15,160,130,"RunItemReport","Запустить отчет");
+  EndWindow;
+    //--------------------------------------------------UndeliveredItemsRClass----------------------------------------
+
+ WindowBegin("Undelivered Items",UndeliveredItemsRClass,CGRcW,RcType);
+    UseView(RcVc);
+    SetWRect(90,80,470,140);
+    EditField(50,15,-50,"Склады",Normal,f1,false,LocationSClass);
+   // EditField(50,35,50,"Прайс",Normal,f3,false,PLDefSClass);
+   // HalPushButton(10,15,160,130,"RunItemReport","Запустить отчет");
+  EndWindow;
+
+  WindowBegin("ManagerStocks",ManagerStocksRClass,CGRcW,RcType);
+    UseView(RcVc);
+    SetWRect(90,80,470,140);
+    EditField(50,15,-50,"Склады",Normal,f1,false,LocationSClass);
+    EditField(50,35,50,"Прайс",Normal,f3,false,PLDefSClass);
+
+   // HalPushButton(10,15,160,130,"RunItemReport","Запустить отчет");
+  EndWindow;
+
+  WindowBegin("CUAServiceStocks",CUAServiceStocksRClass,CGRcW,RcType);
+    UseView(RcVc);
+    SetWRect(90,80,470,140);
+   // HalPushButton(10,15,160,130,"RunItemReport","Запустить отчет");
+  EndWindow;
+
+  WindowBegin("CUAManagerStocks",CUAManagerStocksRClass,CGRcW,RcType);
+    UseView(RcVc);
+    SetWRect(90,80,470,140);
+   // HalPushButton(10,15,160,130,"RunItemReport","Запустить отчет");
+  EndWindow;
+
+   WindowBegin("PHTManagerStocksGroup",PHTManagerStocksGroupRClass,CGRcW,RcType);
+    UseView(RcVc);
+    SetWRect(90,80,470,140);
+   // HalPushButton(10,15,160,130,"RunItemReport","Запустить отчет");
+  EndWindow;
+
+  //------------------------------------------------------------------------------------------
+  WindowBegin("Отчет по стоку без коста",MyRepSenderStockNoCostTClass,CGother,RcType);
+    UseView(RcVc);
+    SetWRect(90,80,270,140);
+    HalPushButton(10,15,160,130,"RunItemReportNoCost","Запустить отчет");
+  EndWindow;
+
+  WindowBegin("Отчет по стоку без коста",MyRepSenderStockNoCostVClass,CGMnt,RcType);
+    UseView(RcVc);
+    SetWRect(90,80,270,140);
+    //HalPushButton(10,15,160,130,"RunItemReportNoCost","Запустить отчет");
+  EndWindow;
+  //------------------------------------------------------------------------------------------
+  WindowBegin("Отчет по транзитному стоку",MyRepTransStockTClass,CGother,RcType);
+    SetWRect(90,80,270,140);
+    HalPushButton(10,15,160,130,"RunTransReport","Запустить отчет");
+  EndWindow;
+
+  WindowBegin("Отчет по транзитному стоку",MyRepTransStockVClass,CGMnt,RcType);
+    SetWRect(90,80,270,140);
+    //HalPushButton(10,15,160,130,"RunTransReport","Запустить отчет");
+  EndWindow;
+  //------------------------------------------------------------------------------------------
+  WindowBegin("Отчет по складам отдельно",MyRepSenderStockTClass,CGother,RcType);
+    UseView(RcVc);
+    SetWRect(90,80,270,140);
+    HalPushButton(10,15,160,130,"MyItemReportForEachStock","Запустить отчет");
+  EndWindow;
+
+   WindowBegin("Отчет по складам отдельно",MyRepSenderStockVClass,CGMnt,RcType);
+    UseView(RcVc);
+    SetWRect(90,80,270,140);
+    //HalPushButton(10,15,160,130,"MyItemReportForEachStock","Запустить отчет");
+  EndWindow;
+  //------------------------------------------------------------------------------------------
+  WindowBegin("Отчет по складам без коста COMPUTEK",MyRepSenderManyStockTClass,CGother,RcType);
+    UseView(RcVc);
+    SetWRect(90,80,550,220);
+    EditField(50,15,400,"Склады",Normal,f1,false,LocationSClass);
+    ButtonFrame(50,55,140,2,"Кому");
+    RadioButton(50,71,0,0,"Менеджерам",Media);
+    RadioButton(50,87,1,0,"Сервис",Media);
+    HalPushButton(200,95,300,130,"RunItemReportNoCostForStoks","Запустить отчет");
+  EndWindow;
+
+  WindowBegin("Отчет по складам без коста COMPUTEK",MyRepSenderManyStockVClass,CGMnt,RcType);
+    UseView(RcVc);
+    SetWRect(90,80,550,220);
+    EditField(50,15,400,"Склады",Normal,f1,false,LocationSClass);
+    ButtonFrame(50,55,140,2,"Кому");
+    RadioButton(50,71,0,0,"Менеджерам",Media);
+    RadioButton(50,87,1,0,"Сервис",Media);
+    RadioButton(50,100,2,0,"Фототек",Media);
+
+    //HalPushButton(200,95,300,130,"RunItemReportNoCostForStoks","Запустить отчет");
+  EndWindow;
+  //------------------------------------------------------------------------------------------
+  WindowBegin("Statement Of Cash Flow",MyCashFlowEClass,CGEcW,RcType);
+    SetWRect(20,120,360,220);
+    StaticText(140,10,"For Month",true);
+    EditFieldTL(h+50,v=16,80,"З дати",M4Date,Normal,0,d1,false,PasteCurDate);
+    EditFieldTL(h+200,v=16,80,"До дати",M4Date,Normal,0,d2,false,PasteCurDate);
+    StaticText(140,55,"For Year",true);
+    EditFieldTL(h+50,v=66,80,"З дати",M4Date,Normal,0,sStartDate,false,PasteCurDate);
+    EditFieldTL(h+200,v=66,80,"До дати",M4Date,Normal,0,sEndDate,false,PasteCurDate);
+  EndWindow;
+
+  WindowBegin("Отчет резерва по клиентам",MyCustReservRClass,CGRcW,RcType);
+    SetWRect(20,120,360,220);
+    EditFieldTL(120,25,100,"Клиент",M4Code,Normal,50,f1,false,CUSClass);
+    EditFieldTL(120,50,100,"Склад",M4Code,Normal,50,f2,false,LocationSClass);
+    EditFieldTL(120,75,100,"Товар",M4Code,Normal,50,f3,false,INSClass);
+    PeriodField(120,100,"Дата");
+  EndWindow;
+
+  WindowBegin("Отчет остатков по поставщику",MyStockCustRClass,CGRcW,RcType);
+    SetWRect(20,120,360,280);
+    EditFieldTL(120,25,100,"Поставщик",M4Code,Normal,50,f1,false,VESClass);
+    EditFieldTL(120,50,100,"Склад",M4Code,Normal,50,f2,false,LocationSClass);
+    EditFieldTL(120,75,100,"Товар",M4Code,Normal,50,f3,false,INSClass);
+    EditFieldTL(120,100,100,"Група",M4Code,Normal,50,f4,false,ITSClass);
+    PeriodField(120,125,"Дата");
+    EditFieldTL(120,150,100,"Прайс",M4Code,Normal,50,f5,false,PLDefSClass);
+  EndWindow;
+
+   WindowBegin("Отчет по продажам",MySaleRepRClass,CGRcW,RcType);
+    SetWRect(20,120,360,280);
+    EditFieldTL(120,25,100,"Клиент",M4Code,Normal,50,f1,false,CUSClass);
+    //EditFieldTL(120,50,100,"Постачальник",M4Code,Normal,50,f2,false,VESClass);
+    //EditFieldTL(120,75,100,"Товар",M4Code,Normal,50,f3,false,INSClass);
+    //EditFieldTL(120,100,100,"Група",M4Code,Normal,50,f4,false,ITSClass);
+    PeriodField(120,125,"Дата");
+  EndWindow;
+
+     WindowBegin("Інвентаризація",InventMyRClass,CGRcW,RcType);
+    SetWRect(20,120,360,280);
+    EditFieldTL(150,25,100,"Склад",M4Code,Normal,50,f1,false,LocationSClass);
+    PeriodField(150,45,"Період інвентаризації");
+  EndWindow;
+
+   WindowBegin("Bonus",MyBonusRClass,CGRcW,RcType);
+    SetWRect(20,120,360,280);
+    PeriodField(150,45,"Період");
+  EndWindow;
+
+   WindowBegin("Bonus",MyBonusCurUserRClass,CGRcW,RcType);
+    SetWRect(20,120,360,280);
+    ButtonFrame(50,55,140,2,"Отчет за месяц");
+    RadioButton(50,55,0,0,"Текущий",flags[1]);
+    RadioButton(50,71,1,0,"Предыдущий",flags[1]);
+  EndWindow;
+
+
+    WindowBegin("Звіт терміну гарантії",MyGarRClass,CGRcW,RcType);
+  SetWRect(20,120,360,220);
+  EditField(h+=100,v=20,80,"Товар",Normal,f1,false,INSClass);
+  EditField(h,v+=25,80,"Серійний номер",Normal,f2,false,0);
+  EditField(h,v+=25,80,"Склад",Normal,f3,false,LocationSClass);
+  EditField(h,v+=25,80,"Постачальник",Normal,f4,false,VESClass);
+  EndWindow;
+
+  WindowBegin("Отчет по серийным номерам 2",MySerHistRClass,CGRcW,RcType);
+  SetWRect(20,120,300,220);
+  EditField(h,v=50,-20,"Товар",Normal,f2,false,INSClass);
+  EditField(h,v=70,-20,"Серийный номер",Normal,f1,false,0);
+
+  EndWindow;
+
+  WindowBegin("Процеси по замовленням",MyPOQCRClass,CGRcW,RcType);
+  SetWRect(20,120,350,220);
+  v=20;
+  PeriodField(h,v,"Дата");
+  EditField(h,v+=25,150,"Постачальник",Normal,f1,false,VESClass);
+  EditField(h,v+=25,150,"Вид",Normal,f2,false,POrderClassSClass);
+  EditField(h,v+=25,150,"Об'єкт",Normal,f3,false,ObjSClass);
+
+  EndWindow;
+
+  WindowBegin("Розсилка процесів",MyPOQC2RClass,CGRcW,RcType);
+  SetWRect(20,120,350,220);
+  v=20;
+  /*PeriodField(h,v,"Дата");
+  EditField(h,v+=25,150,"Постачальник",Normal,f1,false,VESClass);
+  EditField(h,v+=25,150,"Вид",Normal,f2,false,POrderClassSClass);
+  EditField(h,v+=25,150,"Об'єкт",Normal,f3,false,ObjSClass);
+ */
+  EndWindow;
+
+  WindowBegin("Пошук замовлень на обслуговування",MySearchSVORClass,CGRcW,RcType);
+  SetWRect(20,120,400,220);
+  PeriodField(h+=40,v=40,"Період");
+  EditField(h,v+=20,80,"Серійний номер",Normal,f1,false,0);
+  EditField(h,v+=20,-20,"Власник",Normal,f2,false,0);
+  EditField(h,v+=20,-20,"Телефон",Normal,f3,false,0);
+  EditField(h,v+=20,-20,"№ зам. у постачальника",Normal,f4,false,0);
+
+  EndWindow;
+
+    WindowBegin("Retail Sales",MyRetailSalesRClass,CGRcW,RcType);
+  SetWRect(20,120,400,220);
+  EditFieldTL(h-50,v=50,80,"Date",M4Date,Normal,0,d2,false,PasteCurDate);
+
+  EndWindow;
+
+  WindowBegin("Stock/Cash",MyStockCashRClass,CGRcW,RcType);
+    SetWRect(20,120,400,220);
+    EditFieldTL(h-50,v=50,80,"Date",M4Date,Normal,0,d2,false,PasteCurDate);
+  EndWindow;
+
+  WindowBegin("Vendor/Stock",MyVendorStockRClass,CGRcW,RcType);
+    SetWRect(20,120,400,220);
+    EditField(h-50,v=50,80,"Group",Normal,f1,false,ITSClass);
+  EndWindow;
+
+  WindowBegin("Отчет по продажам",MySalesReportRClass,CGRcW,RcType);
+    SetWRect(20,120,350,300);
+    h=100; v=10;
+    PeriodField(h,v,"Дата");
+    EditField(h,v+=20,150,"Клієнт",Normal,f1,false,CUSClass);
+    EditField(h,v+=20,150,"Група",Normal,f2,false,ITSClass);
+    EditField(h,v+=20,150,"Товар",Normal,f3,false,INSClass);
+    EditField(h,v+=20,150,"Постачальник",Normal,f4,false,VESClass);
+    EditField(h,v+=20,150,"Класифікація",Normal,f5,false,DISClass);
+
+
+  EndWindow;
+
+    WindowBegin("Bonus",MyBonusRClass,CGRcW,RcType);
+      SetWRect(20,120,360,280);
+      PeriodField(150,45,"Період");
+    EndWindow;
+
+    WindowBegin("Отчет по Shops",MyShopsRecordRClass,CGRcW,RcType);
+    SetWRect(20,120,350,300);
+    h=100; v=10;
+    PeriodField(h,v,"Дата");
+    EditField(h,v+=20,150,"Клієнт",Normal,f1,false,CUSClass);
+    ButtonFrame(h,v+=40,100,4,"Звіт по:");
+    RadioButton(h,v,1,0,"SHOPS",flags[1]);
+    RadioButton(h,v+=20,2,0,"EXHIBITION",flags[1]);
+    RadioButton(h,v+=20,3,0,"Обидва",flags[1]);
+    //EditField(h,v+=20,150,"Група",Normal,f2,false,ITSClass);
+    //EditField(h,v+=20,150,"Товар",Normal,f3,false,INSClass);
+    //EditField(h,v+=20,150,"Постачальник",Normal,f4,false,VESClass);
+    //EditField(h,v+=20,150,"Класифікація",Normal,f5,false,DISClass);
+  EndWindow;
+
+  WindowBegin("Рух готівки",MyCashFlowRClass,CGRcW,RcType);
+    UseView(RcVc);
+    SetWRect(90,80,450,140);
+    PeriodField(50,20,"Period");
+  EndWindow;
+
+  WindowBegin("Отчет",MyBlankRClass,CGRcW,RcType);
+    SetWRect(20,120,350,300);
+    EndWindow;
+
+  WindowBegin("Поиск по нотаткам",MyNotSearchSVORClass,CGRcW,RcType);
+    SetWRect(20,120,350,300);
+    EditField(h,v+=20,150,"Текст",Normal,f1,false,0);
+  EndWindow;
+
+  WindowBegin("Резер по рахункам",MyReservStatRClass,CGRcW,RcType);
+    SetWRect(20,120,350,300);
+    EditField(h,20,150,"Клиент",Normal,f1,false,CUSClass);
+  EndWindow;
+
+  WindowBegin("Остатки с ценой",OstatkiSPraysomRClass,CGRcW,RcType);
+    SetWRect(20,120,350,300);
+    EditField(h,20,150,"Склад",Normal,f1,false,LocationSClass);
+    EditField(h,40,150,"Прейскурант",Normal,f2,false,PLDefSClass);
+  EndWindow;
+
+  WindowBegin("Отчет",ExportCashInvoicesEClass,CGEcW,RcType);
+    SetWRect(20,120,350,300);
+    v=20;
+    EditField(h,v+=20,150,"Клієнт",Normal,f1,false,CUSClass);
+    EditFieldTL(h,v+=20,80,"З дати",M4Date,Normal,0,d1,false,PasteCurDate);
+    EditFieldTL(h,v+=20,80,"Filename",M4Str,Normal,0,f2,false,0);
+  EndWindow;
+
+  WindowBegin("Проведенные таблицы работ",WSVcOKReportRClass,CGRcW,RcType);
+    SetWRect(20,120,350,300);
+    EditField(h,v+=20,150,"Дата",Normal,d1,false,PasteCurDate);
+  EndWindow;
+
+  WindowBegin("Клиенты с карточками",POSClientRClass,CGRcW,RcType);
+    SetWRect(20,120,350,300);
+    //EditField(h,20,150,"№ карточки",Normal,f1,false,POSClientRClass);
+  EndWindow;
+
+  WindowBegin("История продажу по клиэнтам",CUSalesRepRClass,CGRcW,RcType);
+    SetWRect(20,120,350,300);
+    PeriodField(h,20,"Період");
+    EditField(h,40,150,"Клієнт",Normal,f1,false,CUSClass);
+    EditField(h,60,150,"Товар",Normal,f2,false,INSClass);
+  EndWindow;
+  
+  WindowBegin("Отчет по телефонам клиентов",CUSalesRepRClass,CGRcW,RcType);
+    SetWRect(20,120,350,300);
+    EditField(h,40,150,"Телефон",Normal,f1,false,0);
+  EndWindow;
+
+  WindowBegin("Заплановані передплати по замовленням",PUOrdersToPrepayRClass,CGRcW,RcType);
+    SetWRect(20,120,350,300);
+    PeriodField(h,20,"Період");
+    EditField(h,40,150,"Вид замовлення",Normal,ObjType,false,POrderClassSClass);
+    EditField(h,60,150,"Об'єкт",Normal,ObjStr,false,ObjSClass);
+  EndWindow;
+
+
+  WindowBegin("Звіт по віртуальним товарам на веб-магазині",WebSyncRegRClass,CGRcW,RcType);
+    SetWRect(20,120,400,220);
+
+
+  EndWindow;
+
+  WindowBegin("Create WebSynReg",DellZerroWebSyncRegVClass,CGMnt,-);
+  SetWRect(20,80,400,300);
+
+  EndWindow;
+
+  WindowBegin("Середній чек по магазинам",MidSaleCheckRClass,CGRcW,RcType);
+    SetWRect(20,120,350,300);
+    PeriodField(h,20,"Період");
+    EditField(h,40,150,"Магазин",Normal,f1,false,LocalMachineSClass);
+    CheckBox(h,v+=16,0,"Не враховувати готівкові чеки",flags[1]);
+		CheckBox(h,v+=32,0,"Не враховувати безготівкові чеки",flags[2]);
+  EndWindow;
+
+  WindowBegin("Відомість (опис) товарних залишків по магазину",StoresStockRClass,CGRcW,RcType);
+	SetWRect(20,120,350,300);
+	EditField(h,40,150,"Магазин",Normal,f1,false,LocationSClass);
+	EndWindow;
+
+	WindowBegin("Аналiз оборотностi товарiв",ItemTurnoverRClass,CGRcW,RcType);
+    SetWRect(20,120,350,300);
+    PeriodField(h,20,"Період");
+    EditField(h,40,150,"Товар",Normal,f1,false,INSClass);
+    EditField(h,60,150,"Група",Normal,f2,false,ITSClass);
+    EditField(h,80,150,"Склад",Normal,f3,false,LocationSClass);
+  EndWindow;
+  
+  WindowBegin("Розбіжність складу з балансом",StockBalDiffRClass,CGRcW,RcType);
+    SetWRect(20,120,350,300);
+    EditFieldTL(h,v+=20,80,"На дату",M4Date,Normal,0,d1,false,PasteCurDate);
+  EndWindow;
+
+  WindowBegin("Перемещения пользователя",CurUserStockMovsRClass,CGRcW,RcType);
+    SetWRect(20,120,350,300);
+    CheckBox(80,20,0,"Виводити затверджені документи",flags[1]);
+  EndWindow;
+  
+  WindowBegin("Прострочені переміщення для сервісу",ExpiredMoveForServRClass,CGRcW,RcType);
+    SetWRect(20,120,350,300);
+    EditField(h,20,150,"Кількість днів",Normal,flags[1],false,0);
+  EndWindow;
+  
+  WindowBegin("Розбіжність складу з балансом",StockBalDiffRClass,CGRcW,RcType);
+    SetWRect(20,120,350,300);
+    EditFieldTL(h,v+=20,80,"На дату",M4Date,Normal,0,d1,false,PasteCurDate);
+  EndWindow;
+  
+  return;
+  end;

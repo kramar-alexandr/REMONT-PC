@@ -1,0 +1,275 @@
+Global updating procedure ImportPLIn()
+begin
+	record PLVc PLr,PL2r;
+	Integer i;
+	array string 255 sfield;
+	record INVc INr;
+	record PLDefVc PLDr;
+	val price;		
+		
+	while (TestEOF()==false) begin
+	  for (i=0;i<3;i=i+1) begin
+      	sfield[i]=ImportField;
+      end;
+      INr.Code = sfield[1];
+      if(readfirstmain(INr,1,true))then begin
+        PLDr.Code = sfield[0];
+        if(readfirstmain(PLDr,1,true))then begin
+          if(nonblank(sfield[2]))then begin
+          	PLr.ArtCode = INr.Code;
+          	PLr.PLCode = PLDr.Code;
+          	if(readfirstmain(PLr,2,true))then begin
+							price = evaltoval(sfield[2]);
+							if(price>0)then begin
+								RecordCopy(PL2r,PLr);
+								PLr.ExVatPrice = price;
+								RecordUpdate(PL2r,PLr,true);
+							end;       
+            end else begin
+            	price = evaltoval(sfield[2]);
+							if(price>0)then begin
+								recordnew(PLr);
+								PLr.PLCode = PLDr.Code;
+								PLr.ArtCode = INr.Code;
+								PLr.Comment = INr.Name;
+								PLr.ExVatPrice = price;
+								RecordInsert(PLr,true);
+							end;
+            end;     
+          end;
+        end;
+      end;
+      NextImportLine(true);
+	end;
+
+ return;
+end;
+	 
+
+	 
+	
+	 
+Global updating procedure ImportPLInUUID()
+begin
+	record PLVc PLr,PL2r;
+	Integer i;
+	array string 255 sfield;
+	record INVc INr;
+	record PLDefVc PLDr;
+	val price;
+	string 20 artcode,uid,plcode;
+	uuid id;		
+		
+	while (TestEOF()==false) begin
+	  plcode = importfield;
+	  artcode = importfield;
+	  uid = importfield;
+	  
+	  PLr.PLCode = plcode;
+	  PLr.ArtCode = artcode;
+	  if(readfirstmain(PLr,2,true))then begin
+	  	PLr.UUID = StringToUUID(uid);
+	  	recordstore(PLr,true);
+	  end;
+	  
+    NextImportLine(true);
+	end;
+
+ return;
+end;
+	 
+	 
+global
+updating procedure ImpDocVc()
+BEGIN
+
+    RegisterImport("doc3");
+
+  RETURN;
+END;
+
+global
+updating procedure ImpStylesVc()
+BEGIN
+
+    RegisterImport("styles2");
+
+  RETURN;
+END;
+
+global //Edit***************************Sasha2,15:53 21.01.2016 {
+updating procedure ImportNewItemsWithGroupIn()
+begin
+string 100 artcode,group;
+record INVc INr;
+boolean testf;
+
+	while (TestEOF()==false) begin
+		artcode = ImportField;
+		group = ImportField; 
+		
+		if(nonblank(artcode))then begin
+			INr.Code = artcode;
+			if(readfirstmain(INr,1,true))then begin
+			  testf = true;
+			  if (INr.Group==group) then begin testf = false; end;
+			  if (testf) then begin
+			    INr.Group = group;
+			    recordStore(INr,true);
+			  end;
+			end;
+		end;
+		
+	NextImportLine(true); 
+    
+  end; 
+
+LImportNewItemsWithGroupIn:;
+	
+return;
+end; //Edit***************************Sasha2,15:53 21.01.2016 }
+
+/*global
+updating procedure ReadImportTagSVOVcRecord(record SVOVc SVOr)
+begin
+  string 255 tstr;
+  row SVOVc SVOrw;
+  integer rwcnt;
+ 
+		RecordNew(SVOr);
+		SVOr.SerNr = StringToLongint(ImportField);
+		SVOr.TransDate = StringToDate(ImportField);
+		SVOr.PlanShip = ImportField;
+		SVOr.CustCode = ImportField;
+		SVOr.Addr0 = ImportField;
+		SVOr.Addr1 = ImportField;
+		SVOr.Addr2 = ImportField;
+		SVOr.Addr3 = ImportField;
+		SVOr.OurContact = ImportField;
+		SVOr.CustContact = ImportField;
+		SVOr.ExportFlag = StringToInt(ImportField);
+		SVOr.PayDeal = ImportField;
+		SVOr.Objects = ImportField;
+		SVOr.ShipMode = ImportField;
+		SVOr.Sign = ImportField;
+		SVOr.ShipDeal = ImportField;
+		SVOr.ShipAddr0 = ImportField;
+		SVOr.ShipAddr1 = ImportField;
+		SVOr.ShipAddr2 = ImportField;
+		SVOr.ShipAddr3 = ImportField;
+		SVOr.LangCode = ImportField;
+		SVOr.InvoiceToCode = ImportField;
+		SVOr.Comment1 = ImportField;
+		SVOr.Comment2 = ImportField;
+		SVOr.Comment3 = ImportField;
+		SVOr.Comment4 = ImportField;
+		SVOr.OrderClass = ImportField;
+		SVOr.CustOrdNr = ImportField;
+		SVOr.InclVAT = StringToInt(ImportField);
+		SVOr.TotCost = StringToVal(ImportField,M4Val);
+		SVOr.TotPrice = StringToVal(ImportField,M4Val);
+		SVOr.CustVATCode = ImportField;
+		SVOr.VATNr = ImportField;
+		SVOr.Phone = ImportField;
+		SVOr.Fax = ImportField;
+		SVOr.DoneMark = StringToInt(ImportField);
+		SVOr.InvFlag = StringToInt(ImportField);
+		SVOr.InvMark = StringToInt(ImportField);
+		SVOr.SalesMan = ImportField;
+		SVOr.CustCat = ImportField;
+		SVOr.PriceList = ImportField;
+		SVOr.RebCode = ImportField;
+		SVOr.WOMark = StringToInt(ImportField);
+		SVOr.WSMark = StringToInt(ImportField);
+		SVOr.InvAddr3 = ImportField;
+		SVOr.InvAddr4 = ImportField;
+		SVOr.DelAddr3 = ImportField;
+		SVOr.DelAddr4 = ImportField;
+		SVOr.SalesGroup = ImportField;
+		SVOr.CurncyCode = ImportField;
+		SVOr.FrRate = StringToVal(ImportField,M4Rate);
+		SVOr.ToRateB1 = StringToVal(ImportField,M4Rate);
+		SVOr.ToRateB2 = StringToVal(ImportField,M4Rate);
+		SVOr.BaseRate1 = StringToVal(ImportField,M4Rate);
+		SVOr.BaseRate2 = StringToVal(ImportField,M4Rate);
+		SVOr.QualConSerNr = StringToLongint(ImportField);
+		SVOr.PlanShipDate = StringToDate(ImportField);
+		SVOr.DelAddrCode = ImportField;
+		SVOr.Region = ImportField;
+		SVOr.BranchID = ImportField;
+		SVOr.ServLocation = ImportField;
+		SVOr.RegDate = StringToDate(ImportField);
+		SVOr.RegTime = StringToTime(ImportField);
+		SVOr.Vlastnik = ImportField;
+		//logtext(0,"SVOr.Vlastnik" & SVOr.Vlastnik);
+		SVOr.Priynato = ImportField;
+		SVOr.Kontinfo1 = ImportField;
+		SVOr.Kontinfo2 = ImportField;
+		SVOr.Kontinfo3 = ImportField;
+		SVOr.Batary = ImportField;
+		SVOr.Zaryadka = ImportField;
+		SVOr.Scarga = ImportField;
+		SVOr.Inshe = ImportField;
+		SVOr.Defects = ImportField;
+		SVOr.Garanty = ImportField;
+		SVOr.GarNo = ImportField;
+		SVOr.GarDate = ImportField;
+		SVOr.CustomField1 = ImportField;
+		SVOr.CustomField2 = ImportField;
+		SVOr.CustomField3 = ImportField;
+		SVOr.CustomField4 = ImportField;
+		SVOr.CustomField5 = ImportField;
+		SVOr.CustomField6 = ImportField;
+		SVOr.CustomField7 = ImportField;
+		SVOr.CustomField8 = ImportField;
+		SVOr.CustomField9 = ImportField;
+		SVOr.CustomField10 = ImportField;
+		SVOr.CustomField11 = ImportField;
+		SVOr.CustomField12 = ImportField;
+		SVOr.CustomField13 = ImportField;
+		SVOr.CustomField14 = ImportField;
+	
+		rwcnt = 0;
+	
+		while (NextImportLine(false)) begin
+			ClearRow(SVOr,SVOrw,1);
+			SVOrw.stp = StringToInt(ImportField);
+			SVOrw.ArtCode = ImportField;
+			SVOrw.Quant = StringToVal(ImportField,M4UVal);
+			SVOrw.Cost = StringToVal(ImportField,M423Val);
+			SVOrw.Price = StringToVal(ImportField,M4Val);
+			SVOrw.SalesAcc = ImportField;
+			SVOrw.WOSerNr = StringToLongint(ImportField);
+			SVOrw.WOEnum = StringToLongint(ImportField);
+			SVOrw.Objects = ImportField;
+			SVOrw.Spec = ImportField;
+			SVOrw.VATCode = ImportField;
+			SVOrw.SerialNr = ImportField;
+			SVOrw.WOMade = StringToVal(ImportField,M4UVal);
+			SVOrw.Invd = StringToVal(ImportField,M4UVal);
+			SVOrw.MaxCost = StringToVal(ImportField,M423Val);
+			SVOrw.ItemType = StringToInt(ImportField);
+			SVOrw.PlanShiprw = ImportField;
+			SVOrw.StandProblem = ImportField;
+			SVOrw.MotherNr = ImportField;
+			SVOrw.ContractNr = StringToLongint(ImportField);
+			MatRowPut(SVOr,rwcnt,SVOrw);
+			rwcnt = rwcnt + 1;
+		end;
+return;
+end;
+
+
+global
+updating procedure ReadImportTagSVOVc(string thetag)
+begin
+  record SVOVc SVOr;
+  
+  logtext(0,"ReadImportTagSVOVc");
+  while (NextImportLine(false)) begin
+    ReadImportTagSVOVcRecord(SVOr);
+    RecordImportStore(SVOr,false);
+  end;
+  
+  return;
+end;*/

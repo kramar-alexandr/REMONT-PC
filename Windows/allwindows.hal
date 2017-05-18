@@ -7470,6 +7470,47 @@ begin
   EndWindow;
 end;
 
+window InternMovDClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,h2,v;
+  WindowBegin("Внутреннее перемещение",InternMovDClass,CGview,InternMovView);
+  SetWRect(20,80,620,400);
+  Sizeable(-1,-1,0,0);
+  UseView(InternMovVc);
+  FormName(InternMovForm);
+  Tile(0,70,false,"",TransDate);
+  v = 6; h=110;
+  EditField(h,v,55, "Номер",St_i,SerNr,false,TSerSClass);
+  EditField(h2=300,v,80,"Дата опер.",Normal,TransDate,false,PasteCurDate);
+  EditField(h,v+=20,82, "Со склада",Normal,FrLocation,false,LocationSClass);
+  EditField(h2,v,82,"На склад",Normal,ToLocation,false,LocationSClass);
+  TileButton(1,"Текст");
+  TileButton(2,"Товары");
+  Tile(1,30,false,"1",Comment);
+  EditField(h,v=6,-20,"Комментарий",Normal,Comment,false,0);
+  EnterSkip(Math);
+  Tile(2,79,true,"2",Math);
+  CheckBox(20,-20,0,"OK",OKFlag);
+  EditField(150,-21,70,"Итого кол.",ViewOnly,SumQuant,true,0);
+  if(usercanaction("ViewCostPrice",false))then begin// Edit ************************** Tuesday, 10 February 
+    EditField(-120,-21,82,"Итого",ViewOnly ,TotCost,true,0);
+  end;
+  v = 24;
+  MatrixBegin(4,v,-50,-25,InternMovRowType,99);
+  DeleteRowTest;
+  MatCol(1,28,"Товар",0,ArtCode,false,INSClass);
+  MatCol(1,94,"К-во",0,Quant,true,0);
+  MatCol(1,144,"Сер. №",0,SerialNr,false,SerialNrSClass);
+  MatCol(1,250,"Наименование",0,Spec,false,0);
+  if(usercanaction("ViewCostPrice",false))then begin// Edit ************************** Tuesday, 10 February 2015 15:14:27
+    MatCol(1,-100,"Стоим. перемещ.",0,Cost,true,0);
+  end;
+  DeleteRowTest;
+  EndMatrix;
+  EndWindow;
+end;
+
 window VIDClass:1
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin

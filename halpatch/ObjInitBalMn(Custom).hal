@@ -1,0 +1,416 @@
+external procedure ExtractObj(string,var Integer,var string);
+external function Boolean FBVc_PasteDebVal(var record FBVc,Integer,var Integer);
+external function Boolean FBVc_PasteCredVal(var record FBVc,Integer,var Integer);
+external procedure FBSumup(var record FBVc);
+external function string 255 ReplaceCharByString(string,string,string);
+external procedure ExtractObjWithSeparator(string,string,Boolean,var Integer,var string);
+
+
+procedure FullFillVector(var vector string RepVectTot,var vector val RepVect,string objs,string accs,string curs,row TRVc TRrw,row FBVc FBrw,Boolean istrrw)
+begin
+  val cred,deb,cred_b,deb_b;
+    
+    cred = RepVect["cred:"     & objs &":"& curs &":"& accs];
+    deb = RepVect["deb:"       & objs &":"& curs &":"& accs];
+    cred_b = RepVect["cred:b:" & objs &":"& curs &":"& accs];
+    deb_b = RepVect["deb:b:"   & objs &":"& curs &":"& accs];
+    if (istrrw) then begin
+      RepVect["cred:"   & objs &":"& curs &":"& accs] = cred + TRrw.CurCredVal;
+  		RepVect["deb:"    & objs &":"& curs &":"& accs] = deb + TRrw.CurDebVal;
+  		RepVect["cred:b:" & objs &":"& curs &":"& accs] = cred_b + TRrw.CredVal;
+  		RepVect["deb:b:"  & objs &":"& curs &":"& accs] = deb_b + TRrw.DebVal;
+  		RepVectTot[objs &":"& curs & ";" & accs] = cred + TRrw.CurCredVal & ";" & deb + TRrw.CurDebVal & ";" & 
+  		                                           cred_b + TRrw.CredVal & ";" & deb_b + TRrw.DebVal;
+    end else begin
+      RepVect["cred:"   & objs &":"& curs &":"& accs] = cred + FBrw.CurCredVal;
+  		RepVect["deb:"    & objs &":"& curs &":"& accs] = deb + FBrw.CurDebVal;
+  		RepVect["cred:b:" & objs &":"& curs &":"& accs] = cred_b + FBrw.CredVal;
+  		RepVect["deb:b:"  & objs &":"& curs &":"& accs] = deb_b + FBrw.DebVal;
+  		RepVectTot[objs &":"& curs & ";" & accs] = cred + FBrw.CurCredVal & ";" & deb + FBrw.CurDebVal & ";" & 
+  		                                           cred_b + FBrw.CredVal & ";" & deb_b + FBrw.DebVal;  
+    end;
+								
+  return;
+end;
+
+
+//init: startpos=0; exceptstr=""; step=objscnt.
+procedure CombineObjs(integer startpos,integer objscnt,array string objs,integer step,string exceptstr,var array string ObjArr,var Integer OAi,var vector boolean ObjInArr,row TRVc TRrw,row FBVc FBrw,var vector string RepVectTot,var vector val RepVect,Boolean istrrw)
+begin
+  integer i;
+  boolean testf;
+  string 255 tstr;
+  
+    if (step<2) then begin
+      goto LCombineObjs;
+    end;
+    if (objscnt==0) then begin
+       goto LCombineObjs;
+    end;
+    
+    for (i=startpos;i<objscnt;i=i+1) begin
+			testf = true;
+			if (NonBlank(exceptstr) and setinset(objs[i],exceptstr)==true) then begin testf = false; end;
+			if (testf) then begin
+			  if (Blank(exceptstr)) then begin
+			    tstr = objs[i];
+			  end else begin
+			    tstr = exceptstr & "," & objs[i];
+			  end;
+  			if !ObjInArr[tstr] then begin
+  				ObjInArr[tstr] = true;
+  				ObjArr[OAi] = tstr;
+  				OAi = OAi + 1;
+  			end;
+  			if (istrrw) then begin
+  			  FullFillVector(RepVectTot,RepVect,tstr,TRrw.AccNumber,TRrw.Curncy,TRrw,FBrw,istrrw);
+  			end else begin
+  			  FullFillVector(RepVectTot,RepVect,tstr,FBrw.AccNumber,FBrw.CurncyCode,TRrw,FBrw,istrrw);
+  			end;
+			  if (step>2) then begin
+			    CombineObjs((i+1),objscnt,objs,(step-1),tstr,ObjArr,OAi,ObjInArr,TRrw,FBrw,RepVectTot,RepVect,istrrw);
+			  end;
+		  end;
+		end;
+    
+LCombineObjs:;    
+
+  return;
+end;
+
+global updating procedure ObjInitBalMn(record RcVc RepSpec)
+begin
+	record MainVc mainr;
+	date sd,ed;
+	boolean TrHs,testf,foundf,nonblankFB;
+	string 50 objcode,ostr;
+	record TRVc TRr;
+	row TRVc TRrw;
+	record FBVc FBr,newFBr;
+	record AccVc Accr;
+	row FBVc FBrw,newFBrw;
+	integer i,j,k,l,mtrw,pos,mi,qty,curcomp,comptoadd,mesnr;
+	string 255 tstr;
+	array string 50 mas;
+	vector boolean AccInArr,CurInArr,ObjInArr,AccAllow;
+	array string 5 AccArr,CurArr,ObjArr;
+	integer AAi,CAi,OAi;
+	vector val RepVect;
+	vector string 255 RepVectTot;
+	longint time1,objlen,acclen,curlen;
+	val credval,curcredval,debval,curdebval;
+	string 100 objstr,accstr,curstr;
+	vector Boolean AccHolder;
+	array string 255 combarr;
+	integer combcnt;
+	string 255 indexstr,valuestr;
+	
+
+	objcode = RepSpec.ObjStr;// must 1be nonblank 
+	sd = RepSpec.sStartDate;
+	ed = RepSpec.sEndDate;
+	comptoadd = StringToInt(RepSpec.f1);
+	curcomp = CurrentCompany;
+	
+  SetCompany(comptoadd,false);
+  TrHs = true;
+  while(loopmain(Accr,1,TrHs)) begin
+    AccAllow[Accr.AccNumber] = true;
+  end;
+  
+  //Delete FBVc in comptoadd
+  /*while (LoopMain(FBr,1,true)) begin
+    RECORDREMOVE(FBr);
+    StepBack(FBr);
+  end;*/
+  
+  ResetCompany(curcomp); 
+	
+	AAi = 0;
+	CAi = 0;
+	OAi = 0;
+	TrHs = true;
+	//mainr.TransDate = sd;
+	mainr.AccNumber = "";
+	while (loopmain(mainr,1,TrHs)) begin
+		testf = true;
+		if (mainr.TransDate > ed) then begin testf = false; end;
+		if (AccAllow[mainr.AccNumber]==false) then begin testf = false; end;
+		if (mainr.TransDate < sd) then begin testf = false; end;
+		
+		if (testf) then begin
+			TRr.IntYc = mainr.IntYc;
+			TRr.Number = mainr.TransNr;
+			if (readfirstmain(TRr,2,true)) then begin
+				if (TRr.TransDate == mainr.TransDate) then begin
+					mtrw = matrowcnt(TRr);
+					for (i=0;i<mtrw;i=i+1) begin
+						matrowget(TRr,i,TRrw);
+						if ((TRrw.ovst == 0) and (TRrw.AccNumber == Mainr.AccNumber and TRrw.stp == 1) and NonBlank(TRrw.AccNumber)) then begin
+							if (setinset(objcode,TRrw.Objects) and AccAllow[TRrw.AccNumber]) or (blank(objcode)) then begin
+								if !AccInArr[TRrw.AccNumber] then begin
+									AccInArr[TRrw.AccNumber] = true;
+									AccArr[AAi] = TRrw.AccNumber;
+									AAi = AAi + 1;
+							  end;
+								/*if (right(TRrw.Curncy,1)=="B") then begin
+									TRrw.Curncy = left(TRrw.Curncy,3);
+								end;*/
+								/*if blank(TRrw.Curncy) then begin
+									TRrw.Curncy = "AZN";
+								end;*/
+								if !CurInArr[TRrw.Curncy] then begin
+									CurInArr[TRrw.Curncy] = true;
+									CurArr[CAi] = TRrw.Curncy;
+									CAi = CAi + 1;
+								end;
+								if !ObjInArr[TRrw.Objects] then begin
+									ObjInArr[TRrw.Objects] = true;
+									ObjArr[OAi] = TRrw.Objects;
+									OAi = OAi + 1;
+								end;
+								FullFillVector(RepVectTot,RepVect,TRrw.Objects,TRrw.AccNumber,TRrw.Curncy,TRrw,FBrw,true);
+								if (NonBlank(TRrw.Objects)) then begin
+								  FullFillVector(RepVectTot,RepVect,"",TRrw.AccNumber,TRrw.Curncy,TRrw,FBrw,true);
+								end;
+								pos = 0;
+								mi = 0;
+								ExtractObj(TRrw.Objects,pos,ostr);
+								if TRrw.Objects != ostr then begin
+									while (nonblank(ostr)) begin
+										mas[mi] = ostr;
+										mi = mi + 1;
+										ExtractObj(TRrw.Objects,pos,ostr);
+									end;
+									qty = mi;
+									
+									CombineObjs(0,mi,mas,qty,"",ObjArr,OAi,ObjInArr,TRrw,FBrw,RepVectTot,RepVect,true);
+									/*if qty == 2 then begin
+										for (j=0;j<qty;j=j+1) begin
+											if !ObjInArr[mas[j]] then begin
+												ObjInArr[mas[j]] = true;
+												ObjArr[OAi] = mas[j];
+												OAi = OAi + 1;
+											end;
+											FullFillVector(RepVectTot,RepVect,mas[j],TRrw.AccNumber,TRrw.Curncy,TRrw,FBrw,true);
+										end;
+									end;
+									if qty == 3 then begin
+										for (j=0;j<qty;j=j+1) begin
+											if !ObjInArr[mas[j]] then begin
+												ObjInArr[mas[j]] = true;
+												ObjArr[OAi] = mas[j];
+												OAi = OAi + 1;
+											end;
+											FullFillVector(RepVectTot,RepVect,mas[j],TRrw.AccNumber,TRrw.Curncy,TRrw,FBrw,true);
+											for (k=j+1;k<qty;k=k+1) begin
+												if mas[j] != mas[k] then begin
+													tstr = mas[j] & "," & mas[k];
+													if !ObjInArr[tstr] then begin
+														ObjInArr[tstr] = true;
+														ObjArr[OAi] = tstr;
+														OAi = OAi + 1;
+													end;
+													FullFillVector(RepVectTot,RepVect,tstr,TRrw.AccNumber,TRrw.Curncy,TRrw,FBrw,true);
+												end;
+											end;
+										end;
+									end;
+									if qty == 4 then begin
+										for (j=0;j<qty;j=j+1) begin
+											if !ObjInArr[mas[j]] then begin
+												ObjInArr[mas[j]] = true;
+												ObjArr[OAi] = mas[j];
+												OAi = OAi + 1;
+											end;
+											FullFillVector(RepVectTot,RepVect,mas[j],TRrw.AccNumber,TRrw.Curncy,TRrw,FBrw,true);
+											for (k=j+1;k<qty;k=k+1) begin
+												if mas[j] != mas[k] then begin
+													tstr = mas[j] & "," & mas[k];
+													if !ObjInArr[tstr] then begin
+														ObjInArr[tstr] = true;
+														ObjArr[OAi] = tstr;
+														OAi = OAi + 1;
+													end;
+													FullFillVector(RepVectTot,RepVect,tstr,TRrw.AccNumber,TRrw.Curncy,TRrw,FBrw,true);
+													for (l=k+1;l<qty;l=l+1) begin
+														if (mas[j] != mas[l]) and (mas[k] != mas[l]) then begin
+															tstr = mas[j] & "," & mas[k] & "," & mas[l];
+															if !ObjInArr[tstr] then begin
+																ObjInArr[tstr] = true;
+																ObjArr[OAi] = tstr;
+																OAi = OAi + 1;
+															end;
+															FullFillVector(RepVectTot,RepVect,tstr,TRrw.AccNumber,TRrw.Curncy,TRrw,FBrw,true);
+														end;
+													end;
+												end;
+											end;
+										end;
+									end;*/
+								end;
+							end;
+						end;
+					end; 
+				end; 
+			end;
+		end;
+	end;
+	
+	TrHs = true; time1 = GetCurTick;
+	FBr.TransDate = sd;
+	while (loopkey("TransSerNr",FBr,1,TrHs)) begin
+		if (FBr.TransDate > ed) then begin TrHs = false; end;
+		if (TrHs and setinset(objcode,FBr.Objects)) then begin
+			if !ObjInArr[FBr.Objects] then begin
+				ObjInArr[FBr.Objects] = true;
+				ObjArr[OAi] = FBr.Objects;
+				OAi = OAi + 1;
+			end;
+			mtrw = matrowcnt(FBr);
+			for (i=0;i<mtrw;i=i+1) begin
+				matrowget(FBr,i,FBrw);
+        if AccAllow[FBrw.AccNumber] then begin
+          if !AccInArr[FBrw.AccNumber] then begin
+            AccInArr[FBrw.AccNumber] = true;
+            AccArr[AAi] = FBrw.AccNumber;
+            AAi = AAi + 1;
+          end;
+          if !CurInArr[FBrw.CurncyCode] then begin
+            CurInArr[FBrw.CurncyCode] = true;
+            CurArr[CAi] = FBrw.CurncyCode;
+            CAi = CAi + 1;
+          end;
+          FullFillVector(RepVectTot,RepVect,FBr.Objects,FBrw.AccNumber,FBrw.CurncyCode,TRrw,FBrw,false);
+          if (NonBlank(FBr.Objects)) then begin
+            FullFillVector(RepVectTot,RepVect,"",FBrw.AccNumber,FBrw.CurncyCode,TRrw,FBrw,false);
+          end;
+        end;
+			end;
+		end;
+	end;
+	//Logtext(0,"FBVc collecting t  " & GetCurTick-time1);
+	
+	time1 = GetCurTick;
+	for (i=0;i<ObjArr.length;i=i+1) begin
+		for (j=i+1;j<ObjArr.length;j=j+1) begin
+			if ObjArr[j] > ObjArr[i] then begin
+				tstr = ObjArr[i];
+				ObjArr[i] = ObjArr[j];
+				ObjArr[j] = tstr;
+			end;
+		end;
+	end;
+	//Logtext(0,"ObjArr sorting t  " & GetCurTick-time1);
+	
+	SetCompany(comptoadd,false);
+	
+	//Logtext(0,"comptoadd ObjArr.length " & ObjArr.length);
+	//Logtext(0,"comptoadd AccArr.length " & AccArr.length);
+	//Logtext(0,"comptoadd CurArr.length " & CurArr.length);
+	
+	objlen = ObjArr.length;
+	acclen = AccArr.length;
+	curlen = CurArr.length;
+	
+	GetVectorTags(RepVectTot,combarr);
+	combcnt = combarr.length; 
+	
+	for (i=0;i<combcnt;i=i+1) begin
+	  pos = 0;
+	  ExtractObj(combarr[i],pos,tstr);
+	  AccHolder[tstr] = true;
+	end;
+	
+	for (OAi=0;OAi<objlen;OAi=OAi+1) begin
+		RecordNew(newFBr);
+    nonblankFB = false;
+    objstr = ObjArr[OAi];
+		newFBr.Objects = objstr;
+		newFBr.Comment = objstr;
+		newFBr.TransDate = ed;
+		newFBr.SerNr = NextSerNr("FBVc",newFBr.TransDate,-1,false,"");
+		i = 0;
+		time1 = GetCurTick;
+		
+		for (AAi=0;AAi<acclen;AAi=AAi+1) begin
+			accstr = AccArr[AAi]; 
+			
+			for (CAi=0;CAi<curlen;CAi=CAi+1) begin
+			  curstr = CurArr[CAi]; 
+			  
+			  if (AccHolder[objstr &":"& curstr]==true) then begin
+			    indexstr = objstr &":"& curstr & ";" & accstr;
+			    valuestr = RepVectTot[indexstr]; 
+			    if (NonBlank(valuestr)) then begin
+  			    pos = 0;
+  			    ExtractObjWithSeparator(";",valuestr,false,pos,tstr);
+    			  if (blank(tstr)) then begin
+    			    curcredval = blankval;
+  			    end else begin
+  			      curcredval = StringToVal(tstr,M4Val);
+  			    end;
+    				ExtractObjWithSeparator(";",valuestr,false,pos,tstr);
+    				if (blank(tstr)) then begin
+    				  curdebval = blankval;
+  			    end else begin
+  			      curdebval = StringToVal(tstr,M4Val);
+  			    end;
+  			    ExtractObjWithSeparator(";",valuestr,false,pos,tstr);
+  			    if (blank(tstr)) then begin
+  			      credval = blankval;
+  			    end else begin
+  			      credval = StringToVal(tstr,M4Val);
+  			    end;
+    			  ExtractObjWithSeparator(";",valuestr,false,pos,tstr);
+    			  if (blank(tstr)) then begin
+    			    debval = blankval;
+  			    end else begin
+  			      debval = StringToVal(tstr,M4Val);
+  			    end;
+  			    
+    			  if (debval!=blankval) or (curdebval!=blankval) then begin
+    					ClearRow(newFBr,newFBrw,1);
+    					newFBrw.AccNumber = accstr;
+    					Accr.AccNumber = newFBrw.AccNumber;
+    					ReadFirstKey("AccNumber",Accr,1,true);
+    					newFBrw.Comment = Accr.Comment;
+    					newFBrw.CurDebVal = curdebval;
+    					newFBrw.DebVal = debval;
+    					newFBrw.CurncyCode = curstr;
+    					matrowput(newFBr,i,newFBrw);
+              nonblankFB = true;
+    					//FBVc_PasteDebVal(newFBr,i,mesnr);
+    					//if (mesnr!=0) then begin Logtext(0,USetStr(mesnr)); end;
+    					i = i + 1;
+    				end;
+    				if(credval!=blankval) or (curcredval!=blankval) then begin
+    				  ClearRow(newFBr,newFBrw,1);
+    					newFBrw.AccNumber = accstr;
+    					Accr.AccNumber = newFBrw.AccNumber;
+    					ReadFirstKey("AccNumber",Accr,1,true);
+    					newFBrw.Comment = Accr.Comment;
+    					newFBrw.CurCredVal = curcredval;
+    					newFBrw.CredVal = credval;
+    					newFBrw.CurncyCode = curstr;
+    					matrowput(newFBr,i,newFBrw);
+              nonblankFB = true;
+    					//FBVc_PasteCredVal(newFBr,i,mesnr);
+    					//if (mesnr!=0) then begin Logtext(0,USetStr(mesnr)); end;
+    					i = i + 1;
+    				end; 
+  			  end;
+  			end;
+			end; //Logtext(0,"OAi  " & OAi & " t  " & GetCurTick-time1);
+		end; 
+  
+    if nonblankFB then begin
+    	Logtext(0,"newFBr.SerNr" & newFBr.SerNr);
+    	FBSumup(newFBr);
+      RecordStore(newFBr,true);
+    end;
+  end;
+	
+	ResetCompany(curcomp);
+return;
+end;

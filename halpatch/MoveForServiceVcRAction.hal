@@ -1,0 +1,225 @@
+remote function Boolean ReadFirstItem(string,var record INVc,Boolean,Boolean);
+remote procedure GetDefaultValuesMoveForServiceVc(var record MoveForServiceVc,integer);
+
+SetLangMode(LangUkrainian,"UKR",0); 
+
+global
+updating function LongInt MoveForServiceVcRecordCheck(var record MoveForServiceVc MoveForServicep,record MoveForServiceVc MoveForService2p,LongInt stat,LongInt check)
+BEGIN
+  LongInt res;
+  record INVc INr;
+  row MoveForServiceVc MoveForServicerw;
+  row MoveForServiceVc MoveForService2rw;
+  Integer insertmode,updatemode;
+  Integer errcode,i,rwcnt;
+  string 255 tstr,errstr; 
+  
+  res = 0;
+  insertmode = 1;//Rs_insert
+  updatemode = 2;//Rs_update
+    
+  if (BlankDate(MoveForServicep.TransDate)) then begin
+    MoveForServicep.TransDate = CurrentDate;
+  end;
+  if (stat==Rs_update) then begin
+    if (MoveForServicep.Closed==0 and MoveForService2p.Closed!=0) then begin
+      if (UserCanAction("AllowUnCloseMoveForServiceVc",false)==false) then begin
+        RecordCheckError(15212,"",-1,"TransDate");      
+        res = -1;
+        goto LMoveForServiceVcRecordCheck;  
+      end;
+    end;
+  end;
+
+  rwcnt = MatRowCnt(MoveForServicep);
+  for (i = 0;i<rwcnt;i=i+1) begin
+    MatRowGet(MoveForServicep,i,MoveForServicerw);
+    if (nonblank(MoveForServicerw.ArtCode)) then begin
+      if (CurrentCompany!=8 and ReadFirstItem(MoveForServicerw.ArtCode,INr,true,true)==false) then begin
+        RecordCheckError(1120,MoveForServicerw.ArtCode,i,"ArtCode");      
+        res = -1;
+        goto LMoveForServiceVcRecordCheck;
+      end;
+      if (MoveForServicerw.ReceivedQuant>MoveForServicerw.SendQuant) then begin
+        RecordCheckError(15093,". Принято більше ніж відправлено",i,"ReceivedQuant");      
+        res = -1;
+        goto LMoveForServiceVcRecordCheck;
+      end;
+      if (MoveForServicerw.SendBackQuant>MoveForServicerw.ReceivedQuant) then begin
+        RecordCheckError(15093,". Повернуто більше ніж принято",i,"SendBackQuant");      
+        res = -1;
+        goto LMoveForServiceVcRecordCheck;
+      end;
+      if (MoveForServicerw.ReceivedBackQuant>MoveForServicerw.SendBackQuant) then begin
+        RecordCheckError(15093,". Підтв.повернутого більше ніж повернуто",i,"ReceivedBackQuant");      
+        res = -1;
+        goto LMoveForServiceVcRecordCheck;
+      end;
+      if (MoveForServicerw.ReceivedQuant>0 and Blank(MoveForServicerw.ServiceSerialNr)) then begin
+        RecordCheckError(1854,"",i,"ServiceSerialNr");      
+        res = -1;
+        goto LMoveForServiceVcRecordCheck;
+      end;
+      if (MoveForServicerw.SendQuant>0 and Blank(MoveForServicep.FromLocation)) then begin
+        RecordCheckError(1854,"",-1,"FromLocation");      
+        res = -1;
+        goto LMoveForServiceVcRecordCheck;
+      end;
+      if (MoveForServicerw.ReceivedQuant>0 and Blank(MoveForServicep.ToLocation)) then begin
+        RecordCheckError(1854,"",-1,"ToLocation");      
+        res = -1;
+        goto LMoveForServiceVcRecordCheck;
+      end;
+      /*if (MoveForServicerw.ReceivedQuant>0 and MoveForServicerw.SendQuant<1) then begin
+        RecordCheckError(1854,"",i,"SendQuant");      
+        res = -1;
+        goto LMoveForServiceVcRecordCheck;
+      end;
+      if (MoveForServicerw.SendBackQuant>0 and MoveForServicerw.ReceivedQuant<1) then begin
+        RecordCheckError(1854,"",i,"ReceivedQuant");      
+        res = -1;
+        goto LMoveForServiceVcRecordCheck;
+      end;
+      if (MoveForServicerw.ReceivedBackQuant>0 and MoveForServicerw.SendBackQuant<1) then begin
+        RecordCheckError(1854,"",i,"ReceivedBackQuant");      
+        res = -1;
+        goto LMoveForServiceVcRecordCheck;
+      end;*/
+    end;
+  end;
+LSKIPROW:;
+
+  if (MoveForServicep.SerNr<=0) then begin
+    MoveForServicep.SerNr = NextSerNr("MoveForServiceVc",MoveForServicep.TransDate,-1,false,"");  
+  end;
+  
+LMoveForServiceVcRecordCheck:; 
+
+  MoveForServiceVcRecordCheck = res;
+  RETURN;
+END;
+
+global
+updating function LongInt MoveForServiceVcRecordSave(var record MoveForServiceVc MoveForServicer,record MoveForServiceVc MoveForService2r,LongInt stat,LongInt long4)
+BEGIN 
+  LongInt res;
+  
+    if (BlankDate(MoveForServicer.TransDate)) then begin
+      MoveForServicer.TransDate = CurrentDate;
+    end;
+    if (MoveForServicer.SerNr<=0) then begin
+      MoveForServicer.SerNr = NextSerNr("MoveForServiceVc",MoveForServicer.TransDate,-1,false,"");  
+    end;
+
+  MoveForServiceVcRecordSave = res;
+  RETURN;
+END;
+
+global
+updating function LongInt MoveForServiceVcRecordSaveAfter(var record MoveForServiceVc MoveForServicer,record MoveForServiceVc MoveForService2r,LongInt stat,LongInt long4)
+BEGIN 
+  LongInt res;
+  record ORVc ORr,oldORr;
+  
+  MoveForServiceVcRecordSaveAfter = res;
+  RETURN;
+END;
+
+global
+updating function LongInt MoveForServiceVcRecordUpdate(var record MoveForServiceVc MoveForServicer,record MoveForServiceVc MoveForService2r,LongInt stat,LongInt long4)
+BEGIN 
+  LongInt res;
+  record ORVc ORr,oldORr; 
+
+
+  MoveForServiceVcRecordUpdate = res;
+  RETURN;
+END;
+
+global
+updating function LongInt MoveForServiceVcRecordUpdateAfter(var record MoveForServiceVc MoveForServicer,record MoveForServiceVc MoveForService2r,LongInt stat,LongInt long4)
+BEGIN 
+  LongInt res;
+  Boolean ihef;
+  record IVVc IVr;
+  record IVVc oldIVr;
+  
+  MoveForServiceVcRecordUpdateAfter = res;
+  RETURN;
+END;
+
+global
+function LongInt MoveForServiceVcRecordRemoveTest(var record MoveForServiceVc MoveForServicer,record MoveForServiceVc MoveForService2r,LongInt long3,LongInt long4)
+BEGIN
+  LongInt res;
+  record DBLockBlock DBLockRec;
+
+  res = 1;
+  
+LMoveForServiceVcRecordRemoveTest:;
+  MoveForServiceVcRecordRemoveTest = res; 
+  RETURN;
+END;
+
+global
+updating function LongInt MoveForServiceVcRecordRemove(var record MoveForServiceVc MoveForServicer,record MoveForServiceVc MoveForService2r,LongInt long3,LongInt long4)
+BEGIN
+  LongInt res;
+  
+LMoveForServiceVcRecordRemove:;
+  MoveForServiceVcRecordRemove = res; 
+  RETURN;
+END;
+
+global
+function LongInt MoveForServiceVcRecordDefaults(var record MoveForServiceVc MoveForServicer,record MoveForServiceVc MoveForService2r,LongInt stat,LongInt long4)
+BEGIN
+  LongInt res;
+  Integer curcomp;
+
+  curcomp = CurrentCompany;
+  GetDefaultValuesMoveForServiceVc(MoveForServicer,curcomp);
+  if (SingleUserMode) then begin
+    MoveForServicer.SerNr = NextSerNr("MoveForServiceVc",MoveForServicer.TransDate,-1,true,"");
+  end;
+  MoveForServiceVcRecordDefaults = res; 
+  RETURN;
+END;
+
+global
+function LongInt MoveForServiceVcRecordRemoveTest(var record MoveForServiceVc MoveForServicer,record MoveForServiceVc MoveForService2r,LongInt long3,LongInt long4)
+BEGIN
+  LongInt res;
+  row MoveForServiceVc MoveForServicerw;
+  Integer i,rwcnt;
+
+  res = 1;
+  
+  if (MoveForServicer.Closed!=0) then begin
+    if (long3>0) then begin
+      MessageBox(1544,"");
+    end;
+    res = 0;
+    goto LMoveForServiceVcRecordRemoveTest;
+  end;
+  if (long3==2) then begin
+    if (MoveForService2r.Closed!=0) then begin
+      res = 0;
+      goto LMoveForServiceVcRecordRemoveTest;
+    end;
+  end;
+  rwcnt = MatRowCnt(MoveForServicer);
+  for (i=0;i<rwcnt;i=i+1) begin
+    MatRowGet(MoveForServicer,i,MoveForServicerw);
+    if (NonBlank(MoveForServicerw.ArtCode)) then begin
+      if (MoveForServicerw.SendQuant>0 or MoveForServicerw.ReceivedQuant>0 or MoveForServicerw.SendBackQuant>0 or MoveForServicerw.ReceivedBackQuant>0) then begin
+        res = 0;
+        goto LMoveForServiceVcRecordRemoveTest;
+      end;  
+    end;
+  end;
+  
+LMoveForServiceVcRecordRemoveTest:;
+  MoveForServiceVcRecordRemoveTest = res; 
+  RETURN;
+END;

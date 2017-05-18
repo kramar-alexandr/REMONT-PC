@@ -1,0 +1,62 @@
+external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
+remote procedure MyConvertCur(var record CashVc);
+external procedure prt(string,string,var boolean);
+
+global procedure MyCashInOutClient(val cash)
+begin
+string 40 comand;
+boolean res;
+  
+  comand = "";
+  comand=valtostring(cash*100,M4Val,"",chr(46),1);
+ 
+  prt("cashin",comand,res);
+
+return;
+end;
+
+global
+function LongInt CashVcRecordSaveClient(LongInt wn,var record CashVc Cashr,record CashVc Cash2r,LongInt stat,LongInt long4)
+BEGIN
+	LongInt res;
+
+	if (Cashr.OKFlag==1)then begin
+		If (Cashr.Event==0) then 
+		begin 
+		MyCashInOutClient(-Cashr.Total);
+		end;
+	
+		If (Cashr.Event==1) then 
+		begin 
+			MyCashInOutClient(Cashr.Total);
+		end;
+	end;
+	MyConvertCur(Cashr);
+  CashVcRecordSaveClient = res;
+  RETURN;
+END;
+
+global
+function LongInt CashVcRecordUpdateClient(LongInt wn,var record CashVc Cashr,record CashVc Cash2r,LongInt stat,LongInt long4)
+BEGIN
+	LongInt res;
+	
+	if ((Cashr.OKFlag==1) and (Cash2r.OKFlag==0))then	begin
+		If (Cashr.Event==0) then 
+		begin 
+		MyCashInOutClient(-Cashr.Total);
+		end;
+	
+		If (Cashr.Event==1) then 
+		begin 
+			MyCashInOutClient(Cashr.Total);
+		end;
+	end;
+	MyConvertCur(Cashr);
+	CashVcRecordUpdateClient = res;
+  RETURN;
+END;
+
+
+
+

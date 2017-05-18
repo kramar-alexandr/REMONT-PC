@@ -1,0 +1,715 @@
+external function Boolean GetSVOSerialItem(string,string,record SVOSerVc);
+external function string 255 GetJwl_CustomerName(string);
+external procedure GetDateMonthInWords(Date,var string);
+external procedure OutAddress(string,string,string,string,string,string,string);
+external function Boolean FindFormcode(Integer,Integer);
+external function val FindVAT(string,val,Integer,Integer);
+external procedure SetFaxInfo(string,string,string,string);
+external procedure SplitAddress(string,var string,var string);
+external function Boolean Getformcode(Integer,Integer,string,string,string,LongInt,LongInt,string,string,Integer,string,var string);
+external function Integer NumberofDocumentPages(string,Integer);
+external procedure GetLangNr(string,var record LangNrVc);
+external procedure CommonDocumentFields(record RcVc);
+external procedure GetINInvCode(string,var string);
+external procedure GetOrdClassText(string,var string);
+external procedure GetPayDealText(string,string,var string);
+external procedure GetShipDealText(string,string,var string);
+external procedure GetShipModeText(string,string,var string);
+external procedure GetObjectText(string,var string);
+external procedure GetUserName(string,var string);
+external procedure ValToText(val,Integer,string,string,var string);
+external procedure ItemBC39(string,var string);
+external procedure ItemBCEAN(string,var string);
+external procedure ItemBCEAN13(string,var string);
+external procedure GetStandardProblemText(string,Integer,var string);
+external procedure PrintBranchData(string);
+external function roundmode SetRoundModeD(Integer);
+external procedure GetFieldArgument(record DocVc,Integer,var string);
+
+
+procedure PrintWorksRows(record SVOVc SVOr)// Edit ************************** Tuesday, 10 February 2015 18:48:46
+begin
+  boolean TrHs,testf;
+  record WSVc WSr;
+  row WSVc WSrw;
+  integer mtrw,i;
+  record INVc INr;
+  
+  WSr.SVONr = SVOr.SerNr;
+  TrHs = true;
+  while(loopkey("SVONr",WSr,1,TrHs))begin
+    testf = true;
+    if(WSr.SVONr!=SVOr.SerNr)then begin testf = false; TrHs = false; end;
+    if(WSr.OKFlag==0)then begin testf = false; end;
+    
+    if(testf)then begin
+      mtrw = matrowcnt(WSr);
+      For(i=0;i<mtrw;i=i+1) begin
+	      matrowget(WSr,i,WSrw);
+	        if (FIELDINFORM("MYF_WSWORKNAME") or FIELDINFORM("MYF_WSWORKCODE")) then begin
+	          if(nonblank(WSrw.ArtCode))then begin
+              INr.Code = WSrw.ArtCode;
+              if(readfirstmain(INr,1,true))begin
+                if(INr.ItemType==3 or INr.ItemType==0)then begin
+                  OUTFORMFIELD("MYF_WSWORKNAME",WSrw.Spec); 
+                  OUTFORMFIELD("MYF_WSWORKCODE",WSrw.ArtCode); 
+                end;
+              end;
+	          end else begin
+              OUTFORMFIELD("MYF_WSWORKNAME",WSrw.Spec); 
+	          end;
+	        end;
+	        
+	        if (FIELDINFORM("MYF_WSITEMNAME") or FIELDINFORM("MYF_WSITEMCODE")) then begin
+	          if(nonblank(WSrw.ArtCode))then begin
+              INr.Code = WSrw.ArtCode;
+              if(readfirstmain(INr,1,true))begin
+                if(INr.ItemType==1 or INr.ItemType==2)then begin
+                  OUTFORMFIELD("MYF_WSITEMNAME",WSrw.Spec); 
+                  OUTFORMFIELD("MYF_WSITEMCODE",WSrw.ArtCode); 
+                end;
+              end;
+	          end;
+	        end;
+      end; 
+    end;
+  end;
+return;
+end;
+
+global
+procedure MyPrintNote(record NotepadVc Noter,integer length)// Edit ************************** Thursday, July 3, 2014 at 10:53:57
+BEGIN
+  Integer i,rwcnt,j;
+  string 255 tstr;
+  
+  rwcnt = LineTextCnt(Noter);
+  for (i=0;i<rwcnt;i=i+1) begin
+    tstr = LineTextGet(Noter,i);
+    if(length>0)then begin
+      while(len(tstr)>=length) begin
+        OUTFORMFIELD("F_STANDARDPROBLEMTEXT",left(tstr,length)); 
+        tstr = right(tstr,len(tstr)-length);
+      end;
+      if(len(tstr)>0)then begin
+        OUTFORMFIELD("F_STANDARDPROBLEMTEXT",tstr); 
+      end;
+    end else begin
+      OUTFORMFIELD("F_STANDARDPROBLEMTEXT",tstr);     
+    end;
+    	EndFormRow; //Edit----------------------Dima  08.06.2015
+  end;  
+  RETURN;
+END;
+
+function
+Boolean CheckDigit(string tstr,Integer i)
+BEGIN
+  Boolean res;
+  Integer a;
+  
+  res = false;
+  a = asc(Mid(tstr,i,1));
+  if ((a>=asc("0")) or (a<=asc("9"))) then begin
+    res = true;
+  end; 
+  CheckDigit = res;
+  RETURN;
+END;
+
+procedure PrintSVORows(record RcVc RepSpec,record SVOVc SVOr,record SysFormatBlock SysFormatRec,
+                       record LangNrVc LangNrr,string datacode) //Edit***************************Sasha2,18:07 16.05.2017
+BEGIN
+  Integer i,rwcnt;
+  row SVOVc SVOrw;
+  string 255 tstr;
+  record INVc INr;
+  val t;
+  val vatprc,vatval,vatexclprc,vatinclprc;
+  record SVOSerVc SVOSerr;
+  
+  rwcnt = MatRowCnt(SVOr);
+  for (i=0;i<rwcnt;i=i+1) begin
+    MatRowGet(SVOr,i,SVOrw);
+    if (SVOrw.stp==1) then begin
+      INr.Code = SVOrw.ArtCode;
+      if (ReadFirstMain(INr,1,true)) then begin
+      end;
+      if (SVOrw.ContractNr>0) then begin
+        OUTFORMFIELD("F_CONTRACTNR",SVOrw.ContractNr);
+      end;
+      switch (SVOrw.ItemType) begin
+        case 0: tstr = "";
+        case 1: tstr = USetStr(7761);
+        case 2: tstr = USetStr(7762);
+        case 3: tstr = USetStr(7763);
+        case 4: tstr = USetStr(7768);
+      end;      
+      OUTFORMFIELD("F_ITEMTYPE",tstr);
+      if (FIELDINFORM("F_ARTNRBC39")) then begin
+        ItemBC39(SVOrw.ArtCode,tstr);
+        OUTFORMFIELD("F_ARTNRBC39",tstr);
+      end;  
+      if (FIELDINFORM("F_ARTNRBCEAN")) then begin
+        ItemBCEAN(SVOrw.ArtCode,tstr);
+        OUTFORMFIELD("F_ARTNRBCEAN",tstr);
+      end;  
+      if (FIELDINFORM("F_ARTNRBCEAN13")) then begin
+        ItemBCEAN13(SVOrw.ArtCode,tstr);      
+        OUTFORMFIELD("F_ARTNRBCEAN13",tstr);
+      end;  
+      OUTFORMFIELD("F_SPECIFIKATION",SVOrw.Spec);
+      OUTFORMFIELD("F_UNITPRICE",SVOrw.Price);
+      tstr = ValToString(SVOrw.Quant,M4UVal,SysFormatRec.thousSep,SysFormatRec.decimalPt,LangNrr.CutDecimals);
+      OUTFORMFIELD("F_ANTAL",tstr);
+      OUTFORMFIELD("F_APRIS",SVOrw.Price);
+      OUTFORMFIELD("F_ARTNR",SVOrw.ArtCode);
+      OUTFORMFIELD("F_ARTNR2",SVOrw.ArtCode);
+      OUTFORMFIELD("F_SERIENR",SVOrw.SerialNr);
+      OUTFORMFIELD("F_MOMSKOD",SVOrw.VATCode);
+      OUTFORMFIELD("F_WORKORDERNO",SVOrw.WOSerNr);
+      OUTFORMFIELD("F_MAXCOST",SVOrw.MaxCost);
+      OUTFORMFIELD("F_STANDARDPROBLEM",SVOrw.StandProblem);
+      /*if ((FIELDINFORM("F_STANDARDPROBLEMTEXT")) and (i==0)) then begin // Edit ************************** Thursday, July 3, 2014 at 10:46:55
+        GetStandardProblemText(SVOrw.StandProblem,1,tstr);      
+        OUTFORMFIELD("F_STANDARDPROBLEMTEXT",tstr);
+        GetStandardProblemText(SVOrw.StandProblem,2,tstr);      
+        OUTFORMFIELD("F_STANDARDPROBLEMTEXT",tstr);
+        GetStandardProblemText(SVOrw.StandProblem,3,tstr);      
+        OUTFORMFIELD("F_STANDARDPROBLEMTEXT",tstr);
+      end;  */
+      t = t + SVOrw.Quant*SVOrw.Price;
+      t = t + FindVAT(SVOrw.VATCode,SVOrw.Quant*SVOrw.Price,0,0);
+      OUTFORMFIELD("F_BELOPP",t);
+      if (GetSVOSerialItem(SVOrw.ArtCode,SVOrw.SerialNr,SVOSerr)) then begin
+        OUTFORMFIELD("F_WARRANTYUNTILROW",SVOSerr.WarrantyUntil);
+        OUTFORMFIELD("F_WARRANTYSTATUSROW",SVOSerr.WarrantyStatus);
+      end;
+      OutFormImage(INr);
+      EndFormRow;
+    end;  
+  end;    
+  RETURN;
+END;
+
+//Edit***************************Sasha2,18:08 16.05.2017 {
+procedure printSVO(record SVOVc SVOr,record RcVc RepSpec,string datacode)
+begin
+record CUVc CUr;
+Integer i,rwcnt;
+string 255 tstr,t1,t2;
+val t;
+record SysFormatBlock SysFormatRec;
+record IIBlock IIRec;
+row SVOVc SVOrw;
+Integer svoi,svorwcnt;
+record LangNrVc LangNrr;
+Boolean printf,langf;
+Integer intdocnr;
+string 30 formcode,langcode;
+record SVOSerVc SVOSerr;
+// Edit Start ---------------------------------------------- Edit Start
+	//Monday, 26 July 2010 11:12:22
+record NotepadVc NPr;
+record RLinkVc RLr;
+integer cnt;
+string 255 enginer;
+record DocVc Docr;
+string 200 argument;
+integer length;
+record SVOPrintDataVc SVOPr;
+
+if(nonblank(datacode))then begin
+	SVOPr.Code = datacode;
+	readfirstmain(SVOPr,1,true);
+end;
+	// Edit End ---------------------------------------------- Edit End
+
+    PrintWorksRows(SVOr);
+
+		enginer = "";
+		if (FIELDINFORM("F_STANDARDPROBLEMTEXT")) then begin
+			cnt=1;
+			while(ReadRecordLink(SVOr,cnt,NPr,RLr)) begin
+				If(NPr.Classification=="1") then begin
+				enginer = RLr.Comment;
+					argument = "";
+					GetFieldArgument(Docr,F_STANDARDPROBLEMTEXT,argument);
+					if(nonblank(argument))then begin
+						length = stringtoint(argument);
+					end;
+					MyPrintNote(NPr,length);
+					goto L1;
+				end; 
+			 cnt = cnt+1;
+			end;
+		end;	
+L1:;
+		if (FIELDINFORM("MY_Enginer")) then begin
+			cnt=1;
+			while(ReadRecordLink(SVOr,cnt,NPr,RLr)) begin
+				If(NPr.Classification=="1") then begin
+				enginer = RLr.Comment;
+				OUTFORMFIELD("MY_Enginer",enginer);
+				goto LActPrintNote1;
+			end; 
+			cnt = cnt+1;
+			end;
+		end;
+LActPrintNote1:;
+		
+		OUTFORMFIELD("MY_Vlastnik",SVOr.Vlastnik);
+		OUTFORMFIELD("MY_Priynato",SVOr.Name & " " & SVOr.Priynato & " " & SVOr.MiddleName);
+		OUTFORMFIELD("MY_Kontinfo1",SVOr.Kontinfo1);
+		OUTFORMFIELD("MY_Phone2",SVOr.Phone2);
+		OUTFORMFIELD("MY_Kontinfo2",SVOr.Kontinfo2);
+		OUTFORMFIELD("MY_Kontinfo3",SVOr.Kontinfo3);
+		OUTFORMFIELD("MY_RegTime",SVOr.RegTime);
+		
+		OUTFORMFIELD("MYF_Header1",SVOPr.Header1);
+		OUTFORMFIELD("MYF_Header2",SVOPr.Header2);
+		OUTFORMFIELD("MYF_Header3",SVOPr.Header3);
+		OUTFORMFIELD("MYF_Header4",SVOPr.Header4);
+		OUTFORMFIELD("MYF_Header5",SVOPr.Header5);
+		OUTFORMFIELD("MYF_Header6",SVOPr.Header6);
+		OUTFORMFIELD("MYF_Header7",SVOPr.Header7);
+		OUTFORMFIELD("MYF_Header8",SVOPr.Header8);
+		OUTFORMFIELD("MYF_Header9",SVOPr.Header9);
+		OUTFORMFIELD("MYF_Header10",SVOPr.Header10);
+		
+		OUTFORMFIELD("MYF_Body1",SVOPr.Body1);
+		OUTFORMFIELD("MYF_Body2",SVOPr.Body2);
+		OUTFORMFIELD("MYF_Body3",SVOPr.Body3);
+		OUTFORMFIELD("MYF_Body4",SVOPr.Body4);
+		OUTFORMFIELD("MYF_Body5",SVOPr.Body5);
+		OUTFORMFIELD("MYF_Body6",SVOPr.Body6);
+		OUTFORMFIELD("MYF_Body7",SVOPr.Body7);
+		OUTFORMFIELD("MYF_Body8",SVOPr.Body8);
+		OUTFORMFIELD("MYF_Body9",SVOPr.Body9);
+		OUTFORMFIELD("MYF_Body10",SVOPr.Body10);
+		
+		OUTFORMFIELD("MYF_Footer1",SVOPr.Footer1);
+		OUTFORMFIELD("MYF_Footer2",SVOPr.Footer2);
+		OUTFORMFIELD("MYF_Footer3",SVOPr.Footer3);
+		OUTFORMFIELD("MYF_Footer4",SVOPr.Footer4);
+		OUTFORMFIELD("MYF_Footer5",SVOPr.Footer5);
+		OUTFORMFIELD("MYF_Footer6",SVOPr.Footer6);
+		OUTFORMFIELD("MYF_Footer7",SVOPr.Footer7);
+		OUTFORMFIELD("MYF_Footer8",SVOPr.Footer8);
+		OUTFORMFIELD("MYF_Footer9",SVOPr.Footer9);
+		OUTFORMFIELD("MYF_Footer10",SVOPr.Footer10);
+		
+		
+		if (FIELDINFORM("MY_Batary")) then begin
+			tstr = SVOr.Batary;
+			If(blank(tstr)) then begin
+				tstr = USetStr(5449);	
+			end; 
+			OUTFORMFIELD("MY_Batary",tstr);
+		end;
+		if (FIELDINFORM("MY_Zaryadka")) then begin
+			tstr = SVOr.Zaryadka;
+			If(blank(tstr)) then begin
+				tstr = USetStr(5449);	
+			end;
+			OUTFORMFIELD("MY_Zaryadka",tstr);
+		end;
+		if (FIELDINFORM("MY_Inshe")) then begin
+			tstr = SVOr.Inshe;
+			If(blank(tstr)) then begin
+				tstr = USetStr(5449);	
+			end;
+			OUTFORMFIELD("MY_Inshe",tstr);
+		end;
+		
+		 if (FIELDINFORM("MY_Garanty")) then begin
+			tstr = SVOr.Garanty;
+			If(blank(tstr)) then begin
+				tstr = USetStr(5449);	
+			end;
+			OUTFORMFIELD("MY_Garanty",tstr);
+		end;
+		
+		
+		OUTFORMFIELD("MY_Scarga",SVOr.Scarga);
+		OUTFORMFIELD("MY_Defects",SVOr.Defects);
+		OUTFORMFIELD("MY_GarNo",SVOr.GarNo);
+		OUTFORMFIELD("MY_GarDate",SVOr.GarDate);
+		OUTFORMFIELD("MY_CustomField1",SVOr.CustomField1);
+		OUTFORMFIELD("MY_CustomField2",SVOr.CustomField2);
+		OUTFORMFIELD("MY_CustomField3",SVOr.CustomField3);
+		OUTFORMFIELD("MY_CustomField4",SVOr.CustomField4);
+		OUTFORMFIELD("MY_CustomField5",SVOr.CustomField5);
+		OUTFORMFIELD("MY_CustomField6",SVOr.CustomField6);
+		if (FIELDINFORM("MY_CustomField7")) then begin
+			GetUserName(SVOr.CustomField7,tstr);
+			OUTFORMFIELD("MY_CustomField7",tstr);
+		end;
+		OUTFORMFIELD("MY_Region",SVOr.Region);
+		
+		if (FIELDINFORM("F_TEXTFIELD5")) then begin
+			ValToText(round(evaltoval(SVOr.CustomField5),SetRoundModeD(2)),M4Val,"UAH","UKR",tstr);
+			OUTFORMFIELD("F_TEXTFIELD5",tstr);
+		end;
+          
+	// Edit End ---------------------------------------------- Edit End
+		
+		OUTFORMFIELD("F_SERNR",SVOr.SerNr);
+		OUTFORMFIELD("F_KUNDNR",SVOr.CustCode);
+		OUTFORMFIELD("F_KUNDNAMN",SVOr.Addr0);
+		OUTFORMFIELD("F_ADRESS1",SVOr.Addr1);
+		OUTFORMFIELD("F_ADRESS2",SVOr.Addr2);
+		OUTFORMFIELD("F_ADRESS3",SVOr.Addr3);
+		OUTFORMFIELD("F_INVADDR3",SVOr.InvAddr3);
+		OUTFORMFIELD("F_INVADDR4",SVOr.InvAddr4);
+		OutAddress("F_ADRESS",SVOr.Addr0,SVOr.Addr1,SVOr.Addr2,SVOr.Addr3,SVOr.InvAddr3,SVOr.InvAddr4);
+		OUTFORMFIELD("F_ORDERKLASS",SVOr.OrderClass);
+		if (FIELDINFORM("F_ORDERKLASSTEXT")) then begin
+			GetOrdClassText(SVOr.OrderClass,tstr);
+			OUTFORMFIELD("F_ORDERKLASSTEXT",tstr);
+		end;
+		OUTFORMFIELD("F_KUNDFRAKTNR",CUr.FreightNr);
+		tstr = "";
+		if (nonblank(SVOr.ShipAddr3)) then begin
+			t2 = SVOr.ShipAddr3;
+		end else begin
+			if (nonblank(SVOr.ShipAddr2)) then begin
+				t2 = SVOr.ShipAddr2;
+			end else begin
+				t2 = SVOr.ShipAddr1;
+			end;
+		end;
+		SplitAddress(t2,t1,tstr);
+		OUTFORMFIELD("F_ORT",tstr);
+		tstr = "";
+		if (nonblank(SVOr.ShipAddr3)) then begin
+			tstr = SVOr.ShipAddr3;
+		end else begin
+			if (nonblank(SVOr.ShipAddr2)) then begin
+				tstr = SVOr.ShipAddr2;
+			end else begin
+				tstr = SVOr.ShipAddr1;
+			end;
+		end;
+		OUTFORMFIELD("F_ORTMEDPOSTNR",tstr);          
+		OUTFORMFIELD("F_LEVADRESS",SVOr.ShipAddr0);          
+		OUTFORMFIELD("F_LEVADRESS",SVOr.ShipAddr1);          
+		OUTFORMFIELD("F_LEVADRESS",SVOr.ShipAddr2);          
+		OUTFORMFIELD("F_LEVADRESS",SVOr.ShipAddr3);          
+		OUTFORMFIELD("F_LEVADRESS",SVOr.DelAddr3);          
+		OUTFORMFIELD("F_LEVADRESS",SVOr.DelAddr4);          
+		if (blank(SVOr.ShipAddr0)) then begin
+			tstr = SVOr.Addr0;
+		end else begin
+			tstr = SVOr.ShipAddr0;
+		end;
+		OUTFORMFIELD("F_LEVADRESS2",tstr);          
+		if (blank(SVOr.ShipAddr0)) then begin
+			tstr = SVOr.Addr1;
+		end else begin
+			tstr = SVOr.ShipAddr1;
+		end;
+		OUTFORMFIELD("F_LEVADRESS2",tstr);          
+		if (blank(SVOr.ShipAddr0)) then begin
+			tstr = SVOr.Addr2;
+		end else begin
+			tstr = SVOr.ShipAddr2;
+		end;
+		OUTFORMFIELD("F_LEVADRESS2",tstr);          
+		if (blank(SVOr.ShipAddr0)) then begin
+			tstr = SVOr.Addr3;
+		end else begin
+			tstr = SVOr.ShipAddr3;
+		end;
+		OUTFORMFIELD("F_LEVADRESS2",tstr);          
+		if (blank(SVOr.ShipAddr0)) then begin
+			tstr = SVOr.InvAddr3;
+		end else begin
+			tstr = SVOr.DelAddr3;
+		end;
+		OUTFORMFIELD("F_LEVADRESS2",tstr);          
+		if (blank(SVOr.ShipAddr0)) then begin
+			tstr = SVOr.InvAddr4;
+		end else begin
+			tstr = SVOr.DelAddr4;
+		end;
+		OUTFORMFIELD("F_LEVADRESS2",tstr);          
+		OUTFORMFIELD("F_TRANSDATE",SVOr.TransDate);
+
+		GetDateMonthInWords(SVOr.TransDate,tstr);
+		OUTFORMFIELD("F_DATEMONTHINWORDS",tstr);
+		tstr = GetJwl_CustomerName(SVOr.CustCode);
+		OUTFORMFIELD("F_KUNDNAMNJWL",tstr);  
+
+		OUTFORMFIELD("F_ORDDATUM",SVOr.TransDate);
+		if (FIELDINFORM("F_VILLKOR")) then begin
+			GetPayDealText(SVOr.PayDeal,SVOr.LangCode,tstr);
+			OUTFORMFIELD("F_VILLKOR",tstr);
+		end;
+		OUTFORMFIELD("F_VARREFERENS",SVOr.OurContact);
+		OUTFORMFIELD("F_ERREFERENS",SVOr.CustContact);
+		OUTFORMFIELD("F_PLANLEVDATUM",SVOr.PlanShipDate); //Edit***************************Sasha2,14:53 16.02.2017
+		OUTFORMFIELD("F_KUNDORDNR",SVOr.CustOrdNr);
+		OUTFORMFIELD("F_KOMMENTAR",SVOr.Comment1);
+		OUTFORMFIELD("F_KOMMENTAR",SVOr.Comment2);
+		OUTFORMFIELD("F_KOMMENTAR",SVOr.Comment3);
+		OUTFORMFIELD("F_KOMMENTAR",SVOr.Comment4);
+		          // Edit Start ---------------------------------------------- Edit Start
+	//Wednesday, 7 April 2010 1:09:35 PM
+		OUTFORMFIELD("MY_KOMMENTAR1",SVOr.Comment1);
+		OUTFORMFIELD("MY_KOMMENTAR2",SVOr.Comment2);
+		OUTFORMFIELD("MY_KOMMENTAR3",SVOr.Comment3);
+		OUTFORMFIELD("MY_KOMMENTAR4",SVOr.Comment4);
+		
+		if(nonblank(SVOr.CustomField9))then begin
+			if(stringtoint(SVOr.CustomField9)>1)then begin
+				OUTFORMFIELD("MY_VIP","VIP - " & SVOr.CustomField9);
+			end;
+		end;
+	// Edit End ---------------------------------------------- Edit End
+	
+		
+		OUTFORMFIELD("F_SHIPTERM",SVOr.ShipDeal);
+		if (FIELDINFORM("F_SHIPTERMTEXT")) then begin
+			GetShipDealText(SVOr.ShipDeal,SVOr.LangCode,tstr);
+			OUTFORMFIELD("F_SHIPTERMTEXT",tstr);
+		end;  
+		OUTFORMFIELD("F_LEVSATT",SVOr.ShipMode);
+		if (FIELDINFORM("F_LEVSATTTEXT")) then begin
+			GetShipModeText(SVOr.ShipMode,SVOr.LangCode,tstr);
+			OUTFORMFIELD("F_LEVSATTTEXT",tstr);
+		end;
+		if (blank(SVOr.VATNr)) then begin
+			tstr = CUr.VATNr;
+		end else begin
+			tstr = SVOr.VATNr;
+		end;
+		OUTFORMFIELD("F_KUNDMOMSNR",tstr);          
+		OUTFORMFIELD("F_OBJECT",SVOr.Objects);          
+		if (FIELDINFORM("F_OBJECTTEXT")) then begin
+			GetObjectText(SVOr.Objects,tstr);
+			OUTFORMFIELD("F_OBJECTTEXT",tstr);
+		end;
+		OUTFORMFIELD("F_SALJARE",SVOr.SalesMan);          
+		if (FIELDINFORM("F_SALJARNAMN")) then begin
+			GetUserName(SVOr.SalesMan,tstr);
+			OUTFORMFIELD("F_SALJARNAMN",tstr);
+		end;  
+		OUTFORMFIELD("F_RECIPIENTGLN",SVOr.RecipientGLN);
+		OUTFORMFIELD("F_GOODSRECIPIENTGLN",SVOr.DelRecipientGLN);
+		PrintBranchData(SVOr.BranchID);
+		OUTFORMFIELD("F_ADRESSATT",SVOr.Addr0);
+		OUTFORMFIELD("F_ADRESSATT",SVOr.CustContact);
+		OUTFORMFIELD("F_ADRESSATT",SVOr.Addr1);
+		OUTFORMFIELD("F_ADRESSATT",SVOr.Addr2);
+		OUTFORMFIELD("F_ADRESSATT",SVOr.Addr3);
+		OUTFORMFIELD("F_ADRESSATT",SVOr.InvAddr3);
+		OUTFORMFIELD("F_ADRESSATT",SVOr.InvAddr4);
+		if (blank(SVOr.Fax)) then begin
+			tstr = CUr.Fax;
+		end else begin
+			tstr = SVOr.Fax;
+		end;
+		OUTFORMFIELD("F_KUNDFAX",tstr);          
+		if (blank(SVOr.Phone)) then begin
+			tstr = CUr.Phone;
+		end else begin
+			tstr = SVOr.Phone;
+		end;
+		OUTFORMFIELD("F_KUNDTEL",tstr);          
+		OUTFORMFIELD("F_EMAIL",CUr.eMail);          
+
+		OUTFORMFIELD("F_DEPARTMENT",CUr.Department);
+		if (FIELDINFORM("F_RANTASATS")) then begin
+			OUTFORMFIELD("F_RANTASATS",IIRec.IntRate);
+		end;
+		t = 0;
+		svorwcnt = MatRowCnt(SVOr);            
+		for (svoi=0;svoi<svorwcnt;svoi=svoi+1) begin
+			MatRowGet(SVOr,svoi,SVOrw);
+			t = t + SVOrw.Quant*SVOrw.Price;
+			t = t + FindVAT(SVOrw.VATCode,SVOrw.Quant*SVOrw.Price,0,0);
+			if (SVOrw.ItemKind==0) then begin
+				if (GetSVOSerialItem(SVOrw.ArtCode,SVOrw.SerialNr,SVOSerr)) then begin
+					OUTFORMFIELD("F_WARRANTYUNTIL",SVOSerr.WarrantyUntil);
+					OUTFORMFIELD("F_WARRANTYSTATUS",SVOSerr.WarrantyStatus);
+				end;
+			end;
+		end;
+		OUTFORMFIELD("F_SUMMA",t);
+		if (FIELDINFORM("F_ATTBETALATEXT")) then begin
+			ValToText(t,M4Val,"",SVOr.LangCode,tstr);
+			OUTFORMFIELD("F_ATTBETALATEXT",tstr);
+		end; 
+	
+return;
+end;
+//Edit***************************Sasha2,18:08 16.05.2017 }
+
+global
+procedure DoSVOForm(record RcVc RepSpec,record SVOVc SVOr)
+BEGIN
+  record FormDefVc FDr;
+  row FormDefVc FDrw;
+  record CUVc CUr;
+  Integer i,rwcnt;
+  string 255 tstr,t1,t2;
+  val t;
+  record SysFormatBlock SysFormatRec;
+  record IIBlock IIRec;
+  row SVOVc SVOrw;
+  Integer svoi,svorwcnt;
+  record LangNrVc LangNrr;
+  Boolean printf,langf;
+  Integer intdocnr;
+  string 30 formcode,langcode;
+  record SVOSerVc SVOSerr;
+
+  
+  GetLangNr(SVOr.LangCode,LangNrr);  
+  BlockLoad(SysFormatRec);
+  BlockLoad(IIRec);
+  FDr.repname = RepSpec.repname;
+  FDr.shortname = RepSpec.shortname;
+  if (ReadFirstMain(FDr,1,true)==false) then begin
+    MessageBox(1624, " " & USetStr(1623));
+    goto LDoSVOForm;
+  end;
+  rwcnt = MatRowCnt(FDr);
+  langcode = SVOr.LangCode;
+  for (i=rwcnt-1;i>=0;i=i-1) begin
+    MatRowGet(FDr,i,FDrw);
+    if (FDrw.LangCode==langcode) then begin
+      i = -1;
+      langf = true;
+    end;
+  end;
+  if (langf==false) then begin langcode = ""; end;
+  intdocnr = 1;
+  printf = true;
+  while (printf) begin  
+    formcode = "";
+    for (i=rwcnt-1;i>=0;i=i-1) begin
+      MatRowGet(FDr,i,FDrw);
+      if (FindFormcode(SVOr.InvFlag,FDrw.Typ)) then begin 
+        if (Getformcode(i,FDrw.intdocnr,FDrw.FPCode,FDrw.UserGroup,FDrw.LangCode,FDrw.SerNr,SVOr.SerNr,FDrw.PrintGroupCode,
+                        langcode,intdocnr,"SVOVc",formcode)) then
+        begin
+          goto LBREAK;
+        end;
+      end;
+    end;
+LBREAK:;
+    if (nonblank(formcode)) then begin
+      if (OpenForm(formcode)) then begin  
+          CommonDocumentFields(RepSpec);
+          NumberofDocumentPages(FDrw.FPCode,MatRowCnt(SVOr));
+          CUr.Code = SVOr.CustCode;
+          printSVO(SVOr,RepSpec,""); //Edit***************************Sasha2,18:10 16.05.2017 
+          PrintSVOrows(RepSpec,SVOr,SysFormatRec,LangNrr,"");//Edit***************************Sasha2,10:29 17.05.2017
+          CloseForm;        
+      end else begin
+        printf = false;
+        MessageBox(1546,formcode);
+      end;
+    end else begin
+      printf = false;
+      if (intdocnr==1) then begin
+        MessageBox(1624, " " & USetStr(1623));
+      end;
+    end;
+    intdocnr = intdocnr + 1;
+  end;
+LDoSVOForm:;  
+  RETURN;
+END;
+
+global //Edit***************************Sasha2,18:11 16.05.2017 {
+procedure DoSVOForm1(record RcVc RepSpec)
+BEGIN
+  record FormDefVc FDr;
+  row FormDefVc FDrw;
+  record CUVc CUr;
+  Integer i,rwcnt;
+  string 255 tstr,t1,t2;
+  val t;
+  record SysFormatBlock SysFormatRec;
+  record IIBlock IIRec;
+  row SVOVc SVOrw;
+  Integer svoi,svorwcnt;
+  record LangNrVc LangNrr;
+  Boolean printf,langf;
+  Integer intdocnr;
+  string 30 formcode,langcode;
+  record SVOSerVc SVOSerr;
+	record SVOVc SVOr;
+	STRING 50 MYFORMCODE,datacode;// Edit ************************** Tuesday, 28 February 2017 13:26:34
+	
+	SVOr.SerNr = RepSpec.long1;
+	readfirstmain(SVOr,1,true);
+  
+  GetLangNr(SVOr.LangCode,LangNrr);  
+  BlockLoad(SysFormatRec);
+  BlockLoad(IIRec);
+  
+  FDr.repname = RepSpec.repname;
+  FDr.repname = "SVOForm";// Edit ************************** Tuesday, 10 February 2015 11:27:02
+  FDr.shortname = RepSpec.shortname;
+  if (ReadFirstMain(FDr,1,true)==false) then begin
+    MessageBox(1624, " " & USetStr(1623));
+    goto LDoSVOForm;
+  end;
+  rwcnt = MatRowCnt(FDr);
+  langcode = SVOr.LangCode;
+  for (i=rwcnt-1;i>=0;i=i-1) begin
+    MatRowGet(FDr,i,FDrw);
+    if (FDrw.LangCode==langcode) then begin
+      i = -1;
+      langf = true;
+    end;
+  end;
+  if (langf==false) then begin langcode = ""; end;
+  intdocnr = 1;
+  printf = true;
+  while (intdocnr<=RepSpec.flags[0] and printf) begin  // Edit ************************** Tuesday, 10 February 2015 11:27:54
+    formcode = "";
+    if(intdocnr==RepSpec.flags[0]) then begin// Edit ************************** Tuesday, 10 February 2015 10:34:50
+			for (i=rwcnt-1;i>=0;i=i-1) begin
+				MatRowGet(FDr,i,FDrw);
+				if (FindFormcode(SVOr.InvFlag,FDrw.Typ)) then begin
+					datacode = FDrw.EformCode;
+					if (Getformcode(i,FDrw.intdocnr,FDrw.FPCode,FDrw.UserGroup,FDrw.LangCode,FDrw.SerNr,SVOr.SerNr,FDrw.PrintGroupCode,
+													langcode,intdocnr,"SVOVc",formcode)) then
+					begin
+						goto LBREAK;
+					end;
+				end;
+			end;
+LBREAK:;
+			if (nonblank(formcode)) then begin
+				if (OpenForm(formcode)) then begin  
+						CommonDocumentFields(RepSpec);
+						NumberofDocumentPages(FDrw.FPCode,MatRowCnt(SVOr));
+						CUr.Code = SVOr.CustCode;
+						if (ReadFirstMain(CUr,1,true)) then begin
+							SetFaxInfo(CUr.Person,CUr.Name,CUr.Fax,USetStr(1790));
+						end;        
+					 	printSVO(SVOr,RepSpec,datacode); 
+						PrintSVOrows(RepSpec,SVOr,SysFormatRec,LangNrr,datacode);
+						CloseForm;        
+				end else begin
+					printf = false;
+					MessageBox(1546,formcode);
+				end;
+			end else begin
+				printf = false;
+				if (intdocnr==1) then begin
+					MessageBox(1624, " " & USetStr(1623));
+				end;
+			end;
+    end;// Edit ************************** Tuesday, 10 February 2015 11:25:09
+    intdocnr = intdocnr + 1;
+  end;
+LDoSVOForm:;  
+  RETURN;
+END; //Edit***************************Sasha2,18:11 16.05.2017 }

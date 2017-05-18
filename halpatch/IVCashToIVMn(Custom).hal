@@ -1,0 +1,338 @@
+external procedure IVVc_PasteTransDate(var record IVVc,var Integer,var Integer);
+external procedure IVVc_PasteInvDate(var record IVVc,record LocalMachineBlock,var Integer,var Integer);
+external function Boolean PasteCust2InInv(var record IVVc,record LocalMachineBlock,string,Boolean,var string,var string,var string,var string,var string);
+external procedure IVVc_PasteSalesMan(var record IVVc,string);
+external function Boolean IVVc_PasteArtCode(var record IVVc,Integer,var string,var string,Boolean,var Integer);
+external procedure IVDchsum(var record IVVc,Integer);
+external procedure IVVc_PasteQuant(var record IVVc,Integer,Boolean,var Boolean,string);
+external function Boolean TouchScreenLook();
+external procedure IVSumup(var record IVVc,Boolean);
+external function Boolean IVVc_PasteSum(var record IVVc,Integer,var Boolean,Integer);
+external function val CalculateIVCashAmount(record IVVc);
+external procedure IVVc_PasteCurncyCode(var record IVVc,string,Integer,Boolean,Boolean);
+external procedure IVVc_PasteLocation(var record IVVc,Integer);
+external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
+external procedure IVVc_PastePayDeal(var record IVVc,string,string);
+
+
+function Boolean SearchPayModeForLocMach(string LocMachine, integer stp, var string paymode)
+begin
+	record LocalMachineAccBlock LMAb;
+	row LocalMachineAccBlock LMAbrw;
+	integer i,rwcnt;
+	boolean res;
+
+	BlockLoad(LMAb);
+	rwcnt = MatRowCnt(LMAb);
+	res = false;
+	
+	paymode = "";
+	
+	for(i=0;i<rwcnt; i=i+1) begin 
+		MatRowGet(LMAb,i,LMAbrw);
+		if (LMAbrw.LocalMachine == LocMachine) then begin
+				switch (stp) begin
+						case kInvoiceRowTypeCashPayment:
+																			paymode = LMAbrw.CashID;
+																			res = true;
+																			goto LSearchPayMode;
+						case kInvoiceRowTypeCreditCardPayment:
+																			paymode = LMAbrw.TermID;
+																			res = true;
+																			goto LSearchPayMode;
+						case kInvoiceRowTypeGiftVoucherPayment:// Edit ************************** Thursday, 2 April 2015 14:19:30
+																			paymode = LMAbrw.SertID;// Edit ************************** Thursday, 2 April 2015 14:19:31
+																			res = true;
+																			goto LSearchPayMode;
+
+				end;
+		end;
+	end;
+
+	LSearchPayMode:;
+	if(blank(paymode)) then begin
+		res = false;
+	end;
+	
+	SearchPayModeForLocMach = res;
+return;
+end;
+
+
+
+function boolean SearchStartSerNrForUser(string LocMachine,var longint value)
+begin
+	record LocalMachineAccBlock LMAb;
+	row LocalMachineAccBlock LMAbrw;
+	record UserVc Userr;
+	integer i,rwcnt;
+	boolean res;
+	string 50 user;
+
+	BlockLoad(LMAb);
+	rwcnt = MatRowCnt(LMAb);
+	res = false;
+
+	for(i=0;i<rwcnt; i = i + 1) begin 
+		MatRowGet(LMAb,i,LMAbrw);
+		if (LMAbrw.LocalMachine == LocMachine) then begin
+						user = LMAbrw.UserCode;				
+		end;
+	end;
+
+	Userr.Code = user;
+	if (ReadFirstMain(Userr,1,true)) then begin
+			value = Userr.LastInvNr;
+	end;
+	
+	if (nonblank(value)) then begin
+			res = true;
+	end;
+
+	SearchStartSerNrForUser = res;
+return;
+end;
+
+global
+updating procedure IVCash_To_IV(longint IVCashSerNr )	//Added-------------------------Dima 14.01.2015 
+begin
+	record IVVc IVr,oldIVr;
+	record IVCashVc IVCashr;
+	row IVVc IVrw;
+	row IVCashVc IVCashrw;
+	Integer err1,err2,sernrf;
+	Integer rwcnt,i,curcomp;
+  string 255 inwarning,warning,errstr,prepstr,invdatewarn,transdatewarn;
+  record LocalMachineBlock LMb;
+	record DefCashBlock DCb;
+  Boolean chsum,putf;
+	string 10 paymode;
+	LongInt startSerNr;
+	val fr,to1,to2,br1,br2;
+	record CUVc CUr;
+	record LocalMachineAccBlock LMAb;
+	row LocalMachineAccBlock LMAbrw;
+	record CCatVc CCatr;
+	
+	recordNew(IVr);
+	
+	blockload(LMAb);
+
+	IVCashr.SerNr = IVCashSerNr;
+	if (ReadFirstMain(IVCashr,1,true)==false)then begin	
+			goto LBreak;
+	end;
+
+	IVr.OfficialSerNr = IVCashSerNr;
+	if (ReadFirstKey("OfficialSerNr",IVr,1,true)) then begin	
+			logtext(0,"OfficialSerNr error " & IVCashSerNr & " IVvc " & IVr.SerNr);
+			goto LBreak;
+	end;
+
+	if (IVCashr.OKFlag!=1) then begin	
+			logtext(0,"OKFlag error " & IVCashSerNr);
+			goto LBreak;
+	end;
+
+
+	if (SearchStartSerNrForUser(IVCashr.LocalMachineCode,startSerNr)==false) then begin 
+			logtext(0,"SearchStartSerNrForUser " & IVCashSerNr);
+			goto LBreak;
+	end;
+
+	if (startSerNr < 0) then begin 	//if InvoiceCash without Local Machine
+			logtext(0,"startSerNr < 0 " & IVCashSerNr);
+			goto LBreak;
+	end;
+
+
+	BlockLoad(LMb);
+	BlockLoad(DCb);
+
+	IVr.SerNr = NextSerNr("IVVc",IVr.TransDate,startSerNr,false,"");
+	IVr.OfficialSerNr = IVCashSerNr;
+	
+	IVr.InvDate = IVCashr.InvDate;
+	IVr.TransDate = IVCashr.TransDate;
+	IVVc_PasteTransDate(IVr,err1,err2);
+	IVVc_PasteInvDate(IVr,LMb,err1,err2);	
+		
+	IVr.CustCode = IVCashr.CustCode;
+	PasteCust2InInv(IVr,LMb,IVCashr.CustCode,true,warning,errstr,prepstr,invdatewarn,transdatewarn);
+	IVr.Objects = "";// Edit ************************** Tuesday, 7 April 2015 10:34:05
+	rwcnt = matrowcnt(LMAb);
+	For(i=0;i<rwcnt;i=i+1) begin
+		matrowget(LMAb,i,LMAbrw); 
+		if(IVCashr.LocalMachineCode==LMAbrw.LocalMachine)then begin
+			IVr.Objects = LMAbrw.Objects;
+			i = rwcnt;
+			
+			CUr.Code = LMAbrw.CustCode;						// Edit ************************** Thursday, 4 February 2016 10:33:11
+			if (ReadFirstMain(CUr,1,true)) then begin
+				IVr.CurncyCode = CUr.CurncyCode;
+			end;
+			
+		end; 
+	end; 
+	
+	
+	
+	IVr.SalesMan = IVCashr.SalesMan;
+	IVVc_PasteSalesMan(IVr,IVCashr.SalesMan);
+	IVr.Location = IVCashr.Location;
+	IVVc_PasteLocation(IVr,-1);
+  //IVr.CurncyCode = IVCashr.CurncyCode;
+	//IVVc_PasteCurncyCode(IVr,"",-1,false,true);
+	IVr.MachineName = IVCashr.LocalMachineCode;	
+	
+	if (blank(IVr.PayDeal)) then begin		//Edit----------------------Dima  14.01.2016
+		IVr.PayDeal = LMAbrw.PayDeal;
+		IVVc_PastePayDeal(IVr,"",LMb.DefReturnLocation);
+	end;
+
+	CUr.Code = IVCashr.CustCode;							//Edit----------------------Dima  14.01.2016
+	if (ReadFirstMain(CUr,1,true)) then begin
+    CCatr.Code = CUr.CustCat;
+    if (ReadFirstMain(CCatr,1,true)) then begin      	
+			if (blank(CCatr.ARAcc)) then begin
+  		IVr.ARAcc = LMAbrw.RecAcc;
+  		end;
+		end;
+	end;
+
+	rwcnt = MatRowCnt(IVCashr);
+	for(i=0; i <rwcnt; i = i+1) begin
+    	MatRowGet(IVCashr,i,IVCashrw);
+    	ClearRow(IVr,IVrw,kInvoiceRowTypeNormal);
+			IVrw.stp = kInvoiceRowTypeNormal;
+			IVrw.ArtCode = IVCashrw.ArtCode;
+			MatRowPut(IVr,i,IVrw);
+			IVVc_PasteArtCode(IVr,i,inwarning,warning,TouchScreenLook,sernrf);
+			MatRowGet(IVr,i,IVrw);
+			IVrw.VATCode = "0";
+    	IVrw.Quant = IVCashrw.Quant;
+			//IVrw.CurncyCode = IVCashrw.CurncyCode;			
+			MatRowPut(IVr,i,IVrw);
+			IVVc_PasteQuant(IVr,i,true,chsum,LMb.DefReturnLocation);
+			MatRowGet(IVr,i,IVrw);
+			IVrw.SerialNr = IVCashrw.SerialNr;
+			IVrw.vRebate = stringtoval(IVCashrw.vRebate,M41Val);
+			IVrw.Price = IVCashrw.Price;
+			IVrw.Sum = IVCashrw.Sum;
+			MatRowPut(IVr,i,IVrw);    
+			IVDchsum(IVr,i);
+	end;
+
+	
+	//put payments type in the end:
+	if (IVCashr.RecValue != 0) then begin
+		ClearRow(IVr,IVrw,kInvoiceRowTypeCreditCardPayment);
+		IVrw.stp = kInvoiceRowTypeCreditCardPayment;
+		IVrw.Sum = IVCashr.RecValue;		
+		if (SearchPayModeForLocMach(IVr.MachineName,kInvoiceRowTypeCreditCardPayment,paymode)) then begin
+				IVrw.PayMode = paymode;
+		end;       
+		IVrw.Spec = UsetStr(20801);
+		IVrw.CurncyCode = IVr.CurncyCode; 
+		GetFullCurncyRate(IVrw.CurncyCode,IVr.TransDate,fr,to1,to2,br1,br2);   
+		IVrw.CurncyCode = IVr.CurncyCode; 
+		IVrw.FrRate = fr;
+		IVrw.ToRateB1 = to1;     
+		IVrw.ToRateB2 = to2;
+		IVrw.BaseRate1 = br1;
+		IVrw.BaseRate2 = br2;
+		MatRowPut(IVr,i,IVrw);
+		IVSumup(IVr,true); 
+		i = i + 1;
+	end;
+	
+	if (IVCashr.RecValue2 != 0) then begin
+		ClearRow(IVr,IVrw,kInvoiceRowTypeCreditCardPayment);
+		IVrw.stp = kInvoiceRowTypeCreditCardPayment;
+		IVrw.Sum = IVCashr.RecValue2;
+		//IVrw.PayMode = IVCashr.PayDeal; 
+		if (SearchPayModeForLocMach(IVr.MachineName,kInvoiceRowTypeGiftVoucherPayment,paymode)) then begin
+				IVrw.PayMode = paymode;
+		end;       
+		IVrw.Spec = UsetStr(24601);
+		IVrw.CurncyCode = IVr.CurncyCode; 
+		GetFullCurncyRate(IVrw.CurncyCode,IVr.TransDate,fr,to1,to2,br1,br2);   
+		IVrw.CurncyCode = IVr.CurncyCode; 
+		IVrw.FrRate = fr;
+		IVrw.ToRateB1 = to1;     
+		IVrw.ToRateB2 = to2;
+		IVrw.BaseRate1 = br1;
+		IVrw.BaseRate2 = br2;
+		MatRowPut(IVr,i,IVrw);
+		IVSumup(IVr,true); 
+		i = i + 1;
+	end;
+
+	if (IVCashr.CashValue != 0) then begin
+		ClearRow(IVr,IVrw,kInvoiceRowTypeCashPayment);
+		IVrw.stp = kInvoiceRowTypeCashPayment;
+		IVrw.Sum = IVCashr.CashValue-IVCashr.RetValue;
+		IVrw.CurncyCode = IVr.CurncyCode;
+		GetFullCurncyRate(IVrw.CurncyCode,IVr.TransDate,fr,to1,to2,br1,br2);
+		IVrw.CurncyCode = IVr.CurncyCode;
+		IVrw.FrRate = fr;
+		IVrw.ToRateB1 = to1;     
+		IVrw.ToRateB2 = to2;
+		IVrw.BaseRate1 = br1;
+		IVrw.BaseRate2 = br2;
+		if (SearchPayModeForLocMach(IVr.MachineName,kInvoiceRowTypeCashPayment,paymode)) then begin
+				IVrw.PayMode = paymode;
+		end;      
+		IVrw.Spec = UsetStr(20800);           
+		MatRowPut(IVr,i,IVrw);
+		IVSumup(IVr,true); 
+		i = i + 1;
+	end;
+
+
+	
+	IVSumup(IVr,true);
+	IVr.UpdStockFlag = 1;
+
+	RecordInsert(IVr,true);
+
+	//RecordCopy(oldIVr,IVr);	
+	//IVr.OKFlag = 1;			//----------!!!!!!!!!!!!!!!!!----------
+	//RecordUpdate(oldIVr,IVr,true);
+
+	CreateRecordLink(IVr,currentcompany,IVCashr,currentcompany);
+	CreateRecordLink(IVCashr,currentcompany,IVr,currentcompany);
+	
+	LBreak:;
+return;
+end;
+
+
+
+
+global
+updating procedure IVCash_To_IVMn(record RcVc RepSpec)
+begin
+	record IVCashVc IVCashr;
+	boolean TrHs,testf;
+
+
+	TrHs=true;
+	IVCashr.InvDate = RepSpec.sStartDate;
+	While (LoopKey("InvDate",IVCashr,1,TrHs)) begin
+		testf=true;
+		if(IVCashr.InvDate < RepSpec.sStartDate) then begin	testf=false;	end;	
+		if(IVCashr.InvDate > RepSpec.sEndDate) then begin	testf=false; TrHs = false;	end;
+
+		if (nonblank(RepSpec.f1)and(RepSpec.f1!=IVCashr.LocalMachineCode))then begin	testf=false;	end;
+
+		if (testf) then begin
+			logtext(0,"IVCash_To_IVMn " & IVCashr.SerNr);
+			IVCash_To_IV(IVCashr.SerNr);
+		end;
+
+	end;
+return;
+end;
+
+

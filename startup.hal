@@ -5,6 +5,8 @@ begin
 	//SetLangMode(LangUkrainian,"UKR",0);
 	SetLangMode(LangUkrainian,"RUS",0);
 	
+  Maintenance("Git HAL Files",MyVClass,GitHALFilesMn,modTC);
+
 	
 	SString(964,"");
 	 

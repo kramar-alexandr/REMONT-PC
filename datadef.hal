@@ -13,6 +13,7 @@ SourceFile("halcust\\FPrinter",0);
 SourceFile("halcust\\LabelPrint",0);
 SourceFile("halcust\\WebShop",0);
 SourceFile("halcust\\SetComp",0);
+SourceFile("halcust\\innerTools",3);
 
 begin 
   RecordAddBegin(CUVc,"CUVc_Custom");

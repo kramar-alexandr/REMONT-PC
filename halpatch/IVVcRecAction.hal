@@ -2020,7 +2020,7 @@ BEGIN
   res = 1;
   BlockLoad(DBLb);
   BlockLoad(MCLb);
-  if (/*CurrentCompany==8 and*/ IVr.PrintedFlag>0) then begin //Edit***************************Sasha2,11:00 11.01.2016 {
+  if (IVr.PrintedFlag>0) then begin //Edit***************************Sasha2,11:00 11.01.2016 {
     if (UserCanAction("AllowEditRemoveRecAfterPrint",false)==false) then begin
       if (long3>0) then begin
         MessageBox(1560,". " & USetStr(8136));

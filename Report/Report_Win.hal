@@ -162,15 +162,15 @@ begin
     PeriodField(120,125,"Дата");
   EndWindow;
 
-     WindowBegin("Інвентаризація",InventMyRClass,CGRcW,RcType);
+     WindowBegin("ИнвентаризацИя",InventMyRClass,CGRcW,RcType);
     SetWRect(20,120,360,280);
     EditFieldTL(150,25,100,"Склад",M4Code,Normal,50,f1,false,LocationSClass);
-    PeriodField(150,45,"Період інвентаризації");
+    PeriodField(150,45,"ПерИод инвентаризации");
   EndWindow;
 
    WindowBegin("Bonus",MyBonusRClass,CGRcW,RcType);
     SetWRect(20,120,360,280);
-    PeriodField(150,45,"Період");
+    PeriodField(150,45,"Период");
   EndWindow;
 
    WindowBegin("Bonus",MyBonusCurUserRClass,CGRcW,RcType);
@@ -181,12 +181,12 @@ begin
   EndWindow;
 
 
-    WindowBegin("Звіт терміну гарантії",MyGarRClass,CGRcW,RcType);
+    WindowBegin("Отчет срока гарантии",MyGarRClass,CGRcW,RcType);
   SetWRect(20,120,360,220);
   EditField(h+=100,v=20,80,"Товар",Normal,f1,false,INSClass);
-  EditField(h,v+=25,80,"Серійний номер",Normal,f2,false,0);
+  EditField(h,v+=25,80,"Серийный номер",Normal,f2,false,0);
   EditField(h,v+=25,80,"Склад",Normal,f3,false,LocationSClass);
-  EditField(h,v+=25,80,"Постачальник",Normal,f4,false,VESClass);
+  EditField(h,v+=25,80,"Поставщик",Normal,f4,false,VESClass);
   EndWindow;
 
   WindowBegin("Отчет по серийным номерам 2",MySerHistRClass,CGRcW,RcType);
@@ -196,33 +196,33 @@ begin
 
   EndWindow;
 
-  WindowBegin("Процеси по замовленням",MyPOQCRClass,CGRcW,RcType);
+  WindowBegin("Процессы по заказам",MyPOQCRClass,CGRcW,RcType);
   SetWRect(20,120,350,220);
   v=20;
   PeriodField(h,v,"Дата");
-  EditField(h,v+=25,150,"Постачальник",Normal,f1,false,VESClass);
+  EditField(h,v+=25,150,"Поставщик",Normal,f1,false,VESClass);
   EditField(h,v+=25,150,"Вид",Normal,f2,false,POrderClassSClass);
-  EditField(h,v+=25,150,"Об'єкт",Normal,f3,false,ObjSClass);
+  EditField(h,v+=25,150,"Объект",Normal,f3,false,ObjSClass);
 
   EndWindow;
 
-  WindowBegin("Розсилка процесів",MyPOQC2RClass,CGRcW,RcType);
+  WindowBegin("Рассылка процесов",MyPOQC2RClass,CGRcW,RcType);
   SetWRect(20,120,350,220);
   v=20;
   /*PeriodField(h,v,"Дата");
-  EditField(h,v+=25,150,"Постачальник",Normal,f1,false,VESClass);
+  EditField(h,v+=25,150,"Поставщик",Normal,f1,false,VESClass);
   EditField(h,v+=25,150,"Вид",Normal,f2,false,POrderClassSClass);
-  EditField(h,v+=25,150,"Об'єкт",Normal,f3,false,ObjSClass);
+  EditField(h,v+=25,150,"Объект",Normal,f3,false,ObjSClass);
  */
   EndWindow;
 
-  WindowBegin("Пошук замовлень на обслуговування",MySearchSVORClass,CGRcW,RcType);
+  WindowBegin("Поиск заказов на обслуживание",MySearchSVORClass,CGRcW,RcType);
   SetWRect(20,120,400,220);
-  PeriodField(h+=40,v=40,"Період");
-  EditField(h,v+=20,80,"Серійний номер",Normal,f1,false,0);
-  EditField(h,v+=20,-20,"Власник",Normal,f2,false,0);
+  PeriodField(h+=40,v=40,"Период");
+  EditField(h,v+=20,80,"Серийный номер",Normal,f1,false,0);
+  EditField(h,v+=20,-20,"Собственник",Normal,f2,false,0);
   EditField(h,v+=20,-20,"Телефон",Normal,f3,false,0);
-  EditField(h,v+=20,-20,"№ зам. у постачальника",Normal,f4,false,0);
+  EditField(h,v+=20,-20,"№ зак. у поставщика",Normal,f4,false,0);
 
   EndWindow;
 
@@ -246,36 +246,36 @@ begin
     SetWRect(20,120,350,300);
     h=100; v=10;
     PeriodField(h,v,"Дата");
-    EditField(h,v+=20,150,"Клієнт",Normal,f1,false,CUSClass);
-    EditField(h,v+=20,150,"Група",Normal,f2,false,ITSClass);
+    EditField(h,v+=20,150,"Клиент",Normal,f1,false,CUSClass);
+    EditField(h,v+=20,150,"Группа",Normal,f2,false,ITSClass);
     EditField(h,v+=20,150,"Товар",Normal,f3,false,INSClass);
-    EditField(h,v+=20,150,"Постачальник",Normal,f4,false,VESClass);
-    EditField(h,v+=20,150,"Класифікація",Normal,f5,false,DISClass);
+    EditField(h,v+=20,150,"Поставщик",Normal,f4,false,VESClass);
+    EditField(h,v+=20,150,"Классификация",Normal,f5,false,DISClass);
 
 
   EndWindow;
 
     WindowBegin("Bonus",MyBonusRClass,CGRcW,RcType);
       SetWRect(20,120,360,280);
-      PeriodField(150,45,"Період");
+      PeriodField(150,45,"Период");
     EndWindow;
 
     WindowBegin("Отчет по Shops",MyShopsRecordRClass,CGRcW,RcType);
     SetWRect(20,120,350,300);
     h=100; v=10;
     PeriodField(h,v,"Дата");
-    EditField(h,v+=20,150,"Клієнт",Normal,f1,false,CUSClass);
-    ButtonFrame(h,v+=40,100,4,"Звіт по:");
+    EditField(h,v+=20,150,"Клиент",Normal,f1,false,CUSClass);
+    ButtonFrame(h,v+=40,100,4,"Отчет по:");
     RadioButton(h,v,1,0,"SHOPS",flags[1]);
     RadioButton(h,v+=20,2,0,"EXHIBITION",flags[1]);
-    RadioButton(h,v+=20,3,0,"Обидва",flags[1]);
-    //EditField(h,v+=20,150,"Група",Normal,f2,false,ITSClass);
+    RadioButton(h,v+=20,3,0,"Оба",flags[1]);
+    //EditField(h,v+=20,150,"Группа",Normal,f2,false,ITSClass);
     //EditField(h,v+=20,150,"Товар",Normal,f3,false,INSClass);
-    //EditField(h,v+=20,150,"Постачальник",Normal,f4,false,VESClass);
-    //EditField(h,v+=20,150,"Класифікація",Normal,f5,false,DISClass);
+    //EditField(h,v+=20,150,"Поставщик",Normal,f4,false,VESClass);
+    //EditField(h,v+=20,150,"Классификация",Normal,f5,false,DISClass);
   EndWindow;
 
-  WindowBegin("Рух готівки",MyCashFlowRClass,CGRcW,RcType);
+  WindowBegin("Движение налички",MyCashFlowRClass,CGRcW,RcType);
     UseView(RcVc);
     SetWRect(90,80,450,140);
     PeriodField(50,20,"Period");
@@ -290,7 +290,7 @@ begin
     EditField(h,v+=20,150,"Текст",Normal,f1,false,0);
   EndWindow;
 
-  WindowBegin("Резер по рахункам",MyReservStatRClass,CGRcW,RcType);
+  WindowBegin("Резерв по счетам",MyReservStatRClass,CGRcW,RcType);
     SetWRect(20,120,350,300);
     EditField(h,20,150,"Клиент",Normal,f1,false,CUSClass);
   EndWindow;
@@ -304,8 +304,8 @@ begin
   WindowBegin("Отчет",ExportCashInvoicesEClass,CGEcW,RcType);
     SetWRect(20,120,350,300);
     v=20;
-    EditField(h,v+=20,150,"Клієнт",Normal,f1,false,CUSClass);
-    EditFieldTL(h,v+=20,80,"З дати",M4Date,Normal,0,d1,false,PasteCurDate);
+    EditField(h,v+=20,150,"Клиент",Normal,f1,false,CUSClass);
+    EditFieldTL(h,v+=20,80,"С даты",M4Date,Normal,0,d1,false,PasteCurDate);
     EditFieldTL(h,v+=20,80,"Filename",M4Str,Normal,0,f2,false,0);
   EndWindow;
 
@@ -319,10 +319,10 @@ begin
     //EditField(h,20,150,"№ карточки",Normal,f1,false,POSClientRClass);
   EndWindow;
 
-  WindowBegin("История продажу по клиэнтам",CUSalesRepRClass,CGRcW,RcType);
+  WindowBegin("История продажи по клиентам",CUSalesRepRClass,CGRcW,RcType);
     SetWRect(20,120,350,300);
-    PeriodField(h,20,"Період");
-    EditField(h,40,150,"Клієнт",Normal,f1,false,CUSClass);
+    PeriodField(h,20,"Период");
+    EditField(h,40,150,"Клиент",Normal,f1,false,CUSClass);
     EditField(h,60,150,"Товар",Normal,f2,false,INSClass);
   EndWindow;
   
@@ -331,15 +331,15 @@ begin
     EditField(h,40,150,"Телефон",Normal,f1,false,0);
   EndWindow;
 
-  WindowBegin("Заплановані передплати по замовленням",PUOrdersToPrepayRClass,CGRcW,RcType);
+  WindowBegin("Запланированные передоплаты по заказам",PUOrdersToPrepayRClass,CGRcW,RcType);
     SetWRect(20,120,350,300);
-    PeriodField(h,20,"Період");
-    EditField(h,40,150,"Вид замовлення",Normal,ObjType,false,POrderClassSClass);
-    EditField(h,60,150,"Об'єкт",Normal,ObjStr,false,ObjSClass);
+    PeriodField(h,20,"Период");
+    EditField(h,40,150,"Вид заказа",Normal,ObjType,false,POrderClassSClass);
+    EditField(h,60,150,"Объект",Normal,ObjStr,false,ObjSClass);
   EndWindow;
 
 
-  WindowBegin("Звіт по віртуальним товарам на веб-магазині",WebSyncRegRClass,CGRcW,RcType);
+  WindowBegin("Отчет по виртуальным товарам на веб-магазине",WebSyncRegRClass,CGRcW,RcType);
     SetWRect(20,120,400,220);
 
 
@@ -350,43 +350,43 @@ begin
 
   EndWindow;
 
-  WindowBegin("Середній чек по магазинам",MidSaleCheckRClass,CGRcW,RcType);
+  WindowBegin("Средний чек по магазинам",MidSaleCheckRClass,CGRcW,RcType);
     SetWRect(20,120,350,300);
-    PeriodField(h,20,"Період");
+    PeriodField(h,20,"Период");
     EditField(h,40,150,"Магазин",Normal,f1,false,LocalMachineSClass);
-    CheckBox(h,v+=16,0,"Не враховувати готівкові чеки",flags[1]);
-		CheckBox(h,v+=32,0,"Не враховувати безготівкові чеки",flags[2]);
+    CheckBox(h,v+=16,0,"Не учитывать наличные чеки",flags[1]);
+		CheckBox(h,v+=32,0,"Не учитывать безналичные чеки",flags[2]);
   EndWindow;
 
-  WindowBegin("Відомість (опис) товарних залишків по магазину",StoresStockRClass,CGRcW,RcType);
+  WindowBegin("Ведомость (описание) товарних отстатков по магазину",StoresStockRClass,CGRcW,RcType);
 	SetWRect(20,120,350,300);
 	EditField(h,40,150,"Магазин",Normal,f1,false,LocationSClass);
 	EndWindow;
 
-	WindowBegin("Аналiз оборотностi товарiв",ItemTurnoverRClass,CGRcW,RcType);
+	WindowBegin("Анализ оборотности товаров",ItemTurnoverRClass,CGRcW,RcType);
     SetWRect(20,120,350,300);
-    PeriodField(h,20,"Період");
+    PeriodField(h,20,"Период");
     EditField(h,40,150,"Товар",Normal,f1,false,INSClass);
-    EditField(h,60,150,"Група",Normal,f2,false,ITSClass);
+    EditField(h,60,150,"Группа",Normal,f2,false,ITSClass);
     EditField(h,80,150,"Склад",Normal,f3,false,LocationSClass);
   EndWindow;
   
-  WindowBegin("Розбіжність складу з балансом",StockBalDiffRClass,CGRcW,RcType);
+  WindowBegin("Расхождение склада з балансом",StockBalDiffRClass,CGRcW,RcType);
     SetWRect(20,120,350,300);
     EditFieldTL(h,v+=20,80,"На дату",M4Date,Normal,0,d1,false,PasteCurDate);
   EndWindow;
 
   WindowBegin("Перемещения пользователя",CurUserStockMovsRClass,CGRcW,RcType);
     SetWRect(20,120,350,300);
-    CheckBox(80,20,0,"Виводити затверджені документи",flags[1]);
+    CheckBox(80,20,0,"Выводить утвержденные документы",flags[1]);
   EndWindow;
   
-  WindowBegin("Прострочені переміщення для сервісу",ExpiredMoveForServRClass,CGRcW,RcType);
+  WindowBegin("Простроченные перемещения для сервиса",ExpiredMoveForServRClass,CGRcW,RcType);
     SetWRect(20,120,350,300);
-    EditField(h,20,150,"Кількість днів",Normal,flags[1],false,0);
+    EditField(h,20,150,"Количество дней",Normal,flags[1],false,0);
   EndWindow;
   
-  WindowBegin("Розбіжність складу з балансом",StockBalDiffRClass,CGRcW,RcType);
+  WindowBegin("Расхождение склада с балансом",StockBalDiffRClass,CGRcW,RcType);
     SetWRect(20,120,350,300);
     EditFieldTL(h,v+=20,80,"На дату",M4Date,Normal,0,d1,false,PasteCurDate);
   EndWindow;

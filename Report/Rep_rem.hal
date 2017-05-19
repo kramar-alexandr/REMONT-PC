@@ -1,0 +1,1167 @@
+external function val ItemInStock(var record INVc,string);
+external procedure GetAccDCBalance(string,string,Date,record ObjBalVc,Integer,Integer,Integer,string,var val,var val,Integer);
+external procedure ExtractObj(string,var Integer,var string);
+external function LongInt DateDiff(Date,Date);
+remote procedure LocManyStockEn(record RcVc);///new procedure
+remote procedure LocManyStockGroupEn(record RcVc);///new procedure
+remote procedure MyTransitReportEn();
+remote procedure MyItemReportEn();
+remote procedure MyTransitReportGroupEn();
+remote procedure BuhExportEn();
+remote procedure OstatkiPoPostavchikamEn();
+remote procedure SVOStockMyNewEn();
+remote procedure AutoUnreservOrderMn();
+remote procedure WSVcOKReportEn();
+external function roundmode SetRoundModeD(Integer);
+
+	SetLangMode(LangUkrainian,"UKR",0);
+
+
+global procedure runscript(string path,string param)
+begin
+
+runprogram(path,param);
+
+return;
+end;
+
+//-------------------------------------------------------------------------------------------------------------------
+global
+procedure GetItemName(string Item, var string Name,var string Groupe)
+begin
+  record INVc INr;
+  
+  Name = "";
+  Groupe = "";
+  INr.Code = Item;
+  ReadFirstMain(INr,1,true);
+  Name = INr.Name;
+  Groupe = INr.Group;
+  
+return;
+end;
+//------------------------------------------------------------ 
+
+global function string 20 GetPostavschik(string ArtCode,string serialno)
+begin
+  record PUVc PUr;
+  row PUVc PUrw;
+  boolean TrHs,testf;
+  integer i;
+  string 20 res;
+  record ItemHistVc IHr;
+  
+//MessageBox(0,serialno);
+  res = "";
+  IHr.ArtCode = ArtCode;
+  IHr.SerialNr = serialno;
+  IHr.FileName = "PUVc";
+  TrHs = true;
+  if(ReadFirstKey("ArtCodeSerialNr",IHr,3,True)) begin
+    if((IHr.ArtCode == ArtCode) and (IHr.SerialNr == serialno) and (IHr.FileName == "PUVc")) then begin
+      PUr.SerNr = IHr.TransNr;
+      if(ReadFirstMain(PUr,1,true)) then begin
+       res = PUr.VECode;
+      end;
+       TrHs = false;
+    end;
+  end;
+GetPostavschik = res;
+  return;
+end;
+
+
+global procedure GetMyDebCred(Date d1,Date d2,string accnum,var val Debit,var val Credit,Var Val Dif)
+begin
+Record MainVc Mainr;
+Record TRVc TRr;
+row TRVc TRrw;
+boolean TrHs,testf;
+integer i,rwcnt;
+Record FBVc FBr;
+row FBVc FBrw;
+record ObjBalVc ObjBalr;
+val Debit1,Credit1,Dif1;
+
+Dif=0; Credit=0; Debit=0;
+ObjBalr.AccNumber = accnum;
+ReadFirstmain(ObjBalr,1,true);
+  
+GetAccDCBalance(accnum,"",d2,ObjBalr,0,0,0,"",Debit,Credit,0);
+GetAccDCBalance(accnum,"",d1,ObjBalr,0,0,0,"",Debit1,Credit1,0);
+Credit = Credit-Credit1;
+Debit = Debit-Debit1;
+Dif = Debit-Credit;
+
+ 
+return;
+end;
+
+global
+ function boolean fileonserver(string filename)
+begin
+  boolean res;
+    logtext(0,"CheckStart_Remote");
+
+  res = false;
+  res = FILEEXISTS(filename);
+  fileonserver = res;
+      logtext(0,"CheckEnd_Remote");
+
+  return;
+end;
+
+
+global
+updating function boolean SaveIVCashToServ(integer curcomp, integer offlinecomp, record IVCashVc IVCashr)
+begin
+boolean res;
+
+  SetServerCompany(curcomp);
+
+  res = false;
+  if (RecordStore(IVCashr,true)) then begin
+    logtext(0,"RecordStore");
+    res = true;
+  end;
+  SetServerCompany(offlinecomp);
+
+  SaveIVCashToServ = res;
+return;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+global procedure WriteRepTofSrvFile(Area MyArea,string filename)
+begin
+
+
+//AddStringToArea("MyArea",MyArea);
+
+LogText(0,"Write BEGIN " & filename);
+SetFileOnServer(true);
+
+createfile(filename);
+closefile;
+WRITEAREATOFILE(MyArea,filename,0);
+
+
+SetFileOnServer(false);
+LogText(0,filename);
+LogText(0,"Write END " & filename);
+
+return;
+end;
+
+//----------------------------------------------------------ОТЧЕТ ПО СТОКУ--------------------------------------------
+global procedure MyItemReport()
+begin
+  Area MyArea,MyArea1;
+  record INVc INr;
+  Boolean TrHs,TrHs1;
+  Boolean Mool;
+  val qant,price,ssum;
+  integer i;
+  Record LocationVc Locr;
+  string 255 Mystring,tstr,nextline,sqant,scost;
+  LongInt areasize,junk,read;
+  string 255 MyCode,MyName,MyCost,MyQant,MyLocation,filename,MySum;
+  integer namelenth;
+  integer compno;
+  record ItemStatusVc ISr;
+  
+  compno = CurrentCompany;
+  
+  LogText(0,"Ot4et po stoky BEGIN");
+  
+  i=0;
+  TrHs = true;
+  INr.Code=0;
+  nextline = chr(13) & chr(10);
+  
+  AddTextToArea("PartNo" & chr(9) & "Name" & chr(9)  & "Quant" & chr(9) & "Cost" & chr(9) & "Sum" & chr(9) & "Stock" & chr(9) & "Group" & chr(13) & chr(10),MyArea);
+  Mool = true;
+  ISr.Code = "";
+  while (loopmain(ISr,1,Mool)) begin
+    if(ISr.Instock!=0 and ISr.Location!=";;;" and (ISr.Location != "EQUI_DREAM") and (ISr.Location != "EQUI_D_DEK") and (ISr.Location != "EQUI_D_KAR") and (ISr.Location != "EQUI_KARAV") and (ISr.Location != "EQUI_KH_KR") and (ISr.Location != "EQUI_OFFIC") and (ISr.Location != "EQUI_OLIMP") and (ISr.Location != "EQUI_O_SAD")) then begin
+      INr.Code = ISr.Code;
+      If(readfirstmain(INr,1,True)) then begin
+        MyName = ConvertStringFromCodePage("UTF-8",INr.Name);
+        AddTextToArea(ISr.Code & chr(9) & MyName & chr(9) & ISr.Instock & chr(9) & INr.LastPurchPrice & chr(9) & INr.LastPurchPrice*ISr.Instock & chr(9) & ISr.Location & chr(9) & INr.Group & chr(13) & chr(10),MyArea);  
+      end;
+    end;
+  end;
+  
+  
+  SetFileOnServer(true);
+  filename = "Stock/Stock.xls";
+  createfile(filename);
+  closefile;
+  WRITEAREATOFILE(MyArea,filename,0);
+  
+  LogText(0,"Ot4et po stoky CREATE_FILE ");
+  SetFileOnServer(false);
+  
+  Switch compno begin
+    case 1: RunProgram("Stock/StockFull.sh", "");
+    case 2: RunProgram("Stock/CUAStockFull.sh", "");
+  end;
+  
+  //RunProgram("Stock/StockFull.sh", "");
+  //RunProgram("Datecs/prt.exe","");
+  LogText(0,"Ot4et po stoky END");
+
+return;
+end;
+
+//-------------------------------------------------------Отчет по складам отдельно---------------------------------------
+global procedure LocStockToArrea(VAR string location)
+begin
+  Area  MyArea;
+  record INVc INr;
+  Boolean TrHs,testf;
+  val qant;
+  string 255 MyCode,MyName,MyCost,MyQant,MyLocation,sqant,scost;
+  record ItemStatusVc ISr;
+  string 100 filename;
+  addtexttoarea("PartNo" & chr(9) & "Name" & chr(9) & "Quant" & chr(9) & "Stock" & chr(9) & "Group" & chr(13) & chr(10),MyArea);
+  
+  TrHs=true;
+  INr.Code=0;
+  ISr.Location = location;
+  
+  if (nonblank(location)) then begin
+    while(loopkey("Location",ISr,1,TrHs)) begin
+      testf = TrHs;
+      if(ISr.Location!=location) then begin TrHs = false; testf = false; end;
+  
+      if (testf) then begin
+        if (ISr.Instock!=0) then begin
+          INr.Code = ISr.Code;
+          if(ReadFirstmain(INr,1,true)) begin
+            addtexttoarea(ISr.Code & chr(9) & INr.Name & chr(9) & ISr.Instock & chr(9) & location & chr(9) & INr.Group & chr(13) & chr(10),MyArea);
+          end;
+        end;
+      end;
+    end;
+  
+  SetFileOnServer(true);
+  filename = "Stock/" & location & "x_.xls";
+  LOGTEXT(0,"CreateFile " & filename);
+  createfile(filename);
+  closefile;
+  WRITEAREATOFILE(MyArea,filename,0);
+  SetFileOnServer(false);
+  end;
+return;
+end;
+//------------------------------------------------------Отчет по складам без коста----------------------------------------
+global procedure LocManyStock(record RcVc RepSpec)
+begin
+  Area  MyArea;
+  record INVc INr;
+  Boolean TrHs;
+  val qant;
+  string 255 MyCode,MyName,MyCost,MyQant,MyLocation,sqant,scost,location,ArtCode;
+  integer wn,i;
+  record ItemStatusVc ISr;
+  
+
+  addtexttoarea("PartNo" & chr(9) & "Name" & chr(9) & "Quant" & chr(9) & "Stock" & chr(9) & "Group" & chr(13) & chr(10),MyArea);
+  i=0;
+  ExtractObj(RepSpec.f1,i,location);
+  while (nonblank(location)) begin
+    TrHs=true;
+    INr.Code=0;
+    //stopalert(location);
+    if (nonblank(location)) then begin
+      While(loopmain(INr,1,TrHs)) begin
+        //qant=round(ItemInStock(INr,location),0);
+				qant=round(ItemInStock(INr,location),SetRoundModeD(0));   //Edit----------------------Dima  14.05.2015  
+        if (qant!=0) then begin
+          sqant = Valtostring(qant,M4Val,chr(0),chr(49),1);
+          //scost =Valtostring(INr.LastPurchPrice,M45Val,chr(0),chr(46),0);
+          
+          MyCode = ConvertStringFromCodePage("UTF-8",INr.Code);
+          MyName = ConvertStringFromCodePage("UTF-8",INr.Name);	
+          MyQant = ConvertStringToCodePage("UTF-8",sqant);
+          MyLocation = ConvertStringToCodePage("UTF-8",location);
+          addtexttoarea(MyCode & chr(9) & MyName & chr(9) & MyQant & chr(9) & MyLocation & chr(9) & INr.Group & chr(13) & chr(10),MyArea);
+        end;
+      end;
+    end;
+  ResetLoop(INr);
+  ExtractObj(RepSpec.f1,i,location);
+  end;
+  
+  switch (RepSpec.Media) begin
+    case 0: WriteRepTofSrvFile(MyArea,"Stock/ManagerStock.xls");
+            RunProgram("Stock/CUAManagerStocks.sh", "");
+    case 1: WriteRepTofSrvFile(MyArea,"Stock/ServiceStock.xls");
+            RunProgram("Stock/CUAServiceStocks.sh", "");
+    case 2: WriteRepTofSrvFile(MyArea,"Stock/PHTManagerStock.xls");
+            RunProgram("Stock/PHTManagerStocks.sh", ""); 
+  end;
+  
+  return;
+end;
+//----------------------------------------Отчет по стоку без коста-----------------------------------
+
+global procedure MyItemReportNoCost()
+begin
+Area MyArea,MyArea1;
+record INVc INr;
+Boolean TrHs,TrHs1;
+Boolean Mool;
+val qant,price;
+integer i;
+Record LocationVc Locr;
+string 255 Mystring,tstr,nextline,sqant,scost;
+LongInt areasize,junk,read;
+string 255 MyCode,MyName,MyCost,MyQant,MyLocation,filename;
+integer namelenth;
+integer compno;
+record ItemStatusVc ISr;
+
+compno = CurrentCompany;
+
+LogText(0,"Ot4et po stoky bez kosta BEGIN");
+
+i=0;
+TrHs = true;
+INr.Code=0;
+nextline = chr(13) & chr(10);
+
+AddTextToArea("PartNo" & chr(9) & "Name" & chr(9) & "Quant" & chr(9) & "Stock" & chr(13) & chr(10),MyArea);
+
+Mool = true;
+ISr.Code = "";
+while (loopmain(ISr,1,Mool)) begin
+  if(ISr.Instock!=0 and ISr.Location!=";;;" and (ISr.Location != "EQUI_DREAM") and (ISr.Location != "EQUI_D_DEK") and (ISr.Location != "EQUI_D_KAR") and (ISr.Location != "EQUI_KARAV") and (ISr.Location != "EQUI_KH_KR") and (ISr.Location != "EQUI_OFFIC") and (ISr.Location != "EQUI_OLIMP") and (ISr.Location != "EQUI_O_SAD")) then begin
+    INr.Code = ISr.Code;
+    If(readfirstmain(INr,1,True)) then begin
+      MyName = ConvertStringFromCodePage("UTF-8",INr.Name);
+      AddTextToArea(ISr.Code & chr(9) & MyName & chr(9) & ISr.Instock & chr(9) & ISr.Location & chr(13) & chr(10),MyArea);  
+    end;
+  end;
+end;
+
+
+SetFileOnServer(true);
+filename = "Stock/StockNoCost.xls";
+createfile(filename);
+closefile;
+WRITEAREATOFILE(MyArea,filename,0);
+
+LogText(0,"Ot4et po stoky bez kosta CREATE_FILE ");
+
+SetFileOnServer(false);
+
+switch compno begin
+  case 1: RunProgram("Stock/StockFullNoCost.sh", "");
+  case 2: RunProgram("Stock/CUAStockFullNoCost.sh", "");
+end;
+
+LogText(0,"Ot4et po stoky bez kosta END");
+
+return;
+end;
+
+//-----------------------------------------------------Отчет по транзитному складу---------------------------------
+global
+procedure RunTransReportRemote()
+begin
+  record SMVc SMr;
+  row SMVc SMrw;
+  record POVc POr;
+  row POVc POrw;
+  record PUVc PUr;
+  record RLinkVc RLr;
+  boolean TrHs,testf;
+  integer i,j,SMcnt,POcnt;
+  area MyArea;
+  string 100 Name,Group;
+  
+  addtexttoarea("PartNo" & chr(9) & "Name" & chr(9) & "Quant" & chr(13) & chr(10),MyArea);
+  RecordNew(SMr);
+  TrHs = true;
+  while (loopmain(POr,1,TrHs)) begin
+    if (POr.OKFlag == 1 and POr.Closed!=1 and POr.POClass=="TRWH") begin
+      if (not(ReadRecordLink(POr,1,PUr,RLr))) then begin
+        POcnt = matrowcnt(POr);
+        for(i=0;i<POcnt;i=i+1) begin
+          matRowGet(POr,i,POrw);
+          SMcnt = MatRowCnt(SMr);
+          testf = true;
+          for(j=0;j<SMcnt;j=j+1) begin
+            MatRowget(SMr,j,SMrw);
+            if (POrw.ArtCode == SMrw.Objects) then begin
+              SMrw.DebVal = SMrw.DebVal+POrw.Quant;
+              MatRowPut(SMr,j,SMrw);
+              testf = false;
+            end;
+          end;
+          if(testf) begin
+           SMrw.Objects = POrw.ArtCode;
+           SMrw.DebVal = POrw.Quant;
+           matRowInsert(SMr,SMcnt,SMrw);
+          end;
+        end;
+      end;
+    end;
+  end;
+  SMcnt = MatRowCnt(SMr);
+  for (j=0;j<SMcnt;j=j+1) begin
+    MatRowget(SMr,j,SMrw);
+    
+    SMrw.Objects = ConvertStringFromCodePage("UTF-8",SMrw.Objects);
+    GetItemName(SMrw.Objects,Name,Group);
+    addtexttoarea(SMrw.Objects & chr(9) & Name & chr(9) & SMrw.DebVal & chr(13) & chr(10),MyArea);
+  end;
+  
+  WriteRepTofSrvFile(MyArea,"Stock/CUA_TRWH.xls");
+  
+  RunProgram("Stock/CUA_TRWH.sh","")
+  return;
+end;
+
+//------------------------------------------------------------------------------------------------------------------------------
+
+
+global procedure CUAManagerStocksRClassReportDefaults(Integer wn)
+begin
+  record RcVc RepSpec;  
+
+  GetwindowRecord(wn,RepSpec);
+  RepSpec.f1 = "INV#1,INV#1/ADJ,INV#1/E,INV#2,INV#2/E,INV_OUT,OFFICE,TRWH,TRANSIT#2,INV_OUT#1,INV#1/E"; 
+ // messagebox(0,1);
+  PutWindowRecord(wn,RepSpec);
+return;
+end;
+
+
+global procedure CUAServiceStocksRClassReportDefaults(Integer wn)
+begin
+  record RcVc RepSpec;  
+
+  GetwindowRecord(wn,RepSpec);  
+  RepSpec.f1 = "SERVICE,PACK";
+  PutWindowRecord(wn,RepSpec);
+return;
+end;
+
+
+global procedure ManagerStocksRClassReportDefaults(Integer wn)
+begin
+  record RcVc RepSpec;  
+	record CompaniesBlock COb;
+	row CompaniesBlock COrw;
+	integer i,mtrw;
+	
+	
+	
+	blockload(COb);
+	
+	matrowget(COb,currentcompany-1,COrw);
+  GetwindowRecord(wn,RepSpec);  
+  switch(COrw.CompCode)begin
+  
+  case 1:RepSpec.Media = 3;
+  RepSpec.f1 = "DN_KARAVAN,DREAM_TOWN,D_DEKOR_SR,KH_KRV,K_KARAVAN,K_TC_OLIMP,O_SADI,OCEANPLAZA,LV_O_PASS,MAIN,INT_STORE,STAND_5,STAND_4,STAND_7";
+  
+  case 2:RepSpec.Media = 1;
+  RepSpec.f1 = "INV#1/ADJ,INV#2/ADJ,EXHIBITION/ADJ"; 
+  
+  case 6:RepSpec.Media = 2;
+  RepSpec.f1 = "DOA#1,DOA_INV,INV#1,INV#2,INV_OUT,K_TRANSIT,MARKETING,OFFICE,RSV_OKS,SERVICE,TRANSIT#2,TRWH,EXHIBITION,STORE,INV#1/E,STORE_SM,STORE_KH_M,STORE_SM_D,STORE_DEMO,INV#1_TXT,INV#2_TXT,MARKET_TXT,TRNS#2_TXT,TRWH_TXT,TRANSIT#2"; 
+  RepSpec.f2 = ",FOL,PROMS,";
+  
+  end;
+ // messagebox(0,1);
+PutWindowRecord(wn,RepSpec);
+return;
+end;
+
+global procedure PHTManagerStocksGroupRClassReportDefaults(Integer wn)
+begin
+record RcVc RepSpec;  
+  GetwindowRecord(wn,RepSpec);  
+  RepSpec.Media = 2;
+  RepSpec.f1 = "DOA#1,DOA_INV,INV#1,INV#2,INV_OUT,K_TRANSIT,MARKETING,OFFICE,RSV_OKS,SERVICE,TRANSIT#2,TRWH,EXHIBITION,STORE,INV#1/E,STORE_SM,STORE_SM_D,STORE_DEMO,STORE_KH_M,INV#1_TXT,INV#2_TXT"; 
+  RepSpec.f2 = ",FOL,PROMS,";
+ // messagebox(0,1);
+PutWindowRecord(wn,RepSpec);
+return;
+end;
+
+
+global procedure MyGarRn(record RcVc RepSpec)
+begin
+record ItemHistVc IHr,IHl;
+record PUVc PUr;
+record INVc INr;
+string 100 Item,Vender,location,serial,shno,comment;
+string 100 art,name,loc,vend,key;
+boolean TrHs,testf,find,printf,testf1,TrHs1,testf2;
+date godate;
+  Item = "";
+  Item = RepSpec.f1;
+  Vender = RepSpec.f4;
+  location = RepSpec.f3;
+  serial = RepSpec.f2;
+  printf = true;
+  if ((RepSpec.Media==mtExcel) or (RepSpec.Media==mtFile) or (RepSpec.Media==mtClipBoard)) then begin
+    printf = false;
+  end;
+  
+  logtext(0,"garantyreport begin");
+    
+  StartReportJob("Гарантійні терміни по товарам");
+    if(nonblank(Item)) then begin
+      Header(2,"Товар: " & Item,1);
+    end else begin
+      Header(2,"Всі товари",1);
+    end;
+   if(nonblank(location)) then begin
+      Header(2,"Склад: " & location,0);
+    end else begin
+      Header(2,"Всі склади",0);
+    end;
+   if(nonblank(serial)) then begin
+      Header(3,"Серійний №: " & serial,1);
+    end else begin
+      Header(3,"Всі серійні номери",1);
+    end;
+    if(nonblank(Vender)) then begin
+      Header(3,"Постачальник: " & Item,0);
+    end else begin
+      Header(3,"Всі постачальники",0);
+    end;
+  EndHeader;
+  
+  If(printf) then begin
+    StartFormat(15);
+      OutString(0,0,"Парт №",false);
+      OutString(80,0,"Назва",false);
+    EndFormat;
+  end;
+  
+  StartFormat(15);
+    if(not(printf)) then begin
+      OutString(0,0,"Парт №",false);
+      OutString(40,0,"Назва",false);
+    end;
+    OutString(0,0,"Пост-к",false);
+    OutString(80,0,"Серійний №",false);
+    OutString(170,0,"Дата надх.",false);
+    OutString(220,0,"Склад",false);
+    OutString(300,0,"Дата відв.",false);
+    OutString(350,0,"Кост",false);
+    OutString(407,0,"Днів з надх.",false);
+    OutString(1,0,"Гарантія до",true);
+  EndFormat;
+  
+  // Blank all---------------------------------------
+  if(blank(serial)) then begin
+    testf = true;
+    IHl.FileName = "PUVc";
+    IHl.ArtCode = Item;
+    art = "";
+    name = "";
+    key = "FNArtCode";
+  end;
+  
+  if(nonblank(serial)) then begin
+    testf = true;
+    IHl.SerialNr = serial;
+    IHl.ArtCode = Item;
+    IHl.FileName = "PUVc";
+    art = "";
+    name = "";
+    key = "ArtCodeSerialNr";
+  end;
+  TrHs = true;
+  if(nonblank(Vender) and (blank(Item)) and (blank(serial))) then begin
+    PUr.VECode = Vender;
+    PUr.SerNr = 0;
+    while(loopkey("VECode",PUr,1,TrHs)) begin
+      testf = true;
+      if(PUr.VECode!=Vender) then begin TrHs = false; testf = false; end;
+      if(testf) then begin
+        IHl.TransNr = PUr.SerNr;
+        IHl.FileName = "PUVc";
+        TrHs1 = true;
+        while(loopkey("FNTransNr",IHl,2,TrHs1)) begin
+          testf1 = true;
+          if(IHl.TransNr != PUr.SerNr) then begin TrHs1 = false; testf1 = false; end;
+       
+          if(testf1) then begin
+            
+            loc = IHl.Location;
+            
+            IHr.ArtCode = IHl.ArtCode;
+            IHr.SerialNr = IHl.SerialNr;
+            IHr.FileName = "SHVc";
+            IHr.SerNr = IHl.SerNr;
+            shno = "";
+            godate = "";
+            comment = "";
+            find = true;
+            if(ReadFirstKey("ArtCodeSerialNr",IHr,3,true)) then begin      
+              shno = IHr.TransNr;
+              godate = IHr.TransDate;
+              comment = "Відвантаження";
+              loc = IHr.Location;
+              find = false;
+            end;
+            
+            if(find) then begin
+              IHr.ArtCode = IHl.ArtCode;
+              IHr.SerialNr = IHl.SerialNr;
+              IHr.FileName = "SDVc";
+              IHr.SerNr = IHl.SerNr;
+              shno = "";
+              godate = "";
+              if(ReadFirstKey("ArtCodeSerialNr",IHr,3,true)) then begin      
+                shno = IHr.TransNr;
+                godate = IHr.TransDate;
+                comment = "Списання";
+                loc = IHr.Location;
+                find = false;
+              end;
+            end;
+            
+            testf2 = true;
+            if(nonblank(location) and (location!=loc)) then begin testf2 = false; end;
+            
+            if((loc == "EQUI_DREAM") or (loc== "EQUI_D_DEK") or (loc== "EQUI_D_KAR") or (loc== "EQUI_KARAV") or (loc== "EQUI_KH_KR") or (loc== "EQUI_OFFIC") or (loc== "EQUI_OLIMP") or (loc== "EQUI_O_SAD")) then begin
+              testf2 = false;
+            end;
+            
+            if(testf2) then begin
+            
+              if(art!=IHl.ArtCode) then begin
+                art = IHl.ArtCode;
+                INr.Code = art;
+                ReadFirstMain(INr,1,true);
+                name = INr.Name;
+                If(printf) then begin
+                  StartFormat(15);
+                    gray_divider(0,1);
+                    OutString(0,0,art,false);
+                    OutString(80,0,name,false);
+                  EndFormat;
+                end;
+              end;        
+            
+              StartFormat(15);
+              If(not(printf)) then begin
+                OutString(0,0,IHl.ArtCode,false);
+                OutString(50,0,name,false);
+              end;
+              OutString(0,0,PUr.VECode,false);
+              OutString(80,0,IHl.SerialNr,false);
+              OutString(170,0,IHl.TransDate,false);
+              OutString(220,0,loc,false);
+              OutString(300,0,godate,false);
+              OutString(350,0,IHl.TotCostPrice,false);
+              OutString(407,0,DateDiff(currentdate,IHl.TransDate),false);
+              if(nonblank(godate)) then begin
+                OutString(1,0,addyear(godate,1),true);
+              end;
+              //OutString(380,0,shno,false);
+              //OutString(1,0,comment,true);
+              EndFormat;
+            end;
+          end;
+        end;
+        ResetLoop(IHl);
+      end;
+    end;
+    
+  end else begin
+    while(loopkey(key,IHl,2,TrHs)) begin
+      testf = true;
+      if(IHl.FileName != "PUVc") then begin TrHs = false; testf = false; end;
+      if((nonblank(Item)) and (IHl.ArtCode != Item)) then begin TrHs = false; testf = false; end;
+     
+      
+      if(testf) then begin
+        vend = "";
+        PUr.SerNr = IHl.TransNr;
+        if(Readfirstmain(PUr,1,true)) then begin
+          vend = PUr.VECode;
+        end;
+      
+      end;
+    //  IHr.SerNr = IHl.SerNr;
+    
+     if ((nonblank(Vender)) and (Vender!=vend)) then begin testf = false; end;
+      if(testf) then begin
+        
+        loc = IHl.Location;
+        
+        IHr.ArtCode = IHl.ArtCode;
+        IHr.SerialNr = IHl.SerialNr;
+        IHr.FileName = "SHVc";
+        IHr.SerNr = IHl.SerNr;
+        shno = "";
+        godate = "";
+        comment = "";
+        find = true;
+        if(ReadFirstKey("ArtCodeSerialNr",IHr,3,true)) then begin      
+          shno = IHr.TransNr;
+          godate = IHr.TransDate;
+          comment = "Відвантаження";
+          loc = IHr.Location;
+          find = false;
+        end;
+        
+        if(find) then begin
+          IHr.ArtCode = IHl.ArtCode;
+          IHr.SerialNr = IHl.SerialNr;
+          IHr.FileName = "SDVc";
+          IHr.SerNr = IHl.SerNr;
+          shno = "";
+          godate = "";
+          if(ReadFirstKey("ArtCodeSerialNr",IHr,3,true)) then begin      
+            shno = IHr.TransNr;
+            godate = IHr.TransDate;
+            comment = "Списання";
+            loc = IHr.Location;
+            find = false;
+          end;
+        end;
+        
+        testf1 = true;
+        if(nonblank(location) and (location!=loc)) then begin testf1 = false; end;
+        
+        if((loc == "EQUI_DREAM") or (loc== "EQUI_D_DEK") or (loc== "EQUI_D_KAR") or (loc== "EQUI_KARAV") or (loc== "EQUI_KH_KR") or (loc== "EQUI_OFFIC") or (loc== "EQUI_OLIMP") or (loc== "EQUI_O_SAD")) then begin
+          testf1 = false;
+        end;
+        
+        if(testf1) then begin
+        
+          if(art!=IHl.ArtCode) then begin
+            art = IHl.ArtCode;
+            INr.Code = art;
+            ReadFirstMain(INr,1,true);
+            name = INr.Name;
+            If(printf) then begin
+              StartFormat(15);
+                gray_divider(0,1);
+                OutString(0,0,art,false);
+                OutString(80,0,name,false);
+              EndFormat;
+            end;
+          end;        
+        
+          StartFormat(15);
+          If(not(printf)) then begin
+            OutString(0,0,IHl.ArtCode,false);
+            OutString(50,0,name,false);
+          end;
+          OutString(0,0,vend,false);
+          OutString(80,0,IHl.SerialNr,false);
+          OutString(170,0,IHl.TransDate,false);
+          OutString(220,0,loc,false);
+          OutString(300,0,godate,false);
+          OutString(350,0,IHl.TotCostPrice,false);
+          OutString(407,0,DateDiff(currentdate,IHl.TransDate),false);
+          if(nonblank(godate)) then begin
+            OutString(1,0,addyear(godate,1),true);
+          end;
+          //OutString(380,0,shno,false);
+          //OutString(1,0,comment,true);
+          EndFormat;
+        end;
+      end;
+    end;
+  end;
+    //ArtCode only-------------------------------------
+  
+  //Vender Only--------------------------------------
+  
+  //Serial Only--------------------------------------
+  EndJob;
+  logtext(0,"garantyreport end");
+return;
+end;
+
+procedure LoopSerHist(string artcode,string serial)
+begin
+record ItemHistVc IHr;
+boolean TrHs,testf,trhs1;
+  
+  IHr.ArtCode = artcode;
+  IHr.SerialNr = serial;
+  Trhs = true;
+  While(loopkey("ArtCode",IHr,1,TrHs))begin
+    testf = true;
+    if(IHr.ArtCode!=artcode) then begin TrHs = false; testf = false; end;
+    if(IHr.SerialNr!=serial) then begin testf = false; end;
+    if(IHr.FileName=="IVVc") then begin testf = false; end;
+     
+    if(testf) then begin
+      StartFormat(15);
+        Switch(IHr.FileName)begin
+        case "StockMovVc": OutString(0,0,"Переміщення",false);
+                     OutString(80,"DblStockMovVc",IHr.TransNr,false);
+        
+        case "PUVc": OutString(0,0,"Надходження",false);
+                     OutString(80,"DblPUVc",IHr.TransNr,false);
+        
+        case "POVc": OutString(0,0,"Замовл. пост.",false);
+                     OutString(80,"DblPOVc",IHr.TransNr,false);
+        
+        case "SHVc": OutString(0,0,"Відвантаження",false);
+                     OutString(80,"DblSHVc",IHr.TransNr,false);
+        
+        /*case "IVVc": OutString(0,0,"Акт-накладна",false);
+                     OutString(80,"DblIVVc",IHr.TransNr,false);*/
+        
+        case "SDVc": OutString(0,0,"Списання",false);
+                     OutString(80,"DblSDVc",IHr.TransNr,false);
+                     
+        case "RetVc": OutString(0,0,"Повернення",false);
+                     OutString(80,"DblRetVc",IHr.TransNr,false);
+        
+        case "RetPUVc": OutString(0,0,"Повернення постачальнику",false);
+                     OutString(80,"DblRetPUVc",IHr.TransNr,false);
+        
+        case "WSVc": OutString(0,0,"Таблиця робіт",false);
+                     OutString(80,"DblWSVc",IHr.TransNr,false);
+        end;
+        Outdate(120,0,IHr.TransDate,false);
+        OutString(190,0,IHr.Location,false);
+        OutString(280,0,IHr.Qty,false);
+        OutString(340,0,IHr.SerialNr,false);
+        
+      endformat;
+    end;
+  end;
+  
+return;
+end;
+
+
+global
+procedure MySerHistRn(record RcVc RepSpec)
+begin
+record ItemHistVc IHr;
+string 50 oldcode,artcode,serial,oldartcode;
+integer keyloop;
+boolean TrHs,testf,trhs1;
+record INVc INr;
+record SHVc SHr;
+
+	StartReportnoheaderJob("Історія серійних номерів 2");
+	
+	artcode = RepSpec.f2;
+  serial = RepSpec.f1;
+	
+	if(nonblank(serial))then begin
+    
+    IHr.SerialNr = serial;
+    keyloop=1;
+    if(nonblank(artcode))then begin
+    		IHr.ArtCode = artcode;
+			keyloop=2;
+    end;
+    
+    Trhs = true;
+    oldartcode = "";
+		While(loopkey("CodeSerialNrArtCode",IHr,keyloop,TrHs))begin
+
+			testf = true;
+			if(IHr.ArtCode!=artcode and nonblank(artcode)) then begin testf = false; end;
+			if(IHr.SerialNr!=serial) then begin testf = false;  TrHs = false; end;
+			//if(IHr.FileName=="IVVc") then begin testf = false; end;
+			if(IHr.StockAffectf==0)then begin testf = false; end;
+			
+			if(testf) then begin
+				
+				if(oldartcode!=IHr.ArtCode)then begin
+					gray_divider(0,1);
+					startformat(15);
+						OutString(0,0,IHr.ArtCode,false);
+						INr.Code = IHr.ArtCode;
+						readfirstmain(INr,1,true);
+						OutString(100,0,INr.Name,false);
+					endformat;
+					oldartcode=IHr.ArtCode;
+				end;
+				
+				StartFormat(15);
+					Switch(IHr.FileName)begin
+					case "StockMovVc": OutString(0,0,"Переміщення",false);
+											 OutString(80,"DblStockMovVc",IHr.TransNr,false);
+					
+					case "PUVc": OutString(0,0,"Надходження",false);
+											 OutString(80,"DblPUVc",IHr.TransNr,false);
+					
+					case "POVc": OutString(0,0,"Замовл. пост.",false);
+											 OutString(80,"DblPOVc",IHr.TransNr,false);
+					
+					case "SHVc": OutString(0,0,"Відвантаження",false);
+											 OutString(80,"DblSHVc",IHr.TransNr,false);
+											 endformat;
+											 startformat(15);
+											 SHr.SerNr = IHr.TransNr;
+											 readfirstmain(SHr,1,true);
+											 OutString(0,0,SHr.CustCode,false);
+											 OutString(80,0,SHr.Addr0,false);
+											 
+					case "IVVc": OutString(0,0,"Акт-накладна",false);
+											 OutString(80,"DblIVVc",IHr.TransNr,false);
+					
+					case "SDVc": OutString(0,0,"Списання",false);
+											 OutString(80,"DblSDVc",IHr.TransNr,false);
+											 
+					case "RetVc": OutString(0,0,"Повернення",false);
+											 OutString(80,"DblRetVc",IHr.TransNr,false);
+					
+					case "RetPUVc": OutString(0,0,"Повер. пост.",false);
+                     OutString(80,"DblRetPUVc",IHr.TransNr,false);
+					
+					case "WSVc": OutString(0,0,"Таблиця робіт",false);
+											 OutString(80,"DblWSVc",IHr.TransNr,false);
+					
+					case "SRVc": OutString(0,0,"Переоцінка",false);
+											 OutString(80,"DblSRVc",IHr.TransNr,false);
+					end;
+					Outdate(120,0,IHr.TransDate,false);
+					OutString(190,0,IHr.Location,false);
+					OutString(280,0,IHr.Qty,false);
+					OutString(340,0,IHr.SerialNr,false);
+					
+				endformat;
+			end;
+		end;
+    
+    
+  end else begin
+    startformat(15);
+    endformat;
+    startformat(15);
+        OutString(0,0,"Серійний номер не вказано",false);
+    endformat;
+    startformat(15);
+    endformat;
+  end;
+	
+	endjob;
+	
+return;
+end;
+
+/*global
+procedure MySerHistRn(record RcVc RepSpec)
+begin
+record ItemHistVc IHr;
+record SerBalVc SBr;
+boolean TrHs,testf;
+string 50 oldcode,artcode,serial;
+  //StopAlert(1);
+  StartReportJob("История серийных номеров 2");
+    
+  EndHeader;
+  
+  artcode = RepSpec.f2;
+  serial = RepSpec.f1;
+  
+  if(nonblank(serial))then begin
+    if(nonblank(artcode))then begin
+      StartFormat(15);
+        OutString(0,0,artcode,false);
+      endformat;
+      gray_divider(0,1);
+      LoopSerHist(artcode,serial);
+    end else begin
+      SBr.Serial = serial;
+      TrHs = true;
+      while(Loopkey("Serial",SBr,1,TrHs)) begin
+        testf = true;
+        if(SBr.Serial!=serial)then begin TrHs = false; testf = false; end;
+        if(testf)then begin
+          if(oldcode==SBr.Item)then begin
+            testf = false;
+          end;
+          if(testf)then begin
+            oldcode = SBr.Item;
+            StartFormat(15);
+              OutString(0,0,oldcode,false);
+            endformat;
+            gray_divider(0,1);
+            LoopSerHist(oldcode,serial);
+          end;
+        end;
+      end;
+    end;  
+  end else begin
+    startformat(15);
+    endformat;
+    startformat(15);
+        OutString(0,0,"Серійний номер не вказано",false);
+    endformat;
+    startformat(15);
+    endformat;
+  end;
+EndJob;
+return;
+end;*/
+
+global
+procedure MySearchSVORn(record RcVc RepSpec)
+begin
+record SVOVc SVOr;
+row SVOVc SVOrw;
+record SerBalVc SBr;
+boolean TrHs,testf;
+string 255 serial,customer,telno,zamno;
+integer i,mtrw;
+record LetVc Letr;
+record POVc POr;
+record WOVc WOr; 
+record RLinkVc RLr;
+  
+  serial = RepSpec.f1;
+  customer = RepSpec.f2;
+  telno = RepSpec.f3;
+  zamno = RepSpec.f4;
+  
+  
+  //StopAlert(1);
+  StartReportJob("Пошук замовлень на обслуговування");
+        
+  EndHeader;
+  
+  
+  
+  
+  //------------------------------------------------------------------------------------------------
+  if(nonblank(serial) and blank(zamno))then begin
+  
+  StartFormat(15)
+    OutString(0,0,"Номер зам.",false);
+    OutString(90,0,"Власник",false);
+    OutString(150,0,"Товар",false);
+    OutString(200,0,"Назва",false);
+    OutString(250,0,"Сер.Номер",false);
+  EndFormat;
+    TrHs = true;
+    SVOr.TransDate = RepSpec.sStartDate;
+    TrHs = true;
+    While(loopkey("TransDate",SVOr,1,TrHs)) begin
+    	testf = true;
+    	if(SVOr.TransDate>RepSpec.sEndDate)then begin TrHs = false; testf = false; end;
+  	  
+  	  
+  	 
+  	  REcordnew(Letr);
+  	  AddToText(SVOr.Vlastnik,Letr);
+  	  AddToText(SVOr.Priynato,Letr);
+  	  AddToText(SVOr.Kontinfo1,Letr);
+  	  AddToText(SVOr.Kontinfo2,Letr);
+  	  AddToText(SVOr.Kontinfo3,Letr);
+  	  AddToText(SVOr.Phone2,Letr);
+  	    
+  	  If(nonblank(customer) and not StringInText(customer,Letr)) then begin testf = false; end;
+      If(nonblank(telno) and not StringInText(telno,Letr)) then begin testf = false; end;  
+    
+  	  if(testf) then begin
+        mtrw = MatRowCnt(SVOr);
+        If(mtrw>0) then begin
+          For(i=0;i<mtrw;i=i+1) begin
+            MatRowget(SVOr,i,SVOrw);
+            If(SVOrw.SerialNr==serial) then begin
+              StartFormat(15)
+                OutString(0,"DblSVOVc",SVOr.SerNr,false);
+                OutString(90,0,SVOr.Vlastnik,false);
+                OutString(150,0,SVOrw.ArtCode,false);
+                OutString(200,0,SVOrw.Spec,false);
+                OutString(250,0,SVOrw.SerialNr,false);
+              EndFormat;
+            end; 
+          end; 
+        end; 
+  	  end;
+  	  
+  	end; 
+  end;
+  //------------------------------------------------------------------------------------------------
+  If(blank(serial) and blank(zamno)) then begin
+	  
+	  StartFormat(15)
+      OutString(0,0,"Номер зам.",false);
+      OutString(90,0,"Дата",false);
+      OutString(140,0,"Власник",false);
+    EndFormat;
+	  
+	  TrHs = true;
+    SVOr.TransDate = RepSpec.sStartDate;
+    
+	  While(loopkey("TransDate",SVOr,1,TrHs)) begin
+	    testf = true;
+	    if(SVOr.TransDate>RepSpec.sEndDate)then begin TrHs = false; testf = false; end;
+	    REcordnew(Letr);
+  	  AddToText(SVOr.Vlastnik,Letr);
+  	  AddToText(SVOr.Priynato,Letr);
+  	  AddToText(SVOr.Kontinfo1,Letr);
+  	  AddToText(SVOr.Kontinfo2,Letr);
+  	  AddToText(SVOr.Kontinfo3,Letr);
+  	  AddToText(SVOr.Phone2,Letr);
+  	  
+	    If(nonblank(customer) and not StringInText(customer,Letr)) then begin testf = false; end;
+      If(nonblank(telno) and not StringInText(telno,Letr)) then begin testf = false; end;  
+      
+	    If(testf) then begin
+	       StartFormat(15)
+                OutString(0,"DblSVOVc",SVOr.SerNr,false);
+                OutString(90,0,SVOr.TransDate,false);
+                OutString(140,0,SVOr.Vlastnik,false);
+          EndFormat;
+      end; 
+    end; 
+	end; 
+	
+	  //------------------------------------------------------------------------------------------------
+  If(nonblank(zamno)) then begin
+    
+    StartFormat(15)
+      OutString(0,0,"Номер зам.",false);
+      OutString(90,0,"Дата",false);
+      OutString(140,0,"Власник",false);
+      OutString(250,0,"Зам.Постач.",false);
+      OutString(320,0,"Дата зам.пост.",false);
+      OutString(1,0,"Зам. на роб.",true);
+    EndFormat;
+  
+	  POr.SerNr = 0;
+    While(loopmain(POr,1,true)) begin
+      REcordnew(Letr);
+  	  AddToText(POr.Comment,Letr);
+      If(StringInText(zamno,Letr)) then begin
+        WOr.SerNr = POr.WONr;
+        If(REadFirstmain(WOr,1,true)) then begin
+          If(ReadRecordLink(WOr,1,SVOr,RLr)) then begin
+	          StartFormat(15)
+                OutString(0,"DblSVOVc",SVOr.SerNr,false);
+                OutString(90,0,SVOr.TransDate,false);
+                OutString(140,0,SVOr.Vlastnik,false);
+                
+                OutString(250,"DblPOVc",POr.SerNr,false);
+                OutString(320,0,POr.TransDate,false);
+                OutString(1,"DblWOVc",WOr.SerNr,true);
+                
+            EndFormat;
+          end; 
+        end; 
+      end; 
+  	  
+    end; 
+	end; 
+  EndJob;
+return;
+end;
+

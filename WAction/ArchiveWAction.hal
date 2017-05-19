@@ -1,0 +1,23 @@
+global
+procedure NoteFromArchiveWsm()
+BEGIN
+  Integer wn,mwn,nwn,thewn;
+  record RcVc RepSpec;
+  record NotepadVc Noter;
+  
+  wn = CurWindow;
+  GetWindowRecord(wn,RepSpec);
+  if (blank(RepSpec.f1)) then begin goto LNoteFromArchiveWsm; end;
+  RecordNew(Noter);
+  Noter.FromRecidStr = RepSpec.f1;
+  mwn = MotherWindow(wn);
+  thewn = mwn;
+  if (thewn==0) then begin thewn = wn; end;
+  Noter.CompanyNr = WindowCompanyNr(thewn);
+  nwn = OpenWindow("NotepadDClass",1,wn,"","",Noter);
+  //millisleep(100);
+  deselectwindow(nwn,false);
+  PutWindowString(nwn,"NotepadRLinkComment",CurrentDate & " " & currentuser); //Edit***************************Sasha2,12:03 03.06.2015
+	LNoteFromArchiveWsm:;
+  RETURN;
+END;

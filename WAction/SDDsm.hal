@@ -1,0 +1,114 @@
+remote function boolean CreatePUfromSD(record SDVc, var record PUVc);
+remote procedure GetAccBalance(string,string,Date,record ObjBalVc,Integer,Integer,Integer,string,Integer,var val);
+remote procedure GetAccDCStartBalance(string,string,Date,record ObjBalVc,Integer,Integer,string,Integer,var val,var val);
+remote procedure GetAccTurnover(string,string,Date,Date,record ObjBalVc,string,Integer,Integer,Integer,var val,var val);
+remote function Boolean TRVc_PasteAccNumber(var record TRVc,Integer,Integer,Boolean);
+remote procedure TRSumup(var record TRVc,var val);
+
+global procedure CreatePUfromSDDsm()
+begin
+	integer mtrw,i,wn;
+	record PUVc PUr;
+	record SDVc SDr;
+	
+	
+	wn = curwindow;
+	
+	if(windowstate(wn)==0)then begin
+		getwindowrecord(wn,SDr);
+		recordNew(PUr);
+		if(CreatePUfromSD(SDr,PUr))then begin
+			OpenWindow("PUDClass",1,0,"","",PUr);
+		end else begin
+			beep;
+		end;	
+	end else begin
+		beep;
+	end;
+return;
+end;
+
+global //Edit-------------------Vitalii 13:46 26.08.2016
+procedure ExpiredMoveForServRClassReportDefaults(Integer wn)
+begin
+  record RcVc RepSpec;  
+
+  GetwindowRecord(wn,RepSpec);
+  RepSpec.flags[1] = 80;
+  PutWindowRecord(wn,RepSpec);
+  
+  return;
+end;
+
+
+global procedure CreateUSDRemTRLsm()
+begin
+	record TRVc TRr;
+	row TRVc TRrw;
+	record AccVc Accr;	
+	record ObjBalVc ObjBalr;
+	val Sbp,S4bp,S5bp,S6bp,Pbp,Ebp,t;
+	string 50 accstr,objs;
+	boolean Objbals;
+	integer i,mtrw;
+	
+	recordNew(TRr);
+	TRr.TransDate = stringtodate("31/12/2016");
+		
+	while(loopmain(Accr,1,true))begin
+		if(nonblank(Accr.Curncy) and Accr.Curncy!="UAH")then begin
+			accstr = Accr.AccNumber;
+			objs = "";
+			Sbp = 0;
+			S4bp = 0;
+			S5bp = 0;
+			S6bp = 0;
+			Pbp = 0;
+			Ebp = 0;
+			ObjBalr.AccNumber = accstr;
+			ObjBalr.Object = "";
+			Objbals = ReadFirstMain(ObjBalr,2,true);  
+			//GetAccDCStartBalance(accstr,objs,stringtodate("1/" & getmonth(currentdate) & "/" getyear(currentdate)),ObjBalr,0,"","USD",0,dSb,cSb);
+			//GetAccDCTurnover(accstr,objs,stringtodate("1/" & getmonth(currentdate) & "/" getyear(currentdate)),currentdate,ObjBalr,"USD",0,"",0,dSb,cSb,dPb,cPb);
+      GetAccBalance(accstr,objs,stringtodate("31/12/2016"),ObjBalr,0,1,0,"UAH",0,Pbp);
+      if(Pbp!=0)then begin
+      	clearrow(TRr,TRrw,1);
+      	TRrw.AccNumber = accstr;
+      	matrowput(TRr,i,TRrw);
+      	TRVc_PasteAccNumber(TRr,1,i,true);
+      	matrowget(TRr,i,TRrw);
+      	TRrw.Curncy = "UAH";
+      	if(Pbp<0)then begin
+      		TRrw.DebVal = -Pbp;
+      	end else begin
+      		TRrw.CredVal = Pbp;
+      	end;    	
+      	matrowput(TRr,i,TRrw);
+      	i=i+1;
+      	
+      	clearrow(TRr,TRrw,1);
+      	TRrw.AccNumber = accstr;
+      	matrowput(TRr,i,TRrw);
+      	TRVc_PasteAccNumber(TRr,1,i,true);
+      	matrowget(TRr,i,TRrw);
+      	TRrw.Curncy = Accr.Curncy;
+      	if(Pbp<0)then begin
+      		TRrw.CredVal = -Pbp;
+      	end else begin
+      		TRrw.DebVal = Pbp;
+      	end;    	
+      	matrowput(TRr,i,TRrw);
+      	i=i+1;
+      	
+      	
+      	
+      end;
+
+		end;
+	end;
+	TRSumup(TRr,t);
+	OpenWindow("TRDclass",0,0,"","",TRr);
+		
+
+return;
+end;

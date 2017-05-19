@@ -528,14 +528,6 @@ begin
   for(i=0;i<rwcnt;i=i+1) begin
     matrowget(ORr,i,ORrw);
     
-    if(currentcompany==1 or currentcompany==12 or currentcompany==13)then begin
-      if(not(Checkprice(ORrw.ArtCode,ORr.PriceList,ORrw.Price)) and ORrw.Sum>0)then begin
-        RecordCheckError(20767,"",i,"Price");      
-        res = -1; 
-        goto LORVcRecordCheck;
-      end;
-    end;
-    
     if(nonblank(ORr.FrRate))then begin
       frrate = ORr.FrRate;
     end else begin
@@ -1207,14 +1199,6 @@ begin
 							end;
 						end;
           end;
-          
-          if(currentcompany==2 or currentcompany==7 or currentcompany==5)then begin	
-						if ((ORr.Reserved!=0) and (blank(ORr.ReservToDate))) then begin
-							RecordCheckError(31025,"",-1,"ReservToDate");      
-							res = -1;
-							goto LORVcRecordCheck;
-						end;
-					end;
           
           
 	// Edit End ---------------------------------------------- Edit End

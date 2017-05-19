@@ -1,0 +1,178 @@
+
+/*global
+function Boolean MyLabelItemSClassOnOKWindow(Integer wn)
+begin
+  record MyLabelItemVc MILr;
+  record MyRepricingVc MRr;
+  row MyRepricingVc MRrw;
+  integer mwn,rownr;
+  
+  mwn = MotherWindow(wn);
+  getwindowrecord(mwn,MRr);
+  rownr = WindowActiveRow(mwn);
+  Matrowget(MRr,rownr,MRrw);
+  
+  ReadMarkedRecord(wn,MILr);
+  MRrw.PriceList = MILr.PriceList;
+  MRrw.FormCode = MILr.DefFormCode;
+  MRrw.Size = MILr.Size;
+  MatrowPut(MRr,rownr,MRrw);
+  
+  putwindowrecord(mwn,MRr);
+  
+  MyLabelItemSClassOnOKWindow = true;
+  return;
+end;*/
+
+
+function Boolean MyLabelItemDClassArtCodeEFAfter(Integer wn,Boolean changedf)
+BEGIN
+  record MyLabelItemVc MILr;
+  record INVc INr;
+  Boolean res;
+  
+  res = true;
+  if (changedf) then begin
+    GetWindowRecord(wn,MILr);
+    
+    INr.Code = MILr.ArtCode;
+    if(readfirstmain(INr,1,true))begin
+      MILr.Name = INr.Name;
+      PutWindowRecord(wn,MILr);
+    end;
+  end;
+  MyLabelItemDClassArtCodeEFAfter = res;
+  RETURN;
+END;
+
+function Boolean MyLabelItemDClassPriceListEFAfter(Integer wn,Boolean changedf)
+BEGIN
+  record MyLabelItemVc MILr;
+  Boolean res;
+  record PLDefVc PLDr;
+  
+  res = true;
+  if (changedf) then begin
+    GetWindowRecord(wn,MILr);
+    PLDr.Code = MILr.PriceList;
+    if(readfirstmain(PLDr,1,true))begin
+      MILr.CurncyCode = PLDr.CurncyCode;
+      PutWindowRecord(wn,MILr);
+    end;
+  end;
+  MyLabelItemDClassPriceListEFAfter = res;
+  RETURN;
+END;
+
+
+global
+function Boolean MyLabelItemDClassAfterEditField(Integer wn,string fieldname,Integer fn, Integer rownr,Integer changed)
+BEGIN
+  Boolean res;
+
+  switch (fieldname) begin
+    case "ArtCode": res = MyLabelItemDClassArtCodeEFAfter(wn,changed);
+    case "PriceList": res = MyLabelItemDClassPriceListEFAfter(wn,changed);
+
+  end;
+  MyLabelItemDClassAfterEditField = res;
+  RETURN;
+END;
+
+
+global
+updating function Boolean MyLabelItemDClassPrint(Integer wn,Boolean previewf)
+BEGIN
+  record MyLabelItemVc MLIr;
+  Integer normalmode,tf;
+  record LocalMachineBlock LMb;
+  
+  blockload(LMb);
+  normalmode = 0;//Rs_normal
+  DeselectWindow(wn,false);
+  GetWindowRecord(wn,MLIr);
+    MLIr.Cust1 = LMb.DefCustCode;
+    if (PrintDocument(MLIr,"ItemLabForm",previewf)) then begin end;
+  MyLabelItemDClassPrint = true;
+  RETURN;
+END;
+
+
+global
+function LongInt MyLabelItemVcRecordCheck(record MyLabelItemVc MLIr,record MyLabelItemVc MLI2r,LongInt stat,LongInt check)
+BEGIN
+longint res;
+record INVc INr;
+record DocVc Docr;
+record PLDefVc PLDr;
+record CurncyCodeVc CCr;
+  res = 0;
+  
+  if(blank(MLIr.ArtCode))then begin
+    RecordCheckError(1058,"",-1,"ArtCode");      
+      res = -1;
+    goto lMyLabelItemVcRecordCheck;
+  end;
+  
+  if(nonblank(MLIr.ArtCode))then begin
+    INr.Code = MLIr.ArtCode;
+    if(readfirstmain(INr,1,true)==false)then begin
+      RecordCheckError(1120,"",-1,"ArtCode");      
+        res = -1;
+      goto lMyLabelItemVcRecordCheck;
+    end;
+  end;
+  
+  if(blank(MLIr.DefFormCode))then begin
+    RecordCheckError(1058,"",-1,"DefFormCode");      
+      res = -1;
+    goto lMyLabelItemVcRecordCheck;
+  end;
+  
+  if(nonblank(MLIr.DefFormCode))then begin
+    Docr.Code = MLIr.DefFormCode;
+    if(readfirstmain(Docr,1,true)==false)then begin
+      RecordCheckError(1120,"",-1,"DefFormCode");      
+        res = -1;
+      goto lMyLabelItemVcRecordCheck;
+    end;
+  end;
+  
+  if(blank(MLIr.PriceList))then begin
+    RecordCheckError(1058,"",-1,"PriceList");      
+      res = -1;
+    goto lMyLabelItemVcRecordCheck;
+  end;
+  
+  if(nonblank(MLIr.PriceList))then begin
+    PLDr.Code = MLIr.PriceList;
+    if(readfirstmain(PLDr,1,true)==false)then begin
+      RecordCheckError(1120,"",-1,"PriceList");      
+        res = -1;
+      goto lMyLabelItemVcRecordCheck;
+    end;
+  end;
+  
+  
+  if(blank(MLIr.CurncyCode))then begin
+    RecordCheckError(1058,"",-1,"CurncyCode");      
+      res = -1;
+    goto lMyLabelItemVcRecordCheck;
+  end;
+  
+  if(nonblank(MLIr.CurncyCode))then begin
+    CCr.CurncyCode = MLIr.CurncyCode;
+    if(readfirstmain(CCr,1,true)==false)then begin
+      RecordCheckError(1120,"",-1,"CurncyCode");      
+        res = -1;
+      goto lMyLabelItemVcRecordCheck;
+    end;
+  end;
+  
+ // 1120
+  
+lMyLabelItemVcRecordCheck:;
+
+MyLabelItemVcRecordCheck = res;
+return;
+end;

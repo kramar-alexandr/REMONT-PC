@@ -1,0 +1,545 @@
+external procedure OutAddress(string,string,string,string,string,string,string);
+external function Boolean FindFormcode(Integer,Integer);
+external function val FindVAT(string,val,Integer,Integer);
+external procedure SetFaxInfo(string,string,string,string);
+external procedure SplitAddress(string,var string,var string);
+external function Boolean Getformcode(Integer,Integer,string,string,string,LongInt,LongInt,string,string,Integer,string,var string);
+external procedure NumberofDocumentPages(string,Integer);
+external procedure GetLangNr(string,var record LangNrVc);
+external procedure CommonDocumentFields(record RcVc);
+external procedure ValToText(val,Integer,string,string,var string);
+external procedure ItemBC39(string,var string);
+external procedure ItemBCEAN(string,var string);
+external procedure ItemBCEAN13(string,var string);
+external procedure GetStandardProblemText(string,Integer,var string);
+external procedure GetFullCurncyRate(var string,Date,var val,var val,var val,var val,var val);
+external procedure CreateEAN128(var string);//-------------------------------------------------
+external function roundmode SetRoundModeD(Integer); //Edit***************************Sasha2,12:22 23.10.2014
+
+
+function LongInt LabelSetup(integer mode,longint defystep)
+begin
+  longint lbls,ystep;
+  
+  if (defystep>0) then begin
+    ystep = defystep;
+  end else begin
+    switch (mode) begin 	///VrticalStep
+      case 0: ystep = 1;  //1*1
+      case 1: ystep = 1;  //1*2
+      case 2: ystep = 417;//2*2//390
+      case 3: ystep = 260;//4*3
+      case 4: ystep = 195;//2 *7 117 //2*4 
+      case 5: ystep = 195;//2 *7 117 //4*4
+      case 6: ystep = 185;//7*3 stiker
+      case 7: ystep = 60; //5*13 stiker// Edit ************************** Monday, 2 December 2013 08:35:20
+      case 8: ystep = 100; //5*13
+      case 9: ystep = 60;
+    end;
+  end;
+
+  switch (mode) begin
+    case 0: FormLabelGrid(1,1,1,ystep); lbls = 1;
+    case 1: FormLabelGrid(2,390,1,ystep); lbls = 2;
+    case 2: FormLabelGrid(2,300,2,ystep); lbls = 4;//272
+    case 3: FormLabelGrid(4,136,3,ystep); lbls = 12;
+    case 4: FormLabelGrid(2,272,4,ystep); lbls = 8;
+    case 5: FormLabelGrid(4,136,4,ystep); lbls = 16;
+    case 6: FormLabelGrid(7,108,3,ystep); lbls = 21;//stiker
+    case 7: FormLabelGrid(5,115,13,ystep); lbls = 65;//5*13 stiker
+    case 8: FormLabelGrid(1,115,5,150); lbls = 5;
+    case 9: FormLabelGrid(5,120,13,ystep); lbls = 65;
+  end;
+  
+  
+  LabelSetup = lbls;
+  return;
+end;
+
+function Boolean EndAndTestLabel(longint lbls,var longint cnt)
+begin
+  Boolean res;
+  
+  EndFormLabel;
+  cnt = cnt + 1;
+  
+  if (cnt>=lbls) then begin
+    CloseForm;
+    cnt = 0;
+    res = false;
+  end else begin
+    res = true;
+  end;
+  
+  EndAndTestLabel = res;
+  return;
+end;
+
+procedure PrintItemLabel(record RcVc RepSpec,record INVc INr,val exprice,string pricecode,string mycurcode,date setdate,record DocVc Docr)
+BEGIN
+  Integer i,rwcnt;
+  row INVc INrw;
+  string 255 tstr;
+  val t;
+  val vatprc,vatval,vatexclprc,vatinclprc;
+  record PLVc PLr;
+  val vat,novat,price;
+  record PLDefVc PLDr;
+  string 20 curncy,pricecode1,workprice,workcurncy;
+  val fr,to1,to2,br1,br2;
+  val lfr,lto1,lto2,lbr1,lbr2;
+  record BaseCurBlock BCr;
+  row DocVc Docrw;
+  record LocalMachineBlock LMb;
+  record CUVc CUr;
+  string 10 priceA,priceB;
+  array String 255 ar; //Edit***************************Sasha2,10:25 25.12.2014
+  Boolean rowsf; //Edit***************************Sasha2,10:25 25.12.2014
+    
+  blockload(BCr);
+  if(exprice<=0)then begin
+    
+    if(blank(pricecode))then begin
+      workprice = INr.LPriceList;
+    end else begin
+      workprice = pricecode;
+    end;
+    
+    PLDr.Code = workprice;
+    readfirstmain(PLDr,1,true);
+    
+    if(blank(mycurcode))then begin
+      if(nonblank(INr.LCurncyCode))then begin
+        workcurncy = INr.LCurncyCode;
+      end else begin
+        workcurncy = PLDr.CurncyCode;
+      end;
+    end else begin
+      workcurncy = mycurcode;
+    end;
+        
+    if(blank(PLDr.CurncyCode) or PLDr.CurncyCode==BCr.BaseCur1)then begin
+      curncy = BCr.BaseCur1;
+      fr = 1;
+      to1 = 1;
+    end else begin
+      curncy = PLDr.CurncyCode;
+      GetFullCurncyRate(curncy,currentdate,fr,to1,to2,br1,br2);
+    end;
+    
+    if(blank(workcurncy) or workcurncy==BCr.BaseCur1)then begin
+      workcurncy = BCr.BaseCur1;
+      lfr = 1;
+      lto1 = 1;
+    end else begin
+      GetFullCurncyRate(workcurncy,currentdate,lfr,lto1,lto2,lbr1,lbr2);
+    end;
+      
+    PLr.ArtCode = INr.Code;
+    PLr.PLCode = workprice;
+    
+    if(readfirstmain(PLr,2,true))then begin
+      if(PLr.PLCode==workprice and PLr.ArtCode==INr.Code)then begin
+        price = Round(PLr.ExVatPrice/fr*to1*lfr/lto1,SetRoundModeD(0));
+        novat = Round(price/120*100,SetRoundModeD(2));
+        vat = price-novat;
+      end;
+    end;
+  end else begin
+    price = exprice;
+    novat = Round(price/120*100,SetRoundModeD(2));
+    vat = price-novat;
+    
+  end;
+  
+  priceA = ValToString(price,M4Val,"",".",1);
+	priceB = ValToString(price - evaltoval(priceA),M4Val,"",".",1);
+	if(len(priceB)==1)then begin
+		priceB = "0" & priceB;
+	end;
+
+  if (FIELDINFORM("F_PRIS")) then begin
+    tstr = price;
+    OUTFORMFIELD("F_PRIS",tstr);
+  end;
+  
+  if (FIELDINFORM("F_PRICEBASECURNCY1")) then begin
+    tstr = priceA;
+    OUTFORMFIELD("F_PRICEBASECURNCY1",tstr);
+  end;
+  if (FIELDINFORM("F_PRICEBASECURNCY2")) then begin
+    tstr = priceB;
+    OUTFORMFIELD("F_PRICEBASECURNCY2",tstr);
+  end;
+  
+  if (FIELDINFORM("F_VATEXCLPRC")) then begin
+    tstr = novat;
+    OUTFORMFIELD("F_VATEXCLPRC",tstr);
+  end;
+  if (FIELDINFORM("F_MOMS")) then begin
+    tstr = vat;
+    OUTFORMFIELD("F_MOMS",tstr);
+  end;
+  
+  if (FIELDINFORM("F_KUNDNAMN")) then begin
+    //CUr.Code = RepSpec.f1;
+    OUTFORMFIELD("F_KUNDNAMN",RepSpec.f1);
+    /*if(readfirstmain(CUr,1,true))then begin
+      tstr = CUr.Comment0;
+      OUTFORMFIELD("F_KUNDNAMN",tstr);
+    end;*/
+  end;
+  if (FIELDINFORM("F_BARCODE")) then begin
+		tstr = INr.AlternativeCode;
+		if(nonblank(tstr))then begin
+			CreateEAN128(tstr);
+			OUTFORMFIELD("F_BARCODE",tstr);
+		end;
+  end;
+    
+  OUTFORMFIELD("F_ITEMCODE",INr.Code);
+  OUTFORMFIELD("F_PRICELISTMY",INr.LPriceList);
+  OUTFORMFIELD("F_ITEMNAME",INr.LName);
+  OUTFORMFIELD("F_DEFFORMMY",INr.LDefFormCode);
+  OUTFORMFIELD("F_COMMENT",INr.LComment);
+  OUTFORMFIELD("F_CURCODEMY",INr.LCurncyCode);
+  OUTFORMFIELD("F_CUST1MY",INr.LCust1);
+  OUTFORMFIELD("F_CUST2MY",INr.LCust2);
+  OUTFORMFIELD("F_CUST3MY",INr.LCust3);
+  OUTFORMFIELD("F_CUST4MY",INr.LCust4);
+  OUTFORMFIELD("F_CUST5MY",INr.LCust5);
+  OUTFORMFIELD("F_DATUM",setdate);
+  OUTFORMFIELD("F_PRINTDATE",currentdate);
+  
+  
+  
+  rwcnt = MatRowCnt(INr);
+  for (i=0;i<rwcnt;i=i+1) begin
+    MatRowGet(INr,i,INrw);
+      ar[0] = ar[0] & INrw.LParam;
+      ar[1] = ar[1] & INrw.LName;
+      ar[2] = ar[2] & INrw.LComment1;
+      ar[3] = ar[3] & INrw.LComment2;
+      ar[4] = ar[4] & INrw.LComment3;
+      ar[5] = ar[5] & INrw.LComment4;
+      ar[6] = ar[6] & INrw.LComment5;
+      ar[7] = ar[7] & INrw.LComment6;
+      ar[8] = ar[8] & INrw.LComment7;
+      ar[9] = ar[9] & INrw.LComment8;  
+  end;
+  
+  if (rwcnt>0) then begin
+  	rowsf = true;
+  end else begin
+  	rowsf = false;
+  end;
+  
+  /*if (rowsf) then begin
+  	OUTFORMFIELD("F_ITEMTYPE",ar[0]);
+    OUTFORMFIELD("F_ARTCODEVARIETIES",ar[1]);
+    OUTFORMFIELD("F_BESKRIVNING",ar[2]);
+    OUTFORMFIELD("F_SIGNATURE",ar[3]);	
+    OUTFORMFIELD("F_TEXT",ar[4]);
+    OUTFORMFIELD("F_COUNTRYOFORIGIN",ar[5]);
+    OUTFORMFIELD("F_Comment5MY",ar[6]);
+    OUTFORMFIELD("F_Comment6MY",ar[7]);
+    OUTFORMFIELD("F_Comment7MY",ar[8]);
+    OUTFORMFIELD("F_Comment8MY",ar[9]);
+  end;*/
+
+  
+  rwcnt = MatRowCnt(INr);
+  for (i=0;i<rwcnt;i=i+1) begin
+    MatRowGet(INr,i,INrw);
+      OUTFORMFIELD("MYF_ITEMTYPE" & i,INrw.LParam);
+      OUTFORMFIELD("MYF_ARTCODEVARIETIES" & i,INrw.LName);
+      OUTFORMFIELD("MYF_BESKRIVNING" & i,INrw.LComment1);
+      OUTFORMFIELD("MYF_SIGNATURE" & i,INrw.LComment2);
+      OUTFORMFIELD("MYF_TEXT" & i,INrw.LComment3);
+      OUTFORMFIELD("MYF_COUNTRYOFORIGIN" & i,INrw.LComment4);
+      OUTFORMFIELD("MYF_Comment5MY" & i,INrw.LComment5);
+      OUTFORMFIELD("MYF_Comment6MY" & i,INrw.LComment6);
+      OUTFORMFIELD("MYF_Comment7MY" & i,INrw.LComment7);
+      OUTFORMFIELD("MYF_Comment8MY" & i,INrw.LComment8);
+      //EndFormRow;
+  end;
+  for(i=rwcnt;i<20;i=i+1)begin
+  	OUTFORMFIELD("MYF_ITEMTYPE" & i,"");
+		OUTFORMFIELD("MYF_ARTCODEVARIETIES" & i,"");
+		OUTFORMFIELD("MYF_BESKRIVNING" & i,"");
+		OUTFORMFIELD("MYF_SIGNATURE" & i,"");
+		OUTFORMFIELD("MYF_TEXT" & i,"");
+		OUTFORMFIELD("MYF_COUNTRYOFORIGIN" & i,"");
+		OUTFORMFIELD("MYF_Comment5MY" & i,"");
+		OUTFORMFIELD("MYF_Comment6MY" & i,"");
+		OUTFORMFIELD("MYF_Comment7MY" & i,"");
+		OUTFORMFIELD("MYF_Comment8MY" & i,"");
+  end;
+  
+  rwcnt = MatRowCnt(Docr);
+  for (i=0;i<rwcnt;i=i+1) begin
+    MatRowGet(Docr,i,Docrw);
+    if (Docrw.fieldSetNr==0) then begin
+      if(nonblank(Docrw.unitText))then begin
+        tstr = Docrw.unitText;
+        OUTFORMFIELD(Docrw.unitText,tstr);
+      end;
+    end;
+  end;
+  
+  EndFormRow;
+
+  RETURN;
+END;
+
+procedure HandleItemLabForm(record RcVc RepSpec,record PUVc PUr,record FormDefVc FDr,boolean labelgridf,integer formsize)
+BEGIN
+  row PUVc PUrw;
+  row FormDefVc FDrw;
+  record CUVc CUr;
+  record INVc INr;
+  Integer i,rwcnt,j,pucnt;
+  string 255 tstr,t1,t2;
+  record LangNrVc LangNrr;
+  Boolean printf,langf,testf,formisopen,openfailedf;
+  Integer intdocnr,curcp,maxcps;
+  string 30 formcode,langcode,prlist;
+  val price;
+  record DocVc Docr;
+  record LocationVc Locr;
+  
+  Locr.Code = PUr.Location;
+  If(readfirstmain(Locr,1,true))then begin
+  	RepSpec.f1 = Locr.Addr0;
+  end;
+  pucnt = MatRowCnt(PUr);
+  if (pucnt==0) then begin
+  	goto LHandleItemLabForm;
+  end;
+ 	
+ 	
+  prlist = PUr.LangCode; //price list
+  intdocnr = 1;
+  printf = true;
+  formisopen = false;
+  openfailedf = false;
+  curcp = 1;
+  
+  rwcnt = MatRowCnt(FDr);
+  while (printf) begin  
+    formcode = "";
+    for (i=rwcnt-1;i>=0;i=i-1) begin
+      MatRowGet(FDr,i,FDrw);
+      if (FindFormcode(0,FDrw.Typ)) then begin 
+        if (Getformcode(i,FDrw.intdocnr,FDrw.FPCode,FDrw.UserGroup,FDrw.LangCode,FDrw.SerNr,0,FDrw.PrintGroupCode,
+                        langcode,intdocnr,"PUVc",formcode)) then begin
+          goto LBREAK;
+        end;
+      end;
+    end;
+LBREAK:;
+    if (nonblank(formcode)) then begin
+      Docr.Code = formcode;
+      ReadFirstMain(Docr,1,true);
+      testf = true;
+      if(testf)then begin 
+    	for (j=0;j<pucnt;j=j+1) begin
+    		if(formisopen==false)then begin
+    			formisopen = OpenForm(formcode);
+    			if (formisopen==false) then begin
+    				openfailedf = true;
+    				goto LNotOpened;
+    			end;
+					if (labelgridf) then begin
+						maxcps = LabelSetup(formsize,0);
+					end;
+				end;
+				if(formisopen)then begin
+					matrowget(Pur,j,PUrw);
+					INr.Code = PUrw.ArtCode;
+					if (NonBlank(PUrw.ArtCode) and ReadFirstMain(INr,1,true)) then begin
+						RepSpec.f3 = INr.Code;
+						RepSpec.f4 = INr.LPriceList;
+						RepSpec.f5 = INr.LDefFormCode;
+						price = PUrw.UPrice;
+						PrintItemLabel(RepSpec,INr,price,prlist,INr.LCurncyCode,currentdate,Docr);
+						if (labelgridf) then begin
+							if (curcp>=maxcps) then begin
+								formisopen = false;
+								curcp = 1;
+								CloseForm;
+							end else begin
+								EndFormLabel;
+								curcp = curcp + 1; 
+							end;
+						end;
+					end;
+				end;
+    	end;
+    	if (formisopen) then begin
+    		CloseForm; 
+    		formisopen = false; 
+    	end;
+ LNotOpened:;       	
+        if (openfailedf) then begin
+          printf = false;
+          MessageBox(1546,formcode);
+        end;
+      end;
+    end else begin
+      printf = false;
+      if (intdocnr==1) then begin
+        MessageBox(1624, " " & USetStr(1623));
+      end;
+    end;
+    intdocnr = intdocnr + 1;
+  end;
+  
+LHandleItemLabForm:; 
+  
+  RETURN;
+END;
+
+global
+procedure DoItemLabForm1(record RcVc RepSpec,record PUVc PUr)
+BEGIN 
+  record FormDefVc FDr;
+  
+  FDr.repname = RepSpec.repname;
+  FDr.shortname = RepSpec.shortname;
+  if (ReadFirstMain(FDr,1,true)) then begin
+    HandleItemLabForm(RepSpec,PUr,FDr,false,0);
+  end else begin
+  	LogText(1624, " " & USetStr(1623) & " for DoItemLabForm1(...)");
+  end;
+
+ RETURN;
+END;
+
+global
+procedure DoItemLabForm2(record RcVc RepSpec,record PUVc PUr)
+BEGIN 
+  record FormDefVc FDr;
+  
+  FDr.repname = RepSpec.repname;
+  FDr.shortname = RepSpec.shortname;
+  if (ReadFirstMain(FDr,1,true)) then begin
+    HandleItemLabForm(RepSpec,PUr,FDr,false,1);
+  end else begin
+  	LogText(1624, " " & USetStr(1623) & " for DoItemLabForm2(...)");
+  end;
+
+ RETURN;
+END;
+
+global
+procedure DoItemLabForm3(record RcVc RepSpec,record PUVc PUr)
+BEGIN 
+  record FormDefVc FDr;
+  
+  FDr.repname = RepSpec.repname;
+  FDr.shortname = RepSpec.shortname;
+  if (ReadFirstMain(FDr,1,true)) then begin
+    HandleItemLabForm(RepSpec,PUr,FDr,false,2);
+  end else begin
+  	LogText(1624, " " & USetStr(1623) & " for DoItemLabForm3(...)");
+  end;
+
+ RETURN;
+END;
+
+global
+procedure DoItemLabForm4(record RcVc RepSpec,record PUVc PUr)
+BEGIN 
+  record FormDefVc FDr;
+  
+  FDr.repname = RepSpec.repname;
+  FDr.shortname = RepSpec.shortname;
+  if (ReadFirstMain(FDr,1,true)) then begin
+    HandleItemLabForm(RepSpec,PUr,FDr,true,3);
+  end else begin
+  	LogText(1624, " " & USetStr(1623) & " for DoItemLabForm4(...)");
+  end;
+
+ RETURN;
+END;
+
+global
+procedure DoItemLabForm5(record RcVc RepSpec,record PUVc PUr)
+BEGIN 
+  record FormDefVc FDr;
+  
+  FDr.repname = RepSpec.repname;
+  FDr.shortname = RepSpec.shortname;
+  if (ReadFirstMain(FDr,1,true)) then begin
+    HandleItemLabForm(RepSpec,PUr,FDr,false,4);
+  end else begin
+  	LogText(1624, " " & USetStr(1623) & " for DoItemLabForm5(...)");
+  end;
+
+ RETURN;
+END;
+
+global
+procedure DoItemLabForm6(record RcVc RepSpec,record PUVc PUr)
+BEGIN 
+  record FormDefVc FDr;
+  
+  FDr.repname = RepSpec.repname;
+  FDr.shortname = RepSpec.shortname;
+  if (ReadFirstMain(FDr,1,true)) then begin
+    HandleItemLabForm(RepSpec,PUr,FDr,false,5);
+  end else begin
+  	LogText(1624, " " & USetStr(1623) & " for DoItemLabForm6(...)");
+  end;
+
+ RETURN;
+END;
+
+global
+procedure DoItemLabForm7(record RcVc RepSpec,record PUVc PUr)
+BEGIN 
+  record FormDefVc FDr;
+  
+  FDr.repname = RepSpec.repname;
+  FDr.shortname = RepSpec.shortname;
+  if (ReadFirstMain(FDr,1,true)) then begin
+    HandleItemLabForm(RepSpec,PUr,FDr,false,6);
+  end else begin
+  	LogText(1624, " " & USetStr(1623) & " for DoItemLabForm7(...)");
+  end;
+
+ RETURN;
+END;
+
+global
+procedure DoItemLabForm8(record RcVc RepSpec,record PUVc PUr)
+BEGIN 
+  record FormDefVc FDr;
+  
+  FDr.repname = RepSpec.repname;
+  FDr.shortname = RepSpec.shortname;
+  if (ReadFirstMain(FDr,1,true)) then begin
+    HandleItemLabForm(RepSpec,PUr,FDr,true,7);
+  end else begin
+  	LogText(1624, " " & USetStr(1623) & " for DoItemLabForm8(...)");
+  end;
+
+ RETURN;
+END;
+
+global
+procedure DoItemLabForm9(record RcVc RepSpec,record PUVc PUr)
+BEGIN 
+  record FormDefVc FDr;
+  
+  FDr.repname = RepSpec.repname;
+  FDr.shortname = RepSpec.shortname;
+  if (ReadFirstMain(FDr,1,true)) then begin
+    HandleItemLabForm(RepSpec,PUr,FDr,true,8);
+  end else begin
+  	LogText(1624, " " & USetStr(1623) & " for DoItemLabForm9(...)");
+  end;
+
+ RETURN;
+END;

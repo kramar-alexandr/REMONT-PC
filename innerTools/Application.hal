@@ -13,7 +13,7 @@ begin
 	messagebox(0,"sadas");
   millisleep(100);
   if (!ServerMode) then begin
-		if(CurrentCompany==4 or CurrentCompany==14  or CurrentCompany==15  or CurrentCompany==16) then begin
+		if(false) then begin
 			if(nonblank(TestCurrentUserOnServer))then begin
 				recordnew(RepSpec);
 				ReportDefaults(RepSpec,"CurrentUserStockMovsRn");

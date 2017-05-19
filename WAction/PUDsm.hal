@@ -1,0 +1,131 @@
+remote updating procedure CreateTransFromPU(record PUVc);
+remote function boolean CreateSMfromPU(record PUVc, var record StockMovVc);
+remote function boolean CreateSDfromPU(record PUVc, var record SDVc);
+remote updating procedure RA_AvansCreateDsm(record PPVc,var record ExpVc);
+
+global updating procedure CreateTransFromPUDsm()
+begin
+	integer wn,state;
+	record PUVc PUr;
+	
+	wn = curwindow;
+	state = windowstate(wn);
+	
+	if(state==0)then begin//normal
+		getwindowrecord(wn,PUr);
+		if(PUr.OKFlag>0)then begin
+			CreateTransFromPU(PUr);
+		end else begin
+			Beep;
+		end;
+	end else begin
+		Beep;
+	end;
+	
+return;
+end;
+
+
+global procedure CreateSMfromPUDsm()
+begin
+	integer mtrw,i,wn;
+	record PUVc PUr;
+	record StockMovVc SMr;
+	
+	
+	wn = curwindow;
+	
+	if(windowstate(wn)==0)then begin
+		getwindowrecord(wn,PUr);
+		recordNew(SMr);
+		if(CreateSMfromPU(PUr,SMr))then begin
+			OpenWindow("StockMovDClass",1,0,"","",SMr);
+		end else begin
+			beep;
+		end;	
+	end else begin
+		beep;
+	end;
+return;
+end;
+
+global procedure CreateSDfromPUDsm()
+begin
+	integer mtrw,i,wn;
+	record PUVc PUr;
+	record SDVc SDr;
+	
+	
+	wn = curwindow;
+	
+	if(windowstate(wn)==0)then begin
+		getwindowrecord(wn,PUr);
+		recordNew(SDr);
+		if(CreateSDfromPU(PUr,SDr))then begin
+			OpenWindow("SDDClass",1,0,"","",SDr);
+		end else begin
+			beep;
+		end;	
+	end else begin
+		beep;
+	end;
+return;
+end;
+
+
+procedure OpenIntermediateRClassForPUVc(LongInt sernr,string location)
+begin 
+  Integer wn;
+  Record RcVc RepSpec;
+  
+  wn = OpenWindow("LabelStockItemsRClass",1,0,"","",RepSpec);
+  DeselectWindow(wn,false); 
+  RepSpec.Media = mtScreen;
+  //RepSpec.Media = mtPrinter;  
+  RepSpec.critname = "LabelStockItemsRClass";
+  RepSpec.repname = "LabelPUVcItemsRn";
+  RepSpec.long1 = sernr;
+  RepSpec.f1 = location;
+  PutWindowRecord(wn,RepSpec);
+  WindowFieldGoto(wn,RepSpec,-1,"f2",true);
+  return; 
+end;
+
+global //Edit***************************Sasha2,17:38 13.10.2014 {
+procedure PUVcLabelItemPrint()
+BEGIN
+  record PUVc PUr;
+  Integer wn;
+ 
+  
+  wn = CurWindow;
+  if (WindowState(wn)==0) then begin //Rs_normal
+    DeselectWindow(wn,false);
+    GetWindowRecord(wn,PUr);
+    if (PUr.SerNr>-1) then begin
+    	OpenIntermediateRClassForPUVc(PUr.SerNr,PUr.Location);
+    end;
+   
+  end;
+    
+  RETURN;
+END; //Edit***************************Sasha2,17:38 13.10.2014 }
+
+
+global updating procedure AvansCreateDsm()
+begin
+integer wn,i,mtrw; 
+record ExpVc Expr;
+record PPVc PPr;
+
+    wn = curwindow;
+  if (WindowState(wn)==0) then begin//Rs_normal
+    GetWindowRecord(wn,PPr);
+    RecordNew(Expr);
+    RA_AvansCreateDsm(PPr,Expr);
+    
+    OpenWindow("ExpDClass",1,0,"","",Expr);
+	end;
+	
+return;
+end;

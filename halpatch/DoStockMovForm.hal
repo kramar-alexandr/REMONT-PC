@@ -75,33 +75,7 @@ BEGIN
 	//Monday, 5 January 2015 16:10:44
 	
     if (FIELDINFORM("MY_PRICE")) then begin
-      PLr.PLCode = "RRP";
-      if(currentcompany==2)then begin
-      	switch(StockMovr.ToLocation)begin
-      		case "STORE": PLr.PLCode = "IM-1";
-      		case "STORE_DEMO": PLr.PLCode = "IM-1";
-      		case "STORE_SM": PLr.PLCode = "IM-2";
-      		case "STORE_SM_D": PLr.PLCode = "IM-2";
-      	end;
-      end;
-      
-      if(CurrentCompany==4 or CurrentCompany==14  or CurrentCompany==15  or CurrentCompany==16)then begin
-      	switch(StockMovr.ToLocation)begin
-      		case "DREAM_TOWN": PLr.PLCode = "RRPD";  
-      		case "INV#1_DT": PLr.PLCode = "RRPD";    
-      		case "INV#1_DTST": PLr.PLCode = "RRPD1";       		     	
-      	end;
-      end;
-      
-      if(currentcompany==6)then begin
-      	switch(StockMovr.ToLocation)begin
-      		case "K_A_OP": PLr.PLCode = "P211";
-      		case "K_A_OP_EX": PLr.PLCode = "P211";
-      		case "K_OL": PLr.PLCode = "P111";
-      		case "K_OL_EXB": PLr.PLCode = "P111";
-      	end;
-      end;
-      
+      PLr.PLCode = "RRP";    
       PLr.ArtCode = INr.Code;
       if(readfirstmain(PLr,2,true))then begin
 				OUTFORMFIELD("MY_PRICE",PLr.ExVatPrice);

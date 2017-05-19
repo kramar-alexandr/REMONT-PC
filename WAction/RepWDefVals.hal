@@ -1,0 +1,99 @@
+global
+procedure ARRClassReportDefaults(Integer wn)
+BEGIN
+  record RcVc RepSpec;
+  string 255 tstr;
+  
+  DeselectWindow(wn,false);
+  GetWindowRecord(wn,RepSpec);
+  ReportDefaults(RepSpec,"ARRClass");  
+  RepSpec.ArtMode = 1;
+  RepSpec.flags[1] = 0; //Edit***************************Sasha2,16:49 21.08.2014
+  RepSpec.flags[20] = 1; //Edit***************************Sasha2,16:49 21.08.2014
+  RepSpec.flags[14] = 1; //Edit***************************Sasha2,16:49 21.08.2014
+  RepSpec.flags[2] = 1; //Edit***************************Sasha2,16:49 21.08.2014
+  PutWindowRecord(wn,RepSpec);
+  SelectWindow(wn);
+  RETURN;
+END;
+
+global
+procedure INRClassReportDefaults(Integer wn)
+begin
+  record RcVc RepSpec;
+  record VarietyBlock Varb;
+  
+  BlockLoad(Varb);  
+  DeselectWindow(wn,false);
+  GetWindowRecord(wn,RepSpec);
+  ReportDefaults(RepSpec,"INRClass");  
+  RepSpec.flags[22] = Varb.AutoVarietyDef;
+  RepSpec.flags[18] = 1; //Edit***************************Sasha2,14:37 22.08.2014
+  PutWindowRecord(wn,RepSpec);
+  SelectWindow(wn);
+  return;
+end;
+
+global //Edit***************************Sasha2,11:39 03.09.2014 {
+procedure NewINRClassReportDefaults(Integer wn)
+begin
+  record RcVc RepSpec;
+  record VarietyBlock Varb;
+  
+  BlockLoad(Varb);  
+  DeselectWindow(wn,false);
+  GetWindowRecord(wn,RepSpec);
+  ReportDefaults(RepSpec,"NewINRClass");  
+  RepSpec.flags[22] = Varb.AutoVarietyDef;
+  RepSpec.flags[18] = 1; 
+  PutWindowRecord(wn,RepSpec);
+  SelectWindow(wn);
+  return;
+end; //Edit***************************Sasha2,11:39 03.09.2014 }
+
+global
+procedure SVOListRClassReportDefaults(Integer wn)
+BEGIN
+  record RcVc RepSpec;
+  
+  DeselectWindow(wn,false);
+  GetWindowRecord(wn,RepSpec);
+  ReportDefaults(RepSpec,"SVOListRClass");  
+  RepSpec.ArtMode = 0; //Edit***************************Sasha2,15:37 27.04.2015
+  RepSpec.flags[1] = 1;
+  RepSpec.flags[2] = 1;
+  RepSpec.flags[3] = 1; //Edit***************************Sasha2,15:37 27.04.2015
+  RepSpec.flags[4] = 1;
+  RepSpec.flags[5] = 1;
+  RepSpec.flags[6] = 1; //Edit***************************Sasha2,15:37 27.04.2015
+  RepSpec.flags[7] = 1;
+  RepSpec.flags[8] = 1;
+  RepSpec.flags[9] = 1; //Edit***************************Sasha2,13:46 14.02.2017
+  RepSpec.flags[10] = 1; //Edit***************************Sasha2,13:46 14.02.2017
+  RepSpec.flags[11] = 1; //Edit***************************Sasha2,13:46 14.02.2017
+  PutWindowRecord(wn,RepSpec);
+  SelectWindow(wn);
+  RETURN;
+END;
+
+global
+procedure SaleWeekByVERClassReportDefaults(Integer wn)
+BEGIN
+  record RcVc RepSpec;
+  Integer dateId;
+  date curdate;
+  
+  DeselectWindow(wn,false);
+  GetWindowRecord(wn,RepSpec);
+  ReportDefaults(RepSpec,"SaleWeekByVERClass");
+  curdate = CurrentDate;
+  dateId = GetDateId(curdate);
+  RepSpec.sEndDate = addday(curdate,-dateId);
+  RepSpec.sStartDate = addday(RepSpec.sEndDate,-6);
+  RepSpec.Period2Str = RepSpec.sStartDate & ":" & RepSpec.sEndDate;
+  //RepSpec.f4 = "ERC,ASBIS";
+  //RepSpec.f7 = "EXB_GL";
+  PutWindowRecord(wn,RepSpec);
+  SelectWindow(wn);
+  RETURN;
+END;

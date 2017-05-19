@@ -1,0 +1,54 @@
+global 
+procedure DblWebSyncReg(string dblstr,string l,Integer currepwn)
+begin
+   Integer wn;
+   record WebSyncRegVc WSr;
+   
+   WSr.ArtCode = dblstr;
+   if (ReadFirstMain(WSr,1,true)) then begin 
+     wn = OpenWindow("WebSyncRegDClass",1,0,"","",WSr);
+   end;
+   
+   return;
+end;
+
+
+global 
+procedure DblItemHistVc(string dblstr,string l,Integer currepwn)
+begin
+   Integer wn;
+   record ItemHistVc IHr;
+   string 255 tstr;
+   
+  tstr = l; 
+  if (blank(tstr)) then begin
+    tstr = dblstr; 
+  end;
+    
+  IHr.SerNr = FirstInRange(tstr,10);
+  if (ReadFirstMain(IHr,1,true)) then begin
+  	 wn = OpenWindow("ItemHistDClass",1,0,"","",IHr);
+  end;
+   
+   return;
+end;
+
+global 
+procedure DblMoveForServiceVc(string dblstr,string l,Integer currepwn)
+begin
+  Integer wn;
+  record MoveForServiceVc MFSr;
+  string 255 tstr;
+
+  tstr = l; 
+  if (blank(tstr)) then begin
+    tstr = dblstr; 
+  end;
+    
+  MFSr.SerNr = FirstInRange(tstr,10);
+  if (ReadFirstMain(MFSr,1,true)) then begin
+    wn = OpenWindow("MoveForServiceDClass",1,0,"","",MFSr);
+  end;
+   
+   return;
+end;

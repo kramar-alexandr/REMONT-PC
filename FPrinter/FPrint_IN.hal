@@ -429,11 +429,7 @@ begin
 
   DeselectWindow(wn,false);
   GetWindowRecord(wn,RepSpec);
-  if (CurrentCompany==4 or CurrentCompany==14  or CurrentCompany==15  or CurrentCompany==16) then begin
-    RepSpec.vals0 = 500;//Edit***************************Sasha2,9:57 19.04.2016
-  end else begin
-    RepSpec.vals0 = 460;
-  end;
+  RepSpec.vals0 = 460;
   PutWindowRecord(wn,RepSpec);
   CashEventsTClassOnOpenWindow = false;
   return;

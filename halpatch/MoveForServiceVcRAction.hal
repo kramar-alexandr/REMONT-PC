@@ -1,7 +1,7 @@
 remote function Boolean ReadFirstItem(string,var record INVc,Boolean,Boolean);
 remote procedure GetDefaultValuesMoveForServiceVc(var record MoveForServiceVc,integer);
 
-SetLangMode(LangUkrainian,"UKR",0); 
+SetLangMode(LangRussian,"RUS",0); 
 
 global
 updating function LongInt MoveForServiceVcRecordCheck(var record MoveForServiceVc MoveForServicep,record MoveForServiceVc MoveForService2p,LongInt stat,LongInt check)

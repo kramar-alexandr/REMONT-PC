@@ -1,0 +1,1376 @@
+external function Integer PayTermType(string);
+external function Integer VerifyTaxTemplateCode(string,var string);
+external function Integer CheckObjs(string,string,var string);
+external procedure B1ToB2Val(val,val,val,var val);
+external procedure SwapM4Val(var val,var val);
+external procedure ConvertToDualBase(var string,date,var val,var val,var val,var val,var val,var val,Boolean);
+external function Boolean CheckPDExists(string);
+external function Integer CheckRates(string,val,val,val,val,val,var string);
+external function Date ConvertPlanShipString(string);
+external function Integer CheckCUVATNrMask(string,string,var string);
+external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
+external procedure SetSVOFlags(record SVOVc);
+external function Boolean SerNrTestSVOVc(LongInt,Date,var Boolean);
+external updating procedure CreateSVOSerNoter(record SVOVc,string);
+external updating procedure CreateInspection(string,string,Date,LongInt,LongInt);
+remote function Boolean PasteCUInSVO(var record SVOVc,string,var string);// Edit ************************** Friday, 6 January 2012 11:06:45
+remote procedure SENDSMS(record SVOVc,record SVOVc);
+remote procedure SENDFIRSTSMS(record SVOVc);
+external updating procedure CreateNoterChangeInSVO(record SVOVc,string,string);
+external function Boolean FindStringInString(string,string);// Edit ************************** Thursday, 30 June 2016 10:55:59
+remote procedure CountNumberRepeatPhone(string,var array longint,var integer );
+external updating procedure CreateActFromSVOToEnginer(record SVOVc);
+external updating procedure ChangeCostOfIVsInSVO(longint);//Edit-------------------Vitalii 10:13 25.11.2016
+external updating procedure PhonesFromSVO(longint);//Edit-------------------Vitalii 17:10 03.11.2016
+remote procedure SENDSECONDSMS(longint);// Edit ************************** Friday, 18 November 2016 14:48:29
+remote updating procedure FastPayInvoicesSVO(record RcVc);// Edit ************************** Friday, 25 November 2016 13:09:52
+
+SetLangMode(LangRussian,"RUS",0);
+
+// Edit Start ---------------------------------------------- Edit Start
+//Friday, 22 November 2013 14:00:54
+global function longint GetUserSerNrSeries(longint in)
+begin
+	record UserVc User;
+	record SalesGroupVc SGr;
+	longint res;
+	
+	res = in;
+	User.Code = currentuser;
+	if(readfirstmain(User,1,true))then begin
+		if(nonblank(User.SalesGroup))then begin
+			SGr.SGroupCode = User.SalesGroup;
+			if(readfirstmain(SGr,1,true))then begin
+				if(SGr.SGroupSeries>-1)then begin
+					res = SGr.SGroupSeries;
+				end;
+			end;
+		end;
+	end;
+	
+	GetUserSerNrSeries = res;
+end;
+// Edit End ---------------------------------------------- Edit End
+
+global
+function LongInt SVOVcRecordDefaultsClient(var record SVOVc SVOr,record SVOVc SVO2r,LongInt stat,LongInt long4)
+BEGIN
+  LongInt res;
+  record AccBlock ARAccRec;
+  record UserVc Userr;
+  val fr,to1,to2,br1,br2;
+  string 10 curcode;
+  record LocalMachineAccBlock LMAb;// Edit ************************** Wednesday, 19 October 2011 10:59:48
+  row LocalMachineAccBlock LMArw;// Edit ************************** Wednesday, 19 October 2011 10:59:49
+  record LocalMachineBlock LMb;// Edit ************************** Wednesday, 19 October 2011 10:59:49
+  integer mtrw,i;// Edit ************************** Wednesday, 19 October 2011 10:59:50
+  string 255 warning;// Edit ************************** Friday, 6 January 2012 11:08:47
+  
+  BlockLoad(ARAccRec);
+  SVOr.SerNr = -1;
+  SVOr.TransDate = CurrentDate;  
+  SVOr.CustCat = "";
+  SVOr.DoneMark = 0;
+  SVOr.WOMark = 0;
+  SVOr.WSMark = 0;
+  SVOr.InvMark = 0;
+  SVOr.InvFlag = 0;
+  
+  // Edit Start ---------------------------------------------- Edit Start
+	//Thursday, 30 December 2010 10:44:34
+	blockload(LMb);// Edit ************************** Wednesday, 19 October 2011 10:59:52
+  blockload(LMAb);// Edit ************************** Wednesday, 19 October 2011 10:59:52
+	mtrw = matrowcnt(LMAb);
+	for(i=0;i<mtrw;i=i+1)begin
+	  matrowget(LMAb,i,LMArw);
+	  if(LMArw.LocalMachine==LMb.LocalMachineCode)then begin
+	    if(nonblank(SVOr.Objects))then begin
+	      SVOr.Objects = SVOr.Objects & "," & LMArw.Objects;
+	    end else begin
+        SVOr.Objects = LMArw.Objects;
+	    end;
+	  end;
+	end;
+	
+	// Edit End ---------------------------------------------- Edit End
+	
+  
+  SVOr.InclVAT = ARAccRec.BasePriceInclVAT;
+//  SVOr.NoTAXonVAT = ARAccRec.NoTAXonVAT;
+//  SVOr.TotalwoTAX = ARAccRec.TotalwoTAX;
+  Userr.Code = CurrentUser;
+  if (ReadFirstMain(Userr,1,true)) then begin end;
+  SVOr.SalesMan = Userr.Code;
+  SVOr.SalesGroup = Userr.SalesGroup;
+  SVOr.OurContact = Userr.CurOurContact;
+  SVOr.ServLocation = Userr.ServLocation;
+ // Edit Start ---------------------------------------------- Edit Start
+	//Tuesday, 1 June 2010 2:06:05 PM
+	 If(CurrentCompany == 8) then begin
+  curcode = "UAH";
+  end else begin
+  curcode = SVOr.CurncyCode;
+  end;
+	// Edit End ---------------------------------------------- Edit End
+	
+  GetFullCurncyRate(curcode,SVOr.TransDate,fr,to1,to2,br1,br2);
+  SVOr.CurncyCode = curcode;
+  SVOr.FrRate = fr;
+  SVOr.ToRateB1 = to1; 
+  SVOr.ToRateB2 = to2;
+  SVOr.BaseRate1 = br1;
+  SVOr.BaseRate2 = br2;
+  SVOr.PayDeal = "";
+  if (SingleUserMode) then begin
+    SVOr.SerNr = NextSerNr("SVOVc",SVOr.TransDate,GetUserSerNrSeries(-1),false,"");
+  end;
+  
+	if (blank(SVOr.CustCode)) then begin
+    SVOr.CustCode = LMb.DefCustCode;
+    if (PasteCUInSVO(SVOr,"",warning)) then begin	////Edit----------------------Dima  14.05.2015 //oldcustCode = blank
+    end;
+  end;  
+    
+  SVOVcRecordDefaultsClient = res; 
+  RETURN;
+END;
+
+global
+function LongInt SVOVcRecordDefaults(var record SVOVc SVOr,record SVOVc SVO2r,LongInt stat,LongInt long4)
+BEGIN
+  LongInt res;
+  record AccBlock ARAccRec;
+  record UserVc Userr;
+  val fr,to1,to2,br1,br2;
+  string 10 curcode;
+  record LocalMachineAccBlock LMAb;// Edit ************************** Wednesday, 19 October 2011 10:59:48
+  row LocalMachineAccBlock LMArw;// Edit ************************** Wednesday, 19 October 2011 10:59:49
+  record LocalMachineBlock LMb;// Edit ************************** Wednesday, 19 October 2011 10:59:49
+  integer mtrw,i;// Edit ************************** Wednesday, 19 October 2011 10:59:50
+  string 255 warning;// Edit ************************** Friday, 6 January 2012 11:08:47
+      
+  BlockLoad(ARAccRec);
+  SVOr.SerNr = -1;
+  SVOr.TransDate = CurrentDate;  
+  SVOr.CustCat = "";
+  SVOr.DoneMark = 0;
+  SVOr.WOMark = 0;
+  SVOr.WSMark = 0;
+  SVOr.InvMark = 0;
+  SVOr.InvFlag = 0;
+  SVOr.InclVAT = ARAccRec.BasePriceInclVAT;
+//  SVOr.NoTAXonVAT = ARAccRec.NoTAXonVAT;
+//  SVOr.TotalwoTAX = ARAccRec.TotalwoTAX;
+  Userr.Code = CurrentUser;
+  if (ReadFirstMain(Userr,1,true)) then begin end;
+  SVOr.SalesMan = Userr.Code;
+  SVOr.Objects = Userr.PersObjx;
+  SVOr.OurContact = Userr.CurOurContact;
+  SVOr.ServLocation = Userr.ServLocation;
+  curcode = "UAH"; // Edit Start ---------------------------------------------- Edit Start
+  GetFullCurncyRate(curcode,SVOr.TransDate,fr,to1,to2,br1,br2);
+  SVOr.CurncyCode = curcode;
+  SVOr.FrRate = fr;
+  SVOr.ToRateB1 = to1; 
+  SVOr.ToRateB2 = to2;
+  SVOr.BaseRate1 = br1;
+  SVOr.BaseRate2 = br2;
+  SVOr.PayDeal = "";
+  if (SingleUserMode) then begin
+    SVOr.SerNr = NextSerNr("SVOVc",SVOr.TransDate,-1,false,"");
+  end;  
+  SVOr.CustomField7 = CurrentUser; //Edit***************************Sasha2,18:03 02.03.2017
+  SVOVcRecordDefaults = res; 
+  RETURN;
+END;
+
+global
+function LongInt SVOVcRecordDuplicate(var record SVOVc SVOr,record SVOVc SVO2r,LongInt stat,LongInt long4)
+BEGIN
+  LongInt res;
+  val fr,to1,to2,br1,br2;
+  string 10 curcode;
+  row SVOVc SVOrw;
+  Integer i,rwcnt;
+  Date blankd;
+  Time blankt;
+  record UserVc Userr;// Edit ************************** Monday, 31 October 2016 12:54:07
+      
+  SVOr.SerNr = -1;
+  SVOr.TransDate = CurrentDate;  
+  SVOr.RegDate = blankd;
+  SVOr.RegTime = blankt;
+  if (SingleUserMode) then begin
+    SVOr.SerNr = NextSerNr("SVOVc",SVOr.TransDate,GetUserSerNrSeries(-1),false,""); //Edit***************************Sasha2,16:51 18.05.2017
+  end;
+  rwcnt = MatRowCnt(SVOr);
+  for (i=0;i<rwcnt;i=i+1) begin
+    /*MatRowGet(SVOr,i,SVOrw); //Edit----------------------Dima  28.09.2015 {
+    SVOrw.WOMade = blankval;
+    SVOrw.Invd = blankval;
+    SVOrw.Cost = blankval;
+    SVOrw.WOSerNr = -1;
+    MatRowPut(SVOr,i,SVOrw);*/
+    matrowget(SVOr,i,SVOrw);
+  	SVOrw.ItemType = 0;
+  	matrowput(SVOr,i,SVOrw); //Edit----------------------Dima  28.09.2015 }
+  end;  
+  SVOr.DoneMark = 0;
+  SVOr.WOMark = 0;
+  SVOr.WSMark = 0;
+  SVOr.InvMark = 0;
+  SVOr.InvFlag = 0;
+  curcode = SVOr.CurncyCode;
+  GetFullCurncyRate(curcode,SVOr.TransDate,fr,to1,to2,br1,br2);
+  SVOr.CurncyCode = curcode;
+  SVOr.FrRate = fr;
+  SVOr.ToRateB1 = to1; 
+  SVOr.ToRateB2 = to2;
+  SVOr.BaseRate1 = br1;
+  SVOr.BaseRate2 = br2;
+  SVOr.PlanShip = blankd;		//Edit----------------------Dima  28.09.2015
+  SVOr.PlanShipDate = blankd;	//Edit***************************Sasha2,14:50 16.02.2017
+  SVOr.DoneTime = blankt;
+  SVOr.RegDate = blankd;
+  SVOr.OutTime = blankt;
+  SVOr.EndDiagnDate = blankd;
+  SVOr.EndDiagnTime = blankt;
+  SVOr.OrderStatus = 0;
+  SVOr.DoneMark = 0;
+  SVOr.CustomField7 = "";
+  SVOr.ServiceManager = "";
+  SVOr.Comment1 = "";
+  SVOr.Comment2 = "";
+  SVOr.Comment3 = "";
+  SVOr.Comment4 = "";  
+  
+  SVOr.Region = ""; // Edit ************************** Friday, 16 October 2015 17:41:26
+  SVOr.Garanty = ""; 
+  SVOr.GarNo = ""; 
+  SVOr.CustomField3 = ""; 
+  SVOr.CustomField4 = ""; 
+  SVOr.CustomField5 = ""; 
+  SVOr.CustomField8 = ""; // Edit ************************** Monday, 11 July 2016 17:04:41
+  SVOr.CustomField9 = "";
+  
+  SVOr.Batary = ""; 
+  SVOr.Zaryadka = ""; 
+  SVOr.Inshe = ""; 
+  SVOr.WSCost = blankval;
+  SVOr.SalesGroup = "";
+  Userr.Code = CurrentUser;
+  if (ReadFirstMain(Userr,1,true)) then begin end;
+  SVOr.SalesMan = Userr.Code;
+  SVOr.SalesGroup = Userr.SalesGroup;
+  SVOr.OurContact = Userr.CurOurContact;
+  SVOr.ServLocation = Userr.ServLocation;
+  
+  SVOr.FastCash = blankval;
+ 	SVOr.FastTerm = blankval; 
+ 	SVOr.SerialNrTextSearch = "";
+ 	SVOr.OldPhone = "";
+ 	
+  SVOVcRecordDuplicate = res; 
+  RETURN;
+END;
+
+
+
+global
+updating function LongInt SVOVcRecordSave(var record SVOVc SVOr,record SVOVc SVO2r,LongInt stat,LongInt long4)
+BEGIN
+  LongInt res;
+
+  SetSVOFlags(SVOr);
+  if (blankdate(SVOr.RegDate)) then begin
+    //SVOr.RegDate = CurrentDate; // Edit ************************** Friday, 17 December 2010 09:36:54
+  end;
+  if (blanktime(SVOr.RegTime)) then begin
+    SVOr.RegTime = CurrentTime;
+  end;
+  SVOVcRecordSave = res; 
+  RETURN;
+END;
+
+// Edit Start ---------------------------------------------- Edit Start
+	//Thursday, 14 July 2011 12:26:15
+	global
+updating function LongInt SVOVcRecordSaveAfter(var record SVOVc SVOr,record SVOVc SVO2r,LongInt stat,LongInt long4)
+BEGIN
+  LongInt res;
+  record SVOHistSerialVc SVHistr;
+  row SVOVc SVOrw;
+  string 200 tstr;
+  boolean testf;
+  integer mtrw,i;
+  
+  
+  mtrw = matrowcnt(SVOr);
+  tstr = "";
+  for(i=0;i<mtrw;i=i+1)begin
+    matrowget(SVOr,i,SVOrw);
+    testf = true;
+    SVHistr.SerialNr = SVOrw.SerialNr;
+    while(loopmain(SVHistr,1,testf))begin
+      if(SVHistr.SerialNr!=SVOrw.SerialNr) then begin testf=false; end;
+      if(testf and SVHistr.Qty>-1)then begin
+        if(SVHistr.TransNr!=SVOr.SerNr)then begin
+					if(nonblank(tstr))then begin
+						tstr = tstr & "," & SVHistr.TransNr;
+					end else begin
+						tstr = SVHistr.TransNr;
+					end;
+        end;
+      end;
+    end;
+    
+  end;
+  if(nonblank(tstr))then begin
+    CreateSVOSerNoter(SVOr,tstr);
+    SVOr.CustomField8 = left(tstr,240);
+    recordstore(SVOr,true);
+  end;
+    
+    mtrw = matrowcnt(SVOr);
+    for(i=0;i<mtrw;i=i+1)begin
+      matrowget(SVOr,i,SVOrw);
+      if(nonblank(SVOrw.SerialNr))then begin
+        recordnew(SVHistr);
+        SVHistr.SerialNr = SVOrw.SerialNr;
+        SVHistr.ArtCode = SVOrw.ArtCode;
+        SVHistr.Qty = SVOrw.Quant;
+        SVHistr.TransNr = SVOr.SerNr;
+        SVHistr.FileName = "SVOVc";
+        SVHistr.OKFlag = SVOr.DoneMark;
+        SVHistr.Type = SVOrw.ItemType;
+        SVHistr.TransDate = SVOr.TransDate;
+        SVHistr.OkDate = SVOr.PlanShipDate;
+        SVHistr.ReturnDate = SVOr.RegDate;
+        SVHistr.SalesMan = SVOr.CustomField7;
+        SVHistr.Client = SVOr.CustCode;
+        SVHistr.Vlastnik = SVOr.Vlastnik;
+        recordinsert(SVHistr,true);
+      end;
+    end;
+  	
+  	CreateActFromSVOToEnginer(SVOr);
+
+  	
+  SENDFIRSTSMS(SVOr);
+  PhonesFromSVO(SVOr.SerNr);//Edit-------------------Vitalii 17:10 03.11.2016
+  
+  SVOVcRecordSaveAfter = res; 
+  RETURN;
+END;
+	// Edit End ---------------------------------------------- Edit End
+
+global
+updating function LongInt SVOVcRecordUpdate(var record SVOVc SVOr,record SVOVc SVO2r,LongInt stat,LongInt long4)
+BEGIN
+  LongInt res;
+  
+  SetSVOFlags(SVOr);
+  SVOVcRecordUpdate = res; 
+  RETURN;
+END;
+
+updating procedure SVOInspection(record SVOVc SVOr)
+begin
+  record QualConVc QualConr;
+  row SVOVc SVOrw;
+  Integer i,rwcnt;
+  
+  if (SVOr.QualConSerNr>0) then begin
+    rwcnt = MatRowCnt(SVOr);
+    for (i=0;i<rwcnt;i=i+1) begin
+      MatRowGet(SVOr,i,SVOrw);
+      if (nonblank(SVOrw.ArtCode)) then begin
+        QualConr.SerNr = SVOr.QualConSerNr;
+        if (ReadFirstMain(QualConr,1,true)==false) then begin
+          QualConr.AgreementNr = -1;
+          QualConr.RentResSerNo = -1;
+        end;
+        CreateInspection(SVOrw.ArtCode,SVOrw.SerialNr,SVOr.TransDate,QualConr.AgreementNr,QualConr.RentResSerNo);
+      end;
+    end;
+  end;
+  return;
+end;
+
+global
+updating function LongInt SVOVcRecordUpdateAfter(var record SVOVc SVOr,record SVOVc SVO2r,LongInt stat,LongInt long4)
+BEGIN
+  LongInt res;
+  record SVOHistSerialVc SVHistr;// Edit ************************** Thursday, 14 July 2011 12:31:04
+  row SVOVc SVOrw;// Edit ************************** Thursday, 14 July 2011 12:31:04
+  string 200 tstr,comment;// Edit ************************** Thursday, 14 July 2011 12:31:03
+  boolean testf;// Edit ************************** Thursday, 14 July 2011 12:31:02
+  integer mtrw,i;// Edit ************************** Thursday, 14 July 2011 12:31:01
+
+  if ((SVOr.DoneMark!=0) and (SVO2r.DoneMark==0)) then begin
+    SVOInspection(SVOr);
+  end;
+  
+  ChangeCostOfIVsInSVO(SVOr.SerNr);//Edit-------------------Vitalii 10:13 25.11.2016
+  // Edit Start ---------------------------------------------- Edit Start
+	//Thursday, 14 July 2011 12:30:47
+	mtrw = matrowcnt(SVOr);
+	tstr = "";
+  for(i=0;i<mtrw;i=i+1)begin
+    matrowget(SVOr,i,SVOrw);
+    testf = true;
+    SVHistr.SerialNr = SVOrw.SerialNr;
+    while(loopmain(SVHistr,1,testf))begin
+      if(SVHistr.SerialNr!=SVOrw.SerialNr) then begin testf=false; end;
+      if(testf and SVHistr.Qty>-1)then begin
+      	if(SVHistr.TransNr!=SVOr.SerNr)then begin
+					if(nonblank(tstr))then begin
+						tstr = tstr & "," & SVHistr.TransNr;
+					end else begin
+						tstr = SVHistr.TransNr;
+					end;
+        end;
+      end;
+    end;
+    
+  end;
+  if(nonblank(tstr))then begin
+    CreateSVOSerNoter(SVOr,tstr);
+    SVOr.CustomField8 = left(tstr,240);
+    recordstore(SVOr,true);
+  end;
+  
+  mtrw = matrowcnt(SVO2r);
+    for(i=0;i<mtrw;i=i+1)begin
+      matrowget(SVO2r,i,SVOrw);
+      if(nonblank(SVOrw.SerialNr))then begin
+        SVHistr.SerialNr = SVOrw.SerialNr;
+        SVHistr.TransNr = SVOr.SerNr;
+        if(readfirstmain(SVHistr,2,true))then begin
+          //SVHistr.Qty = -1;
+          //recordstore(SVHistr,true);
+          recorddelete(SVHistr);
+        end;
+        
+      end;
+    end;
+  
+  mtrw = matrowcnt(SVOr);
+    for(i=0;i<mtrw;i=i+1)begin
+      matrowget(SVOr,i,SVOrw);
+      if(nonblank(SVOrw.SerialNr))then begin
+        SVHistr.SerialNr = SVOrw.SerialNr;
+        SVHistr.TransNr = SVOr.SerNr;
+        if(readfirstmain(SVHistr,2,true))then begin
+        end else begin
+          recordnew(SVHistr);
+        end;
+        SVHistr.SerialNr = SVOrw.SerialNr;
+        SVHistr.ArtCode = SVOrw.ArtCode;
+        SVHistr.Qty = SVOrw.Quant;
+        SVHistr.TransNr = SVOr.SerNr;
+        SVHistr.FileName = "SVOVc";
+        SVHistr.OKFlag = SVOr.DoneMark;
+        SVHistr.Type = SVOrw.ItemType;
+        SVHistr.TransDate = SVOr.TransDate;
+        SVHistr.OkDate = SVOr.PlanShipDate;
+        SVHistr.ReturnDate = SVOr.RegDate;
+        SVHistr.SalesMan = SVOr.CustomField7;
+        SVHistr.Client = SVOr.CustCode;
+        SVHistr.Vlastnik = SVOr.Vlastnik;
+        recordinsert(SVHistr,true);
+      end;
+    end;
+  
+	// Edit End ---------------------------------------------- Edit End
+	
+	if (SVO2r.ServiceManager!=SVOr.ServiceManager) and nonblank(SVOr.ServiceManager) then begin
+		tstr = currentdate & " " & currenttime & " " & currentuser & " - ";
+		if nonblank(SVO2r.ServiceManager) then begin
+			tstr = tstr & USetStr(11006) & " " & USetStr(31057) & " '" & SVO2r.ServiceManager & "' " & USetStr(31058) & " '" & SVOr.ServiceManager & "'";
+		end else begin
+			tstr = tstr & USetStr(31060) & " '" & SVOr.ServiceManager & "'";
+		end;
+		comment = USetStr(31056);
+		CreateNoterChangeInSVO(SVOr,tstr,comment);
+	end;
+	if (SVO2r.OrderStatus!=SVOr.OrderStatus) then begin
+		tstr = currentdate & " " & currenttime & " " & currentuser & " - " & USetStr(11006) & " " & USetStr(31057) & " '";
+		switch (SVO2r.OrderStatus) begin
+			case 0: tstr = tstr & USetStr(31044);
+			case 1: tstr = tstr & USetStr(31045);
+			case 3: tstr = tstr & USetStr(31050);
+			case 2: tstr = tstr & USetStr(31046);
+			case 4: tstr = tstr & USetStr(31061);
+		end;
+		tstr = tstr & "' " & USetStr(31058) & " '";
+		switch (SVOr.OrderStatus) begin
+			case 0: tstr = tstr & USetStr(31044);
+			case 1: tstr = tstr & USetStr(31045);
+			case 3: tstr = tstr & USetStr(31050);
+			case 2: tstr = tstr & USetStr(31046);
+			case 4: tstr = tstr & USetStr(31061);
+		end;
+		tstr = tstr & "'";
+		comment = USetStr(31059);
+		CreateNoterChangeInSVO(SVOr,tstr,comment);
+	end;
+	
+	CreateActFromSVOToEnginer(SVOr);
+  PhonesFromSVO(SVOr.SerNr);//Edit-------------------Vitalii 17:09 03.11.2016
+  
+  SVOVcRecordUpdateAfter = res;
+  RETURN;
+END;
+
+function Boolean IsSVORowsDone(record SVOVc SVOp)
+BEGIN
+  row SVOVc SVOrw;
+  record WOVc WOr;
+  Integer i,rwcnt;
+  Boolean res;
+
+  res = true;
+  rwcnt = MatRowCnt(SVOp);  
+  for (i=0;i<rwcnt;i=i+1) begin
+    MatRowGet(SVOp,i,SVOrw);
+    if (SVOrw.WOSerNr!=-1) then begin
+      WOr.SerNr = SVOrw.WOSerNr;
+      if (ReadFirstMain(WOr,1,true)) then begin
+        if ((WOr.Closed==0) or (WOr.Closed==2)) then begin
+          res = false;
+        end;
+      end;
+    end;
+  end;  
+  IsSVORowsDone = res;
+  RETURN;
+END;
+
+function Boolean FindOpenWSTrans(longint svonr)
+begin
+  Boolean res;
+  record WSVc WSr;
+  boolean TrHs, testf;
+  
+  res = false;
+  WSr.SVONr = svonr;
+  TrHs = true;
+  while (LoopKey("SVONr",WSr,1,TrHs)) begin
+    if (TrHs) then begin
+      if (WSr.SVONr!=svonr) then begin
+        TrHs = false;
+      end;
+    end;
+    if (TrHs) then begin
+      if (WSr.OKFlag==0) then begin
+        res = true;
+        goto LFindOpenWSTrans;
+      end;
+    end;
+  end;
+LFindOpenWSTrans:;
+  FindOpenWSTrans = res;
+  return;
+end;
+
+function Boolean FindOpenActTrans(longint svonr)
+begin
+  Boolean  res;
+  record ActVc Actr;
+  boolean TrHs, testf;
+  
+  res = false;
+  Actr.SVOSerNr = svonr;
+  TrHs = true;
+  while (LoopKey("SVOSerNr",Actr,1,TrHs)) begin
+    if (TrHs) then begin
+      if (Actr.SVOSerNr!=svonr) then begin
+        TrHs = false;
+      end;
+    end;
+    if (TrHs) then begin
+      if (Actr.OKFlag==0) then begin
+        res = true;
+        goto LFindOpenActTrans;
+      end;
+    end;
+  end;
+LFindOpenActTrans:;
+  FindOpenActTrans = res;
+  return;
+end;
+
+//Edit***************************Sasha2,16:57 18.05.2017 {
+global procedure CountNumberRepeatPhone(string phone,var array longint sernr,var integer count)
+begin
+record SVOVc SVOr;
+boolean testf;
+record LetVc Letr;
+
+	
+	count = 0;
+	while(loopmain(SVOr,1,true))begin
+		recordnew(Letr);
+		AddToText(SVOr.Kontinfo1,Letr);
+		if(StringInText(phone,Letr))then begin
+			sernr[count] = SVOr.SerNr;
+			count = count + 1;
+		end;	
+	end;
+	
+return
+end; //Edit***************************Sasha2,16:57 18.05.2017 }
+
+global
+function LongInt SVOVcRecordCheck(var record SVOVc SVOr,record SVOVc SVO2r,LongInt stat,LongInt check)
+BEGIN
+  row SVOVc SVOrw;
+  record INVc INr;
+  LongInt res;
+  Integer rwcnt,i,errcode;
+  LongInt oldnr;
+  Boolean found,gentrans,MainItemFound,transf;
+  record COVc COr;
+  string 255 tstr,errstr;
+  record CUVc CUr;
+  record LocationVc Locr;
+  record SVOAccBlock SVOAccRec;
+  array longint sernr;// Edit ************************** Thursday, 30 June 2016 10:53:51
+  integer count;// Edit ************************** Thursday, 30 June 2016 10:53:49
+  Integer insertmode,updatemode;
+
+  res = 0;
+  
+  //Edit***************************Sasha2,16:57 18.05.2017 {
+  insertmode = 1;//Rs_insert
+  updatemode = 2;//Rs_update
+  
+  if((SVOr.OrderStatus==1 or SVOr.OrderStatus==2 or SVOr.OrderStatus==3) and blankdate(SVOr.EndDiagnDate))then begin //Edit***************************Sasha2,17:32 25.10.2016
+  	SVOr.EndDiagnDate = currentdate;
+  	SVOr.EndDiagnTime = CurrentTime;
+  end;
+  if(SVOr.OrderStatus==2 and blankdate(SVOr.PlanShipDate))then begin
+  	SVOr.PlanShipDate = currentdate;// Edit ************************** Thursday, 10 September 2015 17:31:49
+  	SVOr.DoneTime = CurrentTime;
+  end;
+  if (nonblankdate(SVOr.PlanShipDate) and blankdate(SVOr.EndDiagnDate)) then begin //Edit***************************Sasha2,16:14 23.01.2017
+    SVOr.EndDiagnDate = SVOr.PlanShipDate;
+    SVOr.EndDiagnTime = SVOr.DoneTime;
+  end;
+  if (SVOr.OrderStatus==5 and Blank(SVOr.ServiceManager)) then begin
+    SVOr.ServiceManager = CurrentUser;
+  end;
+  if(nonblankdate(SVOr.PlanShipDate))then begin
+  	SVOr.OrderStatus=2;// Edit ************************** Thursday, 10 September 2015 17:31:49
+  end;
+ 
+  
+  if(blank(SVOr.Kontinfo2))then begin// Edit ************************** Friday, 16 October 2015 17:36:32
+  	SVOr.Kontinfo2 = USetStr(31047);
+  end;
+  if(blank(SVOr.Kontinfo3))then begin// Edit ************************** Friday, 16 October 2015 17:36:33
+  	SVOr.Kontinfo3 = USetStr(31048);
+  end;
+  
+  if(blank(SVOr.Garanty))then begin// Edit ************************** Friday, 16 October 2015 17:36:33
+  	SVOr.Garanty = USetStr(31049);
+  end;
+  if(blank(SVOr.Batary))then begin// Edit ************************** Friday, 16 October 2015 17:36:33
+  	SVOr.Batary = USetStr(31049);
+  end;
+  if(blank(SVOr.Zaryadka))then begin// Edit ************************** Friday, 16 October 2015 17:36:33
+  	SVOr.Zaryadka = USetStr(31049);
+  end;
+
+  if(matrowcnt(SVOr)>0)then begin
+  	matrowget(SVOr,0,SVOrw);  
+  	SVOr.ItemName = SVOrw.Spec;
+  end;
+  //Edit***************************Sasha2,16:57 18.05.2017 }
+  
+  BlockLoad(SVOAccRec);
+  oldnr = SVOr.SerNr;
+  if (SVOr.DoneMark!=0) and (SVO2r.DoneMark==0) then begin
+    if (FindOpenWSTrans(SVOr.SerNr)) then begin
+      RecordCheckError(20268,"",-1,"CustCode");
+      res = -1;
+      goto LSVOVcRecordCheck;
+    end;
+    /*if (FindOpenActTrans(SVOr.SerNr)) then begin //Edit***************************Sasha2,16:58 18.05.2017
+      RecordCheckError(20269,"",-1,"CustCode");
+      res = -1;
+      goto LSVOVcRecordCheck;
+    end;  */ 
+  end;  
+  if (stat==2) then begin
+    if (SVOr.SerNr<=0) then begin
+      SVOr.SerNr = SVO2r.SerNr;
+    end;
+  end;      
+  transf = false;
+  
+  // Edit Start ---------------------------------------------- Edit Start
+	//Monday, 12 December 2016 16:18:20
+  if(stat==Rs_insert and nonblank(SVOr.Kontinfo1))then begin
+  	CountNumberRepeatPhone(SVOr.Kontinfo1,sernr,count);
+  	if(count>0)then begin
+  		SVOr.CustomField9 = count;
+  	end;
+  end;
+  if(stat==Rs_update and nonblank(SVOr.Kontinfo1) and (SVOr.Kontinfo1!=SVO2r.Kontinfo1))then begin
+  	CountNumberRepeatPhone(SVOr.Kontinfo1,sernr,count);
+  	if(count>0)then begin
+  		SVOr.CustomField9 = count;
+  	end;
+  end;
+ 
+	 
+  if(nonblank(SVOr.Kontinfo1))then begin
+  	if(left(SVOr.Kontinfo1,1)!="0")then begin
+  		RecordCheckError(31087,"",-1,"Kontinfo1");
+      res = -1;
+      goto LSVOVcRecordCheck;
+  	end;
+  	if(len(SVOr.Kontinfo1)!=10)then begin
+  		RecordCheckError(31087,"",-1,"Kontinfo1");
+      res = -1;
+      goto LSVOVcRecordCheck;
+  	end;
+  	rwcnt = len(SVOr.Kontinfo1);
+  	For(i=0;i<rwcnt;i=i+1) begin
+	  	if(asc(mid(SVOr.Kontinfo1,i,1))<48 or asc(mid(SVOr.Kontinfo1,i,1))>57)then begin
+	  		RecordCheckError(31087,"",-1,"Kontinfo1");
+				res = -1;
+				goto LSVOVcRecordCheck;
+	  	end;
+		end; 
+  	
+  end;
+  
+  if(nonblank(SVOr.Phone2))then begin
+  	if(left(SVOr.Phone2,1)!="0")then begin
+  		RecordCheckError(31087,"",-1,"Phone2");
+      res = -1;
+      goto LSVOVcRecordCheck;
+  	end;
+  	if(len(SVOr.Phone2)!=10)then begin
+  		RecordCheckError(31087,"",-1,"Phone2");
+      res = -1;
+      goto LSVOVcRecordCheck;
+  	end;
+  	rwcnt = len(SVOr.Phone2);
+  	For(i=0;i<rwcnt;i=i+1) begin
+	  	if(asc(mid(SVOr.Phone2,i,1))<48 or asc(mid(SVOr.Phone2,i,1))>57)then begin
+	  		RecordCheckError(31087,"",-1,"Phone2");
+				res = -1;
+				goto LSVOVcRecordCheck;
+	  	end;
+		end; 
+  end;
+  
+  
+  if(blank(SVOr.Kontinfo1) and nonblank(SVOr.Phone2))then begin
+  	RecordCheckError(31088,"",-1,"Kontinfo1");
+		res = -1;
+		goto LSVOVcRecordCheck;
+  end;
+  
+	// Edit End ---------------------------------------------- Edit End
+  if (SVOr.DoneMark==1) then begin
+    if (stat==Rs_insert) then begin transf = true; end;
+    if (stat==Rs_update) then begin
+      if (SVO2r.DoneMark==0) then begin transf = true; end;
+    end;  
+  end;
+  if (transf) then begin
+    if (UserCanAction("CompletingServiceOrders",true)==false) then begin
+      RecordCheckError(1274,StringFromStringSet(3,"CompletingServiceOrders"),-1,"SerNr");      
+      res = -1;
+      goto LSVOVcRecordCheck;
+    end;  
+  end;
+  oldnr = SVOr.SerNr;		//Edit----------------------Dima  14.05.2015
+  if (SVOr.SerNr<=0) then begin
+    SVOr.SerNr = NextSerNr("SVOVc",SVOr.TransDate,GetUserSerNrSeries(-1),false,""); //Edit***************************Sasha2,16:59 18.05.2017
+  end;
+  if (SerNrTestSVOVc(SVOr.SerNr,SVOr.TransDate,gentrans)==false) then begin
+    RecordCheckError(1557,"",-1,"SerNr");      
+    res = -1;
+    goto LSVOVcRecordCheck;
+  end;
+  if (nonblank(SVOr.ServLocation)) then begin
+    Locr.Code = SVOr.ServLocation;
+    if (ReadFirstMain(Locr,1,true)==false) then begin
+      RecordCheckError(1120,SVOr.ServLocation,-1,"ServLocation");      
+      res = -1;
+      goto LSVOVcRecordCheck;
+    end;
+  end;
+  CUr.Code = SVOr.CustCode;
+  if (ReadFirstMain(CUr,1,true)==false) then begin
+    RecordCheckError(1120,SVOr.CustCode,-1,"CustCode");      
+    res = -1; 
+    goto LSVOVcRecordCheck;
+  end;
+  res = CheckCUVATNrMask(SVOr.CustCode,SVOr.VATNr,tstr);
+  if (res!=0) then begin
+    RecordCheckError(res,tstr,-1,"VATNr");      
+    res = -1;
+    goto LSVOVcRecordCheck;
+  end;
+  if (CheckPDExists(SVOr.PayDeal)==false) then begin
+    RecordCheckError(1256,"",-1,"PayDeal");      
+    res = -1;
+    goto LSVOVcRecordCheck;        
+  end;   
+  switch (PayTermType(SVOr.PayDeal)) begin
+    case kInvoiceTypeCredit:
+      RecordCheckError(1227,SVOr.PayDeal,-1,"PayDeal");      
+      res = -1;
+      goto LSVOVcRecordCheck;
+    case kInvoiceTypeEmployee:
+      RecordCheckError(1958,"",-1,"PayDeal");      
+      res = -1;
+      goto LSVOVcRecordCheck;
+  end;
+  
+  errcode = CheckObjs("",SVOr.Objects,errstr);
+  if (errcode!=0) then begin
+    RecordCheckError(errcode,errstr,-1,"Objects");      
+    res = -1;
+    goto LSVOVcRecordCheck;
+  end;
+  if (SVOr.DoneMark!=0) then begin
+    if (IsSVORowsDone(SVOr)==false) then begin
+      RecordCheckError(1038,"",-1,"SerNr");      
+      res = -1;
+      goto LSVOVcRecordCheck;
+    end;
+  end;
+  errcode = CheckRates(SVOr.CurncyCode,SVOr.FrRate,SVOr.ToRateB1,SVOr.ToRateB2,SVOr.BaseRate1,SVOr.BaseRate2,tstr);
+  if (errcode!=0) then begin
+    RecordCheckError(errcode,"",-1,tstr);      
+    res = -1; 
+    goto LSVOVcRecordCheck;
+  end;          
+  rwcnt = MatRowCnt(SVOr);
+  for (i=0;i<rwcnt;i=i+1) begin
+    MatRowGet(SVOr,i,SVOrw);
+    COr.SerNr = SVOrw.ContractNr;
+    if (ReadFirstMain(COr,1,true)) then begin
+      if (COr.CustCode!=SVOr.CustCode) then begin
+        RecordCheckError(1218,SVOrw.ContractNr,i,"ContractNr");      
+        res = -1;
+        goto LSVOVcRecordCheck;
+      end;  
+    end else begin
+      if (SVOrw.ContractNr!=-1) then begin
+        RecordCheckError(1290,SVOrw.ContractNr,i,"ContractNr");      
+        res = -1;
+        goto LSVOVcRecordCheck;
+      end;  
+    end;    
+    if (nonblank(SVOrw.ArtCode)) then begin
+      INr.Code = SVOrw.ArtCode;
+      found = ReadFirstMain(INr,1,true);
+      if (found==false) then begin
+        RecordCheckError(1120,SVOrw.ArtCode,i,"ArtCode");      
+        res = -1;
+        goto LSVOVcRecordCheck;
+      end;
+      if (INr.ItemType==2) then begin
+        RecordCheckError(1826,SVOrw.ArtCode,i,"ArtCode");      
+        res = -1;
+        goto LSVOVcRecordCheck;
+      end;
+    end;      
+    if (nonblank(SVOrw.TaxTemplateCode)) then begin
+      errcode = VerifyTaxTemplateCode(SVOrw.TaxTemplateCode,tstr);
+      if (errcode!=0) then begin
+        RecordCheckError(1120,tstr,i,"TaxTemplateCode");      
+        res = -1; 
+        goto LSVOVcRecordCheck;
+      end;
+    end;
+    if (Mid(SVOrw.SerialNr,len(SVOrw.SerialNr),1)==" ")  then begin
+      RecordCheckError(1239,"",i,"SerialNr");      
+      res = -1;
+      goto LSVOVcRecordCheck;
+    end;
+    if (SVOrw.ItemType==3) then begin
+      if (SVOrw.ContractNr==-1) then begin
+        RecordCheckError(1168,"",i,"ContractNr");      
+        res = -1;
+        goto LSVOVcRecordCheck;
+      end;
+    end;
+    if (nonblank(SVOrw.ArtCode)) then begin
+      if (blank(SVOrw.SerialNr) and SVOrw.ItemKind==0) then begin
+        RecordCheckError(1132,"",i,"SerialNr");      
+        res = -1;
+        goto LSVOVcRecordCheck;
+      end;  
+    end;
+    if (SVOAccRec.AllowOneMainItem!=0) then begin
+      if (SVOrw.ItemKind==0) then begin
+        if (MainItemFound) then begin
+          RecordCheckError(20272,"",i,"ItemKind");      
+          res = -1;
+          goto LSVOVcRecordCheck;
+        end;
+        MainItemFound = true;
+      end;
+    end;
+  end;
+  SENDSMS(SVOr,SVO2r);// Edit ************************** Tuesday, 8 January 2013 10:20:35
+  
+  rwcnt = MatRowCnt(SVOr); //for quick search
+  if (rwcnt>0) then begin
+    for (i=0;i<rwcnt;i=i+1) begin
+      MatRowGet(SVOr,i,SVOrw);
+      if (NonBlank(SVOrw.ArtCode)) then begin
+        if (Blank(SVOr.ArtCodeTextSearch)) then begin
+          SVOr.ArtCodeTextSearch = SVOrw.ArtCode;
+        end else begin
+          if (len(SVOr.ArtCodeTextSearch & " " & SVOrw.ArtCode)<=255 and FindStringInString(SVOr.ArtCodeTextSearch,SVOrw.ArtCode)==false) then begin
+            SVOr.ArtCodeTextSearch = SVOr.ArtCodeTextSearch & " " & SVOrw.ArtCode;
+          end;
+        end;
+        if (Blank(SVOr.SpecTextSearch)) then begin
+          SVOr.SpecTextSearch = SVOrw.Spec;
+        end else begin
+          if (len(SVOr.SpecTextSearch & " " & SVOrw.Spec)<=255 and FindStringInString(SVOr.SpecTextSearch,SVOrw.Spec)==false) then begin
+            SVOr.SpecTextSearch = SVOr.SpecTextSearch & " " & SVOrw.Spec;
+          end;
+        end;
+        //if (Blank(SVOr.SerialNrTextSearch)) then begin// Edit ************************** Tuesday, 21 February 2017 11:27:50
+          SVOr.SerialNrTextSearch = SVOrw.SerialNr;
+        /*end else begin
+          if (len(SVOr.SerialNrTextSearch & " " & SVOrw.SerialNr)<=255 and FindStringInString(SVOr.SerialNrTextSearch,SVOrw.SerialNr)==false) then begin
+            SVOr.SerialNrTextSearch = SVOr.SerialNrTextSearch & " " & SVOrw.SerialNr;// Edit ************************** Tuesday, 21 February 2017 11:27:51
+          end;
+        end;*/
+      end;
+    end;
+  end;
+  
+  LogText(0,"SVOVc " & SVOr.SerNr & "  was changed. Company: " & CurrentCompany & " User: " & CurrentUser & "  ServiceMan:" & SVOr.ServiceManager);	//Edit----------------------Dima  30.10.2015
+  
+LSVOVcRecordCheck:;
+  if (res!=0) then begin SVOr.SerNr = oldnr; end;
+  SVOVcRecordCheck = res;
+  RETURN;
+END;
+
+function Boolean SVORemoveTest(record SVOVc SVOp,Integer long3)
+BEGIN
+  row SVOVc svorw;
+  Integer rwcnt,i;
+  Boolean res;
+  
+  res = true;
+  rwcnt = MatRowCnt(SVOp);
+  for (i=0;i<rwcnt;i=i+1) begin
+    MatRowGet(SVOp,i,svorw);
+    if (svorw.WOSerNr!=-1) then begin
+      if (long3!=0) then begin MessageBox(1369,""); end;
+      res = false;
+      goto LSVORemoveTest;
+    end;
+  end;
+LSVORemoveTest:;
+  SVORemoveTest = res;
+  RETURN;
+END;
+
+global updating //Edit***************************Sasha2,17:01 18.05.2017
+function LongInt SVOVcRecordRemoveTest(var record SVOVc SVOr,record SVOVc SVO2r,LongInt long3,LongInt long4)
+BEGIN
+  LongInt res;
+  record SVOVc locSVOr;
+  record WOVc WOr;
+  record WSVc WSr;
+  record WSIVVc WSIVr;
+  record ActVc Actr;
+  record SVOHistSerialVc SVHistr;// Edit ************************** Thursday, 14 July 2011 12:31:04
+  row SVOVc SVOrw;// Edit ************************** Thursday, 14 July 2011 12:31:04
+  string 200 tstr;// Edit ************************** Thursday, 14 July 2011 12:31:03
+  boolean testf;// Edit ************************** Thursday, 14 July 2011 12:31:02
+  integer mtrw,i;// Edit ************************** Thursday, 14 July 2011 12:31:01 
+  res = 1;
+
+  Actr.SVOSerNr = SVOr.SerNr;
+  if (ReadFirstKey("SVOSerNr",Actr,1,true)) then begin
+    res = 0;
+    goto LSVOVcRecordRemoveTest;
+  end;
+  WOr.SVOSerNr = SVOr.SerNr;
+  if (ReadFirstKey("SVOSerNr",WOr,1,true)) then begin
+    res = 0;
+    goto LSVOVcRecordRemoveTest;
+  end;
+  WSr.SVONr = SVOr.SerNr;
+  if (ReadFirstKey("SVONr",WSr,1,true)) then begin
+    res = 0;
+    goto LSVOVcRecordRemoveTest;
+  end;
+  WSIVr.SVONr = SVOr.SerNr;
+  if (ReadFirstKey("SVONr",WSIVr,1,true)) then begin
+    res = 0;
+    goto LSVOVcRecordRemoveTest;
+  end;
+  locSVOr.SerNr = SVOr.SerNr;
+  if (ReadFirstMain(locSVOr,1,true)) then begin
+    if (SVORemoveTest(locSVOr,long3)==false) then begin
+      res = 0;
+    end;
+  end else begin
+    if (SVORemoveTest(SVOr,long3)==false) then begin
+      res = 0;
+    end;
+  end;
+  
+   // Edit Start ---------------------------------------------- Edit Start
+	//Thursday, 14 July 2011 13:48:06
+	if(res==0)then begin
+    mtrw = matrowcnt(SVOr);
+    for(i=0;i<mtrw;i=i+1)begin
+      matrowget(SVOr,i,SVOrw);
+      if(nonblank(SVOrw.SerialNr))then begin
+        SVHistr.SerialNr = SVOrw.SerialNr;
+        SVHistr.TransNr = SVOr.SerNr;
+        if(readfirstmain(SVHistr,2,true))then begin
+          SVHistr.Qty = -1;
+          recordstore(SVHistr,true);
+        end;
+      end;
+    end;
+  end;
+	// Edit End ---------------------------------------------- Edit End  
+  
+LSVOVcRecordRemoveTest:;  
+  SVOVcRecordRemoveTest = res; 
+  RETURN;
+END;
+
+procedure SVOVcConvertB1ToB2(record SVOVc SVOr,var val to1p,var val to2p,var val br1p,var val br2p)
+BEGIN    
+  val t;
+  
+  SwapM4Val(br1p,br2p);
+  SwapM4Val(to1p,to2p);
+  B1ToB2Val(SVOr.TotCost,br1p,br2p,t);
+  SVOr.TotCost = t;
+  B1ToB2Val(SVOr.TotPrice,br1p,br2p,t);
+  SVOr.TotPrice = t;
+  RETURN;
+END;
+
+/*
+//SVOVcRecordImport  commented by Dima        ------ 14.05.2015
+global
+function LongInt SVOVcRecordImport(var record SVOVc SVOr,record SVOVc SVO2r,LongInt stat,LongInt long4)
+BEGIN
+  LongInt res;
+  val t,fr,to1,to2,br1,br2;
+  string 5 curncy;
+  Boolean gToDualBase,gBase1ToBase2;
+  record ConvMasterBlock cvm;
+
+  if (blankdate(SVOr.PlanShipDate)) then begin
+    SVOr.PlanShipDate = ConvertPlanShipString(SVOr.PlanShip);
+  end;
+  BlockLoad(cvm);
+  if (cvm.DualBaseCurrencyFlag!=0) then begin gToDualBase = true; end;
+  if (gToDualBase) then begin
+    curncy = SVOr.CurncyCode;
+    fr = SVOr.FrRate;
+    to1 = SVOr.ToRateB1;
+    to2 = SVOr.ToRateB2;
+    br1 = SVOr.BaseRate1;
+    br2 = SVOr.BaseRate2;
+    t = SVOr.TotCost;
+    ConvertToDualBase(curncy,SVOr.TransDate,fr,to1,to2,br1,br2,t,true);
+    SVOr.CurncyCode = curncy;
+    SVOr.FrRate = fr;
+    SVOr.ToRateB1 = to1;
+    SVOr.ToRateB2 = to2;
+    SVOr.BaseRate1 = br1;
+    SVOr.BaseRate2 = br2;
+    SVOr.TotCost = t;       
+  end;
+  if (cvm.Base1ToBase2Flag!=0) then begin gBase1ToBase2 = true; end;
+  if (gBase1ToBase2) then begin
+    curncy = SVOr.CurncyCode;
+    to1 = SVOr.ToRateB1;
+    to2 = SVOr.ToRateB2;
+    br1 = SVOr.BaseRate1;
+    br2 = SVOr.BaseRate2;
+    SVOVcConvertB1ToB2(SVOr,to1,to2,br1,br2);
+    SVOr.ToRateB1 = to1;
+    SVOr.ToRateB2 = to2;
+    SVOr.BaseRate1 = br1;
+    SVOr.BaseRate2 = br2;
+  end;
+ 
+  SVOVcRecordImport = res;
+  RETURN;
+END;
+*/
+
+global
+function LongInt GSXQueueVcRecordInIndex(record GSXQueueVc GSXAEr,string indexname)
+begin
+  LongInt res;
+  
+  res = 1;
+  if (GSXAEr.OKFlag!=0) then begin 
+    if (indexname=="ActOKFlag") then begin res = 0; end;
+  end;
+  GSXQueueVcRecordInIndex = res;
+  return;
+end;
+
+global
+function LongInt GSXQueueVcRecordDefaults(var record GSXQueueVc GSXAEr,record GSXQueueVc GSXAE2r,LongInt stat,LongInt long4)
+begin
+  LongInt res;
+  
+  GSXAEr.TransDate = CurrentDate;
+  GSXAEr.TransTime = CurrentTime;
+  GSXQueueVcRecordDefaults = res;
+  return;
+end;
+
+global
+function LongInt SVOVcRecordProtectFields(var record SVOVc SVOr,record SVOVc SVO2r,LongInt long3,LongInt long4)
+begin
+  LongInt res;
+  Integer i,rwcnt;
+  row SVOVc SVOrw;
+  row SVOVc SVO2rw;
+  Integer rwcnt2;
+  
+  SVO2r.InvFlag = SVOr.InvFlag;
+  SVO2r.InvMark = SVOr.InvMark;
+  SVO2r.WOMark = SVOr.WOMark;
+  SVO2r.WSMark = SVOr.WSMark;
+  rwcnt = MatRowCnt(SVOr);
+  rwcnt2 = MatRowCnt(SVO2r);
+  for (i=0;i<rwcnt2;i=i+1) begin
+    if (i<rwcnt) then begin
+      MatRowGet(SVOr,i,SVOrw);
+      MatRowGet(SVO2r,i,SVO2rw);
+      SVO2rw.Invd = SVOrw.Invd;
+      SVO2rw.WOSerNr = SVOrw.WOSerNr;
+      SVO2rw.WOEnum = SVOrw.WOEnum;
+      SVO2rw.WOMade = SVOrw.WOMade;
+      MatRowPut(SVO2r,i,SVO2rw);
+    end;
+  end;
+  SVOVcRecordProtectFields = res;
+  return;
+end;
+
+global
+function LongInt SVOVcRecordInIndex(record SVOVc SVOr,string indexname)
+BEGIN
+  LongInt res;
+  
+  res = 1;
+  if (SVOr.DoneMark>0) then begin 
+  
+    if (indexname=="UnServSerNr")  then begin res = 0; end;
+    if (indexname=="UnServTransDate")  then begin res = 0; end;
+    if (indexname=="UnServItemName")  then begin res = 0; end;
+    if (indexname=="UnServGaranty")  then begin res = 0; end;
+    if (indexname=="UnServVIPStatus")  then begin res = 0; end;
+    if (indexname=="UnServServiceManager")  then begin res = 0; end;
+    if (indexname=="UnServPhone2")  then begin res = 0; end;
+    if (indexname=="UnServKontinfo1")  then begin res = 0; end;
+    if (indexname=="UnServSerialNrTextSearch")  then begin res = 0; end;
+    
+    if (indexname=="AllUnServSerNr")  then begin res = 0; end;
+    if (indexname=="AllUnServTransDate")  then begin res = 0; end;
+    if (indexname=="AllUnServItemName")  then begin res = 0; end;
+    if (indexname=="AllUnServGaranty")  then begin res = 0; end;
+    if (indexname=="AllUnServVIPStatus")  then begin res = 0; end;
+    if (indexname=="AllUnServOrderStatus")  then begin res = 0; end;
+    if (indexname=="AllUnServServiceManager")  then begin res = 0; end;
+    if (indexname=="AllUnServPhone2")  then begin res = 0; end;
+    if (indexname=="AllUnServKontinfo1")  then begin res = 0; end;
+    if (indexname=="AllUnServSerialNrTextSearch")  then begin res = 0; end;
+    
+    if (indexname=="AllServSerNr")  then begin res = 0; end;
+    if (indexname=="AllServTransDate")  then begin res = 0; end;
+    if (indexname=="AllServItemName")  then begin res = 0; end;
+    if (indexname=="AllServGaranty")  then begin res = 0; end;
+    if (indexname=="AllServVIPStatus")  then begin res = 0; end;
+    if (indexname=="AllServOrderStatus")  then begin res = 0; end;
+    if (indexname=="AllServServiceManager")  then begin res = 0; end;
+    if (indexname=="AllServPhone2")  then begin res = 0; end;
+    if (indexname=="AllServKontinfo1")  then begin res = 0; end;
+    if (indexname=="AllServSerialNrTextSearch")  then begin res = 0; end;
+  end;
+  
+  if (nonblankdate(SVOr.PlanShip) or nonblank(SVOr.PlanShip) or nonblankdate(SVOr.PlanShipDate)) then begin //Edit***************************Sasha2,14:52 16.02.2017
+    if (indexname=="UnServSerNr")  then begin res = 0; end;
+    if (indexname=="UnServTransDate")  then begin res = 0; end;
+    if (indexname=="UnServItemName")  then begin res = 0; end;
+    if (indexname=="UnServGaranty")  then begin res = 0; end;
+    if (indexname=="UnServVIPStatus")  then begin res = 0; end;
+    if (indexname=="UnServServiceManager")  then begin res = 0; end;
+    if (indexname=="UnServPhone2")  then begin res = 0; end;
+    if (indexname=="UnServKontinfo1")  then begin res = 0; end;
+    if (indexname=="UnServSerialNrTextSearch")  then begin res = 0; end;
+    
+    if (indexname=="AllUnServSerNr")  then begin res = 0; end;
+    if (indexname=="AllUnServTransDate")  then begin res = 0; end;
+    if (indexname=="AllUnServItemName")  then begin res = 0; end;
+    if (indexname=="AllUnServGaranty")  then begin res = 0; end;
+    if (indexname=="AllUnServVIPStatus")  then begin res = 0; end;
+    if (indexname=="AllUnServOrderStatus")  then begin res = 0; end;
+    if (indexname=="AllUnServServiceManager")  then begin res = 0; end;
+    if (indexname=="AllUnServPhone2")  then begin res = 0; end;
+    if (indexname=="AllUnServKontinfo1")  then begin res = 0; end;
+    if (indexname=="AllUnServSerialNrTextSearch")  then begin res = 0; end;
+    
+    if (indexname=="AllServSerNr")  then begin res = 0; end;
+    if (indexname=="AllServTransDate")  then begin res = 0; end;
+    if (indexname=="AllServItemName")  then begin res = 0; end;
+    if (indexname=="AllServGaranty")  then begin res = 0; end;
+    if (indexname=="AllServVIPStatus")  then begin res = 0; end;
+    if (indexname=="AllServOrderStatus")  then begin res = 0; end;
+    if (indexname=="AllServServiceManager")  then begin res = 0; end;
+    if (indexname=="AllServPhone2")  then begin res = 0; end;
+    if (indexname=="AllServKontinfo1")  then begin res = 0; end;
+    if (indexname=="AllServSerialNrTextSearch")  then begin res = 0; end;
+  end;
+  
+  if (nonblank(SVOr.ServiceManager)) then begin 
+    if (indexname=="UnServSerNr")  then begin res = 0; end;
+    if (indexname=="UnServTransDate")  then begin res = 0; end;
+    if (indexname=="UnServItemName")  then begin res = 0; end;
+    if (indexname=="UnServGaranty")  then begin res = 0; end;
+    if (indexname=="UnServVIPStatus")  then begin res = 0; end;
+    if (indexname=="UnServServiceManager")  then begin res = 0; end;
+    if (indexname=="UnServPhone2")  then begin res = 0; end;
+    if (indexname=="UnServKontinfo1")  then begin res = 0; end;
+    if (indexname=="UnServSerialNrTextSearch")  then begin res = 0; end;
+  end;
+    
+  SVOVcRecordInIndex = res;
+  RETURN;
+END;
+
+global
+function LongInt SVOVcRecordCheckClient(var record SVOVc SVOr,record SVOVc SVO2r,LongInt stat,LongInt check)
+BEGIN
+  record RcVc RepSpec;
+  
+  if(stat==Rs_update)then begin
+  	if(SVOr.OrderStatus==4 and SVO2r.OrderStatus!=SVOr.OrderStatus)then begin
+  		RepSpec.long1 = SVOr.SerNr;
+  		openwindow("YesNoCancelSMSWClass",1,0,"","",RepSpec);
+  	end;
+  end;
+  
+  SVOVcRecordCheckClient = 0;
+  RETURN;
+END;
+
+
+global procedure DblSendSMSOkDsm()
+begin
+	integer wn;
+	record RcVc RepSpec;
+	
+	wn = curwindow;
+	getwindowrecord(wn,RepSpec);
+	SENDSECONDSMS(RepSpec.long1);
+	closewindow(wn);
+
+return;
+end;
+
+global procedure DblSendSMSCancelDsm()
+begin
+	integer wn;
+	record RcVc RepSpec;
+	
+	wn = curwindow;
+	closewindow(wn);
+	
+
+return;
+end;
+
+global procedure FastPaySVODsm()
+begin
+integer wn;
+record SVOVc SVOr;
+array longint sernr;
+integer count;
+record RcVc RepSpec;
+record UserVc USr;
+string 100 host,page,getParam;
+area mainRequest,replyarea;
+longint port;
+string 50 location,ser;
+	
+	wn = curwindow;
+	getwindowrecord(wn,SVOr);
+	if(windowstate(wn)==0)then begin
+		if(usercanaction("ViewCostPrice",false))then begin
+			RepSpec.vals0 = SVOr.FastCash;
+			RepSpec.vals1 = SVOr.FastTerm;
+			ser = left(SVOr.SerNr,1);
+			switch(ser)begin
+				case "1":	RepSpec.f1 = "03";
+									RepSpec.f2 = "32";
+				case "9":	RepSpec.f1 = "08";
+									RepSpec.f2 = "T4";
+				case "3":
+			end;
+			
+			RepSpec.long1 = SVOr.SerNr;
+			OpenWindow("ConfirmFastPaySVOWClass",0,0,"","",RepSpec); 
+		end;
+	end;
+	
+return
+end;
+
+global procedure DblCancelDsm()
+begin
+	integer wn;
+	record RcVc RepSpec;
+	
+	wn = curwindow;
+	closewindow(wn);
+	
+
+return;
+end;
+
+global updating procedure DblConfirmPaymentDsm()
+begin
+	integer wn;
+	record RcVc RepSpec;
+	
+	wn = curwindow;
+	deselectwindow(wn,true);
+	getwindowrecord(wn,RepSpec);
+	if((RepSpec.vals0>0 and RepSpec.vals1==0) or (RepSpec.vals0==0 and RepSpec.vals1>0 and nonblank(RepSpec.f3)))then begin
+		closewindow(wn);
+		FastPayInvoicesSVO(RepSpec);
+	end else begin
+		if(RepSpec.vals1>0 and blank(RepSpec.f3))then begin
+			messagebox(31086,"");
+		end;
+		beep;
+	end;
+
+return;
+end;

@@ -1,0 +1,61 @@
+external updating procedure AutoRun();
+external updating procedure BuhExportEn();
+external procedure RetailSalesEn();
+external procedure ManagersFullStockEn();
+
+
+global webpublic updating Procedure WebRunRetailSalesEn() //Edit***************************Sasha2,15:18 04.07.2014
+begin
+	integer compnr;
+	
+	compnr = stringtoint(webgetarg("compnr"));
+	
+	SetCompany(compnr,false);
+		RetailSalesEn;
+	ResetCompany(compnr);  
+	
+return;
+end; 
+
+
+global webpublic updating Procedure WebRunManagersFullStockEnEn() //Edit***************************Sasha2,15:18 04.07.2014
+begin
+	integer compnr;
+	
+	compnr = stringtoint(webgetarg("compnr"));
+	
+	SetCompany(compnr,false);
+		ManagersFullStockEn;
+	ResetCompany(compnr);  
+	
+return;
+end; 
+
+global webpublic updating Procedure WebRunAutosendReports() //Edit***************************Sasha2,15:18 04.07.2014
+begin
+
+	AutoRun;
+
+return;
+end; 
+
+global webpublic updating procedure WebBuhExportEn()
+begin
+	string 10 compnr;
+	integer comp;
+	
+	compnr = webgetarg("compnr");
+	
+	if(blank(compnr))then begin
+		comp = 0;
+	end else begin
+		comp = stringtoint(compnr);
+	end;
+	
+	SetCompany(comp,false);
+		BuhExportEn;
+	ResetCompany(comp);  
+	
+
+return;
+end;

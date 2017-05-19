@@ -40,3 +40,12 @@
 - IVVcWActionTool2.hal. Идентичный исходникам.
 - MakeTransFromOP.hal. Что кастомизировано: технический logText.
 - OPVcWActionTool.hal. Что кастомизировано: технический logText.
+- RemoteTools5.hal. ЧАСТИЧНЫЙ ПЕРЕНОС. Не перенесен ф-ционал по Shops для Отгрузок.
+- RetVcRAction.hal ЧАСТИЧНЫЙ ПЕРЕНОС. Не перенесен ф-ционал по Shops для Возвратов товаров от клиента.
+- SamsungEDI.hal. Касается компании Samsung.
+- SHVcRAction.hal. ЧАСТИЧНЫЙ ПЕРЕНОС. Не перенесен ф-ционал по Shops для Отгрузок.
+- StockMovVcRAction.hal. ЧАСТИЧНЫЙ ПЕРЕНОС. Не перенесен ф-ционал по Shops для Перемещений.
+- StockMovVcRAction2.hal. ЧАСТИЧНЫЙ ПЕРЕНОС. Не перенесен ф-ционал по Shops для Перемещений.
+- StockMovVcRAction3.hal. Не перенесен ф-ционал по Shops для Перемещений.
+- StockTools.hal. Идентичный исходникам.
+- VIVcRecAction2.hal. Что кастомизировано: технический logText.

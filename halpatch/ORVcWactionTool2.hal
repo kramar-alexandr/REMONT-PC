@@ -388,7 +388,23 @@ begin
   Boolean calcprice,dummyf;
   Time blankt;
   row LocationAccBlock LAbrw;
-  
+  record ObjectsAccBlock OAb; //Edit***************************Sasha2,8:58 20.05.2015
+  row ObjectsAccBlock OArw; //Edit***************************Sasha2,8:58 20.05.2015
+  record LocationVc Locr; //Edit***************************Sasha2,8:58 20.05.2015
+  string 50 lsalesacc; //Edit***************************Sasha2,8:59 20.05.2015
+
+  Locr.Code = ORr.Location; //Edit***************************Sasha2,16:10 19.05.2015 {
+  if (ReadFirstMain(Locr,1,true) and NonBlank(Locr.Objects)) then begin
+    blockload(OAb);
+    rwcnt = matrowcnt(OAb);
+    For(i=0;i<rwcnt;i=i+1) begin
+      matrowget(OAb,i,OArw);
+      if(setinset(OArw.Objects,Locr.Objects))then begin
+        lsalesacc = OArw.SaleAccCode;
+        i = rwcnt;                      
+      end;
+    end; 
+  end; //Edit***************************Sasha2,16:10 19.05.2015 }
   if (rownr<0) then begin
     rwcnt = MatRowCnt(ORr);
     for (i=0;i<rwcnt;i=i+1) begin
@@ -406,17 +422,22 @@ begin
                             exportflag,calcprice,ORr.OrdDate,blankt,ORr.CustCode,true,dummyf,ORr.PayDeal,
                             tax2code,tax2prc,ORr.Region,location,taxtemplatecode);
 */
-      if (FindLocationAccRow(location,LAbrw)) then begin
-        switch (ORr.ExportFlag) begin
-          case 1: salesacc = LAbrw.EUSalesAcc;
-          case 2: salesacc = LAbrw.ExpSalesAcc;
-          case 3: salesacc = LAbrw.EUSalesAcc;
-          case 4: salesacc = LAbrw.ExpSalesAcc;
-          otherwise salesacc = LAbrw.SalesAcc;
-        end;
-        if (nonblank(salesacc)) then begin
-          ORrw.SalesAcc = salesacc;
-          MatRowPut(ORr,i,ORrw);
+      if (NonBlank(lsalesacc)) then begin //Edit***************************Sasha2,16:23 19.05.2015 {
+        ORrw.SalesAcc = lsalesacc;
+        MatRowPut(ORr,i,ORrw);
+      end else begin //Edit***************************Sasha2,16:23 19.05.2015 }
+        if (FindLocationAccRow(location,LAbrw)) then begin
+          switch (ORr.ExportFlag) begin
+            case 1: salesacc = LAbrw.EUSalesAcc;
+            case 2: salesacc = LAbrw.ExpSalesAcc;
+            case 3: salesacc = LAbrw.EUSalesAcc;
+            case 4: salesacc = LAbrw.ExpSalesAcc;
+            otherwise salesacc = LAbrw.SalesAcc;
+          end;
+          if (nonblank(salesacc)) then begin
+            ORrw.SalesAcc = salesacc;
+            MatRowPut(ORr,i,ORrw);
+          end;
         end;
       end;
     end;
@@ -436,17 +457,22 @@ begin
                           exportflag,calcprice,ORr.OrdDate,blankt,ORr.CustCode,true,dummyf,ORr.PayDeal,
                           tax2code,tax2prc,ORr.Region,location,taxtemplatecode);
 */
-    if (FindLocationAccRow(location,LAbrw)) then begin
-      switch (ORr.ExportFlag) begin
-        case 1: salesacc = LAbrw.EUSalesAcc;
-        case 2: salesacc = LAbrw.ExpSalesAcc;
-        case 3: salesacc = LAbrw.EUSalesAcc;
-        case 4: salesacc = LAbrw.ExpSalesAcc;
-        otherwise salesacc = LAbrw.SalesAcc;
-      end;
-      if (nonblank(salesacc)) then begin
-        ORrw.SalesAcc = salesacc;
-        MatRowPut(ORr,rownr,ORrw);
+    if (NonBlank(lsalesacc)) then begin //Edit***************************Sasha2,16:23 19.05.2015 {
+      ORrw.SalesAcc = lsalesacc;
+      MatRowPut(ORr,i,ORrw);
+    end else begin //Edit***************************Sasha2,16:23 19.05.2015 }  
+      if (FindLocationAccRow(location,LAbrw)) then begin
+        switch (ORr.ExportFlag) begin
+          case 1: salesacc = LAbrw.EUSalesAcc;
+          case 2: salesacc = LAbrw.ExpSalesAcc;
+          case 3: salesacc = LAbrw.EUSalesAcc;
+          case 4: salesacc = LAbrw.ExpSalesAcc;
+          otherwise salesacc = LAbrw.SalesAcc;
+        end;
+        if (nonblank(salesacc)) then begin
+          ORrw.SalesAcc = salesacc;
+          MatRowPut(ORr,rownr,ORrw);
+        end;
       end;
     end;
   end;

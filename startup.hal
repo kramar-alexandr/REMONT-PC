@@ -198,6 +198,7 @@ begin
   StrSetText(AllowLoginOutsideWorkHours,"Вход в систему не в рабочее время");
   StrSetText(AllowNPTSIVLogout,"Выход из системы с сч/ф (сенсорный экран)");
   StrSetText(LogoutUserAfterPrintingBarTab,"Выход пользователя из системы после печати счета ресторана");
+  StrSetText(ViewRemontQueryToDO,"Включить список задач при открытии");// Edit ************************** Monday, 22 May 2017 16:04:09
   StrSetText(AllowUsersAdding,"Добавлять пользователя");
   StrSetText(AllowCashDiscountIP,"Добавлять скидку в платежи клиента");
   StrSetText(AllowWriteoffIP,"Добавлять списания в  платежи клиента");

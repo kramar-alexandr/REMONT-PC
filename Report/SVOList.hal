@@ -1,0 +1,539 @@
+external procedure HTSOrdStatus(Integer, Integer, Integer,var string);
+external procedure HTWOrder(longint, longint,var string);
+external procedure HTDetailLevel(Integer,var string);
+external procedure HTCusts(string, string,var string);
+external procedure HTStdProb(string,var string );
+external procedure HT2Per(Date, Date , var string);
+remote procedure CountNumberRepeatPhone(string,var array longint,var integer );
+external function LongInt CountWorkingDays(Date,Date,string,string);
+external function LongInt DateDiff(Date,Date);
+
+
+
+procedure HTSWOrdStat(Integer notm,Integer parm,Integer mad, var string res)
+begin
+  string 255 t2;
+
+  res = "";
+  if (notm==1) then begin
+    t2 = USetStr(7746);
+    res = res & t2;
+  end;
+  if (parm==1) then begin
+    t2 = USetStr(7747);
+    if (nonblank(res)) then begin
+      res = res & " - ";
+    end;
+    res = res & t2;
+  end;
+  if (mad==1) then begin
+    t2 = USetStr(7748);
+    if (nonblank(res)) then begin
+      res = res & " - ";
+    end;
+    res = res & t2;
+  end;
+return;
+end;
+
+procedure CheckWORow(record SVOVc SVOp, var Boolean made, var Boolean notmade)
+begin
+  Integer rwcnt,i;
+  row SVOVc SVOrw;
+  Boolean res;
+  record WOVc WOr;
+
+  rwcnt = MatRowCnt(SVOp);
+  for (i = 0; i<rwcnt; i = i + 1) begin
+    MatRowGet(SVOp,i,SVOrw);
+    if (SVOrw.WOSerNr==-1) then begin
+      notmade = true;
+    end else begin
+      WOr.SerNr = SVOrw.WOSerNr;
+      if (ReadFirstMain(WOr,1,true)) then begin
+        if (WOr.Closed==3) then begin
+          made = true;
+        end;
+        if ((WOr.Closed==0) or (WOr.Closed==2)) then begin
+          notmade = true;
+        end;
+      end;
+    end;
+  end;
+return;
+end;
+
+procedure RepOrder(record SVOVc SVOp,Boolean showproblemf)
+begin
+  Integer i,rwcnt;
+  row SVOVc SVOrw;
+  record StandProblemVc STPr;
+
+  StartFormat(15);
+  OutString(0,"DblSVOVc",SVOp.SerNr,false);
+  OutDate(130,0,SVOp.TransDate,false);
+  OutString(220,0,SVOp.PayDeal,false);
+  EndFormat;
+  StartFormat(15);
+  OutString(50,0,SVOp.CustCode,false);
+  OutString(150,0,SVOp.Addr0,false);
+  OutString(400,0,SVOp.Phone,false);
+  EndFormat;
+  StartFormat(15);
+  OutString(50,0,SVOp.CustCat,false);
+  OutString(200,0,SVOp.Addr1,false);
+  StartFormat(15);
+  EndFormat;
+  StartFormat(15);
+  OutString(50,0,SVOp.OurContact,false);
+  OutString(200,0,SVOp.Addr2,false);
+  EndFormat;
+  if (nonblank(SVOp.Addr3)) then begin
+    StartFormat(15);
+    OutString(200,0,SVOp.Addr3,false);
+    EndFormat;
+  end;
+  if (nonblank(SVOp.CustContact)) then begin
+    StartFormat(15);
+    OutString(200,0,SVOp.CustContact,false);
+    EndFormat;
+  end;
+  rwcnt = MatRowCnt(SVOp);
+  if (rwcnt>0) then begin
+    StartFormat(15);
+    OutString(20,0,USetStr(12750),false);
+    OutString(100,0,USetStr(12751),true);
+    OutString(110,0,USetStr(12752),false);
+    OutString(270,0,USetStr(12753),false);
+    OutString(410,0,USetStr(12754),true);
+    OutString(440,0,USetStr(12755),true);
+    OutString(480,0,USetStr(12756),true);
+    EndFormat;
+    Gray_Divider(20,1);
+  end;
+  
+  for (i = 0; i<rwcnt; i = i + 1) begin
+    MatRowGet(SVOp,i,SVOrw);
+    if (SVOrw.stp==1) then begin
+      StartFormat(15);
+      OutString(20,0,SVOrw.ArtCode,false);
+      OutVal(100,0,SVOrw.Quant,M40Val,true);
+      OutString(110,0,SVOrw.Spec,false);
+      OutString(270,0,SVOrw.SerialNr,false);
+      OutString(410,0,SVOrw.Price,true);
+      OutString(440,0,SVOrw.VATCode,true);
+      OutLongInt(480,0,SVOrw.WOSerNr,true);
+      EndFormat;
+      if (showproblemf) then begin
+        STPr.Code = SVOrw.StandProblem;
+        if (ReadFirstMain(STPr,1,true)) then begin
+          StartFormat(15);
+          OutString(200,"DblStandProblemVc",STPr.Code,false);
+          OutString(250,0,STPr.ShortDesc,false);
+          EndFormat;
+          if nonblank(STPr.Comment1) then begin
+            StartFormat(15);
+            OutString(250,0,STPr.Comment1,false);
+            EndFormat;
+          end;
+          if nonblank(STPr.Comment2) then begin
+            StartFormat(15);
+            OutString(250,0,STPr.Comment2,false);
+            EndFormat;
+          end;
+          if nonblank(STPr.Comment3) then begin
+            StartFormat(15);
+            OutString(250,0,STPr.Comment3,false);
+            EndFormat;
+          end;
+        end;
+      end;                  
+    end;
+  end;
+  Black_Divider(300,1);
+  StartFormat(15);
+  if (SVOp.ExportFlag!=0) then begin
+    OutString(20,0,USetStr(2568),false);
+  end;
+  OutString(100,0,SVOp.Objects,false);
+  OutString(330,0,SVOp.TotCost,true);
+  OutString(410,0,SVOp.TotPrice,true);
+  EndFormat;
+  return;
+end;
+
+function Boolean CheckIfPartInvoiced(record SVOVc SVOr)
+begin
+  Boolean res;
+  row SVOVc SVOrw;
+  Integer i,rwcnt;
+  
+  rwcnt = MatRowCnt(SVOr);
+  for (i=0;i<rwcnt;i=i+1) begin
+    MatRowGet(SVOr,i,SVOrw);
+    if (SVOrw.Invd!=0) then begin
+      res = true;
+      goto LCheckIfPartInvoiced;
+    end;
+  end;
+LCheckIfPartInvoiced:;  
+  CheckIfPartInvoiced = res;
+  return;
+end;
+
+global
+procedure SVOListRn(record RcVc RepSpec)
+begin
+  record SVOVc SVOr;
+  row SVOVc SVOrw;
+  Boolean TrHs;
+  Boolean testf;
+  val iv;
+  val TotSum;
+  date afr;
+  date ato;
+  string 255 tstr;
+  Integer rw,i,mtrw,j,mtrw1;// Edit ************************** Wednesday, 18 May 2011 15:22:32
+  Boolean womade;
+  Boolean wonotmade,TrHs1;// Edit ************************** Tuesday, 11 October 2011 16:11:25
+  record WSVc WSr;
+  row WSVc WSrw;
+  string 255 serial,artcode;// Edit ************************** Tuesday, 11 October 2011 16:03:06
+  string 20 key;
+  date compareDate;
+  
+  afr = RepSpec.sStartDate;//FirstInRange(RepSpec.f1,30);
+  ato = RepSpec.sEndDate;//LastInRange(RepSpec.f1,30);
+  
+  
+  rw = 1;
+  TotSum = 0;
+  StartReportnoheaderJob(USetStr(7620));
+  StartFormat(15);
+    OutString(0,0,USetStr(14365),false);
+    OutString(0,0,USetStr(14713),false);
+    OutString(0,0,USetStr(12822),false);
+    OutString(11,0,USetStr(12823),false);
+    OutString(12,0,USetStr(12667),false);
+    OutString(13,0,USetStr(7796),false);
+    OutString(13,0,USetStr(13796),false);
+    OutString(14,0,USetStr(10565),false);
+    OutString(15,0,USetStr(2358),false);
+    OutString(15,0,USetStr(7795),false);
+    if(SVOr.DoneMark==1)then begin
+      OutString(15,0,USetStr(14174),false);
+    end else begin
+      OutString(15,0,USetStr(15219),false);
+    end;
+    OutString(15,0,USetStr(12877),false);
+    OutString(15,0,USetStr(11580),false);// Edit ************************** Monday, 10 October 2011 16:32:52
+    OutString(15,0,"Service ArtCode",false);// Edit ************************** Monday, 10 October 2011 16:32:52
+    OutString(15,0,"Service Serial",false);// Edit ************************** Monday, 10 October 2011 16:32:52
+    OutString(15,0,USetStr(31024),false);// Edit ************************** Tuesday, 19 July 2011 15:34:57
+    
+    OutString(16,0,USetStr(23351),false); //Edit***************************Sasha2,10:20 28.04.2015
+    OutString(17,0,USetStr(31042),false); //Edit***************************Sasha2,10:20 28.04.2015
+    OutString(18,0,USetStr(22423),false); //Edit***************************Sasha2,10:20 28.04.2015
+    OutString(18,0,USetStr(12489),false); //Edit***************************Sasha2,10:20 28.04.2015
+    OutString(19,0,USetStr(31090),false); //Edit***************************Sasha2,14:19 14.02.2017
+    OutString(19,0,USetStr(31091),false); //Edit***************************Sasha2,14:19 14.02.2017
+    OutString(19,0,USetStr(8903),false); //Edit***************************Sasha2,14:19 14.02.2017
+  EndFormat;
+  
+  switch (RepSpec.ArtMode) begin
+    case 0:
+      key = "TransDate";
+      SVOr.TransDate = afr;
+    case 1:
+      key = "EndDiagnDate";
+      SVOr.EndDiagnDate = afr;
+    case 2:
+      key = "PlanShipDate";
+      SVOr.PlanShipDate = afr;
+    case 3:
+      key = "RegDate";
+      SVOr.RegDate = afr;
+    otherwise
+      key = "TransDate";
+      SVOr.TransDate = afr;
+  end;
+  
+  TrHs = true;
+  SVOr.TransDate = afr;
+  While(loopkey(key,SVOr,1,TrHs)) begin
+  
+    switch (RepSpec.ArtMode) begin
+      case 0:
+        compareDate = SVOr.TransDate;
+      case 1:
+        compareDate = SVOr.EndDiagnDate;
+      case 2:
+        compareDate = SVOr.PlanShipDate;
+      case 3:
+        compareDate = SVOr.RegDate;
+      otherwise
+        compareDate = SVOr.TransDate;
+    end;
+    
+    testf = true;
+    serial = "";// Edit ************************** Tuesday, 11 October 2011 16:03:03
+    artcode = "";// Edit ************************** Tuesday, 11 October 2011 16:03:03
+    if(compareDate>ato)then begin  TrHs = false; testf = false; end;
+    if (nonblank(RepSpec.f2) and (RepSpec.f2<>SVOr.CustCode)) then begin testf = false; end;
+    if (nonblank(RepSpec.AccStr) and RepSpec.AccStr <> SVOr.OrderClass) then begin testf = false; end;
+    if (nonblank(RepSpec.f3) and RepSpec.f3 <> SVOr.ServiceManager) then begin testf = false; end; //Edit***************************Sasha2,12:01 14.02.2017
+    if (nonblank(RepSpec.f4) and RepSpec.f4 <> SVOr.CustomField7) then begin testf = false; end; //Edit***************************Sasha2,12:01 14.02.2017
+    if (nonblank(RepSpec.f5) and RepSpec.f5 <> SVOr.SalesGroup) then begin testf = false; end; //Edit***************************Sasha2,12:01 14.02.2017
+    if (RepSpec.flags[4]==0) then begin /* Not Completed  */
+      if (SVOr.DoneMark==0) then begin testf = false; end;
+    end;
+    if (RepSpec.flags[6]==0) then begin /* Completed  */
+      if (SVOr.DoneMark!=0) then begin testf = false; end;
+    end;
+    if (testf) then begin 
+      testf = false;   
+      if (RepSpec.flags[1]==1) then begin /* В очікуванні */
+        if (SVOr.OrderStatus==0) then begin
+          testf = true;
+        end;
+      end;
+      if (RepSpec.flags[2]==1) and (!testf) then begin /* На діагностиці */
+        //testf = false;
+        if (SVOr.OrderStatus==5) then begin
+          testf = true;
+        end;
+      end;        
+      if (RepSpec.flags[3]==1) and (!testf) then begin /* На узгодженні */
+        //testf = false;
+        if (SVOr.OrderStatus==4) then begin
+          testf = true;
+        end;
+      end;   
+      if (RepSpec.flags[9]==1) then begin /* Діаг. заверш. */
+        //testf = false;
+        if (SVOr.OrderStatus==1) then begin
+          testf = true;
+        end;
+      end;
+      if (RepSpec.flags[10]==1) and (!testf) then begin /* Очікує запч. */
+        //testf = false;
+        if (SVOr.OrderStatus==3) then begin
+          testf = true;
+        end;
+      end;        
+      if (RepSpec.flags[11]==1) and (!testf) then begin /* Ремонт виконано */
+        //testf = false;
+        if (SVOr.OrderStatus==2) then begin
+          testf = true;
+        end;
+      end;     
+    end;
+    if(testf)then begin
+      mtrw = matrowcnt(SVOr);
+      for(i=0;i<mtrw;i=i+1) begin
+        matrowget(SVOr,i,SVOrw);
+        StartFormat(15);
+          OutString(0,0,SVOr.CustCode,false);
+          OutString(0,0,SVOr.Vlastnik,false);
+          OutString(0,0,SVOrw.ArtCode,false);
+          OutString(11,0,SVOrw.Spec,false);
+          OutString(12,0,SVOrw.SerialNr,false);
+          OutString(13,0,SVOr.SerNr,false);
+          OutString(13,0,SVOr.TransDate,false);
+          OutString(14,0,SVOr.Garanty,false);
+          switch (SVOrw.ItemType) begin
+            case 0: tstr = "";
+            case 1: tstr = USetStr(8154);
+            case 2: tstr = USetStr(8155);
+            case 3: tstr = USetStr(8156);
+            case 4: tstr = USetStr(31003);
+          end;  
+          OutString(15,0,tstr,false);
+          OutString(15,0,SVOr.OrderClass,false);
+          if(SVOr.DoneMark==1)then begin
+            OutString(15,0,USetStr(14174),false);
+          end else begin
+            OutString(15,0,USetStr(15219),false);
+          end;
+          OutString(15,0,SVOr.PlanShipDate,false);
+          OutString(15,0,SVOr.RegDate,false);// Edit ************************** Monday, 10 October 2011 16:31:20
+          
+         // Edit Start ---------------------------------------------- Edit Start
+	//Tuesday, 11 October 2011 16:23:09
+	        TrHs1 = true;
+          WSr.SVONr = SVOr.SerNr;
+          While(loopkey("SVONr",WSr,1,TrHs1)) begin
+            if(WSr.SVONr!=SVOr.SerNr)then begin Trhs1=false; end;
+            if(TrHs1)then begin
+              mtrw1 = matrowcnt(WSr);
+              for(j=0;j<mtrw1;j=j+1)begin
+                matrowget(WSr,j,WSrw);
+                artcode = artcode & WSrw.ArtCode & ",";
+                serial = serial & WSrw.SerialNr & ",";
+              end;
+            end;
+          end;
+          resetloop(WSr);
+	// Edit End ---------------------------------------------- Edit End
+	
+          OutString(15,0,artcode,false);// Edit ************************** Tuesday, 11 October 2011 16:03:31
+          OutString(15,0,serial,false);// Edit ************************** Tuesday, 11 October 2011 16:03:32
+          OutString(15,0,SVOr.Comment1 & " " & SVOr.Comment2,false);// Edit ************************** Monday, 10 October 2011 16:31:26
+          OutString(16,0,SVOr.CustomField3,false); //Edit***************************Sasha2,10:20 28.04.2015
+          OutString(17,0,SVOr.CustomField4,false); //Edit***************************Sasha2,10:20 28.04.2015
+          OutString(18,0,SVOr.CustomField5,false); //Edit***************************Sasha2,10:20 28.04.2015
+          OutString(18,0,SVOr.Kontinfo1,false); //Edit***************************Sasha2,10:20 28.04.2015
+          OutString(19,0,SVOr.ServiceManager,false); //Edit***************************Sasha2,14:20 14.02.2017
+          OutString(19,0,SVOr.CustomField7,false); //Edit***************************Sasha2,14:20 14.02.2017
+          OutString(19,0,SVOr.SalesGroup,false); //Edit***************************Sasha2,14:20 14.02.2017
+        EndFormat;
+      end;
+    end;    
+  end;
+  
+  
+  EndJob;
+  return;
+end;
+
+SetLangMode(LangUkrainian,"UKR",0);
+
+global procedure ServClientOrderRn(record RcVc RepSpec)
+begin
+record SVOVc SVOr;
+array longint sernr;
+integer count;
+integer i;
+		
+	CountNumberRepeatPhone(RepSpec.f1,sernr,count);
+  startreportnoheaderjob("Інформація по телефону клієнта");
+	
+	startformat(15);
+		outstring(0,0,"№",false);
+		outstring(50,0,"Дата",false);
+		outstring(100,0,"Контакт",false);
+	endformat;
+	if(count>0)then begin
+		For(i=0;i<count;i=i+1) begin
+	  
+			SVOr.SerNr = sernr[i];
+			if(readfirstmain(SVOr,1,true))then begin
+				startformat(15);
+					outstring(0,"DblSVOVc",SVOr.SerNr,false);
+					outstring(50,0,SVOr.TransDate,false);
+					outstring(100,0,SVOr.Priynato & " " & SVOr.Name & " " & SVOr.MiddleName,false);
+				endformat;
+			end;
+		end;
+	end;
+	
+	endjob;
+	
+return
+end;
+
+
+global procedure SVODateOff3RepRn(record RcVc RepSpec)
+begin
+	record SVOVc SVOr;
+	record UserVc USr;
+	boolean testf;
+	integer countwdays;
+	
+	StartReportNoHeaderJob("Просрочені в діагностиці замовлення");
+		USr.Code = CurrentUser;
+		readfirstmain(USr,1,true);
+		
+		if(nonblank(RepSpec.f1))then begin
+			startformat(15);
+				outstring(0,"Dbl3RepRnAll","Показати всі просрочені в діагностиці замовлення",false);
+			endformat;
+		
+			gray_divider(0,100);
+		end;
+		startformat(15);
+			outstring(0,0,"Номер",false);
+			outstring(50,0,"Дата",false);
+			outstring(90,0,"Проср.роб.днів",false);
+			outstring(150,0,"Власн.",false);
+			outstring(250,0,"Серв.майстр.",false);
+		endformat;
+		
+		while(loopkey("AllUnServTransDate",SVOr,1,true))begin
+			testf = true;	
+			if(USr.SalesGroup!=SVOr.SalesGroup)then begin testf = false; end;
+			if(SVOr.DoneMark>0)then begin testf = false; end;
+			if(SVOr.OrderStatus>0 and SVOr.OrderStatus!=4)then begin testf = false; end;
+			if(nonblank(RepSpec.f1) and SVOr.ServiceManager!=RepSpec.f1)then begin testf = false; end;
+			countwdays = CountWorkingDays(SVOr.TransDate,Currentdate,"","UA");
+			if(countwdays<3)then begin testf = false; end;
+			
+			
+			if(testf)then begin
+				startformat(15);
+					outstring(0,"DblSVOVc",SVor.SerNr,false);
+					outstring(50,0,SVOr.TransDate,false);
+					outstring(90,0,countwdays,false);
+					outstring(150,0,SVOr.Vlastnik,false);
+					outstring(250,0,SVOr.ServiceManager,false);
+				endformat;
+			end;
+		end;
+		
+	endjob;
+	
+return;
+end;
+
+global procedure SVODateOff14RepRn(record RcVc RepSpec)
+begin
+	record SVOVc SVOr;
+	record UserVc USr;
+	boolean testf;
+	integer countwdays;
+	
+	StartReportNoHeaderJob("Просрочені в ремонті замовлення");
+		USr.Code = CurrentUser;
+		readfirstmain(USr,1,true);
+		
+		if(nonblank(RepSpec.f1))then begin
+			startformat(15);
+				outstring(0,"Dbl14RepRnAll","Показати всі просрочені в ремонті замовлення",false);
+			endformat;
+		
+			gray_divider(0,100);
+		end;
+		
+		startformat(15);
+			outstring(0,0,"Номер",false);
+			outstring(50,0,"Дата",false);
+			outstring(90,0,"Проср.календ.днів",false);
+			outstring(150,0,"Власн.",false);
+			outstring(250,0,"Серв.майстр.",false);
+		endformat;
+		
+		while(loopkey("AllUnServTransDate",SVOr,1,true))begin
+			testf = true;	
+			if(USr.SalesGroup!=SVOr.SalesGroup)then begin testf = false; end;
+			if(SVOr.DoneMark>0)then begin testf = false; end;
+			if(SVOr.OrderStatus==2)then begin testf = false; end;
+			if(nonblank(RepSpec.f1) and SVOr.ServiceManager!=RepSpec.f1)then begin testf = false; end;
+			countwdays = datediff(currentdate,SVOr.TransDate);
+			if(countwdays<14)then begin testf = false; end;
+			
+			
+			if(testf)then begin
+				startformat(15);
+					outstring(0,"DblSVOVc",SVor.SerNr,false);
+					outstring(50,0,SVOr.TransDate,false);
+					outstring(90,0,countwdays,false);
+					outstring(150,0,SVOr.Vlastnik,false);
+					outstring(250,0,SVOr.ServiceManager,false);
+				endformat;
+			end;
+		end;
+		
+	endjob;
+	
+return;
+end;

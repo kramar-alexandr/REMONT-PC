@@ -1,0 +1,426 @@
+remote function Boolean Getformcode(Integer,Integer,string,string,string,LongInt,LongInt,string,string,Integer,string,var string);
+external function Boolean MySendWebRequest(string,longint,longint,boolean,string,string,string,string,boolean,area,var area,integer);
+
+SetLangMode(LangRussian,"RUS",0);
+
+global
+procedure SVOPartnerFinishedRn(record RcVc RepSpec)
+begin
+  record SVOVc SVOr;
+  row SVOVc SVOrw;
+  Boolean TrHs;
+  Boolean testf,reportf;
+  Integer pos,reccount;
+  date afr;
+  date ato;
+  string 20 curcustomer;
+  string 255 concatedstr;
+  
+  //afr = RepSpec.sStartDate;//FirstInRange(RepSpec.f1,30);
+  //ato = RepSpec.sEndDate;//LastInRange(RepSpec.f1,30);
+  
+  if (RepSpec.flags[29]>0) then begin
+    reportf = false;
+  end else begin
+    reportf = true; 
+  end;
+  
+  if (reportf) then begin
+    StartReportnoheaderJob("Звіт виконаних замовлень партнерів");
+    StartFormat(15);
+      pos = 0;
+      OutString(pos,0,USetStr(14365),false); //customer
+      OutString(pos+=40,0,USetStr(2448),false);//name
+      OutString(pos+=100,0,USetStr(7731),false); //Order #
+      OutString(pos+=70,0,USetStr(13796),false); //date
+    EndFormat;  
+  end;
+  
+  reccount = 0;
+  TrHs = true;
+  SVOr.CustCode = RepSpec.f2;
+  While(loopkey("CustCode",SVOr,1,TrHs)) begin
+    if (reportf) then begin
+      if (NonBlank(curcustomer) and SVOr.CustCode!=curcustomer and reccount>0) then begin
+        StartFormat(15);
+          OutString(0,"DblPrintSVOList","Надрукувати спискок замовлень для: "& curcustomer,false);
+          OutString(0,0,"",false);
+        EndFormat;
+      end;
+    end;
+    if (SVOr.CustCode!=curcustomer) then begin
+      curcustomer = SVOr.CustCode;
+      reccount = 0;
+    end;
+    testf = true;
+    if (nonblank(RepSpec.f2) and (RepSpec.f2<>SVOr.CustCode)) then begin testf = false; TrHs = false; end;
+    if (SVOr.OrderStatus!=2 or nonblank(SVOr.RegDate)) then begin testf = false; end;
+    if (SVOr.ItemFrPartner!=1) then begin testf = false; end;
+    if(testf)then begin
+      reccount = reccount + 1;
+      if (reportf) then begin
+        StartFormat(15);
+          pos = 0;
+          OutString(pos,0,SVOr.CustCode,false);
+          OutString(pos+=40,0,SVOr.Addr0,false);
+          OutString(pos+=100,"DblSVOVc",SVOr.SerNr,false);
+          OutString(pos+=70,0,SVOr.TransDate,false);
+        EndFormat;
+      end else begin
+        if (FIELDINFORM("F_FIXEDNUMBER")) then begin
+          OUTFORMFIELD("F_FIXEDNUMBER",reccount);
+        end;
+        if (FIELDINFORM("F_SERVICEORDER")) then begin
+          OUTFORMFIELD("F_SERVICEORDER",SVOr.SerNr);
+        end;
+        if (FIELDINFORM("F_KUNDNAMN")) then begin
+          OUTFORMFIELD("F_KUNDNAMN",SVOr.Addr0);
+        end;
+        MatRowGet(SVOr,0,SVOrw);
+        if (FIELDINFORM("F_SERIENR")) then begin
+          if (NonBlank(SVOrw.SerialNr)) then begin
+            OUTFORMFIELD("F_SERIENR",SVOrw.SerialNr);
+          end;
+        end;
+        if (FIELDINFORM("F_MODEL1")) then begin
+          if (NonBlank(SVOrw.Spec)) then begin
+            OUTFORMFIELD("F_MODEL1",left(SVOrw.Spec,40));
+          end;
+        end;
+        if (FIELDINFORM("F_STANDARDPROBLEMTEXT")) then begin
+          concatedstr = "";
+          if (NonBlank(SVOr.Comment1)) then begin
+            concatedstr = concatedstr & SVOr.Comment1 & "; ";
+          end;
+          if (NonBlank(SVOr.Comment2)) then begin
+            concatedstr = concatedstr & SVOr.Comment2 & "; ";
+          end;
+          if (NonBlank(concatedstr)) then begin
+            OUTFORMFIELD("F_STANDARDPROBLEMTEXT",left(concatedstr,100));
+          end;
+        end;
+        if (FIELDINFORM("F_OTHERTEXT")) then begin
+          concatedstr = "";
+          if (NonBlank(SVOr.Batary)) then begin
+            concatedstr = concatedstr & SVOr.Batary & "; ";
+          end;
+          if (NonBlank(SVOr.Zaryadka)) then begin
+            concatedstr = concatedstr & SVOr.Zaryadka & "; ";
+          end;
+          if (NonBlank(SVOr.Inshe)) then begin
+            concatedstr = concatedstr & SVOr.Inshe & "; ";
+          end;
+          if (NonBlank(concatedstr)) then begin
+            OUTFORMFIELD("F_OTHERTEXT",concatedstr);
+          end;
+        end;
+        EndFormRow;
+        EndFormRow;
+      end;      
+    end;  
+  end;
+
+  if (reportf) then begin
+    EndJob;
+  end;
+  
+  return;
+end;
+
+global
+procedure DoSVOPartnerFinishedForm(record RcVc RepSpec/*,record RcVc custRepSpec*/)
+BEGIN
+  record FormDefVc FDr;
+  row FormDefVc FDrw;
+  Integer i,rwcnt;
+  Boolean printf;
+  Integer intdocnr;
+  string 30 formcode,langcode;
+     
+  FDr.repname = "SVOPartnerFinishedForm";
+  FDr.shortname = RepSpec.shortname;
+  if (ReadFirstMain(FDr,1,true)==false) then begin
+    MessageBox(1624, " " & USetStr(1623));
+    goto L99;
+  end;
+  
+  langcode = "";
+  intdocnr = 1;
+  printf = true;
+  while (printf) begin
+    rwcnt = MatRowCnt(FDr);  
+    formcode = "";
+    for (i=rwcnt-1;i>=0;i=i-1) begin
+      MatRowGet(FDr,i,FDrw);
+      if (Getformcode(i,FDrw.intdocnr,FDrw.FPCode,FDrw.UserGroup,FDrw.LangCode,FDrw.SerNr,-1,FDrw.PrintGroupCode,
+                      langcode,intdocnr,"",formcode)) then
+      begin
+        goto LBREAK;
+      end;
+    end;
+LBREAK:;
+    if (nonblank(formcode)) then begin
+      if (WindowsMode==1) then begin
+        formcode = formcode & "_WIN";
+      end;
+      if (OpenForm(formcode)) then begin
+        if (FIELDINFORM("F_DATUM")) then begin
+          OUTFORMFIELD("F_DATUM",CurrentDate);
+        end;
+        SVOPartnerFinishedRn(RepSpec);
+        CloseForm;
+      end else begin
+        printf = false;
+        MessageBox(1546,formcode);
+      end;
+    end else begin
+      printf = false;
+      if (intdocnr==1) then begin
+        MessageBox(1624, " " & USetStr(1623));
+      end;
+    end;
+    intdocnr = intdocnr + 1;
+  end;
+L99:;
+  RETURN;
+END;
+
+global
+procedure DblPrintSVOListButton()
+begin
+  integer wn;
+  record RcVc RepSpec; 
+
+	wn = curwindow;
+	GetWindowRecord(wn,RepSpec);
+	CloseWindow(wn);
+
+  if (PrintDocument(RepSpec,"SVOPartnerFinishedForm",false)) then begin  
+
+  end;
+  return;
+end;
+
+global
+procedure DblPrintSVOList(string dblstr,string l,Integer currepwn)
+begin
+  integer i,lenth;
+  longint pos;
+  Boolean testf;
+  string 255 customer;
+  Integer wn;
+  record SVOVc SVOr;
+  record RcVc RepSpec;
+
+  pos = 0;
+  GetNextSubstring(dblstr,pos,":",customer);
+  GetNextSubstring(dblstr,pos,":",customer);
+  if (nonblank(customer)) then begin
+    lenth = len(customer);
+    testf = true;
+    i=0;
+    while(testf and i<lenth) begin
+    	if(mid(customer,i,1)!=" ")then begin
+    		testf = false;
+    	end;
+    	i=i+1;
+    end;
+    customer = mid(customer,i-1,lenth-i+1);
+    
+    lenth = len(customer);
+    testf = true;
+    i=lenth;
+    while(testf and i>0) begin
+    	if(mid(customer,i,1)!=" ")then begin
+    		testf = false;
+    	end;
+    	i=i-1;
+    end;
+    customer = mid(customer,0,i+1);
+    
+    if (NonBlank(customer)) then begin
+      RECORDNEW(RepSpec);
+      RepSpec.f2 = customer;
+      RepSpec.flags[29] = 1;
+      RepSpec.Media = mtPrinter;
+      wn = CurWindow;
+      OpenWindow("PrintSVOPartFinTClass",0,wn,"","",RepSpec);
+    end;
+  end;
+  return;
+end;
+
+global procedure ServClientOrderDsm()
+begin
+integer wn;
+record SVOVc SVOr;
+array longint sernr;
+integer count;
+record RcVc RepSpec;
+	
+	wn = curwindow;
+	getwindowrecord(wn,SVOr);
+	RepSpec.f1 = SVOr.Kontinfo1;
+	RepSpec.Media = mtScreen;
+	RepSpec.repname = "ServClientOrderRn";
+	runreport(RepSpec,0);
+
+return
+end;
+
+function string 20 NormalPhone(string phone)
+begin
+	string 20 res;
+	integer i,length;
+	
+	length = len(phone);
+	For(i=0;i<length;i=i+1) begin
+	  if(asc(mid(phone,i,1))>47 and asc(mid(phone,i,1))<58)then begin
+	  	res = res & mid(phone,i,1);
+	  end;
+	end; 
+	if(len(res)!=7 and len(res)!=10)then begin
+		res = "";
+	end;
+	
+	NormalPhone = res;
+return;
+end;
+
+global procedure CallToClientDsm()
+begin
+integer wn;
+record SVOVc SVOr;
+array longint sernr;
+integer count;
+record RcVc RepSpec;
+record UserVc USr;
+string 100 host,page,getParam;
+area mainRequest,replyarea;
+longint port;
+string 50 location;
+	
+	wn = curwindow;
+	getwindowrecord(wn,SVOr);
+	
+	USr.Code = currentuser;
+	
+	
+	//http://www.a-service.ua/index.php?phone=0662200737&int=111
+	if(readfirstmain(USr,1,true))then begin
+		location = "";
+		USr.Location = firstinrange(USr.Phone2,10);
+		USr.Phone2 = lastinrange(USr.Phone2,10);
+		host = "call.a-service.net.ua";	
+		port = 80;
+		switch(USr.Location)begin
+			case "INV#1_KVZ":host = "134.249.184.148";
+											port = 2501;
+											location = "/hansa/call.php";
+			case "INV#1_KRS":host = "109.95.53.85";
+											location = "/hansa/call.php";
+											port = 2501;
+			case "INV#1_LUK":host = "82.144.202.163";
+											location = "/hansa/call.php";
+											port = 2501;
+		end;
+		
+		
+		
+		page = location & "?phone=" & NormalPhone(SVOr.Kontinfo1) & "&int=" & USr.Phone2;
+		//messagebox(0,"http://" & host & page);		
+		if(blank(USr.Phone2))then begin
+			messagebox(0,"Blank internal user phone");
+		end;
+		if(blank(NormalPhone(SVOr.Kontinfo1)))then begin
+			messagebox(0,"Invalid client phone number");
+		end;
+		if(blank(location))then begin
+			messagebox(0,"Unknown user location");
+		end;
+		
+		if(nonblank(USr.Phone2)and nonblank(NormalPhone(SVOr.Kontinfo1)) and nonblank(location))then begin			
+			//messagebox(0,host & ":" & port & page);
+			//MySendWebRequest(host,port,-1,false,"GET",page,"text/plain","",false,mainRequest,replyarea,10);
+			//logtext(0,getstringfromarea(replyarea.));
+		end;
+	end;
+
+return
+end;
+
+global procedure CallToClient2Dsm()
+begin
+integer wn;
+record SVOVc SVOr;
+array longint sernr;
+integer count;
+record RcVc RepSpec;
+record UserVc USr;
+string 100 host,page,getParam;
+area mainRequest,replyarea;
+longint port;
+string 50 location;
+	
+	wn = curwindow;
+	getwindowrecord(wn,SVOr);
+	
+	USr.Code = currentuser;
+	
+	
+	if(readfirstmain(USr,1,true))then begin
+		location = "";
+		USr.Location = firstinrange(USr.Phone2,10);
+		USr.Phone2 = lastinrange(USr.Phone2,10);
+		host = "call.a-service.net.ua";	
+		port = 80;
+		switch(USr.Location)begin
+			case "INV#1_KVZ":host = "134.249.184.148";
+											port = 2501;
+											location = "/hansa/call.php";
+			case "INV#1_KRS":host = "109.95.53.85";
+											location = "/hansa/call.php";
+											port = 2501;
+			case "INV#1_LUK":host = "82.144.202.163";
+											location = "/hansa/call.php";
+											port = 2501;
+		end;
+		
+		
+		
+		page = location & "?phone=" & NormalPhone(SVOr.Phone2) & "&int=" & USr.Phone2;
+		//messagebox(0,"http://" & host & page);		
+		if(blank(USr.Phone2))then begin
+			messagebox(0,"Blank internal user phone");
+		end;
+		if(blank(NormalPhone(SVOr.Phone2)))then begin
+			messagebox(0,"Invalid client phone number");
+		end;
+		if(blank(location))then begin
+			messagebox(0,"Unknown user location");
+		end;
+		
+		if(nonblank(USr.Phone2)and nonblank(NormalPhone(SVOr.Phone2)) and nonblank(location))then begin			
+			//messagebox(0,host & ":" & port & page);
+			//MySendWebRequest(host,port,-1,false,"GET",page,"text/plain","",false,mainRequest,replyarea,10);
+			//logtext(0,getstringfromarea(replyarea.));
+		end;
+	end;
+
+return
+end;
+
+global procedure MySearchSVORClassReportDefaults(Integer wn)
+begin
+  record RcVc RepSpec;  
+
+  GetwindowRecord(wn,RepSpec);
+  /*RepSpec.Period2Str = stringtodate("1/1/" & getyear(currentdate)) & ":" & currentdate;
+  IF(GETMONTH(currentdate)<5)THEN BEGIN
+  	RepSpec.Period2Str = stringtodate("1/1/" & getyear(currentdate)-1) & ":" & currentdate;
+  END;*/
+  RepSpec.Period2Str = addyear(currentdate,-1) & ":" & currentdate;
+
+  PutWindowRecord(wn,RepSpec);
+return;
+end;

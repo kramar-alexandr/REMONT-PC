@@ -28,7 +28,7 @@ external function Boolean SetInSet2(string,string);
 external function Boolean MySendWebRequest(string,longint,longint,boolean,string,string,string,string,boolean,area,var area,integer);
 external function Boolean FindStringInString(string, string);
 
-SetLangMode(LangUkrainian,"UKR",0);
+SetLangMode(LangRussian,"RUS",0);
 
 global updating procedure ARRStock()
 begin

@@ -1,0 +1,488 @@
+external procedure ExtractObj(string,var Integer,var string);
+
+
+SetLangMode(LangRussian,"RUS",0);
+
+function val GetItemPrice(string artcode, string PLCode)
+begin
+	val res;
+	record PLVc PLr;
+	
+	res = 0;
+	PLr.ArtCode = artcode;
+	PLr.PLCode = PLCode;
+	if(readfirstmain(PLr,2,true))then begin
+		res = PLr.ExVatPrice;
+	end;
+	
+	GetItemPrice = res;
+
+return;
+end;
+
+global procedure MyItemReportRn(record RcVc RepSpec)
+begin
+  record INVc INr;
+  Boolean TrHs,TrHs1;
+  Boolean testf,testf1;
+  record ItemStatusVc ISr;
+  record PLVc PLr;
+  record PLDefVc PLDefr;
+  record ITVc ITr;
+  array string 20 plcode;
+  array val price;
+  integer plcnt,i;
+  record ItemHistVc IHr;
+  record PUVc PUr;
+  integer pos;
+  string 20 pricelist;
+  record RetVc Retr; //Edit***************************Sasha2,10:32 12.02.2016
+  record StockMovVc StockMovr; //Edit***************************Sasha2,10:32 12.02.2016
+  record ORVc ORr; //Edit***************************Sasha2,10:32 12.02.2016
+  Boolean showclientf; //Edit***************************Sasha2,10:41 12.02.2016
+  
+  PLDefr.Code = "";
+  if(blank(RepSpec.f2))then begin
+		while(loopmain(PLDefr,1,true)) begin
+			if(PLDefr.Code!="C+9%")then begin
+				plcode[plcnt] = PLDefr.Code;
+				price[plcnt] = 0;
+				plcnt = plcnt + 1;
+			end;
+		end;
+  end else begin
+  	pos = 0;
+  	pricelist = "";
+  	ExtractObj(RepSpec.f2,pos,pricelist);
+  	while(nonblank(pricelist)) begin
+  		if(nonblank(pricelist))then begin
+  			plcode[plcnt] = pricelist;
+				price[plcnt] = 0;
+				plcnt = plcnt + 1;
+  		end;
+  		ExtractObj(RepSpec.f2,pos,pricelist);
+  	end;
+  end;
+  
+  startreportnoheaderjob("MyItemReportRn");
+  
+  startformat(15);
+    outstring(0,0,"Товар",false);
+    outstring(0,0,"Назва",false);
+    if(RepSpec.flags[1]==0)then begin
+			outstring(0,0,"Класифікація",false);
+    end;
+    if(RepSpec.flags[0]==1)then begin
+    	outstring(0,0,"Постачальник",false);
+    	outstring(0,0,"Дата надходження",false);
+    	outstring(0,0,"Серiйний номер",false);
+    end;
+    outstring(0,0,"На складі",false);
+    if (showclientf and RepSpec.ArtMode==1) then begin //Edit***************************Sasha2,10:18 12.02.2016 {
+      outstring(0,0,"Клиент",false);
+    end; //Edit***************************Sasha2,10:18 12.02.2016 }
+    if(RepSpec.ArtMode==0)then begin
+    	if(RepSpec.flags[1]==0)then begin
+				outstring(0,0,"Доступно",false);
+			end;
+    end;
+    if(RepSpec.flags[0]==1)then begin
+			outstring(0,0,"Собівартість",false);
+			outstring(0,0,"Сума",false);
+    end;
+    if(RepSpec.flags[1]==0)then begin
+			outstring(0,0,"Склад",false);
+    end;
+    For(i=0;i<plcnt;i=i+1) begin
+	  	OutString(4,0,"Ціна " & plcode[i],false);
+		end; 
+    
+    outstring(0,0,"Група",false);
+  endformat;
+  
+  TrHs = true;
+  ISr.Code = "";
+  while (loopmain(ISr,1,TrHs)) begin
+  	testf = true;
+    if(ISr.Instock==0 or ISr.Location==";;;") then begin testf = false; end;
+    if(NonBlank(RepSpec.f1) and !setinset(ISr.Location,RepSpec.f1)) then begin testf = false; end; //Edit***************************Sasha2,11:35 22.09.2014
+    
+    if(testf)then begin
+      INr.Code = ISr.Code;
+      If(readfirstmain(INr,1,True)) then begin
+      	ITr.Code = INr.Group;
+  			readfirstmain(ITr,1,true);
+  			For(i=0;i<plcnt;i=i+1) begin
+  				price[i] = GetItemPrice(INr.Code,plcode[i]);
+  			end; 
+    		if(RepSpec.ArtMode==0)then begin
+    			StartFormat(15)
+    				OutString(0,0,ISr.Code,false);
+    				OutString(1,0,INr.Name,false);
+    				if(RepSpec.flags[1]==0)then begin// Edit ************************** Friday, 19 August 2016 14:38:49
+							outstring(0,0,INr.DispGroups,false);
+    				end;
+    				OutString(2,0,ISr.Instock,false);
+    				if(RepSpec.ArtMode==0)then begin
+							if(RepSpec.flags[1]==0)then begin
+								OutString(3,0,ISr.Instock-ISr.RsrvQty-ISr.StockRsrvQty,false);
+    					end;
+    				end;
+    				if(RepSpec.flags[0]==1)then begin
+    				
+    					resetloop(IHr);
+    					INr.InPrice = 0;
+    					IHr.ArtCode = INr.Code;
+            	TrHs1 = true;
+    					while(loopkey("ActiveQty",IHr,1,TrHs1)) begin
+            		testf1 = true;
+            		if(IHr.ArtCode!=INr.Code)then begin testf1 = false; TrHs1 = false; end;
+            		if(IHr.Location!=ISr.Location)then begin testf1 = false; end;
+            		if(testf1)then begin 
+            			INr.InPrice = INr.InPrice + IHr.RemCostPrice;
+            		end;
+            	end;
+    					
+    					OutString(1,0,INr.InPrice/ISr.Instock,false);
+    					OutString(1,0,INr.InPrice,false);
+    				end;
+    				if(RepSpec.flags[1]==0)then begin// Edit ************************** Friday, 19 August 2016 14:39:04
+							OutString(4,0,ISr.Location,false);
+    				end;
+    				For(i=0;i<plcnt;i=i+1) begin
+    					OutString(4,0,price[i],false);
+    				end; 
+    				OutString(5,0,ITr.Comment,false);
+    			endformat;
+        end else begin
+        	IHr.ArtCode = INr.Code;
+        	TrHs1 = true;
+        	while(loopkey("ActiveQty",IHr,1,TrHs1)) begin
+        		testf1 = true;
+        		if(IHr.ArtCode!=INr.Code)then begin testf1 = false; TrHs1 = false; end;
+        		if(IHr.Location!=ISr.Location)then begin testf1 = false; end;
+        		if(testf1)then begin 
+        			StartFormat(15)
+  						OutString(0,0,ISr.Code,false);
+  						OutString(1,0,INr.Name,false);
+  						if(RepSpec.flags[1]==0)then begin// Edit ************************** Friday, 19 August 2016 14:39:15
+								outstring(0,0,INr.DispGroups,false);
+  						end;
+  						if(RepSpec.flags[0]==1)then begin
+  							PUr.SerNr = IHr.InSerNr;
+  							if(readfirstmain(PUr,1,true) and IHr.InFileName=="PUVc")then begin
+  								
+  								outstring(0,0,PUr.VECode,false);
+  								outstring(0,0,PUr.TransDate,false);
+  							end else begin
+  								outstring(0,0,"",false);
+  								outstring(0,0,"",false);
+  							end;
+  							outstring(0,0,IHr.SerialNr,false);
+  						end;
+  						OutString(2,0,IHr.RemQty,false);
+  						if(RepSpec.ArtMode==1)then begin
+  							if (showclientf) then begin 
+									if (IHr.Location=="INV_OUT") then begin //Edit***************************Sasha2,10:25 12.02.2016 {
+										switch (IHr.FileName) begin
+											case "RetVc":
+												Retr.SerNr = IHr.TransNr;
+												ReadFirstMain(Retr,1,true);
+												OutString(1,0,Retr.CustCode,false);
+											case "StockMovVc":
+												StockMovr.SerNr = IHr.TransNr;
+												ReadFirstMain(StockMovr,1,true);
+												ORr.SerNr = StockMovr.OrderNr;
+												ReadFirstMain(ORr,1,true);
+												OutString(1,0,ORr.CustCode,false);
+											otherwise
+												OutString(1,0,"----",false);
+										end;
+									end else begin
+										OutString(1,0,"",false);
+									end; //Edit***************************Sasha2,10:25 12.02.2016 }
+								end;
+  						end;
+  						if(RepSpec.flags[0]==1)then begin
+  							OutString(1,0,IHr.RemCostPrice / IHr.RemQty,false);
+  							OutString(1,0,IHr.RemCostPrice,false);
+  						end;
+  						if(RepSpec.flags[1]==0)then begin// Edit ************************** Friday, 19 August 2016 14:39:43
+								OutString(4,0,ISr.Location,false);
+  						end;
+  						For(i=0;i<plcnt;i=i+1) begin
+  							OutString(4,0,price[i],false);
+  						end; 
+  						OutString(5,0,ITr.Comment,false);
+  					  endformat;
+          	end;
+          end;
+          resetloop(IHr);
+        end;
+      end;
+    end;
+  end;
+  endjob;
+return;
+end;
+
+
+global procedure InvUpdStoRn(record RcVc RepSpec)
+begin
+	record ItemHistVc IHr;
+	record IVVc IVr;
+	boolean TrHs,testf;
+	
+  startreportnoheaderjob("CHECK");
+
+	
+	TrHs = true; 
+	IHr.FileName = "IVVc";
+	while(loopkey("FNArtCode",IHr,1,TrHs))begin
+		testf = true;
+		if(IHr.FileName!="IVVc")then begin TrHs = false; testf = false; end;
+		if(IHr.StockAffectf==1)then begin testf = false; end;
+		
+		if(testf)then begin
+			IVr.SerNr = IHr.TransNr;
+			if(readfirstmain(IVr,1,true))then begin
+				if(IVr.UpdStockFlag==1)then begin
+					STARTFORMAT(15);
+						outstring(0,"DblIVVc",IHr.TransNr,false);
+						outstring(100,0,IHr.ArtCode,false);
+						outstring(200,0,IHr.SerNr,false);
+					endformat;
+				end;
+			end;
+		end;
+	end;
+	
+	endjob;
+	
+return;
+end; 
+
+
+procedure PrintSVOInfo2(record SVOVc SVOr)		//Edit----------------------Dima  02.11.2015
+BEGIN
+  StartFormat(15);
+  OutString(0,0,USetStr(7629),false);
+  OutLongInt(110,"DblSVOVc",SVOr.SerNr,false);
+  EndFormat;
+  StartFormat(15);
+  OutString(0,0,USetStr(7628),false);
+  OutString(70,0,SVOr.CustCode,false);
+  OutString(110,0,SVOr.Addr0,false);
+  EndFormat;
+  StartFormat(15);
+  OutString(0,0,USetStr(8151),false);
+  OutDate(70,0,SVOr.TransDate,false);
+  EndFormat;
+
+  StartFormat(5);
+  EndFormat;
+  if (nonblank(SVOr.Comment1)) then begin
+    StartFormat(15);
+    OutString(60,0,SVOr.Comment1,false);
+    EndFormat;
+  end;  
+  if (nonblank(SVOr.Comment2)) then begin
+    StartFormat(15);
+    OutString(60,0,SVOr.Comment2,false);
+    EndFormat;
+  end;  
+  if (nonblank(SVOr.Comment3)) then begin
+    StartFormat(15);
+    OutString(60,0,SVOr.Comment3,false);
+    EndFormat;
+  end;  
+  if (nonblank(SVOr.Comment4)) then begin
+    StartFormat(15);
+    OutString(60,0,SVOr.Comment4,false);
+  EndFormat;
+  end;  
+  Gray_Divider(0,1);
+  RETURN;
+END;
+
+
+global procedure SVOPaymentRn(record RcVc RepSpec)		//Edit----------------------Dima  02.11.2015
+begin
+	record SVOVc SVOr;
+	record WSVc WSr;
+	record IVVc IVr;
+	record IPVc IPr;
+	record ARVc ARr;
+	string 10 statusWS,statusIV;
+	boolean TrHs;
+	val sumWS,sumIV,paidIV,sumPaidIV,debtIV;
+	array integer pos;
+	
+	StartReportNoHeaderJob("Статус замовлення");
+	
+	SVOr.SerNr = RepSpec.long1;
+	ReadFirstMain(SVOr,1,true);	
+	PrintSVOInfo2(SVOr);
+  StartFormat(15);
+  EndFormat;
+  
+  
+  pos[0] = 40;
+  pos[1] = 150;
+  pos[2] = 220;
+  pos[3] = 290;
+
+//-------------------   WorkSheets  ------------------------------------//
+  StartFormat(15);
+  OutString(pos[0],0,USetStr(8270),false);
+  OutString(pos[1],0,USetStr(10661),false);
+  OutString(pos[2],0,USetStr(31051),false);
+  EndFormat;
+  
+  TrHs = true;
+  WSr.SVONr = SVOr.SerNr;
+  While(LoopKey("SVONr",WSr,1,TrHs)) begin
+  	if (WSr.SVONr != SVOr.SerNr) then begin TrHs = false; end;
+  	if (TrHs) then begin
+  		sumWS = sumWS + WSr.Sum4;
+  	
+  		StartFormat(15);
+			OutLongInt(pos[0],"DblWSVc",WSr.SerNr,false);
+			OutString(pos[1],0,WSr.Sum4,false);
+			if (WSr.OKFlag>0) then begin
+				statusWS = "OK";
+			end else begin
+				statusWS = "-";
+			end;
+			OutString(pos[2],0,statusWS,false);
+			EndFormat;
+		end;
+	end;
+	
+  Black_Divider(0,1);
+  OutString(pos[1],0,sumWS,false);  
+  EndFormat;
+  EndFormat;
+  EndFormat;
+  Gray_Divider(0,1);
+  EndFormat;
+  
+  
+//-------------------   Invoices  ------------------------------------//
+  
+  StartFormat(15);
+  OutString(pos[0],0,USetStr(10672),false);
+  OutString(pos[1],0,USetStr(10661),false);	
+  OutString(pos[2],0,USetStr(31052),false);
+  OutString(pos[3],0,USetStr(31051),false);
+  EndFormat;	
+  
+  IVr.SVONr = SVOr.SerNr;
+  TrHs = true;
+  while (LoopKey("SVONr",IVr,1,TrHs)) begin
+		if (IVr.SVONr!= SVOr.SerNr) then begin TrHs = false; end;
+		if (TrHs) then begin
+			ARr.InvoiceNr = IVr.SerNr;
+			debtIV = 0;
+			if (ReadFirstMain(ARr,1,true)) then begin
+				debtIV = ARr.RVal;
+			end;
+			
+			paidIV = IVr.Sum4 - debtIV;
+			if (IVr.OKFlag>0) then begin
+				paidIV = IVr.Sum4 - debtIV;
+			end else begin
+				paidIV = 0;
+			end;
+
+			if (IVr.OKFlag>0) then begin
+				statusIV = "OK";
+			end else begin
+				statusIV = "-";
+			end;
+			
+			StartFormat(15);				
+				OutLongInt(pos[0],"DblIVVc",IVr.SerNr,false);	
+				OutString(pos[1],0,IVr.Sum4,false);
+				OutString(pos[2],0,paidIV,false);
+				OutString(pos[3],0,statusIV,false);
+			EndFormat;
+			
+			sumPaidIV = sumPaidIV + paidIV;
+			sumIV = sumIV + IVr.Sum4;			
+		end;		
+	end;
+  Black_Divider(0,1);
+  OutString(pos[1],0,sumIV,false);
+  OutString(pos[2],0,paidIV,false);
+  
+  
+  EndFormat;
+  EndFormat;
+  EndFormat;    	
+  OutString(pos[2]-30,0,USetStr(31053),false);
+  OutString(pos[2],0,sumWS - paidIV,false);
+  
+	EndJob;
+  
+end;
+
+
+
+global procedure FindErrorInIHRn(record RcVc RepSpec)
+begin
+record ItemHistVc IHr;
+boolean TrHs,testf;
+string 255 tstr;
+val sumrem,sumqty,sumremcost,sumcost;
+record ItemStatusVc ISr;
+
+startreportnoheaderjob("ErrorFix");
+	
+	TrHs = true;
+	IHr.ArtCode = RepSpec.f1;
+	IHr.Location = RepSpec.f2;
+	while(loopkey("ArtCodeLoc",IHr,2,TrHs))begin
+		testf = true;
+		if(IHr.ArtCode!=RepSpec.f1)then begin TrHs = false; testf = false; end;
+		if(IHr.Location!=RepSpec.f2)then begin TrHs = false; testf = false; end;
+		if(IHr.StockAffectf==0)then begin testf = false; end;
+		
+		if(testf)then begin
+			sumrem = sumrem + IHr.RemQty;
+			sumqty = sumqty + IHr.Qty;
+			sumremcost = sumremcost + IHr.RemCostPrice;
+			if(IHr.Qty>0)then begin
+				sumcost = sumcost + IHr.TotCostPrice;
+			end else begin
+				sumcost = sumcost - IHr.TotCostPrice;
+			end;
+			startformat(15);
+				OutString(0,"DblItemHist",IHr.SerNr,false);
+				OutDate(40,0,IHr.TransDate,false);
+				OutString(100,0,IHr.FileName,false);
+				OutString(150,0,IHr.TransNr,false);
+				OutString(200,0,IHr.Source,false);
+				OutString(250,0,IHr.Qty,false);
+				OutString(270,0,IHr.TotCostPrice,false);
+				OutString(300,0,IHr.RemQty,false);
+				OutString(330,0,sumrem,false);
+				OutString(360,0,sumqty,false);
+				OutString(390,0,sumremcost,false);
+				OutString(420,0,sumcost,false);
+			endformat;
+		end;
+		
+	end;
+	
+	ISr.Code = RepSpec.f1;
+	ISr.Location = RepSpec.f2;
+	readfirstmain(ISr,2,true);
+	startformat(15);
+		OutString(360,0,ISr.Instock,false);
+	endformat;
+
+endjob;
+
+return;
+end;

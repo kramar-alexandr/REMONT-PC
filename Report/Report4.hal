@@ -1,0 +1,199 @@
+external function LongInt DateDiff(Date,Date);
+external procedure IPRn(record RcVc);
+
+SetLangMode(LangRussian,"RUS",0);
+
+global procedure  MyReservStstRn(record RcVc RepSpec)
+begin
+record ORVc ORr;
+row ORVc ORrw;
+string 255 client;
+boolean TrHs,testf,TrHs1;
+integer i,mtrw,mtrw1,j;
+record RetVc Retr;
+row RetVc Retrw;
+integer quant;
+
+  client="";
+  if(nonblank(RepSpec.f1))then begin
+    client = RepSpec.f1;
+  end;
+  StartReportnoheaderJob("Report");
+  
+  StartFormat(15)
+    OutString(0,0,USetStr(7815),false);//Client
+    OutString(0,0,USetStr(3523),false);//ArtCode
+    OutString(0,0,USetStr(4063),false);//Name
+    OutString(140,0,USetStr(3524),false);//Order #
+    OutString(190,0,USetStr(3543),false);//Ord. date
+    OutString(250,0,USetStr(5510),false);//In reserv
+    OutString(310,0,USetStr(2634),false);//In Invoice
+    OutString(370,0,USetStr(4045),false);//Days in reserv
+    OutString(1,0,USetStr(2765),true);//Stock
+  endformat;
+  
+  ORr.Reserved = 1;
+  TrHs = true;
+  while(loopkey("Reserved",ORr,1,TrHs))begin
+    testf = true;
+    if(nonblank(client) and ORr.CustCode!=client)then begin testf = false; end;
+    if(ORr.Reserved==0)then begin testf = false; TrHs = false; end;
+    if(ORr.Closed!=0)then begin testf = false; end;
+    if(ORr.ShipFlag!=0)then begin testf = false; end;
+    
+    if(testf)then begin
+      mtrw = matrowcnt(ORr);
+      For(i=0;i<mtrw;i=i+1) begin
+        Matrowget(ORr,i,ORrw);
+        
+        quant = ORrw.Quant - ORrw.Shipd2;
+        Retr.OrdNr = ORr.SerNr;
+        TrHs1 = true;
+        while(loopkey("OrdNr",Retr,1,TrHs1))begin
+          if(Retr.OrdNr!=ORr.SerNr)then begin TrHs1=false; end;
+          if(TrHs1)then begin
+            mtrw1 = matrowcnt(Retr);
+            for(j=0;j<mtrw1;j=j+1)begin
+              matrowget(Retr,j,Retrw);
+              if(Retrw.ArtCode==ORrw.ArtCode and Retrw.OrdRow==i)then begin
+                quant = quant - Retrw.Quant;
+              end;
+            end;
+          end;
+        end;
+        resetloop(Retr);
+        
+        if(quant>0)then begin
+          StartFormat(15)
+            OutString(0,0,ORr.CustCode,false);//Client
+            OutString(0,0,ORrw.ArtCode,false);//ArtCode
+            OutString(0,0,ORrw.Spec,false);//Name
+            OutString(140,"DblORVc",ORr.SerNr,false);//Order #
+            OutString(190,0,ORr.OrdDate,false);//Ord. date
+            OutString(250,0,quant,false);//In reserv
+            OutString(310,0,ORrw.Invd - ORrw.Shipd2,false);//In Invoice
+            OutString(370,0,DateDiff(currentDate,ORr.OrdDate),false);//Days in reserv
+            if(nonblank(ORrw.Location))then begin
+              OutString(1,0,ORrw.Location,true);//Stock
+            end else begin
+              OutString(1,0,ORr.Location,true);//Stock
+            end;
+          endformat;
+        end;
+      end; 
+    end;    
+  end;
+  endjob;
+return;
+end;
+
+global updating procedure DellZerroWebSyncRegMn(record RcVc repspec)
+begin
+integer lenth,k,i;
+string 200 available,aval,newaval;
+string 5 achar,char;
+record WebSyncRegVc WSr;
+	
+	
+	
+	WSr.ArtCode = "";
+	aval = "0";
+	while(loopmain(WSr,1,true)) begin
+		if(setinset(aval,WSr.Available))then begin
+			lenth = len(WSr.Available);
+			achar = "";
+			char = "";
+			newaval = "";
+			
+			for(i=0;i<lenth;i=i+1)begin
+				char = mid(WSr.Available,i,1);
+				if(char!=",")then begin
+					achar = achar & char;
+				end else begin
+					if(achar!=aval)then begin
+						if(nonblank(newaval))then begin
+							newaval = newaval & "," & achar;
+						end else begin
+							newaval = achar;
+						end;
+					end;
+					achar = "";
+				end;
+			end;
+			if(achar!=aval)then begin
+				if(nonblank(newaval))then begin
+					newaval = newaval & "," & achar;
+				end else begin
+					newaval = achar;
+				end;
+			end;
+		WSr.Available = newaval;
+		recordstore(WSr,true);
+		end;
+	end;
+	
+return;
+end;
+
+global procedure WebSyncRegRn(record RcVc RepSpec)
+begin
+	record WebSyncRegVc WSr;
+	
+	
+	startreportnoheaderjob("Звіт по віртуальнім товарам на веб-магазині");
+	
+	WSr.ArtCode = "";
+	while(loopmain(WSr,1,true)) begin
+		
+		if(setinset(0,WSr.Available))then begin
+			startformat(15);
+				outstring(0,"DblWebSyncReg",WSr.ArtCode,false);
+			endformat;
+		end;
+	end;
+	
+	endjob;
+	
+return;
+end;
+
+global procedure  MyNotSearchSVORn(record RcVc RepSpec)
+begin
+string 255 search;  
+record NotepadVc NRr;
+record RLinkVc RLr;
+string 255 rlink;
+record SVOVc SVOr;
+integer cnt;
+boolean TrHs,Testf;
+
+  search = RepSpec.f1;
+  StartReportnoheaderJob("Пошук по нотаткам в замовленнях");
+  NRr.SerNr = -1;
+  StartFormat(15);
+    OutString(200,0,Search,false);
+  endFormat;
+  Gray_Divider(0,1);
+  //NRr.SerNr = 2732;
+  TrHs = true;
+
+  while(loopmain(NRr,1,TrHs))begin
+  	//TrHs = false;
+  	//logtext(0,NRr.CompanyNr);
+    //if(NRr.CompanyNr==currentcompany)then begin
+      if (stringintext(search,NRr))begin
+      cnt = 1;   
+        while (ReadRecordtoLink(NRr,cnt,SVOr,RLr)) begin
+          StartFormat(15)
+            OutString(0,"DBLSVOVc",SVOr.SerNr,false);
+            OutString(50,0,SVOr.Addr0,false);
+            OutString(200,0,SVOr.Vlastnik,false);
+          endFormat;
+          cnt = cnt+1;
+        end;   
+      end;
+    //end;
+  end;
+  endjob;
+return;
+end;

@@ -3,7 +3,7 @@ event startup
 begin
 
 	//SetLangMode(LangUkrainian,"UKR",0);
-	SetLangMode(LangUkrainian,"RUS",0);
+	SetLangMode(LangRussian,"RUS",0);
 	
   Maintenance("Git HAL Files",MyVClass,GitHALFilesMn,modTC);
 

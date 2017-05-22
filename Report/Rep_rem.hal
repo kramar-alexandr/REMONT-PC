@@ -14,7 +14,7 @@ remote procedure AutoUnreservOrderMn();
 remote procedure WSVcOKReportEn();
 external function roundmode SetRoundModeD(Integer);
 
-	SetLangMode(LangUkrainian,"UKR",0);
+	SetLangMode(LangRussian,"RUS",0);
 
 
 global procedure runscript(string path,string param)

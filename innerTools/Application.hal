@@ -10,7 +10,6 @@ begin
   integer days;
 	
 	inner.OnApplicationStartupComplete;
-	messagebox(0,"sadas");
   millisleep(100);
   if (!ServerMode) then begin
 		if(false) then begin

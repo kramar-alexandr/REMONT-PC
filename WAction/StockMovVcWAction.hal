@@ -1424,18 +1424,20 @@ procedure StockMovDClassButtonFlags(Integer wn,var Boolean duplOK,var Boolean ne
 begin
 	record ORVc ORr;
 	record StockMovVc StockMovr;
-
-  	GetWindowRecord(wn,StockMovr);
-  	if (NonBlank(StockMovr.OrderNr)) then begin
-	  	ORr.SerNr = StockMovr.OrderNr; 
-	  	if (ReadFirstMain(ORr,1,true) and ORr.OrderClass=="Shops") then begin
-	  		duplOK = false;
-	  	end else begin
-	  		duplOK = true;
-	  	end;
-  	end else begin
-  		duplOK = true;
-  	end;	
+		
+		IF(wn>0)THEN BEGIN
+			GetWindowRecord(wn,StockMovr);
+			if (NonBlank(StockMovr.OrderNr)) then begin
+				ORr.SerNr = StockMovr.OrderNr; 
+				if (ReadFirstMain(ORr,1,true) and ORr.OrderClass=="Shops") then begin
+					duplOK = false;
+				end else begin
+					duplOK = true;
+				end;
+			end else begin
+				duplOK = true;
+			end;
+  	END;	
 
   return;
 end; //Edit***************************Sasha2,14:42 29.08.2014 }

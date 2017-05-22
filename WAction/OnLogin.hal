@@ -864,7 +864,7 @@ begin
 	string 20 accessgroup;
 	//if(currentuser=="SA")then begin
 		GetUserAccessGroup(currentuser,accessgroup);
-		if(accessgroup!="FIN+" and accessgroup!="ADMIN" and accessgroup!="ISTUD")then begin
+		if(usercanaction("ViewRemontQueryToDO",false))then begin
 			wn = curwindow;
 			if(wn>0)then begin
 				if (WindowValid(wn)) then begin			

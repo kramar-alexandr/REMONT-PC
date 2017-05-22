@@ -21,6 +21,7 @@ external function Boolean DateLocked(Date,string);
 external function Boolean DateWarned(Date,string);
 remote procedure SetTRObjectRows(var record TRVc);
 
+
 procedure TRUpdateCurDebValRows(var row TRVc TRrp,Date trdat)
 BEGIN
   val sv,tor1,tor2;
@@ -1446,3 +1447,9 @@ BEGIN
   RETURN;
 END; //Edit***************************Sasha2,11:38 09.12.2016 }
 
+
+global function Boolean HasIntegratedNL()
+begin
+		HasIntegratedNL = true;
+return;
+end;

@@ -30,10 +30,10 @@ remote updating function boolean RecordAction_raPasteSVOInQT(var record QTVc,rec
 external function Boolean OpenContactRecord(string,string);
 remote function string 255 DuplicateSVOSerial(string);// Edit ************************** Tuesday, 2 June 2015 20:09:42
 remote updating function Integer RecordAction_raPasteSVOInOrder(var record ORVc,var record SVOVc);// Edit ************************** Wednesday, 3 June 2015 16:59:04
-remote procedure HandleSVOReceiptPrinting(record SVOVc,var area);
+remote updating procedure HandleSVOReceiptPrinting(record SVOVc,var area);
 external procedure PrintBixolonReceipt(area);
 external procedure ExtractObjWithSeparator(string,string,Boolean,var Integer,var string);// Edit ************************** Monday, 27 February 2017 15:43:57
-remote procedure FindPhonePerson(var record PhoneVc,string);// Edit ************************** Tuesday, 28 February 2017 16:03:58
+remote procedure FindPhonePerson(var record Phone1Vc,string);// Edit ************************** Tuesday, 28 February 2017 16:03:58
 
 // Edit Start ---------------------------------------------- Edit Start
 	//Wednesday, 3 June 2015 16:58:34
@@ -1655,7 +1655,8 @@ begin
 return;
 end;
 
-Global Procedure SVO3LClassOnOpenWindow(integer wn)
+Global 
+function Boolean SVO3LClassOnOpenWindow(integer wn)
 begin
 	
 	if(usercanaction("DisableListOgSVO",false))then begin
@@ -1667,7 +1668,8 @@ begin
 return;
 end;
 
-Global Procedure SVOLClassOnOpenWindow(integer wn)
+Global 
+function Boolean SVOLClassOnOpenWindow(integer wn)
 begin
 	
 	if(usercanaction("DisableListOgSVO",false))then begin

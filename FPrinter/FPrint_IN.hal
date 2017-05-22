@@ -1,13 +1,12 @@
-remote procedure ReadSer(var integer,string,var array val,var array string,var array string,var array string,var array real,var array date,date);
-external procedure DellSUPP();
-remote procedure DellINMn();
-external procedure SynchServToOfflineSettingsm();
-external function boolean PrintFiscalReceipt(record IVCashVc);
+external updating procedure DellSUPP();
+remote updating procedure DellINMn();
+external updating procedure SynchServToOfflineSettingsm();
+external updating function boolean PrintFiscalReceipt(record IVCashVc);
 remote function MyServLog(string);
 external procedure prt(string,string,boolean);
-remote procedure MyConvertCur(var record CashVc);
+remote updating procedure MyConvertCur(var record CashVc);
 external procedure MyCashInOutClient(val);
-remote procedure SavingCash(var record CashVc);
+remote updating procedure SavingCash(var record CashVc);
 external updating function Boolean SendServiceRequest(string,Boolean,area,var Area);
 external updating function Boolean ServiceRequestAsync(string,string,Boolean,area,string);
 external procedure ReadTXServiceReply(var record TXServiceReplyVc,var Area,Boolean);
@@ -184,7 +183,7 @@ END;
 //----------------------------------------------------------------------------------------------------
 
 global
-function ZreportSt()
+updating function ZreportSt()
 begin
 	integer wn;
 	record RcVc RecSpec;
@@ -255,7 +254,7 @@ END;
 //----------------------------------------------------------------------------------------------------
 
 global
-function MyPrintRepSt()
+updating function MyPrintRepSt()
 begin
 	record IVCashVc IVCashr;
 	integer wn;

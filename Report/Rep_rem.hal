@@ -2,16 +2,6 @@ external function val ItemInStock(var record INVc,string);
 external procedure GetAccDCBalance(string,string,Date,record ObjBalVc,Integer,Integer,Integer,string,var val,var val,Integer);
 external procedure ExtractObj(string,var Integer,var string);
 external function LongInt DateDiff(Date,Date);
-remote procedure LocManyStockEn(record RcVc);///new procedure
-remote procedure LocManyStockGroupEn(record RcVc);///new procedure
-remote procedure MyTransitReportEn();
-remote procedure MyItemReportEn();
-remote procedure MyTransitReportGroupEn();
-remote procedure BuhExportEn();
-remote procedure OstatkiPoPostavchikamEn();
-remote procedure SVOStockMyNewEn();
-remote procedure AutoUnreservOrderMn();
-remote procedure WSVcOKReportEn();
 external function roundmode SetRoundModeD(Integer);
 
 	SetLangMode(LangRussian,"RUS",0);

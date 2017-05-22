@@ -4,7 +4,6 @@ external function val FindVAT(string,val,Integer,Integer);
 external procedure SetFaxInfo(string,string,string,string);
 external procedure SplitAddress(string,var string,var string);
 external function Boolean Getformcode(Integer,Integer,string,string,string,LongInt,LongInt,string,string,Integer,string,var string);
-external procedure NumberofDocumentPages(string,Integer);
 external procedure GetLangNr(string,var record LangNrVc);
 external procedure CommonDocumentFields(record RcVc);
 external procedure ValToText(val,Integer,string,string,var string);

@@ -1,4 +1,4 @@
-remote procedure CreatePrintNoter(record RcVc, record ORVc);
+remote updating procedure CreatePrintNoter(record RcVc, record ORVc);
 
 global function string 255 GetTextForPrint(integer i, string rec)
 begin

@@ -52,9 +52,9 @@ remote procedure IVSumup(var record IVVc,Boolean);
 remote function Boolean FindLastInvoiceRowForSerial(LongInt,string ,string,var row IVVc);
 external function Integer ArgEInvLock(record IVVc,integer);
 external function Boolean UserCanChangePendingRecord(Integer);
-remote procedure HandleWSReceiptPrinting(record WSVc,var area);//Edit----------------------Dima  21.09.2015
+remote updating procedure HandleWSReceiptPrinting(record WSVc,var area);//Edit----------------------Dima  21.09.2015
 remote procedure HandleIVReceiptPrinting(record IVVc,var area);//Edit----------------------Dima  21.09.2015
-remote procedure HandleSVOReceiptPrinting(record SVOVc,var area); //Edit***************************Sasha2,13:20 13.10.2016
+remote updating procedure HandleSVOReceiptPrinting(record SVOVc,var area); //Edit***************************Sasha2,13:20 13.10.2016
 
 SetLangMode(LangRussian,"RUS",0);
 

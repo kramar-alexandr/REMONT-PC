@@ -1,0 +1,204 @@
+external updating procedure StockBalDiffMn(string); 
+
+//------------------------------------------------------------------------------------------------------------------------------
+global updating procedure AutoRun()
+begin
+integer iStore,iTek,Textera,Technomedia,AService,WD,MMR,iCenter,Samsung,Gilliver,idistribuEsti;
+record RcVc RepSpec;
+
+iStore = 1;
+iTek = 2;	//iTek
+WD = 3;
+iCenter = 4;
+Textera = 5;//Textera
+MMR = 6;
+Technomedia = 7;//Technomedia
+AService = 8;
+Samsung = 9;
+Gilliver = 10;
+idistribuEsti = 11;
+
+    logtext(0,currentcompany & " StockBalDiffMn");
+    StockBalDiffMn("SA,STRELKOVA,AUDITOR,CHAYKOVSKA,IRA_FM");
+
+/*
+  if (SetCompany(iStore,false)) then begin
+  	logtext(0,currentcompany & " FullStockEn");
+    FullStockEn;
+		logtext(0,currentcompany & " SalesReportEn");
+    SalesReportEn;
+    logtext(0,currentcompany & " ManagersFullStockEn");
+    ManagersFullStockEn;
+    logtext(0,currentcompany & " DebitorkaReportEn");
+    DebitorkaReportEn(iStore);
+    RetailSalesEn;// Edit ************************** Tuesday, 17 February 2015 09:55:38
+    BuhExportEn; //Edit***************************Sasha2,9:44 16.01.2015
+    logtext(0,currentcompany & " KreditorkaReportEn"); 
+    KreditorkaReportEn; 
+    logtext(0,currentcompany & " SaleWeekByVEEn"); 
+    SaleWeekByVEEn;
+  end;
+  
+  if (SetCompany(Gilliver,false)) then begin
+  	logtext(0,currentcompany & " FullStockEn");
+    FullStockEn;
+		logtext(0,currentcompany & " SalesReportEn");
+    SalesReportEn;
+    logtext(0,currentcompany & " ManagersFullStockEn");
+    ManagersFullStockEn;
+    logtext(0,currentcompany & " DebitorkaReportEn");
+    RetailSalesEn;// Edit ************************** Tuesday, 17 February 2015 09:55:38
+    BuhExportEn; //Edit***************************Sasha2,9:44 16.01.2015
+    logtext(0,currentcompany & " SaleWeekByVEEn"); 
+    SaleWeekByVEEn;
+    logtext(0,currentcompany & " KreditorkaReportEn"); 
+    KreditorkaReportEn; 
+  end;
+  
+  if (SetCompany(idistribuEsti,false)) then begin
+    logtext(0,currentcompany & " KreditorkaReportEn"); 
+    KreditorkaReportEn; 
+  end;
+  
+  
+  if (SetCompany(iTek,false)) then begin//itek
+  	logtext(0,currentcompany & " IPEn"); 
+    IPEn; 
+  	logtext(0,currentcompany & " SalesReportEn");
+    SalesReportEn;
+  	logtext(0,currentcompany & " DebitorkaReportEn");
+    DebitorkaReportEn(iTek);
+    logtext(0,currentcompany & " ShopsReportEn");
+    ShopsReportEn;
+  	logtext(0,currentcompany & " FullStockEn");
+    FullStockEn;
+    logtext(0,currentcompany & " FullStockTRWH2En"); //Edit***************************Sasha2,11:40 22.09.2014
+    FullStockTRWH2En; //Edit***************************Sasha2,11:40 22.09.2014
+    logtext(0,currentcompany & " ManagersFullStockEn");
+    ManagersFullStockEn;
+    logtext(0,currentcompany & " SalesReportForManagersEn");
+    SalesReportForManagersEn;
+    logtext(0,currentcompany & " AutoUnreservOrderMn");
+    AutoUnreservOrderMn;
+    logtext(0,currentcompany & " MyReservStstEn");
+    MyReservStstEn;
+    
+    ResetCompany(iTek);  
+  end;
+  
+  
+  if (SetCompany(Samsung,false)) then begin//itek
+  	logtext(0,currentcompany & " SalesReportEn");
+    SalesReportEn;
+  	logtext(0,currentcompany & " FullStockEn");
+    FullStockEn;
+    logtext(0,currentcompany & " RetailSalesEn");
+    RetailSalesEn;
+    logtext(0,currentcompany & " ManagersFullStockEn");
+    ManagersFullStockEn;
+    ResetCompany(Samsung);  
+  end;
+  
+  if (SetCompany(MMR,false)) then begin//itek
+  	logtext(0,currentcompany & " SalesReportEn");
+    SalesReportEn;
+  	logtext(0,currentcompany & " FullStockEn");
+    FullStockEn;
+    logtext(0,currentcompany & " RetailSalesEn");
+    RetailSalesEn;
+    logtext(0,currentcompany & " ManagersFullStockEn");
+    ManagersFullStockEn;
+    ResetCompany(MMR);  
+  end;
+  
+  	if (SetCompany(WD,false)) then begin//itek
+  	//logtext(0,currentcompany & " IPEn"); 
+    //IPEn;
+  	logtext(0,currentcompany & " KreditorkaReportEn"); 
+    KreditorkaReportEn; 
+    
+    	ResetCompany(WD);  
+		end;
+  
+   if (SetCompany(iCenter,false)) then begin//iCenter
+  	logtext(0,currentcompany & " IPEn"); 
+    IPEn; //**
+  	logtext(0,currentcompany & " SalesReportEn");
+    SalesReportEn;
+  	logtext(0,currentcompany & " DebitorkaReportEn");
+    DebitorkaReportEn(iCenter);//***
+    logtext(0,currentcompany & " ShopsReportEn");
+    ShopsReportEn;//****
+  	logtext(0,currentcompany & " FullStockEn");
+    FullStockEn;//*
+    logtext(0,currentcompany & " FullStockTRWH2En"); //Edit***************************Sasha2,11:40 22.09.2014
+    FullStockTRWH2En; //Edit***************************Sasha2,11:40 22.09.2014
+    logtext(0,currentcompany & " ManagersFullStockEn");
+    ManagersFullStockEn;//*
+    logtext(0,currentcompany & " SalesReportForManagersEn");
+    SalesReportForManagersEn;
+    logtext(0,currentcompany & " AutoUnreservOrderMn");
+    AutoUnreservOrderMn;//***
+    logtext(0,currentcompany & " MyReservStstEn");
+    MyReservStstEn;//***
+    BuhExportEn; //Edit***************************Sasha2,9:44 16.01.2015
+    RetailSalesEn;// Edit ************************** Tuesday, 17 February 2015 09:55:38
+    ResetCompany(iTek);  
+  end;
+  
+  if (SetCompany(Textera,false)) then begin//textera
+  	logtext(0,currentcompany & " FullStockEn");
+    FullStockEn;
+    logtext(0,currentcompany & " FullStockTRWH2En"); //Edit***************************Sasha2,11:40 22.09.2014
+    FullStockTRWH2En; //Edit***************************Sasha2,11:40 22.09.2014
+    logtext(0,currentcompany & " ManagersFullStockEn");
+    ManagersFullStockEn;
+    logtext(0,currentcompany & " DebitorkaReportEn");
+    DebitorkaReportEn(Textera);
+    logtext(0,currentcompany & " AutoUnreservOrderMn");
+    AutoUnreservOrderMn;
+    logtext(0,currentcompany & " MyReservStstEn");
+    MyReservStstEn;
+    logtext(0,currentcompany & " ShopsReportEn"); //Edit***************************Sasha2,17:27 02.09.2014
+    ShopsReportEn; //Edit***************************Sasha2,17:27 02.09.2014
+    logtext(0,currentcompany & " IPEn"); //Edit***************************Sasha2,15:39 05.09.2014
+    IPEn; //Edit***************************Sasha2,15:39 05.09.2014
+    logtext(0,currentcompany & " SalesReportEn");
+    SalesReportEn;
+    logtext(0,currentcompany & " SalesReportForManagersEn");
+    SalesReportForManagersEn;
+    ResetCompany(Textera);  
+  end;
+  
+  
+  if (SetCompany(Technomedia,false)) then begin
+    logtext(0,currentcompany & " FullStockEn");
+    FullStockEn;
+    logtext(0,currentcompany & " FullStockTRWH2En"); //Edit***************************Sasha2,11:40 22.09.2014
+    FullStockTRWH2En; //Edit***************************Sasha2,11:40 22.09.2014
+    logtext(0,currentcompany & " ManagersFullStockEn");
+    ManagersFullStockEn;
+    logtext(0,currentcompany & " DebitorkaReportEn");
+    DebitorkaReportEn(Technomedia);
+    logtext(0,currentcompany & " AutoUnreservOrderMn");
+    AutoUnreservOrderMn;
+    logtext(0,currentcompany & " MyReservStstEn");
+    MyReservStstEn;
+    logtext(0,currentcompany & " ShopsReportEn"); //Edit***************************Sasha2,17:27 02.09.2014
+    ShopsReportEn;
+    logtext(0,currentcompany & " IPEn"); //Edit***************************Sasha2,15:39 05.09.2014
+    IPEn; //Edit***************************Sasha2,15:39 05.09.2014
+    logtext(0,currentcompany & " SalesReportEn");
+    SalesReportEn;
+    logtext(0,currentcompany & " SalesReportForManagersEn");
+    SalesReportForManagersEn;
+    ResetCompany(Technomedia);  
+  end;
+  
+  */
+
+return;
+end;
+
+
+

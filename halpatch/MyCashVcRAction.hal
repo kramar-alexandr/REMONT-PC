@@ -1,5 +1,5 @@
 external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
-remote procedure MyConvertCur(var record CashVc);
+remote updating procedure MyConvertCur(var record CashVc);
 external procedure prt(string,string,var boolean);
 
 global procedure MyCashInOutClient(val cash)
@@ -16,7 +16,7 @@ return;
 end;
 
 global
-function LongInt CashVcRecordSaveClient(LongInt wn,var record CashVc Cashr,record CashVc Cash2r,LongInt stat,LongInt long4)
+updating function LongInt CashVcRecordSaveClient(LongInt wn,var record CashVc Cashr,record CashVc Cash2r,LongInt stat,LongInt long4)
 BEGIN
 	LongInt res;
 
@@ -37,7 +37,7 @@ BEGIN
 END;
 
 global
-function LongInt CashVcRecordUpdateClient(LongInt wn,var record CashVc Cashr,record CashVc Cash2r,LongInt stat,LongInt long4)
+updating function LongInt CashVcRecordUpdateClient(LongInt wn,var record CashVc Cashr,record CashVc Cash2r,LongInt stat,LongInt long4)
 BEGIN
 	LongInt res;
 	

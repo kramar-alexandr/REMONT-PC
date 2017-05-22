@@ -4,25 +4,13 @@ external procedure ORVc_PastePrice(var record ORVc,Integer,var Boolean); //Edit*
 external procedure ORDchsum(var record ORVc,Integer); //Edit***************************Sasha2,14:51 28.07.2015
 external procedure ORSumup(var record ORVc); //Edit***************************Sasha2,14:51 28.07.2015
 external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
-external procedure RebuildStockMn(record RcVc);
-external function Boolean GetItemPriceDiscount3(string,val,var record INVc,string,val,val,val,val,val,string,string,string,string,
-                                                var val,var string,var val,var string,var val,var string,Integer,var Boolean,Date,
-                                                string,Boolean,var Boolean,string,var string,var val,string);
 external function Boolean PasteItemInSVO(var record SVOVc,Integer);
-external function Boolean PasteCUInSVO(var record SVOVc,var string);
 external function roundmode SetRoundModeD(Integer);
 external function Boolean PODClassAfterEditField(Integer,string,Integer,Integer,Integer);
-external function Boolean PUDClassAfterEditField(Integer,string,Integer,Integer,Integer);
+external updating function Boolean PUDClassAfterEditField(Integer,string,Integer,Integer,Integer);
 external function LongInt GetCurUserLastNr(string);
 external function Boolean PasteCustInOrder(var record ORVc,string,string,var string,var string);
 external procedure ORVc_PasteCurncyCode(var record ORVc,string);
-remote updating procedure CreateNewSVOinCom(record SVOVc);
-remote updating procedure CreateNewSVOinCom1(record SVOVc);
-remote updating procedure CreateNewINinStore(record INVc);
-remote updating procedure CreateNewINiPoint(record INVc);
-remote updating procedure CreateNewINTNM(record INVc);
-remote updating procedure CreateNewINinSMG(record INVc);
-remote updating procedure SamsungSendFilesToFtpMn(record RcVc); //Edit***************************Sasha2,11:51 25.04.2016
 external procedure ExtractObj(string,var Integer,var string);
 external function Boolean SetInSet2(string,string);
 external function Boolean MySendWebRequest(string,longint,longint,boolean,string,string,string,string,boolean,area,var area,integer);
@@ -500,7 +488,7 @@ begin
     
     
     min = getminute(CurrentTime);
-    if(right(min,1)=="5" and currentdate>stringtodate("25/08/2016"))then begin
+    /*if(right(min,1)=="5" and currentdate>stringtodate("25/08/2016"))then begin
 			if (SetCompany(9,false)) then begin
 				SSLr.TransDate = addday(currentdate,-1);
 				if(!Readfirstkey("TransDate",SSLr,1,true))then begin
@@ -530,7 +518,7 @@ lCustTimeTableActionRun:;
 			end;
 			
     	ResetCompany(curcomp); 
-    end;
+    end;*/
     
 
 return;

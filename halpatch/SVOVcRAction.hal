@@ -53,7 +53,7 @@ end;
 // Edit End ---------------------------------------------- Edit End
 
 global
-function LongInt SVOVcRecordDefaultsClient(var record SVOVc SVOr,record SVOVc SVO2r,LongInt stat,LongInt long4)
+function LongInt SVOVcRecordDefaultsClient(LongInt wn,var record SVOVc SVOr,record SVOVc SVO2r,LongInt stat,LongInt long4)
 BEGIN
   LongInt res;
   record AccBlock ARAccRec;
@@ -1265,7 +1265,7 @@ BEGIN
 END;
 
 global
-function LongInt SVOVcRecordCheckClient(var record SVOVc SVOr,record SVOVc SVO2r,LongInt stat,LongInt check)
+function LongInt SVOVcRecordCheckClient(LongInt wn,var record SVOVc SVOr,record SVOVc SVO2r,LongInt stat,LongInt check)
 BEGIN
   record RcVc RepSpec;
   

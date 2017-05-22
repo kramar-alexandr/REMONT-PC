@@ -1,4 +1,4 @@
-external updating procedure AutoRun();
+/*external updating procedure AutoRun();
 external updating procedure BuhExportEn();
 external procedure RetailSalesEn();
 external procedure ManagersFullStockEn();
@@ -58,4 +58,4 @@ begin
 	
 
 return;
-end;
+end;*/

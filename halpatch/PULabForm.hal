@@ -1,7 +1,6 @@
 external procedure PrintCurrencyCode(string,string);
 external function string 255 BC128(string);
 external function string 255 SerialNrBC128(string);
-external function val MulRateToBase2(var string,val,val,val,val,val,val,Integer);
 external function val FindVAT(string,val,Integer,Integer);
 external procedure BCEAN(string,var string);
 external procedure BC39(string,var string);

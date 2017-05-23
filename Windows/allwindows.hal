@@ -6179,7 +6179,7 @@ begin
   SpecialMenu("Создать кредит-ноту",'F',0,"CredVIFromRetPUDsm");         
   EndWindow;
 end;
-
+/*
 window INDClass:8
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
@@ -6543,12 +6543,7 @@ begin
   RadioButton(h2,v,0,0,"По умолчанию",WAPerLocation);
   RadioButton(h2,v+=16,1,0,"Средневзвеш.не по складам",WAPerLocation);
   RadioButton(h2,v+=16,2,0,"Средневзвеш.по кажд.складу",WAPerLocation);
-/*5.3
-  ButtonFrame(h2,v+=40,200,3,"Cost Price per Location");
-  RadioButton(h2,v,0,0,"По умолчанию",CostPricePerLocation);
-  RadioButton(h2,v+=16,1,0,"Cost Price not per Location",CostPricePerLocation);
-  RadioButton(h2,v+=16,2,0,"Cost Price per Location",CostPricePerLocation);
-*/
+
   if (StandardHansa==false) then begin
     Tile(tilenr,240,false,tilenr,-); tilenr = tilenr + 1;
     h = 180; v = 6;
@@ -6644,7 +6639,7 @@ begin
   SpecialMenu("Создать товар на закупку",' ',1,"PIFromINDsm");         
   SpecialMenu("Создать приём товара",' ',2,"RecFromINDsm");         
   EndWindow;
-end;
+end;*/
 
 window ORLClass:3
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")

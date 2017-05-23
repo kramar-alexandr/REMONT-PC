@@ -308,26 +308,7 @@ string 50 location;
 	
 	//http://www.a-service.ua/index.php?phone=0662200737&int=111
 	if(readfirstmain(USr,1,true))then begin
-		location = "";
-		USr.Location = firstinrange(USr.Phone2,10);
-		USr.Phone2 = lastinrange(USr.Phone2,10);
-		host = "call.a-service.net.ua";	
-		port = 80;
-		switch(USr.Location)begin
-			case "INV#1_KVZ":host = "134.249.184.148";
-											port = 2501;
-											location = "/hansa/call.php";
-			case "INV#1_KRS":host = "109.95.53.85";
-											location = "/hansa/call.php";
-											port = 2501;
-			case "INV#1_LUK":host = "82.144.202.163";
-											location = "/hansa/call.php";
-											port = 2501;
-		end;
-		
-		
-		
-		page = location & "?phone=" & NormalPhone(SVOr.Kontinfo1) & "&int=" & USr.Phone2;
+		page = location & "?phone=" & NormalPhone(SVOr.Kontinfo1) & "&int=" & USr.InnerSIPNum;
 		//messagebox(0,"http://" & host & page);		
 		if(blank(USr.Phone2))then begin
 			messagebox(0,"Blank internal user phone");
@@ -339,9 +320,9 @@ string 50 location;
 			messagebox(0,"Unknown user location");
 		end;
 		
-		if(nonblank(USr.Phone2)and nonblank(NormalPhone(SVOr.Kontinfo1)) and nonblank(location))then begin			
+		if(nonblank(USr.Phone2)and nonblank(NormalPhone(SVOr.Kontinfo1)))then begin			
 			//messagebox(0,host & ":" & port & page);
-			//MySendWebRequest(host,port,-1,false,"GET",page,"text/plain","",false,mainRequest,replyarea,10);
+			//MySendWebRequest(USr.InnerSIPHost,USr.InnerSIPPort,-1,false,"GET",USr.InnerSIPPath,"text/plain","",false,mainRequest,replyarea,10);
 			//logtext(0,getstringfromarea(replyarea.));
 		end;
 	end;
@@ -369,26 +350,7 @@ string 50 location;
 	
 	
 	if(readfirstmain(USr,1,true))then begin
-		location = "";
-		USr.Location = firstinrange(USr.Phone2,10);
-		USr.Phone2 = lastinrange(USr.Phone2,10);
-		host = "call.a-service.net.ua";	
-		port = 80;
-		switch(USr.Location)begin
-			case "INV#1_KVZ":host = "134.249.184.148";
-											port = 2501;
-											location = "/hansa/call.php";
-			case "INV#1_KRS":host = "109.95.53.85";
-											location = "/hansa/call.php";
-											port = 2501;
-			case "INV#1_LUK":host = "82.144.202.163";
-											location = "/hansa/call.php";
-											port = 2501;
-		end;
-		
-		
-		
-		page = location & "?phone=" & NormalPhone(SVOr.Phone2) & "&int=" & USr.Phone2;
+		page = location & "?phone=" & NormalPhone(SVOr.Phone2) & "&int=" & USr.InnerSIPNum;
 		//messagebox(0,"http://" & host & page);		
 		if(blank(USr.Phone2))then begin
 			messagebox(0,"Blank internal user phone");
@@ -400,9 +362,9 @@ string 50 location;
 			messagebox(0,"Unknown user location");
 		end;
 		
-		if(nonblank(USr.Phone2)and nonblank(NormalPhone(SVOr.Phone2)) and nonblank(location))then begin			
+		if(nonblank(USr.Phone2)and nonblank(NormalPhone(SVOr.Phone2)))then begin			
 			//messagebox(0,host & ":" & port & page);
-			//MySendWebRequest(host,port,-1,false,"GET",page,"text/plain","",false,mainRequest,replyarea,10);
+			//MySendWebRequest(USr.InnerSIPHost,USr.InnerSIPPort,-1,false,"GET",USr.InnerSIPPath,"text/plain","",false,mainRequest,replyarea,10);
 			//logtext(0,getstringfromarea(replyarea.));
 		end;
 	end;

@@ -9130,6 +9130,12 @@ end;
   EditField(h,v+=vs,100,"Имя пользователя",Normal,AstUserName,false,0); 
   EditField(h,v+=vs,100,"Пароль",Normal,AstPassword,false,0); 
   EditField(h,v+=vs,100,"ID звонящего",Normal,AstCallerIdNumber,false,0); 
+  v=v+vs;// Edit ************************** Tuesday, 23 May 2017 13:57:37
+  EditField(h,v+=vs,100,"Внутрений номер",Normal,InnerSIPNum,false,0); 
+  EditField(h,v+=vs,100,"Хост АТС",Normal,InnerSIPHost,false,0); 
+  EditField(h,v+=vs,100,"Порт АТС",Normal,InnerSIPPort,false,0); 
+  EditField(h,v+=vs,100,"Путь API",Normal,InnerSIPPath,false,0);
+  
   end;
   SpecMenuGroup("",kSpecMenuGroupTypeExtendedPlusMenu,0);         
   SpecialMenu("Создать объект",'o',1,"CreateObjUserDsm");

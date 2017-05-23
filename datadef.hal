@@ -528,6 +528,10 @@ begin
     RecordField(ThroughLocation,M4Str,10,0);	//Edit----------------------Dima  10.12.2015
     RecordField(AdditionalLocations,M4Str,200,0);	//Edit----------------------Dima  10.12.2015
     RecordField(ServDays,M4Int,0,0);//Edit-------------------Vitalii 12:21 26.08.2016
+    RecordField(InnerSIPNum,M4Str,200,0);// Edit ************************** Tuesday, 23 May 2017 13:59:55
+    RecordField(InnerSIPHost,M4Str,200,0);// Edit ************************** Tuesday, 23 May 2017 13:59:55
+    RecordField(InnerSIPPort,M4Str,200,0);// Edit ************************** Tuesday, 23 May 2017 13:59:55
+    RecordField(InnerSIPPath,M4Str,200,0);// Edit ************************** Tuesday, 23 May 2017 13:59:55
   EndRecordAdd;
   
   RecordAddBegin(IVVc,"IVVc_Custom");

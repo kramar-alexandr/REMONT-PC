@@ -14,15 +14,15 @@ external function Boolean SerNrTestSVOVc(LongInt,Date,var Boolean);
 external updating procedure CreateSVOSerNoter(record SVOVc,string);
 external updating procedure CreateInspection(string,string,Date,LongInt,LongInt);
 remote function Boolean PasteCUInSVO(var record SVOVc,string,var string);// Edit ************************** Friday, 6 January 2012 11:06:45
-remote procedure SENDSMS(record SVOVc,record SVOVc);
-remote procedure SENDFIRSTSMS(record SVOVc);
+//remote procedure SENDSMS(record SVOVc,record SVOVc);
+//remote procedure SENDFIRSTSMS(record SVOVc);
 external updating procedure CreateNoterChangeInSVO(record SVOVc,string,string);
 external function Boolean FindStringInString(string,string);// Edit ************************** Thursday, 30 June 2016 10:55:59
 remote procedure CountNumberRepeatPhone(string,var array longint,var integer );
 external updating procedure CreateActFromSVOToEnginer(record SVOVc);
 external updating procedure ChangeCostOfIVsInSVO(longint);//Edit-------------------Vitalii 10:13 25.11.2016
 external updating procedure PhonesFromSVO(longint);//Edit-------------------Vitalii 17:10 03.11.2016
-remote procedure SENDSECONDSMS(longint);// Edit ************************** Friday, 18 November 2016 14:48:29
+//remote procedure SENDSECONDSMS(longint);// Edit ************************** Friday, 18 November 2016 14:48:29
 remote updating procedure FastPayInvoicesSVO(record RcVc);// Edit ************************** Friday, 25 November 2016 13:09:52
 
 SetLangMode(LangRussian,"RUS",0);
@@ -356,7 +356,7 @@ BEGIN
   	CreateActFromSVOToEnginer(SVOr);
 
   	
-  SENDFIRSTSMS(SVOr);
+  //SENDFIRSTSMS(SVOr);
   PhonesFromSVO(SVOr.SerNr);//Edit-------------------Vitalii 17:10 03.11.2016
   
   SVOVcRecordSaveAfter = res; 
@@ -923,7 +923,7 @@ BEGIN
       end;
     end;
   end;
-  SENDSMS(SVOr,SVO2r);// Edit ************************** Tuesday, 8 January 2013 10:20:35
+  //SENDSMS(SVOr,SVO2r);// Edit ************************** Tuesday, 8 January 2013 10:20:35
   
   rwcnt = MatRowCnt(SVOr); //for quick search
   if (rwcnt>0) then begin
@@ -1281,20 +1281,20 @@ BEGIN
 END;
 
 
-global procedure DblSendSMSOkDsm()
+/*global procedure DblSendSMSOkDsm()
 begin
 	integer wn;
 	record RcVc RepSpec;
 	
 	wn = curwindow;
 	getwindowrecord(wn,RepSpec);
-	SENDSECONDSMS(RepSpec.long1);
+	//SENDSECONDSMS(RepSpec.long1);
 	closewindow(wn);
 
 return;
-end;
+end;*/
 
-global procedure DblSendSMSCancelDsm()
+/*global procedure DblSendSMSCancelDsm()
 begin
 	integer wn;
 	record RcVc RepSpec;
@@ -1304,7 +1304,7 @@ begin
 	
 
 return;
-end;
+end;*/
 
 global procedure FastPaySVODsm()
 begin

@@ -4,6 +4,7 @@
 * Application.hal вынести привязку к номерам компаний на внешнюю настройку
 * Для CUVc в датадеф Partner изменено на IsPartner. Внести изменения в остальной хал кроме окна DClass.
 * ORVcWAction3.hal. Выгрузка Счета клиента в Эксель (procedure ORtoExcel1Remote). Убрал реальные реквизиты. Для АСервиса нужно будет их вернуть.
+* SMS Отключил для ремоннта. Нужно сделать для асервиса когда-то
 
 Пропуски переноса окошек:
 - Заказ клиента. SpecialMenu "Перемістити на Shops", "Забрати з Shops", "Розбити рядки з серійними товарами", "Експортувати товари у PARUS".
@@ -68,3 +69,5 @@
 - Report4.hal. ЧАСТИЧНЫЙ ПЕРЕНОС. Не перенесены ф-ции IPEn, MyReservStstEn.
 - Report6.hal. ЧАСТИЧНЫЙ ПЕРЕНОС. Не перенесены ф-ции FullStockEn,ManagersFullStockEn,FullStockTRWH2En.
 - SalesReportRn.hal ЧАСТИЧНЫЙ ПЕРЕНОС. Не перенесены ф-ции SalesReportForManagersEn, SalesReportEn
+
+

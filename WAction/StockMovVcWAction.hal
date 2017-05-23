@@ -930,6 +930,8 @@ begin
   normalmode = 0;//Rs_normal
   insertmode = 1;//Rs_insert
   updatemode = 2;//Rs_update
+  
+  
   if (WindowState(wn)==normalmode) then begin
     GetWindowRecord(wn,StockMovr);
     if (StockMovr.OKFlag!=0) then begin
@@ -955,6 +957,12 @@ begin
       end;
     end;
   end;  
+  
+  if(StockMovr.OrdFlag==0)then begin// Edit ************************** Tuesday, 23 May 2017 14:23:28
+  	res = false;
+  end;
+  
+  
   StockMovDClassOKFlagButtonAction = res;
   return;
 end;
@@ -1001,6 +1009,10 @@ begin
     MessageBox(20080,"");
     res = false;
   end;
+  if(StockMovr.OrdFlag==0)then begin// Edit ************************** Tuesday, 23 May 2017 14:24:40
+  	res = false;
+  end;
+  
   StockMovDClassSentOKFlagButtonAction = res;
   return;
 end;

@@ -532,6 +532,7 @@ begin
     RecordField(InnerSIPHost,M4Str,200,0);// Edit ************************** Tuesday, 23 May 2017 13:59:55
     RecordField(InnerSIPPort,M4Str,200,0);// Edit ************************** Tuesday, 23 May 2017 13:59:55
     RecordField(InnerSIPPath,M4Str,200,0);// Edit ************************** Tuesday, 23 May 2017 13:59:55
+    RecordField(InTasksQueue,M4Mark,0,0); //Edit***************************Sasha2,15:51 23.05.2017
   EndRecordAdd;
   
   RecordAddBegin(IVVc,"IVVc_Custom");

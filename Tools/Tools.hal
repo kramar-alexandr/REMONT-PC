@@ -823,17 +823,43 @@ begin
 return;
 end;
 
+//Edit***************************Sasha2,16:26 23.05.2017 {
+function string 200 FindUsersWithActiveTasksQueue()
+begin
+  string 200 users;
+  Record UserVc Userr;
+  Boolean testf,TrHs;
+  
+    TrHs = true;
+    while (LoopMain(Userr,1,TrHs)) begin
+      testf = true;
+      if (Userr.Closed!=0) then begin testf = false; end;
+      if (Userr.InTasksQueue==0) then begin testf = false; end;
+      if (testf) then begin
+        if (len(users & Userr.Code)<200) then begin
+          if (NonBlank(users)) then begin
+            users = users & ",";
+          end;
+          users = users & Userr.Code;
+        end else begin
+          TrHs = false;
+        end;
+      end;
+    end;
+    
+  FindUsersWithActiveTasksQueue = users;
+return;
+end; //Edit***************************Sasha2,16:26 23.05.2017 }
 
-global updating procedure CreateActFromSVOToEnginer(record SVOVc SVOr)
+
+global 
+updating procedure CreateActFromSVOToEnginer(record SVOVc SVOr)
 begin
 	record ActVc Actr,oldActr;
 	string 50 sernum;
 	row SVOVc SVOrw;
 	record INVc INr;
 	boolean creaetf;
-	
-	
-	
 	
 	sernum = SVOr.SerNr;
 	if(left(sernum,1)=="1" and SVOr.OrderStatus==0 and SVOr.DoneMark==0)then begin
@@ -853,7 +879,7 @@ begin
 				if(readfirstmain(INr,1,true))then begin
 					Actr.Comment = INr.Code & " " & Actr.Comment;
 					Actr.Phone = SVOrw.Spec;
-					switch(INr.Group)begin
+					/*switch(INr.Group)begin //Edit***************************Sasha2,16:14 23.05.2017 {
 						case"APP1":Actr.MainPersons = "BATCHENKO,MOISEEV,DIMA,KAYZER";
 											 Actr.Comment = addhours(currenttime,2) & " " & Actr.Comment;
 						case"APP2":Actr.MainPersons = "TRIKOPA,SAO,RABCHUN,KAYZER";
@@ -866,8 +892,9 @@ begin
 												 Actr.Comment = addhours(currenttime,5) & " " & Actr.Comment;
 						case "IPHONE3":	Actr.MainPersons = "MOISEEV";
 												 		Actr.Comment = addhours(currenttime,5) & " " & Actr.Comment;
-					end;
-					
+					end;*/ 
+					Actr.MainPersons = FindUsersWithActiveTasksQueue;
+					Actr.Comment = addhours(currenttime,2) & " " & Actr.Comment; //Edit***************************Sasha2,16:14 23.05.2017 }
 				end;	
 			end;			
 		end else begin
@@ -878,7 +905,7 @@ begin
 				if(readfirstmain(INr,1,true))then begin
 					Actr.Comment = INr.Code & " " & Actr.Comment;
 					Actr.Phone = SVOrw.Spec;
-					switch(INr.Group)begin
+					/*switch(INr.Group)begin  //Edit***************************Sasha2,16:14 23.05.2017 {
 						case"APP1":Actr.MainPersons = "BATCHENKO,MOISEEV,DIMA,KAYZER";
 											 Actr.Comment = addhours(Actr.StartTime,2) & " " & Actr.Comment;
 						case"APP2":Actr.MainPersons = "TRIKOPA,SAO,RABCHUN,KAYZER";
@@ -891,7 +918,9 @@ begin
 					 								Actr.Comment = addhours(currenttime,5) & " " & Actr.Comment;
 						case "IPHONE3":	Actr.MainPersons = "MOISEEV";
 												 		Actr.Comment = addhours(currenttime,5) & " " & Actr.Comment;
-					end;
+					end;*/ 
+					Actr.MainPersons = FindUsersWithActiveTasksQueue;
+					Actr.Comment = addhours(currenttime,2) & " " & Actr.Comment; //Edit***************************Sasha2,16:14 23.05.2017 }
 				end;	
 			end;
 			recordstore(Actr,true);

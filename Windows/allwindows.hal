@@ -9010,6 +9010,7 @@ if (HansaWorld) then begin
   RadioButton(h2,v+=16,kTypeOfUserPOS,0,"Пользователь POS",TypeOfUser); 
   EndFrame;
   CheckBox(h2,v+=25,0,"Срок действия пароля не ограничен",PasswordNeverExpires);
+  CheckBox(h2,v+=25,0,"Отображать очередь ремонта",InTasksQueue); //Edit***************************Sasha2,16:08 23.05.2017
   if (!blankUUID(GetServerUUIDRemote)) then begin
   CheckBox(h2,v+=16,0,"Пользователь является Админом",AdminFlag);  
   end;

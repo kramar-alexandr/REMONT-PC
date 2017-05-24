@@ -862,7 +862,7 @@ begin
 	boolean creaetf;
 	
 	sernum = SVOr.SerNr;
-	if(left(sernum,1)=="1" and SVOr.OrderStatus==0 and SVOr.DoneMark==0)then begin
+	//if(left(sernum,1)=="1" and SVOr.OrderStatus==0 and SVOr.DoneMark==0)then begin
 		Actr.SVOSerNr = SVOr.SerNr;
 		if(!readfirstkey("SVOSerNr",Actr,1,true))then begin
 			creaetf = true;
@@ -925,7 +925,7 @@ begin
 			end;
 			recordstore(Actr,true);
 		end;
-	end;
+	/*end;
 	if(left(sernum,1)=="1" and (SVOr.OrderStatus>0 or SVOr.DoneMark>0))then begin
 		Actr.SVOSerNr = SVOr.SerNr;
 		if(readfirstkey("SVOSerNr",Actr,1,true))then begin
@@ -935,7 +935,7 @@ begin
 				RecordUpdate(oldActr,Actr,true);
 			end;
 		end;
-	end;
+	end;*/
 	
 	if(creaetf)then begin	
 		Actr.SerNr = NextSerNr("ActVc",Actr.TransDate,-1,false,"");

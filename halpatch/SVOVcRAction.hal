@@ -1318,6 +1318,7 @@ string 100 host,page,getParam;
 area mainRequest,replyarea;
 longint port;
 string 50 location,ser;
+record SalesGroupVc SGr;
 	
 	wn = curwindow;
 	getwindowrecord(wn,SVOr);
@@ -1325,13 +1326,10 @@ string 50 location,ser;
 		if(usercanaction("ViewCostPrice",false))then begin
 			RepSpec.vals0 = SVOr.FastCash;
 			RepSpec.vals1 = SVOr.FastTerm;
-			ser = left(SVOr.SerNr,1);
-			switch(ser)begin
-				case "1":	RepSpec.f1 = "03";
-									RepSpec.f2 = "32";
-				case "9":	RepSpec.f1 = "08";
-									RepSpec.f2 = "T4";
-				case "3":
+			SGr.SGroupCode = SVOr.SalesGroup;
+			if(readfirstmain(SGr,1,true))then begin
+				RepSpec.f1 = SGr.FastPMCash;
+				RepSpec.f2 = SGr.FastPMCard;
 			end;
 			
 			RepSpec.long1 = SVOr.SerNr;

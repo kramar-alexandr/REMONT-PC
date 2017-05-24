@@ -517,6 +517,8 @@ begin
     RecordField(BixName,M4Str,255,0);// Edit ************************** Wednesday, 10 May 2017 15:18:07
     RecordField(BixAddress,M4Str,255,0);// Edit ************************** Wednesday, 10 May 2017 15:18:07
     RecordField(BixPhone,M4Str,255,0);// Edit ************************** Wednesday, 10 May 2017 15:18:07
+    RecordField(FastPMCash,M4Code,20,0);
+    RecordField(FastPMCard,M4Code,20,0);
   EndRecordAdd;
   
   RecordAddBegin(PUVc,"PUVc_Custom");

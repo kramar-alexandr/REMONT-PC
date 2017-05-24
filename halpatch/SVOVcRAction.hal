@@ -1269,12 +1269,12 @@ function LongInt SVOVcRecordCheckClient(LongInt wn,var record SVOVc SVOr,record 
 BEGIN
   record RcVc RepSpec;
   
-  if(stat==Rs_update)then begin
+  /*if(stat==Rs_update)then begin
   	if(SVOr.OrderStatus==4 and SVO2r.OrderStatus!=SVOr.OrderStatus)then begin
   		RepSpec.long1 = SVOr.SerNr;
   		openwindow("YesNoCancelSMSWClass",1,0,"","",RepSpec);
   	end;
-  end;
+  end;*/
   
   SVOVcRecordCheckClient = 0;
   RETURN;

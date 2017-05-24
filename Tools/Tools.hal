@@ -925,8 +925,8 @@ begin
 			end;
 			recordstore(Actr,true);
 		end;
-	/*end;
-	if(left(sernum,1)=="1" and (SVOr.OrderStatus>0 or SVOr.DoneMark>0))then begin
+	//end;
+	if((SVOr.OrderStatus>0 or SVOr.DoneMark>0))then begin
 		Actr.SVOSerNr = SVOr.SerNr;
 		if(readfirstkey("SVOSerNr",Actr,1,true))then begin
 			if(Actr.OKFlag==0)then begin
@@ -935,7 +935,7 @@ begin
 				RecordUpdate(oldActr,Actr,true);
 			end;
 		end;
-	end;*/
+	end;
 	
 	if(creaetf)then begin	
 		Actr.SerNr = NextSerNr("ActVc",Actr.TransDate,-1,false,"");

@@ -300,6 +300,7 @@ begin
   record ObjectsAccBlock OAb; //Edit***************************Sasha2,14:59 20.06.2014
   row ObjectsAccBlock OArw; //Edit***************************Sasha2,15:00 20.06.2014
   integer j, mtrw; //Edit***************************Sasha2,15:00 20.06.2014
+  record PDVc PDr;// Edit ************************** Thursday, 25 May 2017 13:38:03
   
   RecordCopy(oldSVOr,SVOp);
   res = false;
@@ -345,6 +346,18 @@ begin
                  j = mtrw;			 
                end;
              end; //Edit***************************Sasha2,15:01 20.06.2014
+             // Edit Start ---------------------------------------------- Edit Start
+	//Thursday, 25 May 2017 13:39:16
+	
+             PDr.Code = IVp.PayDeal;
+             if(readfirstmain(PDr,1,true))then begin
+							 if(nonblank(PDr.pdSalesAcc))then begin
+								 salesacc = PDr.pdSalesAcc;
+							 end;
+             end;
+             
+	// Edit End ---------------------------------------------- Edit End
+	
              MatRowGet(WSr,WSIVr.Row,WSrw);
              if (SVOAb.WSHeaderObjectOnSVOIV!=0) then begin
                rowobjects = WSr.Objects;
@@ -357,7 +370,7 @@ begin
            if (SVOAb.WSHeaderObjectOnSVOIV==0) then begin
              rowobjects = AddObjectToObjectList(rowobjects,INr.Objects);        
            end;
-           SalesAcc = WSrw.SalesAcc;
+           //SalesAcc = WSrw.SalesAcc;
          case 1:
            rowobjects = INr.Objects;
        end;
@@ -406,7 +419,7 @@ begin
          IVrw.FIFORowVal = blankval;
          switch (WSIVr.RecType) begin
            case 0:
-             IVrw.SalesAcc = WSrw.SalesAcc;
+             //IVrw.SalesAcc = WSrw.SalesAcc;
              IVrw.FIFO = WSrw.FIFO;
              IVrw.FIFORowVal = WSrw.FIFORowVal;
          end;

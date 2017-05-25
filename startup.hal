@@ -11,8 +11,6 @@ begin
 	Report("Отчет по продажах для менеджеров",SalesReportForManagersRClass,SalesReportForManagersRn,0,modSL);
 	Report("FullStock Manual",MyFullStockRClass,MyItemReportRn,0,modIN);
 	Report("Full Stock",MyFullStockManRClass,MyItemReportRn,0,modSO);
-	Report("Відомість розрахунків з клієнтами (новий)",CuPer2RClass,MyCuPerRn,0,modSL); //Edit***************************Sasha2,11:25 09.09.2014 
-	Report("Відомість розрахунків з клієнтами (новий)",CuPer2RClass,MyCuPerRn,0,modSO); //Edit***************************Sasha2,11:25 09.09.2014
 	Report("Бонус",MyBonusRClass,MyBonusRn,0,modSL); //Edit***************************Sasha2,11:54 10.09.2014
 	Report("Бонус для сервис-мастера",MyBonusCurUserRClass,MyBonusCurrentUserRn,0,modSL);//Edit----------------------Dima  29.10.2015
 	Report("Печать этикеток со склада",LabelStockItemsRClass,LabelStockItemsRn,0,modLabPrint); //Edit***************************Sasha2,17:55 11.11.2014
@@ -24,6 +22,8 @@ begin
 	Report("Отчет-сравнение истории товаров и транзакций",CostDiffRClass,CostDiffRn,0,modNL);//Edit----------------------Dima  16.02.2016
 	Report("Расхождение склада с балансом",StockBalDiffRClass,StockBalDiffRn,0,modIN); //Edit***************************Sasha2,11:21 17.02.2017
 	Report("Расхождение склада с балансом",StockBalDiffRClass,StockBalDiffRn,0,modNL); //Edit***************************Sasha2,11:21 17.02.2017
+  //Report("Відомість розрахунків з клієнтами (новий)",CuPer2RClass,MyCuPerRn,0,modSL); //Edit***************************Sasha2,11:25 09.09.2014 
+	//Report("Відомість розрахунків з клієнтами (новий)",CuPer2RClass,MyCuPerRn,0,modSO); //Edit***************************Sasha2,11:25 09.09.2014
 	//Report("История продаж по клиентам ",CUSalesRepRClass,CustSalesReportRn,0,modSO);
 	//Report("Звіт по складу (модифікований)",NewINRClass,NewInvValRn,0,modIN); //Edit***************************Sasha2,11:25 03.09.2014
 	//Report("Звіт по продажах Retail Sales",RetailSalesRClass,RetailSalesRn,0,modSL); //Edit***************************Sasha2,12:10 29.01.2015

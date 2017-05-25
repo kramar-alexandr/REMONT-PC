@@ -7,8 +7,6 @@ begin
 	
   Report("Ћтчет по истории товаров технический ",FindErrorInIHRClass,FindErrorInIHRn,0,modDBMain);
 	Report("Ћтчет по телефонам клиентов",ServClientOrderRClass,ServClientOrderRn,0,modSVO);// Edit ************************** Monday, 4 July 2016 17:52:38
-	
-	
 	Report("Ћтчет по продажах",SalesReportRClass,SalesReportRn,0,modSL);
 	Report("Ћтчет по продажах длЯ менеджеров",SalesReportForManagersRClass,SalesReportForManagersRn,0,modSL);
 	Report("FullStock Manual",MyFullStockRClass,MyItemReportRn,0,modIN);

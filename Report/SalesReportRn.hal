@@ -1415,15 +1415,15 @@ begin
 					For(i=0;i<matrowcnt(TRr);i=i+1) begin
 						matrowget(TRr,i,TRrw);
 						//logtext(0,"TR " & TRr.Number & " " & i & " " & TRrw.AccNumber & " " & TRrw.CredVal - TRrw.DebVal);
-						if(left(TRrw.AccNumber,1)=="4" and TRrw.ovst==0)then begin
+						if(left(TRrw.AccNumber,1)=="7" and TRrw.ovst==0)then begin
 							disbalanssale = disbalanssale + TRrw.CredVal - TRrw.DebVal;
 						end;
 						if(trcred>0)then begin
-							if(left(TRrw.AccNumber,1)=="5" and TRrw.ovst==0)then begin
+							if(left(TRrw.AccNumber,1)=="9" and TRrw.ovst==0)then begin
 								disbalanscost = disbalanscost + TRrw.DebVal - TRrw.CredVal;
 							end;
 						end else begin
-							if(left(TRrw.AccNumber,1)=="5" and TRrw.ovst==0)then begin
+							if(left(TRrw.AccNumber,1)=="9" and TRrw.ovst==0)then begin
 								disbalanscost = disbalanscost + TRrw.CredVal - TRrw.DebVal;
 							end;
 						end;
@@ -1435,7 +1435,7 @@ begin
 				if(readfirstmain(TRr,2,true))then begin
 					For(i=0;i<matrowcnt(TRr);i=i+1) begin
 						matrowget(TRr,i,TRrw);
-						if(left(TRrw.AccNumber,1)=="4" and TRrw.ovst==0)then begin
+						if(left(TRrw.AccNumber,1)=="7" and TRrw.ovst==0)then begin
 							disbalanssale = disbalanssale + TRrw.CredVal - TRrw.DebVal;
 						end;
 					end; 
@@ -1457,7 +1457,7 @@ begin
 						if(readfirstmain(TRr,2,true))then begin
 							For(i=0;i<matrowcnt(TRr);i=i+1) begin
 								matrowget(TRr,i,TRrw);
-								if(left(TRrw.AccNumber,1)=="5" and TRrw.ovst==0)then begin
+								if(left(TRrw.AccNumber,1)=="9" and TRrw.ovst==0)then begin
 									disbalanscost = disbalanscost + TRrw.CredVal - TRrw.DebVal;
 								end;
 							end; 

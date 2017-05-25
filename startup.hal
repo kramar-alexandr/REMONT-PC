@@ -5,6 +5,9 @@ begin
 	//SetLangMode(LangUkrainian,"UKR",0);
 	SetLangMode(LangRussian,"RUS",0);
 	
+	Setting("Телефоны",Phone1LClass,modSVO);
+	Setting("Настройки друку замовлень",SVOPrintDataLClass,modSVO);// Edit ************************** Tuesday, 28 February 2017 12:56:04
+	
   Report("Отчет по истории товаров технический ",FindErrorInIHRClass,FindErrorInIHRn,0,modDBMain);
 	Report("Отчет по телефонам клиентов",ServClientOrderRClass,ServClientOrderRn,0,modSVO);// Edit ************************** Monday, 4 July 2016 17:52:38
 	Report("Отчет по продажах",SalesReportRClass,SalesReportRn,0,modSL);

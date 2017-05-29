@@ -1,0 +1,23 @@
+global webpublic updating procedure WebBinotelAPICallEnd()
+begin
+	area arequest;
+	
+	webgetpostdata(arequest);
+	writeareatofile(arequest,"WebBinotelAPICallEnd.txt",0);
+	logtext(0,"WebBinotelAPICallEnd");
+	
+
+return;
+end;
+
+global webpublic updating procedure WebBinotelAPIPush()
+begin
+	area arequest;
+	
+	webgetpostdata(arequest);
+	writeareatofile(arequest,"WebBinotelAPIPush.txt",0);
+	logtext(0,"WebBinotelAPIPush");
+	
+
+return;
+end;

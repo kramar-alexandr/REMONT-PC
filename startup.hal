@@ -47,7 +47,9 @@ begin
 	//Report("‡â´ò ïî äèñáàëàíñó ïðîâîäîê",TRDiffRClass,TRDiffRn,0,modNL); //“âøå***************************›ôûðô2á15:27 21.12.2015
   
   Maintenance("Git HAL Files",MyVClass,GitHALFilesMn,modTC);
-
+  Maintenance("“äàëèòü âñå çàïèñè",CustomRegisterRemoveVClass,CustomRegisterRemoveMn,modDBMain); //Edit***************************Sasha2,11:11 26.05.2017
+  
+  Import("ˆìïîðò êîíòàêòîâ è çàêàçîâ, âûãðóæåííûõ èç ServiceMY",CUAndSVOInitSystemImportIClass,CUAndSVOInitSystemImportIn,modDBMain); //Edit***************************Sasha2,13:21 26.05.2017
 	
 	SString(964,"");
 	 

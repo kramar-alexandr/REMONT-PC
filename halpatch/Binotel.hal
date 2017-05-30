@@ -5,8 +5,8 @@ begin
 	webgetpostdata(arequest);
 	writeareatofile(arequest,"WebBinotelAPICallEnd.txt",0);
 	logtext(0,"WebBinotelAPICallEnd");
+	weboutstring("{\"status\":\"success\"}");
 	
-
 return;
 end;
 

@@ -13,7 +13,7 @@ begin
 	lasti = 0;
 	For(i=0;i<lenth;i=i+1) begin
 	  if(getstringfromarea(arequest,i,1)=="&" or i==lenth-1)then begin
-	  	tstr = getstringfromarea(arequest,lasti,i-lasti);
+	  	tstr = urldecode(getstringfromarea(arequest,lasti,i-lasti));
 	  	addtexttoarea(tstr,newarea);
 	  	lasti = i;
 	  	tstr = "";

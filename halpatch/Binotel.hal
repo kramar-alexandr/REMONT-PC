@@ -1,11 +1,28 @@
 global webpublic updating procedure WebBinotelAPICallEnd()
 begin
-	area arequest;
+	area arequest,newarea;
+	string 255 tstr;
+	longint lenth,i,lasti;
 	
 	webgetpostdata(arequest);
 	writeareatofile(arequest,"WebBinotelAPICallEnd.txt",0);
 	logtext(0,"WebBinotelAPICallEnd");
+	
+	lenth = getarealength(arequest);
+	tstr = "";
+	lasti = 0;
+	For(i=0;i<lenth;i=i+1) begin
+	  if(getstringfromarea(arequest,i,1)=="&" or i==lenth-1)then begin
+	  	tstr = getstringfromarea(arequest,lasti,i-lasti);
+	  	addtexttoarea(tstr,newarea);
+	  	lasti = i;
+	  	tstr = "";
+	  end;
+	end; 
+	writeareatofile(newarea,"WebBinotelAPICallEnd_nrm.txt",0);
 	weboutstring("{\"status\":\"success\"}");
+	
+	
 	
 return;
 end;

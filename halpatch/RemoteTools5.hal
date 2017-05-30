@@ -736,6 +736,9 @@ begin
   Boolean limitdaysf;
   record SerNrTrackBlock SNrb;
   record OrdSettBlock OSb;
+  record ObjectsAccBlock OAb;//Edit***************************Sasha2,13:08 27.06.2014
+  row ObjectsAccBlock OArw;//Edit***************************Sasha2,13:08 27.06.2014
+  Integer mtrw,j; //Edit***************************Sasha2,13:14 27.06.2014
   
   frin = FirstInRange(onlyforitems,20);
   toin = LastInRange(onlyforitems,20);
@@ -966,7 +969,18 @@ L10PasteOrdInShip:;
       SHrw.UnitZval = ORrw.UnitZval;
       if (nonblank(SHrw.ArtCode)) then begin
         res = 0;
-      end;    
+      end;  
+      if (NonBlank(Locr.Objects)) then begin //Edit***************************Sasha2,14:17 03.07.2014
+	      blockload(OAb); //Edit***************************Sasha2,13:13 27.06.2014
+        mtrw = matrowcnt(OAb);
+        For(j=0;j<mtrw;j=j+1)begin
+          matrowget(OAb,j,OArw);
+          if(setinset(OArw.Objects,Locr.Objects))then begin
+            SHrw.CostAcc = OArw.AccCode;
+            j = mtrw;                      
+          end;
+        end; //Edit***************************Sasha2,13:13 27.06.2014
+      end; //Edit***************************Sasha2,14:17 03.07.2014   
       MatRowPut(SHp,srw,SHrw);      
       shrwcnt = MatRowCnt(SHp);
       NILSHr.CustCode = "NIL";

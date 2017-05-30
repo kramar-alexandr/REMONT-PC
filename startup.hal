@@ -7,6 +7,7 @@ begin
 	
 	Setting("’елефоны",Phone1LClass,modSVO);
 	Setting("Ќастройки печати заказов",SVOPrintDataLClass,modSVO);// Edit ************************** Tuesday, 28 February 2017 12:56:04
+	Setting("‘чета объектов",ObjectsAccTClass,modSVO);
 	
   Report("Ћтчет по истории товаров технический ",FindErrorInIHRClass,FindErrorInIHRn,0,modDBMain);
 	Report("Ћтчет по телефонам клиентов",ServClientOrderRClass,ServClientOrderRn,0,modSVO);// Edit ************************** Monday, 4 July 2016 17:52:38

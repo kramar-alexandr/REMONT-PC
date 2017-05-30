@@ -1,3 +1,5 @@
+external function string 255 StrReplace(string,string,string);
+
 global webpublic updating procedure WebBinotelAPICallEnd()
 begin
 	area arequest,newarea;
@@ -14,6 +16,7 @@ begin
 	For(i=0;i<lenth;i=i+1) begin
 	  if(getstringfromarea(arequest,i,1)=="&" or i==lenth-1)then begin
 	  	tstr = urldecode(getstringfromarea(arequest,lasti,i-lasti));
+	  	tstr = StrReplace(tstr,"&", chr(13) & chr(10));
 	  	addtexttoarea(tstr,newarea);
 	  	lasti = i;
 	  	tstr = "";

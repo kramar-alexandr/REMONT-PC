@@ -172,7 +172,7 @@ L20MakeInvHeader:;
   IVp.PriceList = SVOp.PriceList;
   IVp.CustTaxTemplateCode = SVOp.CustTaxTemplateCode;
   IVp.ClientContact = SVOp.CustContact;
-  if (SVOAb.WSHeaderObjectOnSVOIV==0) then begin
+  if (SVOAb.WSHeaderObjectOnSVOIV==1) then begin
     IVp.Objects = SVOp.Objects;
   end else begin
     USr.Code = SVOp.SalesMan;

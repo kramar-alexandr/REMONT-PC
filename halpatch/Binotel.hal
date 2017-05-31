@@ -183,11 +183,52 @@ end;
 
 global webpublic updating procedure WebBinotelAPIPush()
 begin
-	area arequest;
+	area arequest,newarea,encodearea;
+	string 255 tstr;
+	longint lenth,i,lasti;
+	json jobj;
+	record BinotelCallEndVc BECr;
+	row BinotelCallEndVc BECrw;
+	string 255 node;
+	time timestamp;
+	date datestamp;
 	
-	webgetpostdata(arequest);
-	writeareatofile(arequest,"WebBinotelAPIPush.txt",0);
-	logtext(0,"WebBinotelAPIPush");
+	webgetpostdata(encodearea);
+	writeareatofile(encodearea,"WebBinotelAPICallPush.txt",0);
+	logtext(0,"WebBinotelAPICallPush");
+	tstr = "";
+	lenth = getarealength(encodearea);
+	For(i=0;i<lenth;i=i+1) begin
+		if(getstringfromarea(arequest,i,1)=="=" or i==lenth-1)then begin
+			tstr = urldecode(getstringfromarea(encodearea,lasti,i-lasti));
+			tstr = StrReplace(tstr,"+&gt;+", " > ");
+			addtexttoarea(tstr,arequest);
+		end;
+	end;
+	
+	lenth = getarealength(arequest);
+	tstr = "";
+	lasti = 0;
+	addtexttoarea("{\"",newarea);
+	For(i=0;i<lenth;i=i+1) begin
+	  if(getstringfromarea(arequest,i,1)=="&" or i==lenth-1)then begin
+	  	tstr = urldecode(getstringfromarea(arequest,lasti,i-lasti));
+	  	tstr = StrReplace(tstr,"=", "\":\"");
+	  	tstr = StrReplace(tstr,"[", "(");
+	  	tstr = StrReplace(tstr,"]", ")");
+	  	tstr = StrReplace(tstr,"&", chr(13) & chr(10) & "\"");
+	  	if(getstringfromarea(arequest,i,1)=="&")then begin
+	  		tstr = tstr & "\",";
+	  	end else begin
+	  		tstr = tstr & "\"";
+	  	end;
+	  	logtext(0,tstr);
+	  	addtexttoarea(tstr,newarea);
+	  	lasti = i;
+	  	tstr = "";
+	  end;
+	end; 
+	addtexttoarea("}",newarea);
 	
 
 return;

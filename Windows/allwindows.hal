@@ -2036,7 +2036,7 @@ begin
   HalPushButton(h-45,vm+50,h+80,vm+80,"PrintAndSetRegDateInSVODsm","Выдать");//Edit-------------------Vitalii 13:51 27.10.2016
   EditField(240,vm,80, "Принял",Normal,CustomField7,false,UserSClass);// Edit ************************** Monday, 31 May 2010 9:22:11 AM
   EditField(240,vm+20,80,"Гр.Пр.",ViewOnly,SalesGroup,false,0);
-  EditField(240,vm+20,80,"Вн.номер ремонта",Normal,InnerOrderNr,false,0);
+  EditField(240,vm+40,80,"Вн.номер ремонта",Normal,InnerOrderNr,false,0);
 
   EditField(h+350,vm,100,"Сервис мастер",Normal,ServiceManager,false,UserSClass);// Edit ************************** Monday, 31 May 2010 9:22:11 AM
   EditField(h+350,vm+20,100,"К оплате",ViewOnly,WSCost,false,0);

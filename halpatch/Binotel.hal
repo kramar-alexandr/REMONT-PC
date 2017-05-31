@@ -216,7 +216,7 @@ begin
 	  	tstr = StrReplace(tstr,"=", "\":\"");
 	  	tstr = StrReplace(tstr,"[", "(");
 	  	tstr = StrReplace(tstr,"]", ")");
-	  	tstr = StrReplace(tstr,"&", chr(13) & chr(10) & "\"");
+	  	tstr = StrReplace(tstr,"&","\"");
 	  	if(getstringfromarea(arequest,i,1)=="&")then begin
 	  		tstr = tstr & "\",";
 	  	end else begin

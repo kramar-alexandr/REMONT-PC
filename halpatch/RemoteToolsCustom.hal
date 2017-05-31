@@ -551,9 +551,9 @@ BEGIN
   
   if (PasteCustInOrder(ORp,SVOp.CustCode,"",warning,errstr)) then begin
     ORp.Addr0 = SVOp.Vlastnik;// Edit ************************** Thursday, 5 August 2010 12:29:40
-    ORp.CurncyCode = "UAH_B";
-    ORVc_PasteCurncyCode(ORp,"USD");
-    ORp.Location = "SERVICE";
+    //ORp.CurncyCode = "UAH_B";
+    //ORVc_PasteCurncyCode(ORp,"USD");
+    //ORp.Location = "SERVICE";
     ORp.OrderClass = "SRV";
     if (RecordStore(ORp,false)) then begin end;
     res = 1;

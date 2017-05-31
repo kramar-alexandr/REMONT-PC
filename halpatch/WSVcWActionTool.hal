@@ -360,14 +360,14 @@ BEGIN
     blockload(OAb);
     Locr.Code = WSr.Location;
     readfirstmain(Locr,1,true);                                      // Edit ************************** Friday, 8 April 2011 12:19:17
-      mtrw = matrowcnt(OAb);
-      For(j=0;j<mtrw;j=j+1)begin
-        matrowget(OAb,j,OAbrw);
-        if(setinset(OAbrw.Objects,Locr.Objects))then begin
-          costsacc = OAbrw.AccCode;
-          salesacc = OAbrw.SaleAccCode;                                // Edit ************************** Friday, 8 April 2011 12:19:19
-        end;
+    mtrw = matrowcnt(OAb);
+    For(j=0;j<mtrw;j=j+1)begin
+      matrowget(OAb,j,OAbrw);
+      if(setinset(OAbrw.Objects,WSr.Objects))then begin
+        costsacc = OAbrw.AccCode;
+        salesacc = OAbrw.SaleAccCode;                                // Edit ************************** Friday, 8 April 2011 12:19:19
       end;
+    end;
     
     WSrw.CostAcc = costsacc;
     WSrw.SalesAcc = salesacc; //Edit***************************Sasha2,12:49 17.07.2015

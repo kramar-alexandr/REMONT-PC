@@ -116,7 +116,7 @@ LIVRowItemEq:;
   return;
 end;
 
-procedure MakeInvHeader(var record IVVc IVp,record SVOVc SVOp,record AccBlock ARAccRecp)
+procedure MakeInvHeader(var record IVVc IVp,record SVOVc SVOp,record AccBlock ARAccRecp,LongInt WSNum) //Edit***************************Sasha2,17:42 31.05.2017
 begin
   record CUVc CUr;
   record INVc INr;
@@ -125,9 +125,14 @@ begin
   LongInt newnr;
   record SVOAccBlock SVOAb;
   record UserVc USr;
+  record WSVc WSr; //Edit***************************Sasha2,17:43 31.05.2017
 
   BlockLoad(SVOAb);
 
+  if (WSNum>-1) then begin //Edit***************************Sasha2,17:43 31.05.2017 {
+    WSr.SerNr = WSNum;
+    ReadFirstMain(WSr,1,true);
+  end; //Edit***************************Sasha2,17:44 31.05.2017 }
   IVp.TransDate = CurrentDate;
   IVp.UpdStockFlag = ARAccRecp.InvUpdStock;
   IVp.OrderNr = -1;
@@ -172,8 +177,11 @@ L20MakeInvHeader:;
   IVp.PriceList = SVOp.PriceList;
   IVp.CustTaxTemplateCode = SVOp.CustTaxTemplateCode;
   IVp.ClientContact = SVOp.CustContact;
-  if (SVOAb.WSHeaderObjectOnSVOIV==1) then begin
+  if (SVOAb.WSHeaderObjectOnSVOIV==1) then begin //Edit***************************Sasha2,17:45 31.05.2017
     IVp.Objects = SVOp.Objects;
+    if (NonBlank(WSr.Objects)) then begin //Edit***************************Sasha2,17:45 31.05.2017 {
+      IVp.Objects = WSr.Objects;
+    end; //Edit***************************Sasha2,17:45 31.05.2017 }
   end else begin
     USr.Code = SVOp.SalesMan;
     ReadFirstMain(USr,1,true);
@@ -308,7 +316,7 @@ begin
   BlockLoad(CostAccRec);
   BlockLoad(ARAccRec);
   BlockLoad(SVOAb);
-  MakeInvHeader(IVp,SVOp,ARAccRec);  
+  MakeInvHeader(IVp,SVOp,ARAccRec,WSNum);  //Edit***************************Sasha2,17:42 31.05.2017
   AddRowsFromServiceOrder(SVOp,IVp);
   srw = MatRowCnt(IVp);
   TrHs = true;
@@ -497,7 +505,7 @@ begin
             SetSVOFlags(SVOp);
             if (RecordUpdate(oldSVOr,SVOp,false)==0) then begin end;
             RecordNew(IVp);
-            MakeInvHeader(IVp,SVOp,ARAccRec);
+            MakeInvHeader(IVp,SVOp,ARAccRec,WSNum); //Edit***************************Sasha2,17:47 31.05.2017
             srw = 0;
           end else begin 
             res = false;

@@ -447,13 +447,27 @@ begin
   row ObjectsAccBlock OArw;
   integer i, j, rwcnt, mtrw;
   string 255 salesacc,costacc;
+  record SalesGroupVc SalesGroupr; //Edit***************************Sasha2,12:02 31.05.2017
   
     Locationr.Code = WSr.Location;    	
   	if (ReadFirstMain(Locationr,1,true)) then begin
   		//SVOr.SerNr = WSr.SVONr;
   		//ReadFirstMain(SVOr,1,true); 
   		DoGetCurUser(USr);
-  		WSr.Objects = Locationr.Objects & "," & USr.PersObjx;   		
+  		WSr.Objects = Locationr.Objects;  
+  		if (NonBlank(USr.PersObjx)) then begin
+  		  if (NonBlank(WSr.Objects)) then begin
+          WSr.Objects = WSr.Objects & ",";
+        end;
+        WSr.Objects = WSr.Objects & USr.PersObjx;
+  		end; 		
+  		SalesGroupr.SGroupCode = WSr.SalesGroup; //Edit***************************Sasha2,12:03 31.05.2017 {
+      if (ReadFirstMain(SalesGroupr,1,true) and NonBlank(SalesGroupr.Objects)) then begin
+        if (NonBlank(WSr.Objects)) then begin
+          WSr.Objects = WSr.Objects & ",";
+        end;
+        WSr.Objects = WSr.Objects & SalesGroupr.Objects;
+      end; //Edit***************************Sasha2,12:03 31.05.2017 }
   	  blockload(OAb);                                                    
 	    mtrw = matrowcnt(OAb);
 	    For(j=0;j<mtrw;j=j+1)begin

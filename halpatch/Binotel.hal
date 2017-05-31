@@ -3,7 +3,7 @@ external procedure UTCTimeToDate(LongInt,var Date,var Time);
 
 global webpublic updating procedure WebBinotelAPICallEnd()
 begin
-	area arequest,newarea;
+	area arequest,newarea,encodearea;
 	string 255 tstr;
 	longint lenth,i,lasti;
 	json jobj;
@@ -13,9 +13,18 @@ begin
 	time timestamp;
 	date datestamp;
 	
-	webgetpostdata(arequest);
-	writeareatofile(arequest,"WebBinotelAPICallEnd.txt",0);
+	webgetpostdata(encodearea);
+	writeareatofile(encodearea,"WebBinotelAPICallEnd.txt",0);
 	logtext(0,"WebBinotelAPICallEnd1");
+	tstr = "";
+	lenth = getarealength(encodearea);
+	For(i=0;i<lenth;i=i+1) begin
+		if(getstringfromarea(arequest,i,1)=="=" or i==lenth-1)then begin
+			tstr = urldecode(getstringfromarea(encodearea,lasti,i-lasti));
+			tstr = StrReplace(tstr,"+&gt;+", " > ");
+			addtexttoarea(tstr,arequest);
+		end;
+	end;
 	
 	lenth = getarealength(arequest);
 	tstr = "";

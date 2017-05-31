@@ -878,7 +878,7 @@ begin
 				INr.Code = SVOrw.ArtCode;
 				if(readfirstmain(INr,1,true))then begin
 					Actr.Comment = INr.Code & " " & Actr.Comment;
-					Actr.Phone = SVOrw.Spec;
+					Actr.Phone = left(SVOrw.Spec,20);
 					/*switch(INr.Group)begin //Edit***************************Sasha2,16:14 23.05.2017 {
 						case"APP1":Actr.MainPersons = "BATCHENKO,MOISEEV,DIMA,KAYZER";
 											 Actr.Comment = addhours(currenttime,2) & " " & Actr.Comment;
@@ -904,7 +904,7 @@ begin
 				INr.Code = SVOrw.ArtCode;
 				if(readfirstmain(INr,1,true))then begin
 					Actr.Comment = INr.Code & " " & Actr.Comment;
-					Actr.Phone = SVOrw.Spec;
+					Actr.Phone = left(SVOrw.Spec,20);
 					/*switch(INr.Group)begin  //Edit***************************Sasha2,16:14 23.05.2017 {
 						case"APP1":Actr.MainPersons = "BATCHENKO,MOISEEV,DIMA,KAYZER";
 											 Actr.Comment = addhours(Actr.StartTime,2) & " " & Actr.Comment;

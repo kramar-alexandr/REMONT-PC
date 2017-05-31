@@ -401,27 +401,46 @@ SetLangMode(LangUkrainian,"UKR",0);
 global procedure ServClientOrderRn(record RcVc RepSpec)
 begin
 record SVOVc SVOr;
+row SVOVc SVOrw;
 array longint sernr;
 integer count;
-integer i;
+integer i,mtrw;
+string 200 artcode,spec,price;
 		
 	CountNumberRepeatPhone(RepSpec.f1,sernr,count);
-  startreportnoheaderjob("Інформація по телефону клієнта");
+  startreportnoheaderjob("Информация по телефону клиента");
 	
 	startformat(15);
 		outstring(0,0,"№",false);
 		outstring(50,0,"Дата",false);
 		outstring(100,0,"Контакт",false);
+		outstring(200,0,"Устройство",false);
+		outstring(240,0,"Наименование",false);
+		outstring(1,0,"Цена",true);
 	endformat;
 	if(count>0)then begin
 		For(i=0;i<count;i=i+1) begin
 	  
 			SVOr.SerNr = sernr[i];
 			if(readfirstmain(SVOr,1,true))then begin
+				mtrw = matrowcnt(SVOr);
+				artcode = "";
+				spec = "";
+				price = "";
+				if(mtrw>0)then begin
+					matrowget(SVOr,0,SVOrw);
+					artcode = SVOrw.ArtCode;
+					spec = SVOrw.Spec;
+					
+				end;
+				price = SVOr.WSCost;
 				startformat(15);
 					outstring(0,"DblSVOVc",SVOr.SerNr,false);
 					outstring(50,0,SVOr.TransDate,false);
 					outstring(100,0,SVOr.Priynato & " " & SVOr.Name & " " & SVOr.MiddleName,false);
+					outstring(200,0,artcode,false);
+					outstring(240,0,spec,false);
+					outstring(1,0,price,true);
 				endformat;
 			end;
 		end;

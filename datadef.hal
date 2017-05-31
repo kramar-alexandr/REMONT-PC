@@ -218,6 +218,7 @@ begin
     RecordField(OldPhone,M4Str,255,0);// Edit ************************** Monday, 27 February 2017 11:23:05
     RecordField(Name,M4Str,255,0);// Edit ************************** Monday, 27 February 2017 11:23:43
     RecordField(MiddleName,M4Str,255,0);// Edit ************************** Monday, 27 February 2017 11:23:43
+    RecordField(InnerOrderNr,M4Str,50,0);// Edit ************************** Monday, 29 May 2017 16:43:44
     
     SubsetKeyBegin2(RegDate);// Edit ************************** Wednesday, 15 February 2017 19:31:45
     StoreInBaseKey;
@@ -254,7 +255,14 @@ begin
     KeySegment(SerialNrTextSearch);
     KeySegment(SerNr);  
     
-    //Ключи для необработанных заказов без сервисного менеджера для распределяющего
+    SubsetKeyBegin2(InnerOrderNr);// Edit ************************** Wednesday, 31 May 2017 09:56:58
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    KeySegment(InnerOrderNr);
+    KeySegment(SerNr);  
+    
+    //Ключи для необработанных заказов без сервисного менеджера для распределяющего ***************************************************************************************************
     SubsetKeyBegin2(UnServSerNr);
     StoreInBaseKey;
     AppendFieldToKeyName(SalesGroup);
@@ -323,7 +331,14 @@ begin
     KeySegment(SerialNrTextSearch);
     KeySegment(SerNr);
     
-    //Ключи для ВСех не закрытых заказов на обслуживание для распределяющего
+    SubsetKeyBegin2(UnServInnerOrderNr);// Edit ************************** Wednesday, 31 May 2017 09:55:54
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    KeySegment(InnerOrderNr);
+    KeySegment(SerNr);
+    
+    //Ключи для ВСех не закрытых заказов на обслуживание для распределяющего ***************************************************************************************************
     SubsetKeyBegin2(AllUnServSerNr);
     StoreInBaseKey;
     AppendFieldToKeyName(SalesGroup);
@@ -393,7 +408,14 @@ begin
     KeySegment(SerialNrTextSearch);
     KeySegment(SerNr);
     
-    //Ключи для ВСех не закрытых заказов на обслуживание для сервисного менеджера
+    SubsetKeyBegin2(AllUnServInnerOrderNr);// Edit ************************** Wednesday, 31 May 2017 09:55:27
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    KeySegment(InnerOrderNr);
+    KeySegment(SerNr);
+    
+    //Ключи для ВСех не закрытых заказов на обслуживание для сервисного менеджера  ****************************************************************************************
     SubsetKeyBegin2(AllServSerNr);
     StoreInBaseKey;
     AppendFieldToKeyName(ServiceManager);
@@ -440,7 +462,7 @@ begin
     AppendFieldToKeyName(ServiceManager);
     KeySegment(Phone2);
     KeySegment(SerNr);
-    
+        
     SubsetKeyBegin2(AllServKontinfo1);// Edit ************************** Monday, 6 February 2017 14:16:52
     StoreInBaseKey;
     AppendFieldToKeyName(ServiceManager);
@@ -452,6 +474,13 @@ begin
     AppendFieldToKeyName(ServiceManager);
     KeySegment(SerialNrTextSearch);
     KeySegment(SerNr);
+    
+    SubsetKeyBegin2(AllServInnerOrderNr);// Edit ************************** Wednesday, 31 May 2017 09:53:50
+    StoreInBaseKey;
+    AppendFieldToKeyName(ServiceManager);
+    KeySegment(InnerOrderNr);
+    KeySegment(SerNr);
+    
   EndRecordAdd; 
   
   RecordAddBegin(INVc,"INVc_Custom");
@@ -1071,6 +1100,44 @@ begin
     ArrayField(EAN,M4Str,200,0);
 		EndArray;
 	EndBlock;
+	
+	BlockBegin(BinotelSettingsBlock,-,"");
+		RecordField(ApiKey,M4Str,100,0);
+		RecordField(ApiSecret,M4Str,100,0);
+	EndBlock;
+	
+	RecordBegin(BinotelCallEndVc,-,"");//Edit-------------------Vitalii 17:10 03.11.2016
+    RecordField(SerNr,M4Long,0,0);
+    RecordField(requestType,M4Str,255,0);
+    RecordField(companyID,M4Str,255,0);
+    RecordField(generalCallID,M4Str,255,0);
+    RecordField(callID,M4Str,255,0);
+    RecordField(startTime,M4Str,255,0);
+    RecordField(callType,M4Str,255,0);
+    RecordField(internalNumber,M4Str,255,0);
+    RecordField(internalAdditionalData,M4Str,255,0);
+    RecordField(externalNumber,M4Str,255,0);
+    RecordField(srcNumber,M4Str,255,0);
+    RecordField(customerDataId,M4Str,255,0);
+    RecordField(customerDataName,M4Str,255,0);
+    RecordField(employeeName,M4Str,255,0);
+    RecordField(employeeEmail,M4Str,255,0);
+    RecordField(dstNumbers,M4Str,255,0);
+    RecordField(dstNumber,M4Str,255,0);
+    RecordField(waitsec,M4Str,255,0);
+    RecordField(billsec,M4Str,255,0);
+    RecordField(disposition,M4Str,255,0);
+    RecordField(isNewCall,M4Str,255,0);
+    
+    RecordField(did,M4Str,255,0);
+    RecordField(didNumber,M4Str,255,0);
+    RecordField(didName,M4Str,255,0);
+		
+    
+    MainKeyBegin(SerNr,0);
+    KeySegment(SerNr);
+
+  EndRecord;
   
 return;
 end;

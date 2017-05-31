@@ -7,6 +7,7 @@ begin
 	
 	Setting("Телефоны",Phone1LClass,modSVO);
 	Setting("Завершенные вызовы",BinotelCallEndLClass,modSVO);
+	Setting("События Binotel",BinotelCallPushLClass,modSVO);
 	Setting("Настройки печати заказов",SVOPrintDataLClass,modSVO);// Edit ************************** Tuesday, 28 February 2017 12:56:04
 	Setting("Счета объектов",ObjectsAccTClass,modSVO);
 	Setting("Жалобы",IssueLClass,modSVO);

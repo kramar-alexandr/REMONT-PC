@@ -1108,6 +1108,12 @@ begin
 	
 	RecordBegin(BinotelCallEndVc,-,"");//Edit-------------------Vitalii 17:10 03.11.2016
     RecordField(SerNr,M4Long,0,0);
+    RecordField(TransDate,M4Date,0,0);
+    RecordField(TransTime,M4Time,0,0);
+    
+    RecordField(BTransDate,M4Date,0,0);
+    RecordField(BTransTime,M4Time,0,0);
+    
     RecordField(requestType,M4Str,255,0);
     RecordField(companyID,M4Str,255,0);
     RecordField(generalCallID,M4Str,255,0);
@@ -1122,21 +1128,65 @@ begin
     RecordField(customerDataName,M4Str,255,0);
     RecordField(employeeName,M4Str,255,0);
     RecordField(employeeEmail,M4Str,255,0);
-    RecordField(dstNumbers,M4Str,255,0);
-    RecordField(dstNumber,M4Str,255,0);
+    
     RecordField(waitsec,M4Str,255,0);
     RecordField(billsec,M4Str,255,0);
     RecordField(disposition,M4Str,255,0);
     RecordField(isNewCall,M4Str,255,0);
+    RecordField(trunkNumber,M4Str,255,0);
     
     RecordField(did,M4Str,255,0);
     RecordField(didNumber,M4Str,255,0);
     RecordField(didName,M4Str,255,0);
+    RecordField(smsContent,M4Str,255,0);
 		
+		RecordField(Math,M4Matrix,0,0);
+		ArrayBegin(Math,-,1);
+		ArrayField(mdstNumber,M4Str,255,0);
+    ArrayField(mwaitsec,M4Str,255,0);
+    ArrayField(mbillsec,M4Str,255,0);
+    ArrayField(mdisposition,M4Str,255,0);
+    ArrayField(mtrunkNumber,M4Str,255,0);
+    ArrayField(memployeeName,M4Str,255,0);
+    ArrayField(memployeeEmail,M4Str,255,0);
+		EndArray;
     
     MainKeyBegin(SerNr,0);
     KeySegment(SerNr);
-
+    KeyBegin(internalNumber);
+    KeySegment(internalNumber);
+    KeySegment(TransDate);
+    KeySegment(TransTime);
+    KeySegment(SerNr);
+    KeyBegin(callType);
+    KeySegment(callType);
+    KeySegment(TransDate);
+    KeySegment(TransTime);
+    KeySegment(SerNr);
+    KeyBegin(TransDate);
+    KeySegment(TransDate);
+    KeySegment(TransTime);
+    KeySegment(SerNr);
+    KeyBegin(externalNumber);
+    KeySegment(externalNumber);
+    KeySegment(TransDate);
+    KeySegment(TransTime);
+    KeySegment(SerNr);
+    KeyBegin(generalCallID);
+    KeySegment(generalCallID);
+    KeySegment(SerNr);
+    KeyBegin(customerDataId);
+    KeySegment(customerDataId);
+    KeySegment(SerNr);
+    KeyBegin(disposition);
+    KeySegment(disposition);
+    KeySegment(SerNr);
+    
+    KeyBegin(didNumber);
+    KeySegment(didNumber);
+    KeySegment(TransDate);
+    KeySegment(TransTime);
+    KeySegment(SerNr);
   EndRecord;
   
 return;

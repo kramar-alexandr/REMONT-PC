@@ -47,7 +47,7 @@ BEGIN
 			//Actr.AlarmType = kAlarmTypeMessage; //Edit-------------------Vitalii 11:31 23.12.2016
       Actr.AlarmType = kAlarmTypeNone;
 			Actr.TodoFlag = kTodoFlagTodo;
-			Actr.SymbNr = 3;
+			Actr.SymbNr = kActivitySymbolCall;
 			Actr.Phone = BCEr.externalNumber;
 			Actr.ActType = acttype;
 			CUr.Phone = Actr.Phone;

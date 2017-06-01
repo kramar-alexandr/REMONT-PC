@@ -1,3 +1,5 @@
+SetLangMode(LangRussian,"RUS",0);
+
 global
 updating function LongInt BinotelCallEndVcRecordSaveAfter(var record BinotelCallEndVc BCEr,record BinotelCallEndVc BCE2r,LongInt stat,LongInt long4)
 BEGIN
@@ -8,7 +10,7 @@ BEGIN
   integer i,mtrw;
   string 100 outerphone, inergroup, acttype;
   string 255 users,comment;
-  boolean testf;
+  boolean testf,cufound;
   record CUVc CUr;
  	
  	if(BCEr.disposition=="NOANSWER" or BCEr.disposition=="CANCEL")then begin
@@ -50,22 +52,46 @@ BEGIN
 			Actr.SymbNr = kActivitySymbolCall;
 			Actr.Phone = BCEr.externalNumber;
 			Actr.ActType = acttype;
-			CUr.Phone = Actr.Phone;
-			if(readfirstkey("Phone",CUr,1,true))then begin
+			CUr.Code = Actr.Phone;
+			cufound = false;
+			if(Readfirstmain(CUr,1,true))then begin
 				Actr.CUCode = CUr.Code;
 				Actr.CUName = CUr.Name;
+				cufound = true;
 			end else begin
-				CUr.AltPhone = Actr.Phone;
-				if(readfirstkey("AltPhone",CUr,1,true))then begin
+				CUr.Phone = Actr.Phone;
+				if(readfirstkey("Phone",CUr,1,true))then begin
 					Actr.CUCode = CUr.Code;
 					Actr.CUName = CUr.Name;
+					cufound = true;
 				end else begin
-					CUr.Mobile = Actr.Phone;
-					if(readfirstkey("Mobile",CUr,1,true))then begin
+					CUr.AltPhone = Actr.Phone;
+					if(readfirstkey("AltPhone",CUr,1,true))then begin
 						Actr.CUCode = CUr.Code;
 						Actr.CUName = CUr.Name;
+						cufound = true;
+					end else begin
+						CUr.Mobile = Actr.Phone;
+						if(readfirstkey("Mobile",CUr,1,true))then begin
+							Actr.CUCode = CUr.Code;
+							Actr.CUName = CUr.Name;
+							cufound = true;
+						end;
 					end;
 				end;
+			end;
+			if(cufound==false)then begin
+				recordnew(CUr);
+				CUr.Code = Actr.Phone;
+				CUr.Phone = Actr.Phone;
+				if(nonblank(BCEr.customerDataName))then begin
+					CUr.Name = BCEr.customerDataName;
+				end else begin
+					CUr.Name = "Новый контакт";
+				end;
+				CUr.CUType = 1;
+				
+				recordinsert(CUr,true);
 			end;
 			Actr.MainPersons = users;
 			recordstore(Actr,true);

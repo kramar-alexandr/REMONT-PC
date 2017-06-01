@@ -13,7 +13,7 @@ BEGIN
   boolean testf,cufound;
   record CUVc CUr;
  	
- 	if(BCEr.disposition=="NOANSWER" or BCEr.disposition=="CANCEL")then begin
+ 	if(BCEr.disposition=="NOANSWER" or BCEr.disposition=="CANCEL" or BCEr.disposition=="BUSY")then begin
 		blockload(BUb);
 		mtrw = matrowcnt(BUb);
 		if(mtrw>0)then begin

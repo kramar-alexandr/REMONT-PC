@@ -347,9 +347,10 @@ begin
       AddTextToArea(keyNode,req);
       AddTextToArea("}",req);
       
-      //WriteAreaToFile(req,"Binotel.txt",0);
+      WriteAreaToFile(req,"Binotel.txt",0);
       //SendRawWebRequest(host,"433",false,"POST","","application/json","",false,req,reply,10);
       SendWebRequest(host,443,-1,true,"POST","","application/json","",false,req,reply,10);
+      WriteAreaToFile(reply,"Binotel_reply.txt",0);
       //MySendRawWebRequest(host,"443",true,"POST","","application/json","",false,req,reply,10);
 
     end;

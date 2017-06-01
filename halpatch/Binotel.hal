@@ -331,7 +331,7 @@ begin
     if (NonBlank(fromExtNumber) and NonBlank(toPhoneNumber)) then begin
       key = "bc327a-61c63b1";
       secret = "1546c2-8c393b-fcf888-acbaba-3ec826a2";
-      host = "https:\/\/api.binotel.com\/api\/2.0\/calls\/ext-to-phone.json";
+      host = "api.binotel.com/api/2.0/calls/ext-to-phone.json";
       
       extNumNode = "\"ext_number\":" & "\"" & fromExtNumber & "\"";
       phoneNode = "\"phone_number\":" & "\"" & toPhoneNumber & "\"";

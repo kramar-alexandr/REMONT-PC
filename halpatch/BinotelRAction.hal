@@ -80,6 +80,7 @@ BEGIN
 					end;
 				end;
 			end;
+			logtext(0,cufound & " Новый контакт");
 			if(cufound==false)then begin
 				recordnew(CUr);
 				CUr.Code = Actr.Phone;
@@ -90,7 +91,7 @@ BEGIN
 					CUr.Name = "Новый контакт";
 				end;
 				CUr.CUType = 1;
-				
+				logtext(0,"Новый контакт");
 				recordinsert(CUr,true);
 			end;
 			Actr.MainPersons = users;

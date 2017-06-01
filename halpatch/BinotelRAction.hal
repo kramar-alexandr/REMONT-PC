@@ -1,3 +1,5 @@
+external function string 255 StrReplace(string,string,string);
+
 SetLangMode(LangRussian,"RUS",0);
 
 global

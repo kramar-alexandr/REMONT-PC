@@ -90,6 +90,7 @@ BEGIN
 				end else begin
 					CUr.Name = "Новый контакт";
 				end;
+				CUr.CustCat = "РОЗН";
 				CUr.CUType = 1;
 				logtext(0,"Новый контакт");
 				recordinsert(CUr,true);

@@ -34,6 +34,7 @@ external procedure RoundRowSum(string,string,string,var val);
 remote updating function LongInt RecordAction_raPasteWSInPO(record WSVc,var array record POVc,var Integer,var string);
 remote updating function Boolean RecordAction_raPasteQTInWS(var record WSVc,record QTVc);
 external procedure GetSalesGroup(string,var string); //Edit***************************Sasha2,16:06 31.05.2017
+external function string 60 AddObjectToObjectList(string,string); //Edit***************************Sasha2,10:19 01.06.2017
 
 global
 function Boolean WSDchrsum(record WSVc WSr,Integer rownr,Integer UseDiscount)
@@ -457,18 +458,12 @@ begin
   		DoGetCurUser(USr);
   		WSr.Objects = Locationr.Objects;  
   		if (NonBlank(USr.PersObjx)) then begin
-  		  if (NonBlank(WSr.Objects)) then begin
-          WSr.Objects = WSr.Objects & ",";
-        end;
-        WSr.Objects = WSr.Objects & USr.PersObjx;
+        WSr.Objects = AddObjectToObjectList(WSr.Objects,USr.PersObjx);
   		end; 		
   		GetSalesGroup(SVOr.CustomField7,tstr); //Edit***************************Sasha2,12:03 31.05.2017 {
   		SalesGroupr.SGroupCode = tstr;
       if (ReadFirstMain(SalesGroupr,1,true) and NonBlank(SalesGroupr.Objects)) then begin
-        if (NonBlank(WSr.Objects)) then begin
-          WSr.Objects = WSr.Objects & ",";
-        end;
-        WSr.Objects = WSr.Objects & SalesGroupr.Objects;
+        WSr.Objects = AddObjectToObjectList(WSr.Objects,SalesGroupr.Objects);
       end; //Edit***************************Sasha2,12:03 31.05.2017 }
   	  blockload(OAb);                                                    
 	    mtrw = matrowcnt(OAb);

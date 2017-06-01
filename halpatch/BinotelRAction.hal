@@ -39,6 +39,10 @@ BEGIN
 		
 		if(nonblank(users))then begin
 			recordnew(Actr);
+			
+			Actr.TransTime = currenttime;
+			Actr.TransDate = currentdate;
+			Actr.SerNr = NextSerNr("ActVc",Actr.TransDate,-1,false,"");
 			Actr.Comment = comment;
 			//Actr.AlarmType = kAlarmTypeMessage; //Edit-------------------Vitalii 11:31 23.12.2016
       Actr.AlarmType = kAlarmTypeNone;
@@ -64,6 +68,7 @@ BEGIN
 				end;
 			end;
 			Actr.MainPersons = users;
+			recordstore(Actr,true);
 		
 		end;
 		

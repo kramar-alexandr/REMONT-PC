@@ -30,7 +30,7 @@ BEGIN
 	  			if(blank(users))then begin
 	  				users = BUrw.User;
 	  			end else begin
-	  				users = users & "," & users;
+	  				users = users & "," & BUrw.User;
 	  			end;
 	  		end;
 			end; 

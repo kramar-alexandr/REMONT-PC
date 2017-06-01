@@ -1,5 +1,6 @@
 remote function Boolean Getformcode(Integer,Integer,string,string,string,LongInt,LongInt,string,string,Integer,string,var string);
 external function Boolean MySendWebRequest(string,longint,longint,boolean,string,string,string,string,boolean,area,var area,integer);
+remote procedure MakeBinotelCallFromExtNumToPhone(string,string); //Edit***************************Sasha2,14:51 01.06.2017
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -324,6 +325,7 @@ string 50 location;
 			//messagebox(0,host & ":" & port & page);
 			//MySendWebRequest(USr.InnerSIPHost,USr.InnerSIPPort,-1,false,"GET",USr.InnerSIPPath,"text/plain","",false,mainRequest,replyarea,10);
 			//logtext(0,getstringfromarea(replyarea.));
+			MakeBinotelCallFromExtNumToPhone("902",NormalPhone(SVOr.Kontinfo1));
 		end;
 	end;
 

@@ -325,13 +325,14 @@ end;
 global //Edit***************************Sasha2,13:28 01.06.2017 {
 procedure MakeBinotelCallFromExtNumToPhone(string fromExtNumber,string toPhoneNumber)
 begin
-  string 255 key,secret,host,keyNode,signatureNode,extNumNode,phoneNode;
+  string 255 key,secret,host,keyNode,signatureNode,extNumNode,phoneNode,page;
   Area req,reply;
     
     if (NonBlank(fromExtNumber) and NonBlank(toPhoneNumber)) then begin
       key = "bc327a-61c63b1";
       secret = "1546c2-8c393b-fcf888-acbaba-3ec826a2";
-      host = "api.binotel.com/api/2.0/calls/ext-to-phone.json";
+      host = "api.binotel.com";
+      page = "/api/2.0/calls/ext-to-phone.json";
       
       extNumNode = "\"ext_number\":" & "\"" & fromExtNumber & "\"";
       phoneNode = "\"phone_number\":" & "\"" & toPhoneNumber & "\"";
@@ -349,7 +350,7 @@ begin
       
       WriteAreaToFile(req,"Binotel.txt",0);
       //SendRawWebRequest(host,"433",false,"POST","","application/json","",false,req,reply,10);
-      MySendWebRequest(host,443,-1,true,"POST","","application/json","",false,req,reply,10);
+      MySendWebRequest(host,443,-1,true,"POST",page,"application/json","",false,req,reply,10);
       WriteAreaToFile(reply,"Binotel_reply.txt",0);
       //MySendRawWebRequest(host,"443",true,"POST","","application/json","",false,req,reply,10);
 

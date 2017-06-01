@@ -1,6 +1,8 @@
 external function string 255 StrReplace(string,string,string);
 external procedure UTCTimeToDate(LongInt,var Date,var Time);
-external function boolean MySendRawWebRequest(string, string, boolean, string, string, string, string, boolean, area, var area, integer);
+external procedure MySendRawWebRequest(string, string, boolean, string, string, string, string, boolean, area, var area, integer);
+external function boolean SendWebRequest(string,integer,longint,boolean,string,string,string,string,boolean,area,var area,integer);
+
 
 global webpublic updating procedure WebBinotelAPICallEnd()
 begin
@@ -347,7 +349,7 @@ begin
       
       //WriteAreaToFile(req,"Binotel.txt",0);
       //SendRawWebRequest(host,"433",false,"POST","","application/json","",false,req,reply,10);
-      //SendWebRequest(host,443,-1,true,"POST","","application/json","",false,req,reply,10);
+      SendWebRequest(host,443,-1,true,"POST","","application/json","",false,req,reply,10);
       //MySendRawWebRequest(host,"443",true,"POST","","application/json","",false,req,reply,10);
 
     end;

@@ -40,7 +40,7 @@ BEGIN
 		if(nonblank(users))then begin
 			recordnew(Actr);
 			
-			Actr.TransTime = currenttime;
+			Actr.StartTime = currenttime;
 			Actr.TransDate = currentdate;
 			Actr.SerNr = NextSerNr("ActVc",Actr.TransDate,-1,false,"");
 			Actr.Comment = comment;

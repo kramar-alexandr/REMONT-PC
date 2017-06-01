@@ -12,6 +12,7 @@ begin
 	Setting("Счета объектов",ObjectsAccTClass,modSVO);
 	Setting("Жалобы",IssueLClass,modSVO);
   Setting("Дефекты",DefectLClass,modSVO);
+  Setting("Контроль пропущенных звонков",BinotelUserTClass,modSVO);
 	
   Report("Отчет по истории товаров технический ",FindErrorInIHRClass,FindErrorInIHRn,0,modDBMain);
 	Report("Отчет по телефонам клиентов",ServClientOrderRClass,ServClientOrderRn,0,modSVO);// Edit ************************** Monday, 4 July 2016 17:52:38

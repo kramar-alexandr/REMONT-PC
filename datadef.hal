@@ -1259,5 +1259,17 @@ begin
     KeySegment(SerNr);
   EndRecord;
   
+  
+  BlockBegin(BinotelUserBlock,-,"");
+		RecordField(Math,M4Matrix,0,0);
+		ArrayBegin(Math,-,1);
+		ArrayField(User,M4Code,20,UserVc);
+    ArrayField(Phone,M4Str,100,0);
+    ArrayField(Group,M4Str,100,0);
+    ArrayField(ActType,M4Code,100,0);
+    ArrayField(ActComment,M4Str,255,0);
+		EndArray;
+	EndBlock;	
+  
 return;
 end;

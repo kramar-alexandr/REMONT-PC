@@ -1,0 +1,75 @@
+global
+updating function LongInt BinotelCallEndVcRecordSaveAfter(var record BinotelCallEndVc BCEr,record BinotelCallEndVc BCE2r,LongInt stat,LongInt long4)
+BEGIN
+  LongInt res;
+  record ActVc Actr;
+  record BinotelUserBlock BUb;
+  row BinotelUserBlock BUrw;
+  integer i,mtrw;
+  string 100 outerphone, inergroup, acttype;
+  string 255 users,comment;
+  boolean testf;
+  record CUVc CUr;
+ 	
+ 	if(BCEr.disposition=="NOANSWER")then begin
+		blockload(BUb);
+		mtrw = matrowcnt(BUb);
+		if(mtrw>0)then begin
+			outerphone = BCEr.didNumber;
+			inergroup = BCEr.internalNumber;
+			For(i=0;i<mtrw;i=i+1) begin
+	  		matrowget(BUb,i,BUrw);
+	  		testf = true;
+	  		if(blank(BUrw.User))then begin testf = false; end;
+	  		if(nonblank(BUrw.Phone) and BUrw.Phone!=outerphone)then begin testf = false; end;
+	  		if(nonblank(BUrw.Group) and BUrw.Group!=inergroup)then begin testf = false; end;	  		
+	  		
+	  		if(testf)then begin
+	  			acttype = BUrw.ActType;
+	  			comment = BUrw.ActComment;
+	  			if(blank(users))then begin
+	  				users = BUrw.User;
+	  			end else begin
+	  				users = users & "," & users;
+	  			end;
+	  		end;
+			end; 
+		end;
+		
+		
+		if(nonblank(users))then begin
+			recordnew(Actr);
+			Actr.Comment = comment;
+			//Actr.AlarmType = kAlarmTypeMessage; //Edit-------------------Vitalii 11:31 23.12.2016
+      Actr.AlarmType = kAlarmTypeNone;
+			Actr.TodoFlag = kTodoFlagTodo;
+			Actr.SymbNr = 3;
+			Actr.Phone = BCEr.externalNumber;
+			Actr.ActType = acttype;
+			CUr.Phone = Actr.Phone;
+			if(readfirstkey("Phone",CUr,1,true))then begin
+				Actr.CUCode = CUr.Code;
+				Actr.CUName = CUr.Name;
+			end else begin
+				CUr.AltPhone = Actr.Phone;
+				if(readfirstkey("AltPhone",CUr,1,true))then begin
+					Actr.CUCode = CUr.Code;
+					Actr.CUName = CUr.Name;
+				end else begin
+					CUr.Mobile = Actr.Phone;
+					if(readfirstkey("Mobile",CUr,1,true))then begin
+						Actr.CUCode = CUr.Code;
+						Actr.CUName = CUr.Name;
+					end;
+				end;
+			end;
+			Actr.MainPersons = users;
+		
+		end;
+		
+ 	end;
+ 	
+ 	
+  BinotelCallEndVcRecordSaveAfter = res;
+  RETURN;
+END;

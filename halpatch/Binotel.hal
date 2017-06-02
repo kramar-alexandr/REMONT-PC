@@ -195,6 +195,7 @@ begin
 	string 255 node;
 	time timestamp;
 	date datestamp;
+	string 255 str;
 	
 	webgetpostdata(encodearea);
 	writeareatofile(encodearea,"WebBinotelAPICallPush.txt",0);
@@ -317,6 +318,12 @@ begin
 		
 		
 	recordstore(BECr,true);
+	
+	
+	if(BECr.requestType=="receivedTheCall")then begin
+		str = "{\"customerData\":{\"name\":\"Balanovich Oleksandr\",\"description\":\"programer\"}}";
+		weboutstring(str);
+	end;
 	
 
 return;

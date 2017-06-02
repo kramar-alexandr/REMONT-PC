@@ -10093,3 +10093,113 @@ begin
   EndMatrix;
   EndWindow;
 end;
+
+window INrsRClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,h2,h3,h4,v,vm,vs;
+  WindowBegin("Определите историю товаров",INrsRClass,CGRcW,RcType);
+  SetWRect(20,80,550,460);
+  v = 6; vs = 20; h = 160; h2 = 30; h3 = 180; h4 = 340;
+  PeriodField(h,v,"Период");
+  EditFieldTL(h,v+=vs,150,"Товар",M4UStr,Normal,50,f1,false,INSClass);
+  if (HasItemGroups) then begin
+  EditFieldTL(h,v+=vs,150,"Группа",M4UStr,Normal,5,f3,false,ITSClass);
+  end;
+  if (HasItemClassification) then begin
+    EditFieldTL(h,v+=vs,150,"Классификация",M4UStr,Normal,60,f4,false,DISClass);
+    EditFieldTL(h,v+=vs,150,"Тип классификации",M4UStr,Normal,60,f5,false,CTypeSClass);
+  end;
+  if (HasMultiLocations) then begin
+    EditFieldTL(h,v+=vs,150,"Склад",M4Code,Normal,21,f6,false,LocationSClass);
+    if (StandardHansa==false and IsEnterprise) then begin
+      EditFieldTL(h,v+=vs,150,"Группа складов",M4Code,Normal,10,f7,false,LocGrSClass);
+      EditFieldTL(h,v+=vs,150,"Классификация склада",M4List,Normal,200,f8,false,LocClSClass);
+    end;
+  end;
+  if (HasDepartments) then begin
+    EditFieldTL(h,v+=vs,150,"Отдел",M4UStr,Normal,10,AccStr,false,DepSClass);
+  end;
+  if (HasModPO) then begin
+    EditFieldTL(h,v+=vs,150,"Основной поставщик",M4UStr,Normal,10,f2,false,VESClass);
+  end;
+  if (IsEnterprise) then begin
+    CheckBox(h2,v+=26,0,"Только складируемые товары",flags[11]);
+//  CheckBox(h2,v+=16,0,"Show Quantity 2",flags[12]);
+    CheckBox(h2,v+=16,0,"Показать остаток для товаров без истории",flags[13]);
+    CheckBox(h2,v+=16,0,"Включать будущие записи",flags[14]);
+  end;
+  if (HasMultiLocations) then begin
+    CheckBox(h2,v+=16,0,"По каждому складу",flags[15]);
+  end;
+  if (HasSerialNumbers) then begin
+    CheckBox(h2,v+=16,0,"Включ. детали сер. ном.",AccSpec);
+  end;
+  if (HasLocalization("ARG,MEX,USA") and IsStandardProduct==false) then begin
+    CheckBox(h2,v+=16,0,"Include Dispatch Number",flags[22]);
+  end;
+//  CheckBox(h2,v+=16,0,"Include History Before #Stocktaking#",flags[19]);
+  ButtonFrame(h2,vm=(v+=38),130,2,"Функция");
+  RadioButton(h2,v,0,0,"Сводный",flags[9]);
+  RadioButton(h2,v+=16,1,0,"Подробный",flags[9]);
+  if (IsEnterprise) then begin
+    ButtonFrame(h2,v+=40,130,2,"Сортировка по");
+    RadioButton(h2,v,0,0,"дате стоимости",flags[10]);
+    RadioButton(h2,v+=16,1,0,"дате операции",flags[10]);
+  end;
+  ButtonFrame(h3,v=vm,140,3,"Функция");
+  RadioButton(h3,v,0,0,"Количества",ArtMode);
+  if (HasVarieties) then begin
+    RadioButton(h3,v+=16,3,0,"Количества и варианты",ArtMode);
+  end;
+  RadioButton(h3,v+=16,1,0,"Количества и суммы",ArtMode); // 2 Has some code for it, don't know what....
+  EndFrame;
+  if (HasSecondQuantity) then begin
+    ButtonFrame(h4,v=vm,150,3,"Функция");//  CheckBox(20);
+    RadioButton(h4,v,0,0,"не показывать кол-во 2",flags[12]);
+    RadioButton(h4,v+=16,1,0,"показать кол-во 2",flags[12]);
+    RadioButton(h4,v+=16,2,0,"показать коэффициент",flags[12]);
+    ButtonFrame(h4,v=30,160,12,"Регистры");
+  end else begin
+    ButtonFrame(h4,v=vm,160,12,"Регистры");  
+  end;
+  if (HasModSO) then begin
+    CheckBox(h4,v,0,"Отгрузки",flags[2]); v = v + 16;
+  end;
+  CheckBox(h4,v,0,"Поступления",flags[3]); v = v + 16;
+  CheckBox(h4,v,0,"Счета-фактуры",flags[1]); v = v + 16;
+//  CheckBox(h4,v,0,"Счета POS",flags[16]); v = v + 16;
+  if (HasModProd) then begin
+    if (StandardHansa==false) then begin
+      CheckBox(h4,v,0,"Заказы на производство",flags[18]); v = v + 16;
+    end;
+    CheckBox(h4,v,0,"Производства",flags[5]); v = v + 16;
+    if (StandardHansa==false) then begin
+      CheckBox(h4,v,0,"Операции производства",flags[20]); v = v + 16;
+    end;
+  end;
+  if (HasAdvancedStock) then begin
+    CheckBox(h4,v,0,"Возвраты товаров",flags[8]); v = v + 16;
+    CheckBox(h4,v,0,"Возвраты товаров поставщикам",flags[19]); v = v + 16;
+  end;
+  CheckBox(h4,v,0,"Списания со склада",flags[6]); v = v + 16;
+  if (IsEnterprise or (HasLocalization("PRT") and HasMultiLocations)) then begin  
+    CheckBox(h4,v,0,"Перемещения товаров",flags[4]); v = v + 16;
+  end;
+  if (HasAdvancedStock) then begin
+    CheckBox(h4,v,0,"Переоценки склада",flags[22]); v = v + 16;
+  end;
+  if (HasModRent) then begin
+    //CheckBox(h4,v,0,"Складские перемещения",flags[17]); v = v + 16;
+  end;
+  if (HasModSVO) then begin
+    CheckBox(h4,v,0,"Таблица работ",flags[7]); v = v + 16;
+  end;
+  CheckBox(h4,v,0,"Инвентаризация",flags[23]); v = v + 16;// Edit ************************** Monday, 11 January 2016 14:48:32
+  CheckBox(h4,v,0,"Приём товара",flags[24]); v = v + 16; //Edit***************************Sasha2,15:19 02.06.2017
+  CheckBox(h4,v,0,"Выдача товара",flags[25]); v = v + 16; //Edit***************************Sasha2,15:19 02.06.2017
+  CheckBox(h4,v,0,"Складские перемещения",flags[17]); v = v + 16; //Edit***************************Sasha2,15:30 02.06.2017
+  CheckBox(h4,v,0,"Внутр. перемещения",flags[26]); v = v + 16; //Edit***************************Sasha2,15:19 02.06.2017
+  EndFrame;
+  EndWindow;
+end;

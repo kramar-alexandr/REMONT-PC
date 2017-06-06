@@ -46,6 +46,7 @@ BEGIN
 		
 		if(BCEr.disposition=="ANSWER" or BCEr.disposition=="TRANSFER")then begin
 			acttype = "CALL";
+			comment = "Принятый вызов";
 			if(nonblank(BCEr.internalNumber))then begin
 				while(loopmain(User,1,true))begin
 					if(User.Phone2==BCEr.internalNumber)then begin
@@ -63,6 +64,12 @@ BEGIN
 			recordnew(Actr);
 			
 			Actr.StartTime = currenttime;
+			if(nonblank(BCEr.billsec))then begin
+				if(evaltoval(BCEr.billsec)>0)then begin
+					Actr.StartTime = addseconds(currenttime,-evaltoval(BCEr.billsec));
+					Actr.EndTime = addseconds(currenttime,-evaltoval(BCEr.billsec));
+				end;
+			end;
 			Actr.TransDate = currentdate;
 			Actr.SerNr = NextSerNr("ActVc",Actr.TransDate,-1,false,"");
 			Actr.Comment = comment;

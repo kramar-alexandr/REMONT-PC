@@ -579,6 +579,10 @@ begin
         dblstr = "DblORVc";
       end;
     case "StockTakeVc": strid = 5060; dblstr = "DblStockTakeVc"; //Edit-------------------Vitalii 14:51 12.01.2016
+    case "OffHireVc": strid = 31092; dblstr = "DblOffHireVc"; //Edit***************************Sasha2,16:39 02.06.2017
+    case "DispatchVc": strid = 11580; dblstr = "DblDispatchVc"; //Edit***************************Sasha2,16:39 02.06.2017
+    case "InternMovVc": strid = 31093; dblstr = "DblInternMovVc"; //Edit***************************Sasha2,16:39 02.06.2017
+    case "InternMovAVc": strid = 31093; dblstr = "DblInternMovVc"; //Edit***************************Sasha2,16:39 02.06.2017
   end;
 
   if (printf==false) then begin

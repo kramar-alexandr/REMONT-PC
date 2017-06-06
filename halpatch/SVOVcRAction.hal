@@ -884,6 +884,11 @@ BEGIN
         res = -1;
         goto LSVOVcRecordCheck;
       end;
+      if (INr.SerNrf==0) then begin //Edit***************************Sasha2,17:48 02.06.2017 {
+        RecordCheckError(31094,": " & SVOrw.ArtCode,i,"ArtCode");      
+        res = -1;
+        goto LSVOVcRecordCheck;
+      end; //Edit***************************Sasha2,17:49 02.06.2017 }
     end;      
     if (nonblank(SVOrw.TaxTemplateCode)) then begin
       errcode = VerifyTaxTemplateCode(SVOrw.TaxTemplateCode,tstr);

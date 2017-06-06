@@ -317,15 +317,15 @@ string 50 location;
 		if(blank(NormalPhone(SVOr.Kontinfo1)))then begin
 			messagebox(0,"Invalid client phone number");
 		end;
-		if(blank(location))then begin
+		/*if(blank(location))then begin
 			messagebox(0,"Unknown user location");
-		end;
+		end;*/
 		
 		if(nonblank(USr.Phone2)and nonblank(NormalPhone(SVOr.Kontinfo1)))then begin			
 			//messagebox(0,host & ":" & port & page);
 			//MySendWebRequest(USr.InnerSIPHost,USr.InnerSIPPort,-1,false,"GET",USr.InnerSIPPath,"text/plain","",false,mainRequest,replyarea,10);
 			//logtext(0,getstringfromarea(replyarea.));
-			MakeBinotelCallFromExtNumToPhone("902",NormalPhone(SVOr.Kontinfo1));
+			MakeBinotelCallFromExtNumToPhone(USr.Phone2,NormalPhone(SVOr.Kontinfo1));
 		end;
 	end;
 

@@ -45,7 +45,7 @@ BEGIN
 		end;
 		
 		if(BCEr.disposition=="ANSWER" or BCEr.disposition=="TRANSFER")then begin
-			acttype = "CALL"
+			acttype = "CALL";
 			if(nonblank(BCEr.internalNumber))then begin
 				while(loopmain(User,1,true))begin
 					if(User.Phone2==BCEr.internalNumber)then begin

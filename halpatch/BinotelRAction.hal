@@ -67,7 +67,7 @@ BEGIN
 			if(nonblank(BCEr.billsec))then begin
 				if(evaltoval(BCEr.billsec)>0)then begin
 					Actr.StartTime = addseconds(currenttime,-evaltoval(BCEr.billsec));
-					Actr.EndTime = addseconds(currenttime,-evaltoval(BCEr.billsec));
+					Actr.EndTime = currenttime;
 				end;
 			end;
 			Actr.TransDate = currentdate;

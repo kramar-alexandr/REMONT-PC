@@ -1,8 +1,7 @@
 external function string 255 StrReplace(string,string,string);
 external procedure UTCTimeToDate(LongInt,var Date,var Time);
-external procedure MySendRawWebRequest(string, string, boolean, string, string, string, string, boolean, area, var area, integer);
 external function boolean MySendWebRequest(string,integer,longint,boolean,string,string,string,string,boolean,area,var area,integer);
-
+external procedure MySendAsyncWebRequest(string,integer,longint,boolean,string,string,string,string,area,string,integer);
 
 global webpublic updating procedure WebBinotelAPICallEnd()
 begin
@@ -339,7 +338,8 @@ begin
 	string 255 node;
 	time timestamp;
 	date datestamp;
-	string 255 str;
+	string 255 str,inphone,name;
+	record CUVc CUr;
 	
 	webgetpostdata(encodearea);
 	writeareatofile(encodearea,"WebBinotelAPICallSet.txt",0);
@@ -383,7 +383,33 @@ begin
 	node = "requestType";
 	if(JSONNodeExists(jobj,node))then begin
 		if(JSONGet(jobj,node)=="gettingCallSettings")then begin
-			str = "{\"customerData\":{\"name\":\"Balanovich Oleksandr\",\"description\":\"programer\"}}";
+			if(JSONNodeExists(jobj,"externalNumber"))then begin
+				inphone = JSONGet(jobj,"externalNumber");
+				CUr.Code = inphone;
+				if(Readfirstmain(CUr,1,true))then begin
+					name = CUr.Name;
+				end else begin
+					CUr.Phone = inphone;
+					if(readfirstkey("Phone",CUr,1,true))then begin
+						name = CUr.Name;
+					end else begin
+						CUr.AltPhone = inphone;
+						if(readfirstkey("AltPhone",CUr,1,true))then begin
+							name = CUr.Name;
+						end else begin
+							CUr.Mobile = inphone;
+							if(readfirstkey("Mobile",CUr,1,true))then begin
+								name = CUr.Name;
+							end;
+						end;
+					end;
+				end;
+			end;
+			if(blank(CUr.Name))then begin
+				name = inphone;
+			end;
+		
+			str = "{\"customerData\":{\"name\":\"" & name & "\",\"description\":\"programer\"}}";
 			weboutstring(str);
 		end;
 	end;
@@ -422,8 +448,11 @@ begin
       MySendWebRequest(host,443,-1,true,"POST",page,"application/json","",false,req,reply,10);
       WriteAreaToFile(reply,"Binotel_reply.txt",0);
       //MySendRawWebRequest(host,"443",true,"POST","","application/json","",false,req,reply,10);
+			MySendAsyncWebRequest(host,443,-1,true,"POST",page,"application/json","",req,"WebCalReqClaaBack",5);
 
     end;
     
   return;
 end; //Edit***************************Sasha2,13:29 01.06.2017 }
+
+

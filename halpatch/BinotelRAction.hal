@@ -14,32 +14,50 @@ BEGIN
   string 255 users,comment;
   boolean testf,cufound;
   record CUVc CUr;
+  record UserVc User;
  	
- 	if(BCEr.disposition=="NOANSWER" or BCEr.disposition=="CANCEL" or BCEr.disposition=="BUSY")then begin
-		blockload(BUb);
-		mtrw = matrowcnt(BUb);
-		if(mtrw>0)then begin
-			outerphone = BCEr.didNumber;
-			inergroup = BCEr.internalNumber;
-			For(i=0;i<mtrw;i=i+1) begin
-	  		matrowget(BUb,i,BUrw);
-	  		testf = true;
-	  		if(blank(BUrw.User))then begin testf = false; end;
-	  		if(nonblank(BUrw.Phone) and BUrw.Phone!=outerphone)then begin testf = false; end;
-	  		if(nonblank(BUrw.Group) and BUrw.Group!=inergroup)then begin testf = false; end;	  		
-	  		
-	  		if(testf)then begin
-	  			acttype = BUrw.ActType;
-	  			comment = BUrw.ActComment;
-	  			if(blank(users))then begin
-	  				users = BUrw.User;
-	  			end else begin
-	  				users = users & "," & BUrw.User;
-	  			end;
-	  		end;
-			end; 
+ 	if(BCEr.disposition=="NOANSWER" or BCEr.disposition=="CANCEL" or BCEr.disposition=="BUSY" or BCEr.disposition=="ANSWER" or BCEr.disposition=="TRANSFER")then begin
+		
+		if(BCEr.disposition=="NOANSWER" or BCEr.disposition=="CANCEL" or BCEr.disposition=="BUSY")then begin
+			blockload(BUb);
+			mtrw = matrowcnt(BUb);
+			if(mtrw>0)then begin
+				outerphone = BCEr.didNumber;
+				inergroup = BCEr.internalNumber;
+				For(i=0;i<mtrw;i=i+1) begin
+					matrowget(BUb,i,BUrw);
+					testf = true;
+					if(blank(BUrw.User))then begin testf = false; end;
+					if(nonblank(BUrw.Phone) and BUrw.Phone!=outerphone)then begin testf = false; end;
+					if(nonblank(BUrw.Group) and BUrw.Group!=inergroup)then begin testf = false; end;	  		
+				
+					if(testf)then begin
+						acttype = BUrw.ActType;
+						comment = BUrw.ActComment;
+						if(blank(users))then begin
+							users = BUrw.User;
+						end else begin
+							users = users & "," & BUrw.User;
+						end;
+					end;
+				end; 
+			end;
 		end;
 		
+		if(BCEr.disposition=="ANSWER" or BCEr.disposition=="TRANSFER")then begin
+			acttype = "CALL"
+			if(nonblank(BCEr.internalNumber))then begin
+				while(loopmain(User,1,true))begin
+					if(User.Phone2==BCEr.internalNumber)then begin
+						if(blank(users))then begin
+							users = User.Code;
+						end else begin
+							users = users & "," & User.Code;
+						end;
+					end;
+				end;
+			end;
+		end;
 		
 		if(nonblank(users))then begin
 			recordnew(Actr);

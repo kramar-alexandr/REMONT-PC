@@ -219,6 +219,8 @@ begin
     RecordField(Name,M4Str,255,0);// Edit ************************** Monday, 27 February 2017 11:23:43
     RecordField(MiddleName,M4Str,255,0);// Edit ************************** Monday, 27 February 2017 11:23:43
     RecordField(InnerOrderNr,M4Str,50,0);// Edit ************************** Monday, 29 May 2017 16:43:44
+    RecordField(CallStatus,M4Str,50,0);// Edit ************************** Wednesday, 7 June 2017 12:19:41
+    RecordField(RejectReason,M4Str,255,0);// Edit ************************** Wednesday, 7 June 2017 12:19:41
     
     SubsetKeyBegin2(RegDate);// Edit ************************** Wednesday, 15 February 2017 19:31:45
     StoreInBaseKey;
@@ -822,7 +824,13 @@ begin
     MainKeyBegin(IssueName,0);
     KeySegment(IssueName);
   EndRecord;
-
+  
+  RecordBegin(RejectReasonVc,-,"");// Edit ************************** Wednesday, 7 June 2017 12:54:32
+    RecordField(RejectReason,M4Str,255,0);
+    MainKeyBegin(RejectReason,0);
+    KeySegment(RejectReason);
+  EndRecord;
+  
 	RecordBegin(DefectVc,-,"");
 		RecordField(DefectName,M4Str,60,DefectVc);
 		MainKeyBegin(DefectName,0);

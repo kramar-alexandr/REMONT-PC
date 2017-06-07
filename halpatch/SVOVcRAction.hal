@@ -724,7 +724,12 @@ BEGIN
   		SVOr.CustomField9 = count;
   	end;
   end;
- 
+ 	
+ 	if(SVOr.OrderStatus==6 and blank(SVOr.RejectReason))then begin
+ 		RecordCheckError(1058,"",-1,"RejectReason");
+		res = -1;
+		goto LSVOVcRecordCheck;
+ 	end;
 	 
   if(nonblank(SVOr.Kontinfo1))then begin
   	if(left(SVOr.Kontinfo1,1)!="0")then begin

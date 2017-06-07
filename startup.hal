@@ -11,6 +11,7 @@ begin
 	Setting("Настройки печати заказов",SVOPrintDataLClass,modSVO);// Edit ************************** Tuesday, 28 February 2017 12:56:04
 	Setting("Счета объектов",ObjectsAccTClass,modSVO);
 	Setting("Жалобы",IssueLClass,modSVO);
+	Setting("Причины отказов",RejectReasonLClass,modSVO);// Edit ************************** Wednesday, 7 June 2017 12:47:34
   Setting("Дефекты",DefectLClass,modSVO);
   Setting("Контроль пропущенных звонков",BinotelUserTClass,modSVO);
 	
@@ -156,6 +157,7 @@ begin
   SString(31092,"Приём товара");
   SString(31093,"Внутр. перемещения");
   SString(31094,"Для товара должен быть включен серийный учет");
+  SString(31095,"Отмена");
   
   StrSetBegin(3); /* Try to keep them in alphabetical order */
   StrSetText(AllowNPTSReprint," Перепечатать строки сч/ф (сенсорный экран)");

@@ -2000,6 +2000,26 @@ begin //##ii
 end; //##ii
 
 
+window CallStatusSClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  WindowBegin("Статус звонка",CallStatusSClass,CGother,HBlRecType);
+  SetWRect(240,80,600,348);
+  StringList(9,9,-19,-19);
+  SearchField("Search");
+  EndWindow;
+end;
+
+window RejectReasonSClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  WindowBegin("Причина отказа",RejectReasonSClass,CGother,HBlRecType);
+  SetWRect(240,80,600,348);
+  StringList(9,9,-19,-19);
+  SearchField("Search");
+  EndWindow;
+end;
+
 window SVODClass:1
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
@@ -2042,16 +2062,20 @@ begin
   EditField(h+350,vm+20,100,"К оплате",ViewOnly,WSCost,false,0);
 
   vm = vm-32;
-  ButtonFrame(h+500,vm+16,130,6,"");
-	RadioButton(h+500,vm+16,0,0,"В ожидании",OrderStatus);
-	RadioButton(h+500,vm+16+16,5,0,"На диагностике",OrderStatus);
-	RadioButton(h+500,vm+32+16,4,0,"На согласовании",OrderStatus);
-	RadioButton(h+500,vm+48+16,1,0,"Диаг. законч.",OrderStatus);
-	RadioButton(h+500,vm+64+16,3,0,"Ожидает запч.",OrderStatus);
-  RadioButton(h+500,vm+80+16,2,0,"Ремонт выполнен",OrderStatus);
-  vm = vm + 32;
+  ButtonFrame(h+470,vm+16,130,7,"");
+	RadioButton(h+470,vm+=16,0,0,"В ожидании",OrderStatus);
+	RadioButton(h+470,vm+=16,5,0,"На диагностике",OrderStatus);
+	RadioButton(h+470,vm+=16,4,0,"На согласовании",OrderStatus);
+	RadioButton(h+470,vm+=16,1,0,"Диаг. законч.",OrderStatus);
+	RadioButton(h+470,vm+=16,3,0,"Ожидает запч.",OrderStatus);
+  RadioButton(h+470,vm+=16,2,0,"Ремонт выполнен",OrderStatus);
+  RadioButton(h+470,vm+=16,6,0,"Отказ",OrderStatus);
+    
+  vm = 36;//vm + 32;
   
-  CheckBox(-70,vm,0,"Завершено",DoneMark);
+  //EditField(h+350,vm+20,100,"К оплате",ViewOnly,WSCost,false,0);
+  
+  CheckBox(-80,16,0,"Завершено",DoneMark);
   //statictext(50,190,"_",false);// Edit ************************** Thursday, 24 November 2016 11:54:03!!!!!!!!!!!!!!!!!!!!!!!!!!!!!SIZEEEEEE
   TileButton(1,"Дата");
   TileButton(2,"Товары");
@@ -2061,16 +2085,21 @@ begin
   EditField(h1=120,v=vm-20,60,"Дата заказа",mode,TransDate,false,PasteCurDate);
   h2=h2-10;
   EditField(h2,v,60,"Время",mode,RegTime,false,0);// Edit ************************** Friday, 17 December 2010 09:38:48
-  EditField(h3+130,v,130,"Конт. лицо",Normal,CustContact,false,ContactSClass);
+  EditField(h2+145,v+40,130,"Конт. лицо",Normal,CustContact,false,ContactSClass);
   EditField(h1,v+=vs,60,"Дата заверш.диагн.",mode,EndDiagnDate,false,PasteCurDate); //Edit***************************Sasha2,15:40 25.10.2016
   EditField(h2,v,60,"Время",mode,EndDiagnTime,false,0); //Edit***************************Sasha2,15:40 25.10.2016
   EditField(h1,v+=vs,60,"Дата заверш.рем.",mode,PlanShipDate,false,PasteCurDate);
   EditField(h2,v,60,"Время",mode,DoneTime,false,0);// Edit ************************** Monday, 24 October 2016 17:56:04
   EditField(h1,v+=vs,60,"Дата выдачи",mode,RegDate,false,PasteCurDate);
   EditField(h2,v,60,"Время",mode,OutTime,false,0);// Edit ************************** Monday, 24 October 2016 17:56:02
-  if(currentuser=="SA")then begin
+  /*if(currentuser=="SA")then begin
 		EditField(-200,v,-20,"OldPhone",ViewOnly,OldPhone,false,0);
-  end;
+  end;*/
+  
+  EditField(h3+140,v-40,-20,"Статус оповещения:",Normal,CallStatus,false,CallStatusSClass);
+  //vm=vm+20;
+  EditField(h3+140,v-20,-20,"Причина отказа:",Normal,RejectReason,false,RejectReasonSClass);
+  
   
   v=vm-20;
   halpushbutton(h2+220,v,h2+325,v+50,"FastPaySVODsm","Быстрая оплата");// Edit ************************** Friday, 25 November 2016 11:32:03 
@@ -2205,7 +2234,8 @@ begin
   
   RlColKey(-370,-370,"Сер.",SerialNrTextSearch,false,SerialNrTextSearch);
   RlColKey(-290,-290,"Тел1.",Kontinfo1,false,Kontinfo1);
-  RlColKey(-180,-180,"Тел2.",Phone2,false,Phone2);
+  //RlColKey(-180,-180,"Тел2.",Phone2,false,Phone2);
+  CalculatedColumn(-180,-180,"Статус","SVOServStatus",true);
   //RlCol(-140,-140,"Гар.",Garanty,false);
   RlColKey(-70,-70,"Рем.гот.",PlanShipDate,false,PlanShipDate);
   //if (HasOrderClasses) then begin
@@ -10022,6 +10052,7 @@ begin
   CheckBox(h,v+=16,0,"Диаг. законч.",flags[9]);
   CheckBox(h,v+=16,0,"Ожидает запч.",flags[10]);
   CheckBox(h,v+=16,0,"Ремонт выполнен",flags[11]); //Edit***************************Sasha2,14:55 15.05.2017 }
+  CheckBox(h,v+=16,0,"Отказ",flags[12]); //Edit***************************Sasha2,14:55 15.05.2017 }
   ButtonFrame(h+=148,v = vm,123,3,"Заказ на работу");
   CheckBox(h,v,0,"Не выполнен",flags[4]);
   //CheckBox(h,v+=16,0,"Част. выполнен",flags[5]);  //origin field

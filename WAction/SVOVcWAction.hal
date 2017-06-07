@@ -34,7 +34,8 @@ remote updating procedure HandleSVOReceiptPrinting(record SVOVc,var area);
 external procedure PrintBixolonReceipt(area);
 external procedure ExtractObjWithSeparator(string,string,Boolean,var Integer,var string);// Edit ************************** Monday, 27 February 2017 15:43:57
 remote procedure FindPhonePerson(var record Phone1Vc,string);// Edit ************************** Tuesday, 28 February 2017 16:03:58
-
+external procedure PasteFromSysList(Integer,Integer);
+external function string 255 StringFromSysList(Integer,Integer);
 
 // Edit Start ---------------------------------------------- Edit Start
 	//Wednesday, 3 June 2015 16:58:34
@@ -1692,6 +1693,7 @@ begin
   	case 3:	res = USetStr(31050);// Edit ************************** Wednesday, 21 October 2015 10:25:18
 		case 4: res = USetStr(31061);//Edit-------------------Vitalii 16:43 25.12.2015
 		case 5: res = USetStr(31085);//Edit-------------------Vitalii 16:43 25.12.2015
+		case 6: res = USetStr(31095);//Edit-------------------Vitalii 16:43 25.12.2015
 
   end;
   
@@ -1879,3 +1881,44 @@ BEGIN
   NotepadDClassOnEnterKey = res;
   RETURN;
 END;
+
+
+
+global
+function Boolean CallStatusSClassOnOpenWindow(Integer wn)
+begin
+  Integer mwn;
+  Array string 100 asernrstr;
+  Integer acnt,i;
+  
+  mwn = MotherWindow(wn);
+  
+  asernrstr[0] = "Не оповещен";
+  asernrstr[1] = "Оповещен";
+  asernrstr[2] = "Не удалось";
+  acnt = 3;
+  
+  for (i=0;i<acnt;i=i+1) begin
+    SetListString(wn,len(asernrstr[i]),asernrstr[i],false);
+  end;      
+  CallStatusSClassOnOpenWindow = false;
+  return;
+end;
+
+global
+function Boolean CallStatusSClassOnOKWindow(Integer wn)
+begin
+  Integer mwn;
+  Integer line;
+  string 255 tstr;
+  record IVCashVc IVCashr;
+  longint pos;
+  string 255 tstrserial;
+
+  mwn = MotherWindow(wn);
+
+	PasteFromSysList(wn,0);
+      
+  CallStatusSClassOnOKWindow = false;
+  return;
+end;

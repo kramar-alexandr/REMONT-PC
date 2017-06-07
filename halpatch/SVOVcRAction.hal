@@ -24,8 +24,45 @@ external updating procedure ChangeCostOfIVsInSVO(longint);//Edit----------------
 external updating procedure PhonesFromSVO(longint);//Edit-------------------Vitalii 17:10 03.11.2016
 //remote procedure SENDSECONDSMS(longint);// Edit ************************** Friday, 18 November 2016 14:48:29
 remote updating procedure FastPayInvoicesSVO(record RcVc);// Edit ************************** Friday, 25 November 2016 13:09:52
+external procedure NextM4Number(string,var string);
 
 SetLangMode(LangRussian,"RUS",0);
+
+
+
+global
+function Boolean GetNextInnerOrderNr(var string InnerOrderNr, string SalesGroup)
+BEGIN
+  Boolean res;
+  record SVOVc SVOr;
+  record SRBlock SRRec;
+  record SalesGroupVc SGr;
+	
+	
+	SGr.SGroupCode = SalesGroup;
+	if(readfirstmain(SGr,1,true))then begin
+		NextM4Number(SGr.InnerOrderNr,InnerOrderNr);
+		if (nonblank(InnerOrderNr)) then begin
+			SVOr.InnerOrderNr = InnerOrderNr;
+			if (ReadFirstKey("InnerOrderNr",SVOr,1,true)==false) then begin
+				SRRec.LastCustCode = InnerOrderNr;
+			end else begin
+				SVOr.InnerOrderNr = "ZZZZZZZZZZZZZZZZZZZ";
+				if (ReadLastKey("InnerOrderNr",SVOr,1,false)) then begin
+					NextM4Number(SVOr.InnerOrderNr,InnerOrderNr);
+					if (nonblank(InnerOrderNr)) then begin
+						SVOr.InnerOrderNr = InnerOrderNr; 
+					end else begin
+						InnerOrderNr = "1";
+					end;
+				end;
+			end;
+		end;
+  end;
+  GetNextInnerOrderNr = res;
+  RETURN;
+END;
+
 
 // Edit Start ---------------------------------------------- Edit Start
 //Friday, 22 November 2013 14:00:54
@@ -502,6 +539,10 @@ BEGIN
 			case 3: tstr = tstr & USetStr(31050);
 			case 2: tstr = tstr & USetStr(31046);
 			case 4: tstr = tstr & USetStr(31061);
+			case 5: tstr = tstr & USetStr(31085);
+			case 6: tstr = tstr & USetStr(31095);
+			case 7: tstr = tstr & USetStr(31096);
+			case 8: tstr = tstr & USetStr(31097);
 		end;
 		tstr = tstr & "' " & USetStr(31058) & " '";
 		switch (SVOr.OrderStatus) begin
@@ -510,6 +551,10 @@ BEGIN
 			case 3: tstr = tstr & USetStr(31050);
 			case 2: tstr = tstr & USetStr(31046);
 			case 4: tstr = tstr & USetStr(31061);
+			case 5: tstr = tstr & USetStr(31085);
+			case 6: tstr = tstr & USetStr(31095);
+			case 7: tstr = tstr & USetStr(31096);
+			case 8: tstr = tstr & USetStr(31097);
 		end;
 		tstr = tstr & "'";
 		comment = USetStr(31059);
@@ -725,10 +770,25 @@ BEGIN
   	end;
   end;
  	
- 	if(SVOr.OrderStatus==6 and blank(SVOr.RejectReason))then begin
+ 	if(SVOr.OrderStatus==6 and blank(SVOr.RejectReason))then begin// Edit ************************** Wednesday, 7 June 2017 14:53:49
  		RecordCheckError(1058,"",-1,"RejectReason");
 		res = -1;
 		goto LSVOVcRecordCheck;
+ 	end;
+ 	
+ 	if(blank(SVOr.SalesGroup))then begin// Edit ************************** Wednesday, 7 June 2017 14:53:49
+ 		RecordCheckError(1058,"",-1,"SalesGroup");
+		res = -1;
+		goto LSVOVcRecordCheck;
+ 	end;
+ 	
+ 	if(blank(SVOr.InnerOrderNr))then begin// Edit ************************** Wednesday, 7 June 2017 14:53:49
+ 		GetNextInnerOrderNr(SVOr.InnerOrderNr,SVOr.SalesGroup);
+ 		if(blank(SVOr.InnerOrderNr))then begin
+			RecordCheckError(1058,"",-1,"InnerOrderNr");
+			res = -1;
+			goto LSVOVcRecordCheck;
+		end;
  	end;
 	 
   if(nonblank(SVOr.Kontinfo1))then begin

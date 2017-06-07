@@ -1693,7 +1693,9 @@ begin
   	case 3:	res = USetStr(31050);// Edit ************************** Wednesday, 21 October 2015 10:25:18
 		case 4: res = USetStr(31061);//Edit-------------------Vitalii 16:43 25.12.2015
 		case 5: res = USetStr(31085);//Edit-------------------Vitalii 16:43 25.12.2015
-		case 6: res = USetStr(31095);//Edit-------------------Vitalii 16:43 25.12.2015
+		case 6: res = USetStr(31095);// Edit ************************** Wednesday, 7 June 2017 14:24:29
+		case 7: res = USetStr(31096);// Edit ************************** Wednesday, 7 June 2017 14:24:32
+		case 8: res = USetStr(31097);// Edit ************************** Wednesday, 7 June 2017 14:24:32
 
   end;
   

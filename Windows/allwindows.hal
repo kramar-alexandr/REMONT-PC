@@ -2046,7 +2046,7 @@ begin
   ActiveFieldOnNew("CustCode");  
   //FormName(SVOForm);
   vs = 20; h3 = 550;
-  Tile(0,125,false,"",CustCode);
+  Tile(0,165,false,"",CustCode);
   EditField(h=90,v=6, 82,"Номер",Normal,SerNr,false,TSerSClass);
   EnterSkip(CustCode);
   EditField(h2=240,v,300,"Собств-к",Normal,Addr0,false,0);
@@ -2054,29 +2054,31 @@ begin
   
   halpushbutton(h-45,vm+17,h+80,vm+50,"ChangeSVOSalesGroup","Перенести ремонт"); 
   HalPushButton(h-45,vm+55,h+80,vm+80,"PrintAndSetRegDateInSVODsm","Выдать");//Edit-------------------Vitalii 13:51 27.10.2016
-  EditField(240,vm,80, "Принял",Normal,CustomField7,false,UserSClass);// Edit ************************** Monday, 31 May 2010 9:22:11 AM
-  EditField(240,vm+20,80,"Гр.Пр.",ViewOnly,SalesGroup,false,0);
-  EditField(240,vm+40,80,"Вн.номер ремонта",Normal,InnerOrderNr,false,0);
+  EditField(260,vm,80, "Принял",Normal,CustomField7,false,UserSClass);// Edit ************************** Monday, 31 May 2010 9:22:11 AM
+  EditField(260,vm+=20,80,"Гр.Пр.",ViewOnly,SalesGroup,false,SalesGroupSClass);
+  EditField(260,vm+=20,80,"Вн.номер ремонта",Normal,InnerOrderNr,false,0);
 
-  EditField(h+350,vm,100,"Сервис мастер",Normal,ServiceManager,false,UserSClass);// Edit ************************** Monday, 31 May 2010 9:22:11 AM
-  EditField(h+350,vm+20,100,"К оплате",ViewOnly,WSCost,false,0);
+  EditField(260,vm+=20,100,"Сер. мастер",Normal,ServiceManager,false,UserSClass);// Edit ************************** Monday, 31 May 2010 9:22:11 AM
+  EditField(226040,vm+=20,100,"К оплате",ViewOnly,WSCost,false,0);
 
-  vm = vm-32;
-  ButtonFrame(h+470,vm+16,130,7,"");
-	RadioButton(h+470,vm+=16,0,0,"В ожидании",OrderStatus);
-	RadioButton(h+470,vm+=16,5,0,"На диагностике",OrderStatus);
-	RadioButton(h+470,vm+=16,4,0,"На согласовании",OrderStatus);
-	RadioButton(h+470,vm+=16,1,0,"Диаг. законч.",OrderStatus);
-	RadioButton(h+470,vm+=16,3,0,"Ожидает запч.",OrderStatus);
-  RadioButton(h+470,vm+=16,2,0,"Ремонт выполнен",OrderStatus);
-  RadioButton(h+470,vm+=16,6,0,"Отказ",OrderStatus);
+  vm = 10;
+  ButtonFrame(h+490,vm+16,130,9,"Статус");
+	RadioButton(h+490,vm+=16,0,0,"В ожидании",OrderStatus);
+	RadioButton(h+490,vm+=16,5,0,"На диагностике",OrderStatus);
+	RadioButton(h+490,vm+=16,4,0,"На согласовании",OrderStatus);
+	RadioButton(h+490,vm+=16,7,0,"Согласовано",OrderStatus);
+	RadioButton(h+490,vm+=16,1,0,"В ремонте",OrderStatus);
+	RadioButton(h+490,vm+=16,8,0,"В удал. сервисе",OrderStatus);
+	RadioButton(h+490,vm+=16,3,0,"Ожидает запч.",OrderStatus);
+  RadioButton(h+490,vm+=16,2,0,"Готов",OrderStatus);
+  RadioButton(h+490,vm+=16,6,0,"Отказ",OrderStatus);
     
   vm = 36;//vm + 32;
   
   //EditField(h+350,vm+20,100,"К оплате",ViewOnly,WSCost,false,0);
   
   CheckBox(-80,16,0,"Завершено",DoneMark);
-  //statictext(50,190,"_",false);// Edit ************************** Thursday, 24 November 2016 11:54:03!!!!!!!!!!!!!!!!!!!!!!!!!!!!!SIZEEEEEE
+  statictext(50,260,"_",false);// Edit ************************** Thursday, 24 November 2016 11:54:03!!!!!!!!!!!!!!!!!!!!!!!!!!!!!SIZEEEEEE
   TileButton(1,"Дата");
   TileButton(2,"Товары");
   //TileButton(3,"Валюта");
@@ -2231,8 +2233,8 @@ begin
   //RlColKey(335,335,"Клиент",CustCode,false,CustCode);
   RlColKey(180,180,"Наим.",Addr0,false,Name);
   RlCol(300,300,"Проблема",Comment1,false);
-  
-  RlColKey(-370,-370,"Сер.",SerialNrTextSearch,false,SerialNrTextSearch);
+  RlColKey(400,400,"Код заказа",InnerOrderNr,false,InnerOrderNr);
+  RlCol(-370,-370,"Статус зв.",CallStatus,false);
   RlColKey(-290,-290,"Тел1.",Kontinfo1,false,Kontinfo1);
   //RlColKey(-180,-180,"Тел2.",Phone2,false,Phone2);
   CalculatedColumn(-180,-180,"Статус","SVOServStatus",true);

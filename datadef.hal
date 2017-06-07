@@ -551,6 +551,7 @@ begin
     RecordField(FastPMCash,M4Code,20,0);
     RecordField(FastPMCard,M4Code,20,0);
     RecordField(Objects,M4UStr,60,ObjVc); //Edit***************************Sasha2,11:39 31.05.2017
+    RecordField(InnerOrderNr,M4Code,60,0); //Edit***************************Sasha2,11:39 31.05.2017
   EndRecordAdd;
   
   RecordAddBegin(PUVc,"PUVc_Custom");

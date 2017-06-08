@@ -1924,3 +1924,21 @@ begin
   CallStatusSClassOnOKWindow = false;
   return;
 end;
+
+
+global procedure OpenNewActivity(record ActVc Actr,string user)
+begin
+record RcVc RepSpec;
+	
+	if(user==currentuser and setinset(user,Actr.MainPersons))then begin
+		OpenWindow("ActDClass",1,0,"","",Actr);    
+	end;
+	if(nonblank(Actr.Phone))then begin
+		RepSpec.f1 = Actr.Phone;
+		RepSpec.Media = mtScreen;
+		RepSpec.repname = "ServClientOrderRn";
+		runreport(RepSpec,0);
+	end;
+
+return;
+end;

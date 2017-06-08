@@ -2,6 +2,8 @@ external function string 255 StrReplace(string,string,string);
 external procedure UTCTimeToDate(LongInt,var Date,var Time);
 external function boolean MySendWebRequest(string,integer,longint,boolean,string,string,string,string,boolean,area,var area,integer);
 external procedure MySendAsyncWebRequest(string,integer,longint,boolean,string,string,string,string,area,string,integer);
+external procedure FindUserMailboxName(string,var string,var string);
+external procedure AlarmMessage(record ActVc,integer,string);
 
 global webpublic updating procedure WebBinotelAPICallEnd()
 begin
@@ -187,14 +189,14 @@ end;
 global webpublic updating procedure WebBinotelAPIPush()
 begin
 	area arequest,newarea,encodearea;
-	string 255 tstr;
+	string 255 tstr,mailboxnr;
 	longint lenth,i,lasti;
 	json jobj;
 	record BinotelCallPushVc BECr;
 	string 255 node;
 	time timestamp;
 	date datestamp;
-	string 255 str;
+	string 255 str,recidstr;
 	
 	webgetpostdata(encodearea);
 	writeareatofile(encodearea,"WebBinotelAPICallPush.txt",0);
@@ -317,6 +319,9 @@ begin
 		
 		
 	recordstore(BECr,true);
+	//logtext(0,"recidstr " & recidstr);
+	//SendAlarmMessage("@MESSAGE@","",tstr,recidstr);
+	//AllClientsRemoteAsync.AlarmMessage(Actr,1,"MESAGE");
 	
 	
 	if(BECr.requestType=="gettingCallSettings")then begin

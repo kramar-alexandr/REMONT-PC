@@ -1,4 +1,6 @@
 external function string 255 StrReplace(string,string,string);
+external procedure ExtractObj(string,var Integer,var string);
+external procedure OpenNewActivity(record ActVc,string);
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -9,9 +11,9 @@ BEGIN
   record ActVc Actr;
   record BinotelUserBlock BUb;
   row BinotelUserBlock BUrw;
-  integer i,mtrw;
+  integer i,mtrw,pos;
   string 100 outerphone, inergroup, acttype;
-  string 255 users,comment;
+  string 255 users,comment,muser;
   boolean testf,cufound;
   record CUVc CUr;
   record UserVc User;
@@ -124,6 +126,17 @@ BEGIN
 			end;
 			Actr.MainPersons = users;
 			recordstore(Actr,true);
+			
+			
+			
+			pos = 0;
+			ExtractObj(users,pos,muser);
+			while (nonblank(muser)) begin
+				if(nonblank(muser))then begin
+					AllClientsRemoteAsync.OpenNewActivity(Actr,muser);
+				end;
+				ExtractObj(users,pos,muser);
+			end;
 		
 		end;
 		

@@ -841,7 +841,6 @@ begin
   record RcVc RepSpec;
   record ActVc Actr1,oldActr1;
   
-  
   wn = OpenWindow("AlarmWClass",1,0,"","",RepSpec);
   DeselectWindow(wn,false);
   RepSpec.f1 = msg;

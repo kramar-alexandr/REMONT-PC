@@ -2059,7 +2059,7 @@ begin
   EditField(260,vm+=20,80,"Вн.номер ремонта",Normal,InnerOrderNr,false,0);
 
   EditField(260,vm+=20,100,"Сер. мастер",Normal,ServiceManager,false,UserSClass);// Edit ************************** Monday, 31 May 2010 9:22:11 AM
-  EditField(226040,vm+=20,100,"К оплате",ViewOnly,WSCost,false,0);
+  EditField(260,vm+=20,100,"К оплате",ViewOnly,WSCost,false,0);
 
   vm = 10;
   ButtonFrame(h+490,vm+16,130,9,"Статус");

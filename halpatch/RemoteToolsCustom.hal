@@ -2926,6 +2926,35 @@ begin
 	record SynkGlobalDBIDTakenSerVc SynkGlobalDBIDTakenSerr;
 	record SynkGlobalAutoSerVc SynkGlobalAutoSerr;
 	
+	//модуль Аренда (rent module)
+	record AgreementVc Agreementr;
+	record RentResVc RentResr;
+	record RentResBookVc RentBookr;
+	record DispatchVc Dispatchr;
+	record IntINrsVc IntINrsr; //История товара по регистрам OffHireVc, INTransferVc, DispatchVc
+	record OffHireVc OffHirer;
+	record InternMovVc InternMovr;
+	record RentINVc RentINr;
+	record IntISVc IntISr;
+	record CustRentStatVc CustRentStatr; //customer rent status
+	record QualConVc QualConr; //Inspection of rental items
+	record RentChrgVc RentChrgr;//Agreement Charges
+	record IntSerBalVc IntSBr;
+	//record AgreeTypeVc AgreeTyper; //Тип начисления для аренды
+	
+	record INTransferVc INTransferr;
+
+	//модуль Активы (assets module)
+	record AT2UnitVc AT2Unitr; //Активы
+	/*
+	record AT2Vc AT2r; //Категории активов
+	record AT2WrofVc AT2Wrofr; //Выбытие активов
+	record AT2DprVc AT2Dprr; //Переоценка активов
+	record AT2TakeVc AT2Taker; //Статус активов
+	record AT2TransVc AT2Transr; //Операции/Движение активов
+	*/
+	//record DprModVc DprModr; //Модели амортизации
+	
 	/*record ITVc ITr;
 	record CTypeVc CTyper;
 	record UnitVc Unitr;
@@ -2933,7 +2962,8 @@ begin
 	record ObjVc Objr;
 	record LocationVc Locationr;
 	record PDVc PDr;
-	record CurncyCodeVc CurncyCoder;*/
+	record CurncyCodeVc CurncyCoder;
+	record AccVc Accr*/
 
 	Boolean TrHs;
 	
@@ -3268,6 +3298,136 @@ begin
 	  if (TrHs) then begin
 	    RecordDelete(SVOr);
 	    StepBack(SVOr);
+	  end;
+	end;
+	//Rent
+	TrHs = true;
+	while (LoopMain(Agreementr,1,TrHs)) begin
+	  if (TrHs) then begin
+	    RecordDelete(Agreementr);
+	    StepBack(Agreementr);
+	  end;
+	end;
+
+	TrHs = true;
+	while (LoopMain(RentResr,1,TrHs)) begin
+	  if (TrHs) then begin
+	    RecordDelete(RentResr);
+	    StepBack(RentResr);
+	  end;
+	end;
+
+	TrHs = true;
+	while (LoopMain(RentBookr,1,TrHs)) begin
+	  if (TrHs) then begin
+	    RecordDelete(RentBookr);
+	    StepBack(RentBookr);
+	  end;
+	end;
+
+	TrHs = true;
+	while (LoopMain(Dispatchr,1,TrHs)) begin
+	  if (TrHs) then begin
+	    RecordDelete(Dispatchr);
+	    StepBack(Dispatchr);
+	  end;
+	end;
+
+	TrHs = true;
+	while (LoopMain(IntINrsr,1,TrHs)) begin
+	  if (TrHs) then begin
+	    RecordDelete(IntINrsr);
+	    StepBack(IntINrsr);
+	  end;
+	end;
+
+	TrHs = true;
+	while (LoopMain(OffHirer,1,TrHs)) begin
+	  if (TrHs) then begin
+	    RecordDelete(OffHirer);
+	    StepBack(OffHirer);
+	  end;
+	end;
+
+	TrHs = true;
+	while (LoopMain(InternMovr,1,TrHs)) begin
+	  if (TrHs) then begin
+	    RecordDelete(InternMovr);
+	    StepBack(InternMovr);
+	  end;
+	end;
+
+	TrHs = true;
+	while (LoopMain(RentINr,1,TrHs)) begin
+	  if (TrHs) then begin
+	    RecordDelete(RentINr);
+	    StepBack(RentINr);
+	  end;
+	end;
+
+	TrHs = true;
+	while (LoopMain(IntISr,1,TrHs)) begin
+	  if (TrHs) then begin
+	    RecordDelete(IntISr);
+	    StepBack(IntISr);
+	  end;
+	end;
+
+	TrHs = true;
+	while (LoopMain(CustRentStatr,1,TrHs)) begin
+	  if (TrHs) then begin
+	    RecordDelete(CustRentStatr);
+	    StepBack(CustRentStatr);
+	  end;
+	end;
+
+	TrHs = true;
+	while (LoopMain(QualConr,1,TrHs)) begin
+	  if (TrHs) then begin
+	    RecordDelete(QualConr);
+	    StepBack(QualConr);
+	  end;
+	end;
+
+	TrHs = true;
+	while (LoopMain(RentChrgr,1,TrHs)) begin
+	  if (TrHs) then begin
+	    RecordDelete(RentChrgr);
+	    StepBack(RentChrgr);
+	  end;
+	end;
+	
+	TrHs = true;
+	while (LoopMain(IntSBr,1,TrHs)) begin
+	  if (TrHs) then begin
+	    RecordDelete(IntSBr);
+	    StepBack(IntSBr);
+	  end;
+	end;
+	
+	/*
+	TrHs = true;
+	while (LoopMain(AgreeTyper,1,TrHs)) begin
+	  if (TrHs) then begin
+	    RecordDelete(AgreeTyper);
+	    StepBack(AgreeTyper);
+	  end;
+	end;
+	*/
+	
+	TrHs = true;
+	while (LoopMain(INTransferr,1,TrHs)) begin
+	  if (TrHs) then begin
+	    RecordDelete(INTransferr);
+	    StepBack(INTransferr);
+	  end;
+	end;
+	
+	TrHs = true;
+	while (LoopMain(AT2Unitr,1,TrHs)) begin
+	  if (TrHs) then begin
+	    RecordDelete(AT2Unitr);
+	    StepBack(AT2Unitr);
 	  end;
 	end;
 

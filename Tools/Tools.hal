@@ -824,17 +824,42 @@ return;
 end;
 
 //Edit***************************Sasha2,16:26 23.05.2017 {
-function string 200 FindUsersWithActiveTasksQueue()
+function string 200 FindUsersWithActiveTasksQueue(record SVOVc SVOr)
 begin
   string 200 users;
   Record UserVc Userr;
   Boolean testf,TrHs;
+  row SVOVc SVOrw;
+  string 50 location;
+  record IntSerBalVc ISBr;
+  
+  if(matrowcnt(SVOr)>0)then begin
+  	matrowget(SVOr,0,SVOrw);
+  	if(nonblank(SVOrw.ArtCode))then begin
+  		ISBr.Item = SVOrw.ArtCode;
+  		ISBr.Serial = SVOrw.SerialNr;
+  		TrHs = true;
+  		while(loopkey("Serial",ISBr,1,TrHs))begin
+  			if(ISBr.Item!=SVOrw.ArtCode)then begin TrHs = false; end;
+  			if(ISBr.Serial!=SVOrw.SerialNr)then begin TrHs = false; end;
+  			
+  			if(TrHs)then begin
+  				if(ISBr.Quant>0)then begin
+						location = ISBr.Location;
+  				end;
+  			end;
+  		end;
+  	end;
+  end;
   
     TrHs = true;
     while (LoopMain(Userr,1,TrHs)) begin
       testf = true;
       if (Userr.Closed!=0) then begin testf = false; end;
       if (Userr.InTasksQueue==0) then begin testf = false; end;
+      if (Userr.Location!=location) then begin testf = false; end;
+      
+      
       if (testf) then begin
         if (len(users & Userr.Code)<200) then begin
           if (NonBlank(users)) then begin
@@ -862,7 +887,6 @@ begin
 	boolean creaetf;
 	
 	sernum = SVOr.SerNr;
-	//if(left(sernum,1)=="1" and SVOr.OrderStatus==0 and SVOr.DoneMark==0)then begin
 		Actr.SVOSerNr = SVOr.SerNr;
 		if(!readfirstkey("SVOSerNr",Actr,1,true))then begin
 			creaetf = true;
@@ -879,21 +903,7 @@ begin
 				if(readfirstmain(INr,1,true))then begin
 					Actr.Comment = INr.Code & " " & Actr.Comment;
 					Actr.Phone = left(SVOrw.Spec,20);
-					/*switch(INr.Group)begin //Edit***************************Sasha2,16:14 23.05.2017 {
-						case"APP1":Actr.MainPersons = "BATCHENKO,MOISEEV,DIMA,KAYZER";
-											 Actr.Comment = addhours(currenttime,2) & " " & Actr.Comment;
-						case"APP2":Actr.MainPersons = "TRIKOPA,SAO,RABCHUN,KAYZER";
-											 Actr.Comment = addhours(currenttime,5) & " " & Actr.Comment;
-						case"APP3":Actr.MainPersons = "TRIKOPA,SAO,RABCHUN,KAYZER";
-											 Actr.Comment = addhours(currenttime,5) & " " & Actr.Comment;
-					end;
-					switch(INr.Code)begin
-						case "IPAD":	Actr.MainPersons = "POGEDAEV,KAYZER";
-												 Actr.Comment = addhours(currenttime,5) & " " & Actr.Comment;
-						case "IPHONE3":	Actr.MainPersons = "MOISEEV";
-												 		Actr.Comment = addhours(currenttime,5) & " " & Actr.Comment;
-					end;*/ 
-					Actr.MainPersons = FindUsersWithActiveTasksQueue;
+					Actr.MainPersons = FindUsersWithActiveTasksQueue(SVOr);
 					Actr.Comment = addhours(currenttime,2) & " " & Actr.Comment; //Edit***************************Sasha2,16:14 23.05.2017 }
 				end;	
 			end;			
@@ -904,28 +914,13 @@ begin
 				INr.Code = SVOrw.ArtCode;
 				if(readfirstmain(INr,1,true))then begin
 					Actr.Comment = INr.Code & " " & Actr.Comment;
-					Actr.Phone = left(SVOrw.Spec,20);
-					/*switch(INr.Group)begin  //Edit***************************Sasha2,16:14 23.05.2017 {
-						case"APP1":Actr.MainPersons = "BATCHENKO,MOISEEV,DIMA,KAYZER";
-											 Actr.Comment = addhours(Actr.StartTime,2) & " " & Actr.Comment;
-						case"APP2":Actr.MainPersons = "TRIKOPA,SAO,RABCHUN,KAYZER";
-											 Actr.Comment = addhours(Actr.StartTime,5) & " " & Actr.Comment;
-						case"APP3":Actr.MainPersons = "TRIKOPA,SAO,RABCHUN,KAYZER";
-											 Actr.Comment = addhours(Actr.StartTime,5) & " " & Actr.Comment;
-					end;
-					switch(INr.Code)begin
-						case "IPAD":	Actr.MainPersons = "POGEDAEV,KAYZER";
-					 								Actr.Comment = addhours(currenttime,5) & " " & Actr.Comment;
-						case "IPHONE3":	Actr.MainPersons = "MOISEEV";
-												 		Actr.Comment = addhours(currenttime,5) & " " & Actr.Comment;
-					end;*/ 
-					Actr.MainPersons = FindUsersWithActiveTasksQueue;
+					Actr.Phone = left(SVOrw.Spec,20); 
+					Actr.MainPersons = FindUsersWithActiveTasksQueue(SVOr);
 					Actr.Comment = addhours(currenttime,2) & " " & Actr.Comment; //Edit***************************Sasha2,16:14 23.05.2017 }
 				end;	
 			end;
 			recordstore(Actr,true);
 		end;
-	//end;
 	if((SVOr.OrderStatus>0 or SVOr.DoneMark>0))then begin
 		Actr.SVOSerNr = SVOr.SerNr;
 		if(readfirstkey("SVOSerNr",Actr,1,true))then begin

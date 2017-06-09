@@ -400,8 +400,9 @@ BEGIN
       end;
     end;
   	
-  	CreateActFromSVOToEnginer(SVOr);
-
+  	if(SVOr.GetItemFlag>0)then begin
+  		CreateActFromSVOToEnginer(SVOr);
+		end;
   	
   //SENDFIRSTSMS(SVOr);
   PhonesFromSVO(SVOr.SerNr);//Edit-------------------Vitalii 17:10 03.11.2016
@@ -582,7 +583,9 @@ BEGIN
 		CreateNoterChangeInSVO(SVOr,tstr,comment);
 	end;
 	
-	CreateActFromSVOToEnginer(SVOr);
+	if(SVOr.GetItemFlag>0)then begin
+		CreateActFromSVOToEnginer(SVOr);
+	end;
   PhonesFromSVO(SVOr.SerNr);//Edit-------------------Vitalii 17:09 03.11.2016
   
   SVOVcRecordUpdateAfter = res;

@@ -518,7 +518,7 @@ BEGIN
         readfirstmain(SVOr,1,true);
         matrowget(SVOr,0,SVOrw);
         OutString(500,0,SVOrw.Spec,true);
-        OutString(650,0,SVOrw.SerialNr,true);
+        OutString(650,0,SVOrw.NewSerialNr,true);
         OutString(800,0,SVOr.TransDate,true);
         OutString(850,0,SVOr.SerNr,true);
       end;

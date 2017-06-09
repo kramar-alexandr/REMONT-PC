@@ -1064,13 +1064,13 @@ record RLinkVc RLr;
         If(mtrw>0) then begin
           For(i=0;i<mtrw;i=i+1) begin
             MatRowget(SVOr,i,SVOrw);
-            If(SVOrw.SerialNr==serial) then begin
+            If(SVOrw.NewSerialNr==serial) then begin
               StartFormat(15)
                 OutString(0,"DblSVOVc",SVOr.SerNr,false);
                 OutString(90,0,SVOr.Vlastnik,false);
                 OutString(150,0,SVOrw.ArtCode,false);
                 OutString(200,0,SVOrw.Spec,false);
-                OutString(250,0,SVOrw.SerialNr,false);
+                OutString(250,0,SVOrw.NewSerialNr,false);
               EndFormat;
             end; 
           end; 

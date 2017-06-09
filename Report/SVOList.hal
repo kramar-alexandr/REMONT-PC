@@ -119,7 +119,7 @@ begin
       OutString(20,0,SVOrw.ArtCode,false);
       OutVal(100,0,SVOrw.Quant,M40Val,true);
       OutString(110,0,SVOrw.Spec,false);
-      OutString(270,0,SVOrw.SerialNr,false);
+      OutString(270,0,SVOrw.NewSerialNr,false);
       OutString(410,0,SVOrw.Price,true);
       OutString(440,0,SVOrw.VATCode,true);
       OutLongInt(480,0,SVOrw.WOSerNr,true);
@@ -344,7 +344,7 @@ begin
           OutString(0,0,SVOr.Vlastnik,false);
           OutString(0,0,SVOrw.ArtCode,false);
           OutString(11,0,SVOrw.Spec,false);
-          OutString(12,0,SVOrw.SerialNr,false);
+          OutString(12,0,SVOrw.NewSerialNr,false);
           OutString(13,0,SVOr.SerNr,false);
           OutString(13,0,SVOr.TransDate,false);
           OutString(14,0,SVOr.Garanty,false);
@@ -452,6 +452,11 @@ string 200 artcode,spec,price;
 			end;
 		end;
 	end;
+	
+	startformat(15);
+		OutStringID(0,"DblCrNewSVO","Создать заявку на заказ",false,RepSpec.f1);
+		OutStringID(1,"DblCULCLass","Список контактов",true,RepSpec.f1);
+	endformat;
 	
 	endjob;
 	

@@ -1,6 +1,7 @@
 external function string 255 StrReplace(string,string,string);
 external procedure ExtractObj(string,var Integer,var string);
 external procedure OpenNewActivity(record ActVc,string);
+external procedure OpenNewCUInfo(record ActVc,string);
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -121,6 +122,9 @@ BEGIN
 				end;
 				CUr.CustCat = "РОЗН";
 				CUr.CUType = 1;
+				CUr.CurncyCode = "UAH";
+				CUr.VATCode = "0%";
+				CUr.PayDeal = "ОФ";
 				logtext(0,"Новый контакт");
 				recordinsert(CUr,true);
 			end;
@@ -144,5 +148,126 @@ BEGIN
  	
  	
   BinotelCallEndVcRecordSaveAfter = res;
+  RETURN;
+END;
+
+
+global
+updating function LongInt BinotelCallPushVcRecordSaveAfter(var record BinotelCallPushVc BCEr,record BinotelCallPushVc BCE2r,LongInt stat,LongInt long4)
+BEGIN
+  LongInt res;
+  record ActVc Actr;
+  record BinotelUserBlock BUb;
+  row BinotelUserBlock BUrw;
+  integer i,mtrw,pos;
+  string 100 outerphone, inergroup, acttype;
+  string 255 users,comment,muser;
+  boolean testf,cufound;
+  record CUVc CUr;
+  record UserVc User;
+ 	
+		logtext(0,"BinotelCallPushVcRecordSaveAfter" & BCEr.disposition);
+		if(BCEr.disposition=="ANSWER" or BCEr.disposition=="TRANSFER")then begin
+			logtext(0,"BinotelCallPushVcRecordSaveAfter");
+			acttype = "CALL";
+			comment = "Принятый вызов";
+			if(nonblank(BCEr.internalNumber))then begin
+				while(loopmain(User,1,true))begin
+					if(User.Phone2==BCEr.internalNumber)then begin
+						if(blank(users))then begin
+							users = User.Code;
+						end else begin
+							users = users & "," & User.Code;
+						end;
+					end;
+				end;
+			end;
+		
+		
+			if(nonblank(users))then begin
+				recordnew(Actr);
+			
+				Actr.StartTime = currenttime;
+				if(nonblank(BCEr.billsec))then begin
+					if(evaltoval(BCEr.billsec)>0)then begin
+						Actr.StartTime = addseconds(currenttime,-evaltoval(BCEr.billsec));
+						Actr.EndTime = currenttime;
+					end;
+				end;
+				Actr.TransDate = currentdate;
+				Actr.SerNr = NextSerNr("ActVc",Actr.TransDate,-1,false,"");
+				Actr.Comment = comment;
+				//Actr.AlarmType = kAlarmTypeMessage; //Edit-------------------Vitalii 11:31 23.12.2016
+				Actr.AlarmType = kAlarmTypeNone;
+				Actr.TodoFlag = kTodoFlagTodo;
+				Actr.SymbNr = kActivitySymbolCall;
+				Actr.Phone = BCEr.externalNumber;
+				Actr.ActType = acttype;
+				CUr.Code = Actr.Phone;
+				cufound = false;
+				if(Readfirstmain(CUr,1,true))then begin
+					Actr.CUCode = CUr.Code;
+					Actr.CUName = CUr.Name;
+					cufound = true;
+				end else begin
+					CUr.Phone = Actr.Phone;
+					if(readfirstkey("Phone",CUr,1,true))then begin
+						Actr.CUCode = CUr.Code;
+						Actr.CUName = CUr.Name;
+						cufound = true;
+					end else begin
+						CUr.AltPhone = Actr.Phone;
+						if(readfirstkey("AltPhone",CUr,1,true))then begin
+							Actr.CUCode = CUr.Code;
+							Actr.CUName = CUr.Name;
+							cufound = true;
+						end else begin
+							CUr.Mobile = Actr.Phone;
+							if(readfirstkey("Mobile",CUr,1,true))then begin
+								Actr.CUCode = CUr.Code;
+								Actr.CUName = CUr.Name;
+								cufound = true;
+							end;
+						end;
+					end;
+				end;
+				logtext(0,cufound & " Новый контакт");
+				if(cufound==false)then begin
+					recordnew(CUr);
+					CUr.Code = Actr.Phone;
+					CUr.Phone = Actr.Phone;
+					if(nonblank(BCEr.customerDataName))then begin
+						CUr.Name = BCEr.customerDataName;
+					end else begin
+						CUr.Name = "Новый контакт";
+					end;
+					CUr.CustCat = "РОЗН";
+					CUr.CUType = 1;
+					CUr.CurncyCode = "UAH";
+					CUr.VATCode = "0%";
+					CUr.PayDeal = "ОФ";
+					logtext(0,"Новый контакт");
+					recordinsert(CUr,true);
+				end;
+				Actr.MainPersons = users;
+				//recordstore(Actr,true);
+			
+			
+			
+				pos = 0;
+				ExtractObj(users,pos,muser);
+				while (nonblank(muser)) begin
+					if(nonblank(muser))then begin
+						AllClientsRemoteAsync.OpenNewCUInfo(Actr,muser);
+					end;
+					ExtractObj(users,pos,muser);
+				end;
+		
+			end;
+		end;
+		
+ 	
+ 	
+  BinotelCallPushVcRecordSaveAfter = res;
   RETURN;
 END;

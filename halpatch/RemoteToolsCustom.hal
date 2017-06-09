@@ -2191,7 +2191,7 @@ begin
                 end;
               end;*/
               //if (Blank(SVOr.SerialNrTextSearch)) then begin// Edit ************************** Tuesday, 21 February 2017 11:28:19
-                SVOr.SerialNrTextSearch = SVOrw.SerialNr;
+                SVOr.SerialNrTextSearch = SVOrw.NewSerialNr;
                 saveF = true;
               /*end else begin// Edit ************************** Tuesday, 21 February 2017 11:28:20
                 if (len(SVOr.SerialNrTextSearch & " " & SVOrw.SerialNr)<=255 and FindStringInString(SVOr.SerialNrTextSearch,SVOrw.SerialNr)==false) then begin

@@ -33,7 +33,7 @@ BEGIN
   record UserVc Userr;
   Boolean limitdaysf;
   record PLDefVc PLDefR;
-  integer pos,k;
+  integer pos,k,cnt;
   array string 100 fio;
   
   if ((oldcustcode!=SVOp.CustCode) and (nonblank(oldcustcode))) then begin
@@ -95,26 +95,49 @@ BEGIN
     SVOp.RebCode = CUr.RebCode;
     SVOp.ItemFrPartner = CUr.IsPartner; //Edit***************************Sasha2,16:21 15.12.2015 {
     SVOp.Vlastnik = CUr.Name;
-    SVOp.Priynato = CUr.Person;
     
-    k=0;
-		pos = 0;
-		ExtractObjWithSeparator(" ",CUr.Person,true,pos,tstr);
-		while (nonblank(tstr)) begin    
-			fio[k] = tstr;
-			k=k+1;
+    pos = 0;
+    cnt = 0;
+    
+    
+    
+		ExtractObjWithSeparator(" ",CUr.Name,false,pos,tstr);
+		while (nonblank(tstr)) begin
+			if(nonblank(tstr))then begin
+				switch(cnt)begin
+					case 0: SVOp.Priynato = tstr;
+					case 1: SVOp.Name = tstr;
+					case 2: SVOp.MiddleName = tstr;
+				end;
+				cnt = cnt + 1;
+			end;
+			ExtractObjWithSeparator(" ",CUr.Name,false,pos,tstr);
+		end;
+    
+   
+    
+    if(nonblank(CUr.Person))then begin
+    	SVOp.Priynato = CUr.Person;
+			k=0;
+			pos = 0;
 			ExtractObjWithSeparator(" ",CUr.Person,true,pos,tstr);
-		end;
+			while (nonblank(tstr)) begin    
+				fio[k] = tstr;
+				k=k+1;
+				ExtractObjWithSeparator(" ",CUr.Person,true,pos,tstr);
+			end;
 	
-		if(k>0)then begin
-			SVOp.Priynato = fio[0];
+			if(k>0)then begin
+				SVOp.Priynato = fio[0];
+			end;
+			if(k>1)then begin
+				SVOp.Name = fio[1];
+			end;
+			if(k>2)then begin
+				SVOp.MiddleName = fio[2];
+			end;
 		end;
-		if(k>1)then begin
-			SVOp.Name = fio[1];
-		end;
-		if(k>2)then begin
-			SVOp.MiddleName = fio[2];
-		end;
+		
     
     SVOp.Kontinfo1 = CUr.Phone;
     SVOp.Kontinfo2 = CUr.eMail;
@@ -125,6 +148,7 @@ BEGIN
       SVOp.CustTaxTemplateCode = CUr.TaxTemplateCode;
     end;
     SVOp.Phone = CUr.Phone;
+    SVOp.Phone2 = CUr.AltPhone;
     SVOp.Fax = CUr.Fax;
     SVOp.VATNr = CUr.VATNr;
     tstr = CUr.PLCode;

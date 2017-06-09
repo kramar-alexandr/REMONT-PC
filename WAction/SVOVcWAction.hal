@@ -133,7 +133,7 @@ END;
 
 	// Edit End ---------------------------------------------- Edit End
 	
-function Boolean SVODClassSerialNrEFAfter(Integer wn,Integer rownr,Integer changed)
+function Boolean SVODClassNewSerialNrEFAfter(Integer wn,Integer rownr,Integer changed)
 BEGIN
   record SVOVc SVOr;
   row SVOVc SVOrw;// Edit ************************** Tuesday, 2 June 2015 20:13:13
@@ -144,7 +144,7 @@ BEGIN
     GetWindowRecord(wn,SVOr);    
     DeselectWindow(wn,false);
     matrowget(SVOr,rownr,SVOrw);
-    	SVOrw.SerialNr = uppercase(SVOrw.SerialNr);
+    	SVOrw.NewSerialNr = uppercase(SVOrw.NewSerialNr);
     matrowput(SVOr,rownr,SVOrw);
     PutWindowRecord(wn,SVOr);
     GetWindowRecord(wn,SVOr);    
@@ -161,7 +161,7 @@ BEGIN
 	//Tuesday, 2 June 2015 20:10:43
 	
     matrowget(SVOr,rownr,SVOrw);
-    tstr = DuplicateSVOSerial(SVOrw.SerialNr);
+    tstr = DuplicateSVOSerial(SVOrw.NewSerialNr);
     if(nonblank(tstr))then begin
       MessageBox(31013,tstr & " " & USetStr(31012));
     end;
@@ -169,7 +169,7 @@ BEGIN
 	// Edit End ---------------------------------------------- Edit End
 	
   end;
-  SVODClassSerialNrEFAfter = true;
+  SVODClassNewSerialNrEFAfter = true;
   return;
 end;
 // Edit Start ---------------------------------------------- Edit Start
@@ -652,7 +652,7 @@ BEGIN
     case "CurncyCode": res = SVODClassCurncyCodeEFAfter(wn,changed);
     case "CustCode": res = SVODClassCustCodeEFAfter(wn,changed);
     case "InvoiceToCode": res = SVODClassInvoiceToCodeEFAfter(wn,changed);
-    case "SerialNr": res = SVODClassSerialNrEFAfter(wn,rownr,changed);
+    case "NewSerialNr": res = SVODClassNewSerialNrEFAfter(wn,rownr,changed);// Edit ************************** Friday, 9 June 2017 09:39:46
     case "PlanShip": res = SVODClassPlanShipEFAfter(wn,changed);
     case "TransDate": res = SVODClassTransDateEFAfter(wn,changed);
     case "SalesMan": res = SVODClassSalesManEFAfter(wn,changed);
@@ -1440,7 +1440,7 @@ begin
     MatRowGet(SVOr,rownr,SVOrw);
   end;
   
-  if (blank(SVOrw.SerialNr)) and (blank(SVOrw.SecondarySerialNr)) and (blank(SVOrw.AlternateDeviceID)) then begin
+  if (blank(SVOrw.NewSerialNr)) and (blank(SVOrw.SecondarySerialNr)) and (blank(SVOrw.AlternateDeviceID)) then begin
     MessageBox(23700,"");
     goto LWarrantyStatusSVODsm;
   end;
@@ -1933,12 +1933,78 @@ record RcVc RepSpec;
 	if(user==currentuser and setinset(user,Actr.MainPersons))then begin
 		OpenWindow("ActDClass",1,0,"","",Actr);    
 	end;
-	if(nonblank(Actr.Phone))then begin
-		RepSpec.f1 = Actr.Phone;
-		RepSpec.Media = mtScreen;
-		RepSpec.repname = "ServClientOrderRn";
-		runreport(RepSpec,0);
+
+return;
+end;
+
+global procedure OpenNewCUInfo(record ActVc Actr,string user)
+begin
+record RcVc RepSpec;
+	
+	if(user==currentuser and setinset(user,Actr.MainPersons))then begin	
+		if(nonblank(Actr.Phone))then begin
+			RepSpec.f1 = Actr.Phone;
+			RepSpec.Media = mtScreen;
+			RepSpec.repname = "ServClientOrderRn";
+			runreport(RepSpec,0);
+		end;
 	end;
 
 return;
+end;
+
+
+global
+procedure DblCrNewSVO(string dblstr,string l,Integer currepwn)
+begin
+  record SVOVc SVOr;
+  record CUVc CUr;
+  Record PhoneVc Phoner;
+  string 200 phone,warning;
+  boolean cufound;
+  
+  cufound = false;
+  phone = l;
+  if(NONBLANK(l))THEN BEGIN
+		CUr.Code = phone;
+		cufound = false;
+		if(Readfirstmain(CUr,1,true))then begin
+			cufound = true;
+		end else begin
+			CUr.Phone = phone;
+			if(readfirstkey("Phone",CUr,1,true))then begin
+				cufound = true;
+			end else begin
+				CUr.AltPhone = phone;
+				if(readfirstkey("AltPhone",CUr,1,true))then begin
+					cufound = true;
+				end else begin
+					CUr.Mobile = phone;
+					if(readfirstkey("Mobile",CUr,1,true))then begin
+						cufound = true;
+					end;
+				end;
+			end;
+		end;
+	
+		recordnew(SVOr);
+		SVOr.CustCode = CUr.Code;
+		PasteCUInSVO(SVOr,"",warning)
+		openwindow("SVODclass",1,0,"","",SVOr);
+	
+	END;
+  
+  
+  
+  return;
+end;
+
+global
+procedure DblCULCLass(string dblstr,string l,Integer currepwn)
+begin
+record CUVc CUr;
+  
+		openwindow("CULClass",1,0,"","",CUr);
+  
+  return;
 end;

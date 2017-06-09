@@ -293,7 +293,7 @@ begin
         insertRowF = true;
       end;
       if (NonBlank(serialNr) and serialNr!="неизвестен") then begin
-        SVOrw.SerialNr = serialNr;
+        SVOrw.NewSerialNr = serialNr;
         insertRowF = true;
       end;
       if (insertRowF and total<>0) then begin

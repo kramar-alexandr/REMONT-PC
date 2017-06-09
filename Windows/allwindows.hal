@@ -2055,8 +2055,11 @@ begin
   halpushbutton(h-45,vm+17,h+80,vm+50,"ChangeSVOSalesGroup","Перенести ремонт"); 
   HalPushButton(h-45,vm+55,h+80,vm+80,"PrintAndSetRegDateInSVODsm","Выдать");//Edit-------------------Vitalii 13:51 27.10.2016
   EditField(260,vm,80, "Принял",Normal,CustomField7,false,UserSClass);// Edit ************************** Monday, 31 May 2010 9:22:11 AM
+  CheckBox(360,vm,0,"Устройсто принял",GetItemFlag);
   EditField(260,vm+=20,80,"Гр.Пр.",ViewOnly,SalesGroup,false,SalesGroupSClass);
+  EditField(460,vm,60,"Дата приемки",ViewOnly,GetItemTime,false,0);
   EditField(260,vm+=20,80,"Вн.номер ремонта",Normal,InnerOrderNr,false,0);
+  EditField(460,vm,60,"Время приемки",ViewOnly,GetItemDate,false,0);
 
   EditField(260,vm+=20,100,"Сер. мастер",Normal,ServiceManager,false,UserSClass);// Edit ************************** Monday, 31 May 2010 9:22:11 AM
   EditField(260,vm+=20,100,"К оплате",ViewOnly,WSCost,false,0);
@@ -2118,7 +2121,7 @@ begin
   MatCol(t=1,32,"Товар",0,ArtCode,false,INSClass);
   MatCol(t,94,"Кол-во",0,Quant,true,0);
   Flip(1);
-  MatCol(t=1,144,"Сер. №",0,SerialNr,false,SVOSerSClass);
+  MatCol(t=1,144,"Сер. №",0,NewSerialNr,false,0);
   EnterSkip(ItemType);
   MatCol(t=1,250,"Наимен.",0,Spec,false,0);
   EnterSkip(ArtCode);
@@ -2132,7 +2135,8 @@ begin
   Flip(3);
   MatCol(t=1,144,"Наимен.",0,Spec,false,0);
   MatCol(t,-180,"Стоим-ть ремонта",0,Cost,true,0);
-  MatCol(t,-90,"Макс.стоим-сть",0,MaxCost,true,0);
+  //MatCol(t,-90,"Макс.стоим-сть",0,MaxCost,true,0);// Edit ************************** Friday, 9 June 2017 09:41:58
+  MatCol(t,-90,"SerNr",0,SerialNr,false,0);// Edit ************************** Friday, 9 June 2017 09:42:00
   InsertRowTest;
   DeleteRowTest;
   EndMatrix;

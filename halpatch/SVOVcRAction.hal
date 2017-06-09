@@ -340,16 +340,26 @@ BEGIN
   string 200 tstr;
   boolean testf;
   integer mtrw,i;
+  record SalesGroupVc SGr;
   
+  SGr.SGroupCode = SVOr.SalesGroup;
+	if(readfirstmain(SGr,1,true))then begin
+		if(nonblank(SGr.InnerOrderNr))then begin
+			if(SVOr.InnerOrderNr>SGr.InnerOrderNr)then begin
+				SGr.InnerOrderNr = SVOr.InnerOrderNr;
+				recordstore(SGr,true);
+			end;
+		end;
+	end;
   
   mtrw = matrowcnt(SVOr);
   tstr = "";
   for(i=0;i<mtrw;i=i+1)begin
     matrowget(SVOr,i,SVOrw);
     testf = true;
-    SVHistr.SerialNr = SVOrw.SerialNr;
+    SVHistr.SerialNr = SVOrw.NewSerialNr;
     while(loopmain(SVHistr,1,testf))begin
-      if(SVHistr.SerialNr!=SVOrw.SerialNr) then begin testf=false; end;
+      if(SVHistr.SerialNr!=SVOrw.NewSerialNr) then begin testf=false; end;
       if(testf and SVHistr.Qty>-1)then begin
         if(SVHistr.TransNr!=SVOr.SerNr)then begin
 					if(nonblank(tstr))then begin
@@ -371,9 +381,9 @@ BEGIN
     mtrw = matrowcnt(SVOr);
     for(i=0;i<mtrw;i=i+1)begin
       matrowget(SVOr,i,SVOrw);
-      if(nonblank(SVOrw.SerialNr))then begin
+      if(nonblank(SVOrw.NewSerialNr))then begin
         recordnew(SVHistr);
-        SVHistr.SerialNr = SVOrw.SerialNr;
+        SVHistr.SerialNr = SVOrw.NewSerialNr;
         SVHistr.ArtCode = SVOrw.ArtCode;
         SVHistr.Qty = SVOrw.Quant;
         SVHistr.TransNr = SVOr.SerNr;
@@ -443,7 +453,18 @@ BEGIN
   string 200 tstr,comment;// Edit ************************** Thursday, 14 July 2011 12:31:03
   boolean testf;// Edit ************************** Thursday, 14 July 2011 12:31:02
   integer mtrw,i;// Edit ************************** Thursday, 14 July 2011 12:31:01
-
+	record SalesGroupVc SGr;
+  
+  SGr.SGroupCode = SVOr.SalesGroup;
+	if(readfirstmain(SGr,1,true))then begin
+		if(nonblank(SGr.InnerOrderNr))then begin
+			if(SVOr.InnerOrderNr>SGr.InnerOrderNr)then begin
+				SGr.InnerOrderNr = SVOr.InnerOrderNr;
+				recordstore(SGr,true);
+			end;
+		end;
+	end;
+	
   if ((SVOr.DoneMark!=0) and (SVO2r.DoneMark==0)) then begin
     SVOInspection(SVOr);
   end;
@@ -456,9 +477,9 @@ BEGIN
   for(i=0;i<mtrw;i=i+1)begin
     matrowget(SVOr,i,SVOrw);
     testf = true;
-    SVHistr.SerialNr = SVOrw.SerialNr;
+    SVHistr.SerialNr = SVOrw.NewSerialNr;
     while(loopmain(SVHistr,1,testf))begin
-      if(SVHistr.SerialNr!=SVOrw.SerialNr) then begin testf=false; end;
+      if(SVHistr.SerialNr!=SVOrw.NewSerialNr) then begin testf=false; end;
       if(testf and SVHistr.Qty>-1)then begin
       	if(SVHistr.TransNr!=SVOr.SerNr)then begin
 					if(nonblank(tstr))then begin
@@ -480,8 +501,8 @@ BEGIN
   mtrw = matrowcnt(SVO2r);
     for(i=0;i<mtrw;i=i+1)begin
       matrowget(SVO2r,i,SVOrw);
-      if(nonblank(SVOrw.SerialNr))then begin
-        SVHistr.SerialNr = SVOrw.SerialNr;
+      if(nonblank(SVOrw.NewSerialNr))then begin
+        SVHistr.SerialNr = SVOrw.NewSerialNr;
         SVHistr.TransNr = SVOr.SerNr;
         if(readfirstmain(SVHistr,2,true))then begin
           //SVHistr.Qty = -1;
@@ -495,14 +516,14 @@ BEGIN
   mtrw = matrowcnt(SVOr);
     for(i=0;i<mtrw;i=i+1)begin
       matrowget(SVOr,i,SVOrw);
-      if(nonblank(SVOrw.SerialNr))then begin
-        SVHistr.SerialNr = SVOrw.SerialNr;
+      if(nonblank(SVOrw.NewSerialNr))then begin
+        SVHistr.SerialNr = SVOrw.NewSerialNr;
         SVHistr.TransNr = SVOr.SerNr;
         if(readfirstmain(SVHistr,2,true))then begin
         end else begin
           recordnew(SVHistr);
         end;
-        SVHistr.SerialNr = SVOrw.SerialNr;
+        SVHistr.SerialNr = SVOrw.NewSerialNr;
         SVHistr.ArtCode = SVOrw.ArtCode;
         SVHistr.Qty = SVOrw.Quant;
         SVHistr.TransNr = SVOr.SerNr;
@@ -675,7 +696,7 @@ BEGIN
   LongInt res;
   Integer rwcnt,i,errcode;
   LongInt oldnr;
-  Boolean found,gentrans,MainItemFound,transf;
+  Boolean found,gentrans,MainItemFound,transf,TrHs;
   record COVc COr;
   string 255 tstr,errstr;
   record CUVc CUr;
@@ -684,12 +705,27 @@ BEGIN
   array longint sernr;// Edit ************************** Thursday, 30 June 2016 10:53:51
   integer count;// Edit ************************** Thursday, 30 June 2016 10:53:49
   Integer insertmode,updatemode;
+  record RejectReasonVc RRr;// Edit ************************** Thursday, 8 June 2017 16:39:10
+  record SVOVc lSVOr;
 
   res = 0;
   
   //Edit***************************Sasha2,16:57 18.05.2017 {
   insertmode = 1;//Rs_insert
   updatemode = 2;//Rs_update
+  
+  if(stat==updatemode)then begin
+		if(SVOr.GetItemFlag==1 and SVO2r.GetItemFlag==0)then begin //Edit***************************Sasha2,17:32 25.10.2016
+			SVOr.GetItemDate = currentdate;
+			SVOr.GetItemTime = CurrentTime;
+		end;
+  end;
+  if(stat==insertmode)then begin
+		if(SVOr.GetItemFlag==1)then begin //Edit***************************Sasha2,17:32 25.10.2016
+			SVOr.GetItemDate = currentdate;
+			SVOr.GetItemTime = CurrentTime;
+		end;
+  end;
   
   if((SVOr.OrderStatus==1 or SVOr.OrderStatus==2 or SVOr.OrderStatus==3) and blankdate(SVOr.EndDiagnDate))then begin //Edit***************************Sasha2,17:32 25.10.2016
   	SVOr.EndDiagnDate = currentdate;
@@ -776,6 +812,15 @@ BEGIN
 		goto LSVOVcRecordCheck;
  	end;
  	
+ 	if(nonblank(SVOr.RejectReason))then begin// Edit ************************** Wednesday, 7 June 2017 14:53:49
+ 		RRr.RejectReason = SVOr.RejectReason;
+ 		if(readfirstmain(RRr,1,true)==false)then begin
+			RecordCheckError(1290,"",-1,"RejectReason");
+			res = -1;
+			goto LSVOVcRecordCheck;
+		end;
+ 	end;
+ 	
  	if(blank(SVOr.SalesGroup))then begin// Edit ************************** Wednesday, 7 June 2017 14:53:49
  		RecordCheckError(1058,"",-1,"SalesGroup");
 		res = -1;
@@ -790,6 +835,36 @@ BEGIN
 			goto LSVOVcRecordCheck;
 		end;
  	end;
+ 	
+ 	if(nonblank(SVOr.InnerOrderNr))then begin
+ 		TrHs = true;
+ 		lSVOr.InnerOrderNr = SVOr.InnerOrderNr;
+ 		while(loopkey("InnerOrderNr",lSVOr,1,TrHs))begin
+ 			if(lSVOr.InnerOrderNr!=SVOr.InnerOrderNr)then begin TrHs = false; end;
+ 			
+ 			if(TrHs)then begin
+ 				if(lSVOr.SerNr!=SVOr.SerNr)then begin
+ 					TrHs = false;
+ 					RecordCheckError(1391,lSVOr.SerNr,-1,"InnerOrderNr");
+					res = -1;
+					goto LSVOVcRecordCheck;
+ 				end;
+ 			end;
+ 		end;
+ 	end;
+ 	
+ 	rwcnt = MatRowCnt(SVOr);
+    if (rwcnt>0) then begin
+    	for (i=0;i<rwcnt;i=i+1) begin
+				MatRowGet(SVOr,i,SVOrw);
+    		if (NonBlank(SVOrw.ArtCode)) then begin
+    			IF(blank(SVOrw.SerialNr))THEN BEGIN
+						SVOrw.SerialNr = SVOr.InnerOrderNr;// Edit ************************** Friday, 9 June 2017 09:33:57
+						MatRowPut(SVOr,i,SVOrw);
+					END;
+    		end;
+    	end;
+    end;
 	 
   if(nonblank(SVOr.Kontinfo1))then begin
   	if(left(SVOr.Kontinfo1,1)!="0")then begin
@@ -975,6 +1050,7 @@ BEGIN
         goto LSVOVcRecordCheck;
       end;
     end;
+        
     if (nonblank(SVOrw.ArtCode)) then begin
       if (blank(SVOrw.SerialNr) and SVOrw.ItemKind==0) then begin
         RecordCheckError(1132,"",i,"SerialNr");      
@@ -1015,7 +1091,7 @@ BEGIN
           end;
         end;
         //if (Blank(SVOr.SerialNrTextSearch)) then begin// Edit ************************** Tuesday, 21 February 2017 11:27:50
-          SVOr.SerialNrTextSearch = SVOrw.SerialNr;
+          SVOr.SerialNrTextSearch = SVOrw.NewSerialNr;
         /*end else begin
           if (len(SVOr.SerialNrTextSearch & " " & SVOrw.SerialNr)<=255 and FindStringInString(SVOr.SerialNrTextSearch,SVOrw.SerialNr)==false) then begin
             SVOr.SerialNrTextSearch = SVOr.SerialNrTextSearch & " " & SVOrw.SerialNr;// Edit ************************** Tuesday, 21 February 2017 11:27:51
@@ -1107,8 +1183,8 @@ BEGIN
     mtrw = matrowcnt(SVOr);
     for(i=0;i<mtrw;i=i+1)begin
       matrowget(SVOr,i,SVOrw);
-      if(nonblank(SVOrw.SerialNr))then begin
-        SVHistr.SerialNr = SVOrw.SerialNr;
+      if(nonblank(SVOrw.NewSerialNr))then begin
+        SVHistr.SerialNr = SVOrw.NewSerialNr;
         SVHistr.TransNr = SVOr.SerNr;
         if(readfirstmain(SVHistr,2,true))then begin
           SVHistr.Qty = -1;

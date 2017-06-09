@@ -221,6 +221,11 @@ begin
     RecordField(InnerOrderNr,M4Str,50,0);// Edit ************************** Monday, 29 May 2017 16:43:44
     RecordField(CallStatus,M4Str,50,0);// Edit ************************** Wednesday, 7 June 2017 12:19:41
     RecordField(RejectReason,M4Str,255,0);// Edit ************************** Wednesday, 7 June 2017 12:19:41
+    RecordField(GetItemFlag,M4Mark,0,0);// Edit ************************** Friday, 9 June 2017 09:48:32
+    RecordField(GetItemDate,M4Date,0,0);
+    RecordField(GetItemTime,M4Time,0,0);
+    
+    ArrayField(NewSerialNr,M4Str,60,0);// Edit ************************** Friday, 9 June 2017 09:29:41
     
     SubsetKeyBegin2(RegDate);// Edit ************************** Wednesday, 15 February 2017 19:31:45
     StoreInBaseKey;

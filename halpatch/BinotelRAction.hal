@@ -166,9 +166,9 @@ BEGIN
   record CUVc CUr;
   record UserVc User;
  	
-		logtext(0,"BinotelCallPushVcRecordSaveAfter" & BCEr.disposition);
+		
 		if(BCEr.requestType=="receivedTheCall")then begin
-			//logtext(0,"BinotelCallPushVcRecordSaveAfter");
+			logtext(0,"BinotelCallPushVcRecordSaveAfter");
 			acttype = "CALL";
 			comment = "Принятый вызов";
 			if(nonblank(BCEr.internalNumber))then begin
@@ -258,7 +258,7 @@ BEGIN
 				ExtractObj(users,pos,muser);
 				while (nonblank(muser)) begin
 					if(nonblank(muser))then begin
-						AllClientsRemoteAsync.	(Actr,muser);
+						AllClientsRemoteAsync.OpenNewCUInfo(Actr,muser);
 					end;
 					ExtractObj(users,pos,muser);
 				end;

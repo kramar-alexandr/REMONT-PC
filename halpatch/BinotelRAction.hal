@@ -167,7 +167,7 @@ BEGIN
   record UserVc User;
  	
 		
-		if(BCEr.requestType=="receivedTheCall")then begin
+		if(BCEr.requestType=="answeredTheCall")then begin
 			logtext(0,"BinotelCallPushVcRecordSaveAfter");
 			acttype = "CALL";
 			comment = "Принятый вызов";

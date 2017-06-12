@@ -190,6 +190,11 @@ BEGIN
       goto LOffHireVcRecordCheck;
     end;
   end;
+  if (blank(OffHirep.Location)) begin //Edit***************************Sasha2,15:38 09.06.2017 {
+    RecordCheckError(1854,"",-1,"Location");      
+    res = -1;
+    goto LOffHireVcRecordCheck;
+  end; //Edit***************************Sasha2,15:38 09.06.2017 }
   rwcnt = MatRowCnt(OffHirep);
   for (i=0;i<rwcnt;i=i+1) begin
     MatRowGet(OffHirep,i,OffHirerw);

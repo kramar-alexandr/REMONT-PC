@@ -130,16 +130,18 @@ begin
   row SVOVc SVOrw;
   string 255 receiptNr,device,serialNr,clientName,inspector,serviceWorks,shareParts;
   string 255 serviceMaster,comment,repairNote,point;
-  date blankd,tempDate,dateOfReceipt,repairDate,dateDelivery;
+  date blankd,dateOfReceipt,repairDate,dateDelivery;
   Boolean insertRowF;
   val workCost,sharePartCost,total,discount,cardDiscount;
   array string 100 phones;
-  string 100 phone,mail,addPhone,addPhone2,curPhone;
+  string 100 tempDate,phone,mail,addPhone,addPhone2,curPhone;
+  LongInt importRowCnt;
   
   //if (SetclientNamepage("WINDOWS-1251")==false) then begin
    // LogText(0,"***  Load Codepage ISO-8859-5. FAIL****	");
   //End;
 
+	importRowCnt = 1;
 	while (TestEOF()==false) begin
     receiptNr = ImportField;
     device = ImportField;
@@ -236,6 +238,8 @@ begin
     	    LogText(0,"Contact of receipt #" & receiptNr & " already exists. Code: " & curPhone & ", name: " & clientName);
         end;
       end;
+    end else begin
+      LogText(0,"Phone was not imported from row #" & importRowCnt & ", origin receiptNr #" & receiptNr);
     end;
     if (NonBlank(curPhone) or NonBlank(clientName)) then begin
       //LogText(0,"Receipt #" & receiptNr);
@@ -253,10 +257,11 @@ begin
         SVOr.TransDate = dateOfReceipt;
       end;
       if (NonBlank(inspector) and inspector!="0") then begin
-        if (NonBlank(SVOr.Inshe)) then begin
+        SVOr.Inspector = inspector;
+        /*if (NonBlank(SVOr.Inshe)) then begin
           SVOr.Inshe = SVOr.Inshe & ". ";
         end;
-        SVOr.Inshe = SVOr.Inshe & "Inspector:" & inspector;
+        SVOr.Inshe = SVOr.Inshe & "Inspector:" & inspector;*/
       end;
       if (repairDate!=blankd) then begin
         SVOr.PlanShipDate = repairDate;
@@ -309,10 +314,12 @@ begin
       if (RecordInsert(SVOr,true)==false) then begin
         LogText(0,"Problem to insert receipt #" & receiptNr);
       end;
+    end else begin
+      LogText(0,"Order was not imported from row #" & importRowCnt & ", origin receiptNr #" & receiptNr);
     end;
     
     if (NextImportLine(true)) then begin end;
-    
+    importRowCnt = importRowCnt + 1;
 	end;
 
 return;

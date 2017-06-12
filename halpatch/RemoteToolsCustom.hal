@@ -15,6 +15,9 @@ external procedure ExtractObj(string,var Integer,var string);
 external function Boolean SetInSet2(string,string);
 external function Boolean MySendWebRequest(string,longint,longint,boolean,string,string,string,string,boolean,area,var area,integer);
 external function Boolean FindStringInString(string, string);
+remote updating function Integer RecordAction_raPasteSVOInOffHire(record SVOVc,var record OffHireVc,record LocalMachineBlock,Boolean); //Edit***************************Sasha2,11:57 09.06.2017
+remote updating function Integer RecordAction_raPasteSVOInDispatch(record SVOVc,var record DispatchVc,record LocalMachineBlock,Boolean); //Edit***************************Sasha2,11:59 09.06.2017
+external procedure GetCurUser(var record UserVc);
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -2964,6 +2967,23 @@ begin
 	record PDVc PDr;
 	record CurncyCodeVc CurncyCoder;
 	record AccVc Accr*/
+	
+	//CUSTOM ASERVICE REGISTERS
+	//record MyLabelItemVc
+	record MyRepricingVc MyRepricingr;
+	//record GigieneTextVc GigieneTextr;
+	record INNnum1Vc INNnum1r;
+	record SVOHistSerialVc SVOHistSerialr;
+	record WebSyncRegVc WebSyncRegr;
+	//record IssueVc Issuer;
+	//record RejectReasonVc RejectReasonr;
+	//record DefectVc Defectr;
+	record MoveForServiceVc MoveForServicer;
+	record PhoneVc Phoner;
+	record Phone1Vc Phone1r;
+	//record SVOPrintDataVc SVOPrintDatar;
+	record BinotelCallEndVc BinotelCallEndr;
+	record BinotelCallPushVc BinotelCallPushr;
 
 	Boolean TrHs;
 	
@@ -3430,6 +3450,170 @@ begin
 	    StepBack(AT2Unitr);
 	  end;
 	end;
+	
+	//CUSTOM REGISTERS REMOVAL
+	
+	TrHs = true;
+	while (LoopMain(MyRepricingr,1,TrHs)) begin
+	  if (TrHs) then begin
+	    RecordDelete(MyRepricingr);
+	    StepBack(MyRepricingr);
+	  end;
+	end;
+	
+	TrHs = true;
+	while (LoopMain(INNnum1r,1,TrHs)) begin
+	  if (TrHs) then begin
+	    RecordDelete(INNnum1r);
+	    StepBack(INNnum1r);
+	  end;
+	end;
+	
+	TrHs = true;
+	while (LoopMain(SVOHistSerialr,1,TrHs)) begin
+	  if (TrHs) then begin
+	    RecordDelete(SVOHistSerialr);
+	    StepBack(SVOHistSerialr);
+	  end;
+	end;
+	
+	TrHs = true;
+	while (LoopMain(WebSyncRegr,1,TrHs)) begin
+	  if (TrHs) then begin
+	    RecordDelete(WebSyncRegr);
+	    StepBack(WebSyncRegr);
+	  end;
+	end;
+	
+	TrHs = true;
+	while (LoopMain(MoveForServicer,1,TrHs)) begin
+	  if (TrHs) then begin
+	    RecordDelete(MoveForServicer);
+	    StepBack(MoveForServicer);
+	  end;
+	end;
+	
+	TrHs = true;
+	while (LoopMain(Phoner,1,TrHs)) begin
+	  if (TrHs) then begin
+	    RecordDelete(Phoner);
+	    StepBack(Phoner);
+	  end;
+	end;
+	
+	TrHs = true;
+	while (LoopMain(Phone1r,1,TrHs)) begin
+	  if (TrHs) then begin
+	    RecordDelete(Phone1r);
+	    StepBack(Phone1r);
+	  end;
+	end;
+	
+	TrHs = true;
+	while (LoopMain(BinotelCallEndr,1,TrHs)) begin
+	  if (TrHs) then begin
+	    RecordDelete(BinotelCallEndr);
+	    StepBack(BinotelCallEndr);
+	  end;
+	end;
+	
+	TrHs = true;
+	while (LoopMain(BinotelCallPushr,1,TrHs)) begin
+	  if (TrHs) then begin
+	    RecordDelete(BinotelCallPushr);
+	    StepBack(BinotelCallPushr);
+	  end;
+	end;
 
 return;
 end; //Edit***************************Sasha2,11:22 22.09.2016 }
+
+global //Edit***************************Sasha2,11:35 09.06.2017 {
+updating function Integer CreateAndOKOffHireFromSVO(record SVOVc SVOr,record LocalMachineBlock LocMachBl,var string errMes)
+begin
+  record OffHireVc OHr,oldOHr;
+  Integer r;
+
+    errMes = "";
+    if (UserCanAction("SVOToOffHire",true)) then begin
+      r = RecordAction_raPasteSVOInOffHire(SVOr,OHr,LocMachBl,false);
+      if (r==0) then begin
+        RecordCopy(oldOHr,OHr);
+        OHr.OKFlag = 1;
+        if (RecordUpdate(oldOHr,OHr,true)!=0) then begin 
+          r = 31092;
+          errMes = " #" & OHr.SerNr & ". " & USetStr(5394);
+        end;
+      end;
+    end else begin
+      r = 1274;
+      errMes = StringFromStringSet(3,"SVOToOffHire");
+    end;
+    
+    CreateAndOKOffHireFromSVO = r;
+  return;
+end; //Edit***************************Sasha2,11:35 09.06.2017 }
+
+global //Edit***************************Sasha2,11:35 09.06.2017 {
+updating function Integer CreateAndOKDispatchFromSVO(record SVOVc SVOr,record LocalMachineBlock LocMachBl,var string errMes)
+begin
+  record DispatchVc Dispatchr,oldDispatchr;
+  record UserVc Userr;
+  row SVOVc SVOrw;
+  Integer err,i,rwcnt;
+  string 20 location;
+  Boolean anyAvailableItemsF;
+  record IntSerBalVc IntSBr;
+
+    errMes = "";
+    if (UserCanAction("SVOToDispatch",true)) then begin
+      GetCurUser(Userr);
+      if (Blank(LocMachBl.DefLocation) and Blank(Userr.Location)) then begin
+        err = 31098;
+      end else begin
+        location = LocMachBl.DefLocation;
+        if (Blank(location)) then begin
+          location = Userr.Location;
+        end;
+      end; 
+      if (err==0) then begin
+        rwcnt = MatRowCnt(SVOr);
+        if (rwcnt>0) then begin
+          anyAvailableItemsF = false;
+          for (i=0;i<rwcnt;i=i+1) begin
+            MatRowGet(SVOr,i,SVOrw);
+            if (NonBlank(SVOrw.ArtCode) and NonBlank(SVOrw.SerialNr)) then begin
+              IntSBr.Item = SVOrw.ArtCode;
+              IntSBr.Serial = SVOrw.SerialNr;
+              IntSBr.Location = location;
+              if (ReadFirstMain(IntSBr,3,true) and IntSBr.Quant>0) then begin
+                anyAvailableItemsF = true;
+                i = rwcnt;
+              end;
+            end;
+          end;
+          if (anyAvailableItemsF==false) then begin
+            err = 31099;
+            errMes = " " & location;
+          end;
+        end;
+      end;
+      if (err==0) then begin
+        err = RecordAction_raPasteSVOInDispatch(SVOr,Dispatchr,LocMachBl,false);
+      end;
+      if (err==0) then begin
+        RecordCopy(oldDispatchr,Dispatchr);
+        Dispatchr.OKFlag = 1;
+        if (RecordUpdate(oldDispatchr,Dispatchr,true)!=0) then begin 
+          err = 11580;
+          errMes = " #" & Dispatchr.SerNr & ". " & USetStr(5394);
+        end;
+      end;
+    end else begin
+      err = 1274;
+      errMes = StringFromStringSet(3,"SVOToDispatch");
+    end;
+    
+    CreateAndOKDispatchFromSVO = err;
+  return;
+end; //Edit***************************Sasha2,11:35 09.06.2017 }

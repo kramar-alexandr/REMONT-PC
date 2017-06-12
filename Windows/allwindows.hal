@@ -2034,7 +2034,7 @@ begin
   end;
   
 	WindowBegin("Заказ на обслуживание",SVODClass,CGview,-);
-  SetWRect(20,80,850,720);
+  SetWRect(20,80,850,800);
   Sizeable(-1,-1,0,0);
   AutoSizeWindow(false);
   DynamicWindow;
@@ -2046,7 +2046,7 @@ begin
   ActiveFieldOnNew("CustCode");  
   //FormName(SVOForm);
   vs = 20; h3 = 550;
-  Tile(0,165,false,"",CustCode);
+  Tile(0,170,false,"",CustCode);
   EditField(h=90,v=6, 82,"Номер",Normal,SerNr,false,TSerSClass);
   EnterSkip(CustCode);
   EditField(h2=240,v,300,"Собств-к",Normal,Addr0,false,0);
@@ -2055,7 +2055,7 @@ begin
   halpushbutton(h-45,vm+17,h+80,vm+50,"ChangeSVOSalesGroup","Перенести ремонт"); 
   HalPushButton(h-45,vm+55,h+80,vm+80,"PrintAndSetRegDateInSVODsm","Выдать");//Edit-------------------Vitalii 13:51 27.10.2016
   EditField(260,vm,80, "Принял",Normal,CustomField7,false,UserSClass);// Edit ************************** Monday, 31 May 2010 9:22:11 AM
-  CheckBox(360,vm,0,"Устройсто принял",GetItemFlag);
+  CheckBox(360,vm,0,"Устройство принял",GetItemFlag);
   EditField(260,vm+=20,80,"Гр.Пр.",ViewOnly,SalesGroup,false,SalesGroupSClass);
   EditField(460,vm,60,"Дата приемки",ViewOnly,GetItemTime,false,0);
   EditField(260,vm+=20,80,"Вн.номер ремонта",Normal,InnerOrderNr,false,0);
@@ -2063,6 +2063,7 @@ begin
 
   EditField(260,vm+=20,100,"Сер. мастер",Normal,ServiceManager,false,UserSClass);// Edit ************************** Monday, 31 May 2010 9:22:11 AM
   EditField(260,vm+=20,100,"К оплате",ViewOnly,WSCost,false,0);
+  EditField(260,vm+=20,100,"Ответственный менеджер",Normal,Inspector,false,0); //Edit***************************Sasha2,16:52 09.06.2017
 
   vm = 10;
   ButtonFrame(h+490,vm+16,130,9,"Статус");

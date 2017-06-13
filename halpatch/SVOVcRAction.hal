@@ -404,7 +404,7 @@ BEGIN
     end;
   	
   	if(SVOr.GetItemFlag>0)then begin
-  		//CreateActFromSVOToEnginer(SVOr,"");
+  		CreateActFromSVOToEnginer(SVOr,"");
 		end;
   	
   //SENDFIRSTSMS(SVOr);
@@ -587,7 +587,7 @@ BEGIN
 	end;
 	
 	if(SVOr.GetItemFlag>0)then begin
-		//CreateActFromSVOToEnginer(SVOr,"");
+		CreateActFromSVOToEnginer(SVOr,"");
 	end;
   PhonesFromSVO(SVOr.SerNr);//Edit-------------------Vitalii 17:09 03.11.2016
   

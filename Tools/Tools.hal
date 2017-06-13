@@ -899,46 +899,48 @@ begin
 	  end;
   	sernum = SVOr.SerNr;
   	Actr.SVOSerNr = SVOr.SerNr;
-  	if(!readfirstkey("SVOSerNr",Actr,1,true))then begin
-  		creaetf = true;
-  		recordnew(Actr);
-  		Actr.MainPersons = "";
-  		Actr.Comment = SVOr.SerNr & " " & SVOr.Comment1;
-  		//Actr.AlarmType = kAlarmTypeMessage; //Edit-------------------Vitalii 11:31 23.12.2016
-      Actr.AlarmType = kAlarmTypeNone;
-  		Actr.SVOSerNr = SVOr.SerNr;
-  		Actr.TodoFlag = kTodoFlagTodo;
-  		Actr.SymbNr = 3;
-  		Actr.ActType = "ENGNR";
-  		if(matrowcnt(SVOr)>0)then begin
-  			matrowget(SVOr,0,SVOrw);
-  			INr.Code = SVOrw.ArtCode;
-  			if(readfirstmain(INr,1,true))then begin
-  				Actr.Comment = INr.Code & " " & Actr.Comment;
-  				Actr.Phone = curPhone; //left(SVOrw.Spec,20);
-  				Actr.MainPersons = FindUsersWithActiveTasksQueue(SVOr,curLocation);
-  				if (NonBlank(SVOr.Inspector)) then begin
-  				  Actr.MainPersons = SVOr.Inspector & "," & Actr.MainPersons;
-  				end;
-  				Actr.Comment = addhours(currenttime,2) & " " & Actr.Comment; //Edit***************************Sasha2,16:14 23.05.2017 }
-  			end;	
-  		end;			
-  	end else begin
-  		Actr.Comment = SVOr.SerNr & " " & SVOr.Comment1;
-  		if(matrowcnt(SVOr)>0)then begin
-  			matrowget(SVOr,0,SVOrw);
-  			INr.Code = SVOrw.ArtCode;
-  			if(readfirstmain(INr,1,true))then begin
-  				Actr.Comment = INr.Code & " " & Actr.Comment;
-  				Actr.Phone = curPhone; //left(SVOrw.Spec,20);
-  				Actr.MainPersons = FindUsersWithActiveTasksQueue(SVOr,curLocation);
-  				if (NonBlank(SVOr.Inspector)) then begin
-  				  Actr.MainPersons = SVOr.Inspector & "," & Actr.MainPersons;
-  				end;
-  				Actr.Comment = addhours(currenttime,2) & " " & Actr.Comment; //Edit***************************Sasha2,16:14 23.05.2017 }
-  			end;	
-  		end;
-  		recordstore(Actr,true);
+  	if (NonBlank(curLocation)) then begin
+    	if(!readfirstkey("SVOSerNr",Actr,1,true))then begin
+    		creaetf = true;
+    		recordnew(Actr);
+    		Actr.MainPersons = "";
+    		Actr.Comment = SVOr.SerNr & " " & SVOr.Comment1;
+    		//Actr.AlarmType = kAlarmTypeMessage; //Edit-------------------Vitalii 11:31 23.12.2016
+        Actr.AlarmType = kAlarmTypeNone;
+    		Actr.SVOSerNr = SVOr.SerNr;
+    		Actr.TodoFlag = kTodoFlagTodo;
+    		Actr.SymbNr = 3;
+    		Actr.ActType = "ENGNR";
+    		if(matrowcnt(SVOr)>0)then begin
+    			matrowget(SVOr,0,SVOrw);
+    			INr.Code = SVOrw.ArtCode;
+    			if(readfirstmain(INr,1,true))then begin
+    				Actr.Comment = INr.Code & " " & Actr.Comment;
+    				Actr.Phone = curPhone; //left(SVOrw.Spec,20);
+    				Actr.MainPersons = FindUsersWithActiveTasksQueue(SVOr,curLocation);
+    				if (NonBlank(SVOr.Inspector)) then begin
+    				  Actr.MainPersons = SVOr.Inspector & "," & Actr.MainPersons;
+    				end;
+    				Actr.Comment = addhours(currenttime,2) & " " & Actr.Comment; //Edit***************************Sasha2,16:14 23.05.2017 }
+    			end;	
+    		end;			
+    	end else begin
+    		Actr.Comment = SVOr.SerNr & " " & SVOr.Comment1;
+    		if(matrowcnt(SVOr)>0)then begin
+    			matrowget(SVOr,0,SVOrw);
+    			INr.Code = SVOrw.ArtCode;
+    			if(readfirstmain(INr,1,true))then begin
+    				Actr.Comment = INr.Code & " " & Actr.Comment;
+    				Actr.Phone = curPhone; //left(SVOrw.Spec,20);
+    				Actr.MainPersons = FindUsersWithActiveTasksQueue(SVOr,curLocation);
+    				if (NonBlank(SVOr.Inspector)) then begin
+    				  Actr.MainPersons = SVOr.Inspector & "," & Actr.MainPersons;
+    				end;
+    				Actr.Comment = addhours(currenttime,2) & " " & Actr.Comment; //Edit***************************Sasha2,16:14 23.05.2017 }
+    			end;	
+    		end;
+    		recordstore(Actr,true);
+    	end;
   	end;
   	if((SVOr.OrderStatus>0 or SVOr.DoneMark>0))then begin
   		Actr.SVOSerNr = SVOr.SerNr;

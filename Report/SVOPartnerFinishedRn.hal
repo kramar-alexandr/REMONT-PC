@@ -251,7 +251,8 @@ begin
   return;
 end;
 
-global procedure ServClientOrderDsm()
+global 
+procedure ServClientOrderDsm()
 begin
 integer wn;
 record SVOVc SVOr;
@@ -288,7 +289,8 @@ begin
 return;
 end;
 
-global procedure CallToClientDsm()
+global 
+procedure CallToClientDsm()
 begin
 integer wn;
 record SVOVc SVOr;

@@ -15,6 +15,7 @@ external procedure SetRentResDone(var record RentResVc);
 external function Boolean GetItemPriceDiscount3(string,val,var record INVc,string,val,val,val,val,val,string,string,string,string,
                                                 var val,var string,var val,var string,var val,var string,Integer,var Boolean,Date,Time,
                                                 string,Boolean,var Boolean,string,var string,var val,string,string,var string);
+external updating procedure CreateActFromSVOToEnginer(record SVOVc,string); //Edit***************************Sasha2,18:20 12.06.2017
 
 global
 function LongInt OffHireVcRecordDefaults(var record OffHireVc OffHirer,record OffHireVc OffHire2r,LongInt stat,LongInt long4)
@@ -774,6 +775,25 @@ begin
   return;
 end;
 
+//Edit***************************Sasha2,10:44 13.06.2017 {
+updating procedure SendOffHireDataForEngineerAct(record OffHireVc OffHirer)
+begin
+  record SVOVc SVOr;
+  row OffHireVc OffHirerw;
+    
+    if(matrowcnt(OffHirer)>0)then begin
+    	matrowget(OffHirer,0,OffHirerw);
+    	if(nonblank(OffHirerw.ArtCode) and  NonBlank(OffHirerw.SerialNr))then begin
+    	  SVOr.InnerOrderNr = OffHirerw.SerialNr;
+    	  if (ReadLastKey("InnerOrderNr",SVOr,1,true)) then begin
+    	    CreateActFromSVOToEnginer(SVOr,OffHirer.Location);
+    	  end;
+    	end;
+    end;
+    
+  return;
+end; //Edit***************************Sasha2,10:44 13.06.2017 }
+
 global
 updating function LongInt OffHireVcRecordSaveAfter(var record OffHireVc OffHirer,record OffHireVc OffHire2r,LongInt stat,LongInt long4)
 BEGIN
@@ -786,6 +806,7 @@ BEGIN
     OffHireUpdateRentIN(OffHirer);
     OffHireCreateCharges(OffHirer);
     OffHireDisposeItems(OffHirer);
+    SendOffHireDataForEngineerAct(OffHirer); //Edit***************************Sasha2,11:06 13.06.2017
   end;
   OffHireVcRecordSaveAfter = res;
   RETURN;
@@ -803,6 +824,7 @@ BEGIN
     OffHireUpdateRentIN(OffHirer);
     OffHireCreateCharges(OffHirer);
     OffHireDisposeItems(OffHirer);
+    SendOffHireDataForEngineerAct(OffHirer); //Edit***************************Sasha2,11:06 13.06.2017
   end;
   if ((OffHire2r.OKFlag!=0) and (OffHirer.OKFlag==0)) then begin//unok
 //    OffHireUpdateStock(OffHirer,true);//not suported

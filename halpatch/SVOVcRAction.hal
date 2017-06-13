@@ -19,7 +19,7 @@ remote function Boolean PasteCUInSVO(var record SVOVc,string,var string);// Edit
 external updating procedure CreateNoterChangeInSVO(record SVOVc,string,string);
 external function Boolean FindStringInString(string,string);// Edit ************************** Thursday, 30 June 2016 10:55:59
 remote procedure CountNumberRepeatPhone(string,var array longint,var integer );
-external updating procedure CreateActFromSVOToEnginer(record SVOVc);
+external updating procedure CreateActFromSVOToEnginer(record SVOVc,string);
 external updating procedure ChangeCostOfIVsInSVO(longint);//Edit-------------------Vitalii 10:13 25.11.2016
 external updating procedure PhonesFromSVO(longint);//Edit-------------------Vitalii 17:10 03.11.2016
 //remote procedure SENDSECONDSMS(longint);// Edit ************************** Friday, 18 November 2016 14:48:29
@@ -249,6 +249,8 @@ BEGIN
     MatRowPut(SVOr,i,SVOrw);*/
     matrowget(SVOr,i,SVOrw);
   	SVOrw.ItemType = 0;
+  	SVOrw.SerialNr = "";
+  	SVOrw.NewSerialNr = "";
   	matrowput(SVOr,i,SVOrw); //Edit----------------------Dima  28.09.2015 }
   end;  
   SVOr.DoneMark = 0;
@@ -306,6 +308,7 @@ BEGIN
  	SVOr.SerialNrTextSearch = "";
  	SVOr.OldPhone = "";
  	SVOr.GetItemFlag = 0;
+ 	SVOr.InnerOrderNr = "";
  	
   SVOVcRecordDuplicate = res; 
   RETURN;
@@ -401,7 +404,7 @@ BEGIN
     end;
   	
   	if(SVOr.GetItemFlag>0)then begin
-  		CreateActFromSVOToEnginer(SVOr);
+  		//CreateActFromSVOToEnginer(SVOr,"");
 		end;
   	
   //SENDFIRSTSMS(SVOr);
@@ -584,7 +587,7 @@ BEGIN
 	end;
 	
 	if(SVOr.GetItemFlag>0)then begin
-		CreateActFromSVOToEnginer(SVOr);
+		//CreateActFromSVOToEnginer(SVOr,"");
 	end;
   PhonesFromSVO(SVOr.SerNr);//Edit-------------------Vitalii 17:09 03.11.2016
   

@@ -65,8 +65,8 @@ BEGIN
     if (BlankDate(SVOr.RegDate)) then begin
       testf = true;
       if (BlankDate(SVOr.PlanShipDate)) then begin //Edit***************************Sasha2,14:47 16.02.2017
-        testf = false;
-        MessageBox(31089,"");
+        //testf = false;
+        //MessageBox(31089,"");
       end;
       if (testf) then begin //Edit***************************Sasha2,10:59 12.06.2017 {
         BlockLoad(LMb); //Edit***************************Sasha2,14:35 09.06.2017

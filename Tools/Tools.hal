@@ -824,16 +824,17 @@ return;
 end;
 
 //Edit***************************Sasha2,16:26 23.05.2017 {
-function string 200 FindUsersWithActiveTasksQueue(record SVOVc SVOr)
+function string 200 FindUsersWithActiveTasksQueue(record SVOVc SVOr,string location)
 begin
   string 200 users;
   Record UserVc Userr;
   Boolean testf,TrHs;
   row SVOVc SVOrw;
-  string 50 location;
+  //string 50 location;
   record IntSerBalVc ISBr;
+  record LocationVc Locr;
   
-  if(matrowcnt(SVOr)>0)then begin
+  /*if(matrowcnt(SVOr)>0)then begin
   	matrowget(SVOr,0,SVOrw);
   	if(nonblank(SVOrw.ArtCode))then begin
   		ISBr.Item = SVOrw.ArtCode;
@@ -850,27 +851,32 @@ begin
   			end;
   		end;
   	end;
-  end;
+  end;*/
   
-    TrHs = true;
-    while (LoopMain(Userr,1,TrHs)) begin
-      testf = true;
-      if (Userr.Closed!=0) then begin testf = false; end;
-      if (Userr.InTasksQueue==0) then begin testf = false; end;
-      if (Userr.Location!=location) then begin testf = false; end;
-      
-      
-      if (testf) then begin
-        if (len(users & Userr.Code)<200) then begin
-          if (NonBlank(users)) then begin
-            users = users & ",";
-          end;
-          users = users & Userr.Code;
-        end else begin
-          TrHs = false;
+  TrHs = true;
+  if (NonBlank(location)) then begin
+    TrHs = false;
+    Locr.Code = location;
+    if (ReadFirstMain(Locr,1,true) and Locr.RepairLocationFlag==1) then begin
+      TrHs = true;
+    end;
+  end;
+  while (LoopMain(Userr,1,TrHs)) begin
+    testf = true;
+    if (Userr.Closed!=0) then begin testf = false; end;
+    if (Userr.InTasksQueue==0) then begin testf = false; end;
+    if (blank(Userr.Location) or Userr.Location!=location) then begin testf = false; end;
+    if (testf) then begin
+      if (len(users & Userr.Code)<200) then begin
+        if (NonBlank(users)) then begin
+          users = users & ",";
         end;
+        users = users & Userr.Code;
+      end else begin
+        TrHs = false;
       end;
     end;
+  end;
     
   FindUsersWithActiveTasksQueue = users;
 return;
@@ -878,68 +884,81 @@ end; //Edit***************************Sasha2,16:26 23.05.2017 }
 
 
 global 
-updating procedure CreateActFromSVOToEnginer(record SVOVc SVOr)
+updating procedure CreateActFromSVOToEnginer(record SVOVc SVOr,string curLocation)
 begin
 	record ActVc Actr,oldActr;
-	string 50 sernum;
+	string 50 sernum,curPhone;
 	row SVOVc SVOrw;
 	record INVc INr;
 	boolean creaetf;
 	
-	sernum = SVOr.SerNr;
-		Actr.SVOSerNr = SVOr.SerNr;
-		if(!readfirstkey("SVOSerNr",Actr,1,true))then begin
-			creaetf = true;
-			recordnew(Actr);
-			Actr.Comment = SVOr.SerNr & " " & SVOr.Comment1;
-			//Actr.AlarmType = kAlarmTypeMessage; //Edit-------------------Vitalii 11:31 23.12.2016
+	if (SVOr.SerNr>-1) then begin
+	  curPhone = SVOr.Kontinfo1;
+	  if (Blank(curPhone)) then begin
+	    curPhone = SVOr.Phone2;
+	  end;
+  	sernum = SVOr.SerNr;
+  	Actr.SVOSerNr = SVOr.SerNr;
+  	if(!readfirstkey("SVOSerNr",Actr,1,true))then begin
+  		creaetf = true;
+  		recordnew(Actr);
+  		Actr.Comment = SVOr.SerNr & " " & SVOr.Comment1;
+  		//Actr.AlarmType = kAlarmTypeMessage; //Edit-------------------Vitalii 11:31 23.12.2016
       Actr.AlarmType = kAlarmTypeNone;
-			Actr.SVOSerNr = SVOr.SerNr;
-			Actr.TodoFlag = kTodoFlagTodo;
-			Actr.SymbNr = 3;
-			if(matrowcnt(SVOr)>0)then begin
-				matrowget(SVOr,0,SVOrw);
-				INr.Code = SVOrw.ArtCode;
-				if(readfirstmain(INr,1,true))then begin
-					Actr.Comment = INr.Code & " " & Actr.Comment;
-					Actr.Phone = left(SVOrw.Spec,20);
-					Actr.MainPersons = FindUsersWithActiveTasksQueue(SVOr);
-					Actr.Comment = addhours(currenttime,2) & " " & Actr.Comment; //Edit***************************Sasha2,16:14 23.05.2017 }
-				end;	
-			end;			
-		end else begin
-			Actr.Comment = SVOr.SerNr & " " & SVOr.Comment1;
-			if(matrowcnt(SVOr)>0)then begin
-				matrowget(SVOr,0,SVOrw);
-				INr.Code = SVOrw.ArtCode;
-				if(readfirstmain(INr,1,true))then begin
-					Actr.Comment = INr.Code & " " & Actr.Comment;
-					Actr.Phone = left(SVOrw.Spec,20); 
-					Actr.MainPersons = FindUsersWithActiveTasksQueue(SVOr);
-					Actr.Comment = addhours(currenttime,2) & " " & Actr.Comment; //Edit***************************Sasha2,16:14 23.05.2017 }
-				end;	
-			end;
-			recordstore(Actr,true);
-		end;
-	if((SVOr.OrderStatus>0 or SVOr.DoneMark>0))then begin
-		Actr.SVOSerNr = SVOr.SerNr;
-		if(readfirstkey("SVOSerNr",Actr,1,true))then begin
-			if(Actr.OKFlag==0)then begin
-				RecordCopy(oldActr,Actr);
-				Actr.OKFlag = 1;		
-				RecordUpdate(oldActr,Actr,true);
-			end;
-		end;
+  		Actr.SVOSerNr = SVOr.SerNr;
+  		Actr.TodoFlag = kTodoFlagTodo;
+  		Actr.SymbNr = 3;
+  		Actr.ActType = "ENGNR";
+  		if(matrowcnt(SVOr)>0)then begin
+  			matrowget(SVOr,0,SVOrw);
+  			INr.Code = SVOrw.ArtCode;
+  			if(readfirstmain(INr,1,true))then begin
+  				Actr.Comment = INr.Code & " " & Actr.Comment;
+  				Actr.Phone = curPhone; //left(SVOrw.Spec,20);
+  				Actr.MainPersons = FindUsersWithActiveTasksQueue(SVOr,curLocation);
+  				if (NonBlank(SVOr.Inspector)) then begin
+  				  Actr.MainPersons = SVOr.Inspector & "," & Actr.MainPersons;
+  				end;
+  				Actr.Comment = addhours(currenttime,2) & " " & Actr.Comment; //Edit***************************Sasha2,16:14 23.05.2017 }
+  			end;	
+  		end;			
+  	end else begin
+  		Actr.Comment = SVOr.SerNr & " " & SVOr.Comment1;
+  		if(matrowcnt(SVOr)>0)then begin
+  			matrowget(SVOr,0,SVOrw);
+  			INr.Code = SVOrw.ArtCode;
+  			if(readfirstmain(INr,1,true))then begin
+  				Actr.Comment = INr.Code & " " & Actr.Comment;
+  				Actr.Phone = curPhone; //left(SVOrw.Spec,20);
+  				Actr.MainPersons = FindUsersWithActiveTasksQueue(SVOr,curLocation);
+  				if (NonBlank(SVOr.Inspector)) then begin
+  				  Actr.MainPersons = SVOr.Inspector & "," & Actr.MainPersons;
+  				end;
+  				Actr.Comment = addhours(currenttime,2) & " " & Actr.Comment; //Edit***************************Sasha2,16:14 23.05.2017 }
+  			end;	
+  		end;
+  		recordstore(Actr,true);
+  	end;
+  	if((SVOr.OrderStatus>0 or SVOr.DoneMark>0))then begin
+  		Actr.SVOSerNr = SVOr.SerNr;
+  		if(readfirstkey("SVOSerNr",Actr,1,true))then begin
+  			if(Actr.OKFlag==0)then begin
+  				RecordCopy(oldActr,Actr);
+  				Actr.OKFlag = 1;		
+  				RecordUpdate(oldActr,Actr,true);
+  			end;
+  		end;
+  	end;
+  	
+  	if(creaetf)then begin	
+  		Actr.SerNr = NextSerNr("ActVc",Actr.TransDate,-1,false,"");
+  		if(recordstore(Actr,true))then begin
+  			CreateRecordLink(SVOr,CurrentCompany,Actr,CurrentCompany);  
+  			CreateRecordLink(Actr,CurrentCompany,SVOr,CurrentCompany); 
+  		end;
+  	end;
 	end;
-	
-	if(creaetf)then begin	
-		Actr.SerNr = NextSerNr("ActVc",Actr.TransDate,-1,false,"");
-		if(recordstore(Actr,true))then begin
-			CreateRecordLink(SVOr,CurrentCompany,Actr,CurrentCompany);  
-			CreateRecordLink(Actr,CurrentCompany,SVOr,CurrentCompany); 
-		end;
-	end;
-	
+
 return;
 end;
 

@@ -375,6 +375,40 @@ string 50 location;
 return
 end;
 
+global //Edit***************************Sasha2,13:45 13.06.2017 {
+procedure CallToClientFromActDsm()
+begin
+integer wn;
+record ActVc Actr;
+array longint sernr;
+integer count;
+record RcVc RepSpec;
+record UserVc USr;
+string 100 host,page,getParam;
+area mainRequest,replyarea;
+longint port;
+string 50 location;
+	
+	wn = curwindow;
+	getwindowrecord(wn,Actr);
+	
+	USr.Code = currentuser;
+	if(readfirstmain(USr,1,true))then begin	
+		if(blank(USr.Phone2))then begin
+			messagebox(0,"Blank internal user phone");
+		end;
+		if(blank(NormalPhone(Actr.Phone)))then begin
+			messagebox(0,"Invalid client phone number");
+		end;
+		
+		if(nonblank(USr.Phone2)and nonblank(NormalPhone(Actr.Phone)))then begin			
+			MakeBinotelCallFromExtNumToPhone(USr.Phone2,NormalPhone(Actr.Phone));
+		end;
+	end;
+
+return
+end; //Edit***************************Sasha2,13:45 13.06.2017 }
+
 global procedure MySearchSVORClassReportDefaults(Integer wn)
 begin
   record RcVc RepSpec;  

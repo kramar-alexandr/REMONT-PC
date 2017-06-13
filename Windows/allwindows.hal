@@ -2063,7 +2063,7 @@ begin
 
   EditField(260,vm+=20,100,"Сер. мастер",Normal,ServiceManager,false,UserSClass);// Edit ************************** Monday, 31 May 2010 9:22:11 AM
   EditField(260,vm+=20,100,"К оплате",ViewOnly,WSCost,false,0);
-  EditField(260,vm+=20,100,"Ответственный менеджер",Normal,Inspector,false,0); //Edit***************************Sasha2,16:52 09.06.2017
+  EditField(260,vm+=20,100,"Ответственный менеджер",Normal,Inspector,false,UserSClass); //Edit***************************Sasha2,16:52 09.06.2017
 
   vm = 10;
   ButtonFrame(h+490,vm+16,130,9,"Статус");
@@ -2199,10 +2199,10 @@ begin
   SpecialMenu("Создать прибытие товара",' ',8,"OffHireFromSVODsm");
   SpecialMenu("Создать выбытие товара",' ',0,"DispatchFromSVODsm");
   SpecialMenu("Счет клиенту",' ',0,"ORFromSVODsm");
-  SpecialMenu("Виплата",' ',0,"MyPPFromSVODsm");
+  /*SpecialMenu("Виплата",' ',0,"MyPPFromSVODsm");
   SpecialMenu("Авансовый отчет",' ',0,"MyExpFromSVODsm");
   SpecialMenu("Платежи",' ',0,"MyIPFromSVODsm");
-  SpecialMenu("Перемещение",' ',0,"MyStockMovFromSVODsm");
+  SpecialMenu("Перемещение",' ',0,"MyStockMovFromSVODsm");*/
   if(CurrentCompany==1 or CurrentCompany==2) then begin
     //SpecialMenu("Перенести в сервис",' ',0,"MyImportSVOToCompDsm"); //uncomment for AService
   end;
@@ -10240,4 +10240,378 @@ begin
   CheckBox(h4,v,0,"Внутр. перемещения",flags[26]); v = v + 16; //Edit***************************Sasha2,15:19 02.06.2017
   EndFrame;
   EndWindow;
+end;
+
+window LocationDClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,h2,l,v,vm,vs;
+  Integer tilenr;
+
+  WindowBegin("Склад",LocationDClass,CGview,-);
+  SetWRect(64,80,570,520);
+  UseView(LocationVc);
+  v = 10; vs = 20; h = 120; h2 = 340; l = -60;
+  if (IsEnterprise) then begin
+    Tile(0,50+24,false,"",Code);
+  end;
+  EditField(h,v,120,"Код",Normal,Code,false,0);
+  if (IsEnterprise and StandardHansa==false) then begin
+    EditField(h2,v,l,"Группа",Normal,Group,false,LocGrSClass);
+  end;
+  EditField(h,v+=vs,l,"Наимен.",Normal,Name,false,0);
+  if (IsEnterprise) then begin
+    tilenr = 1;
+    TileButton(tilenr,"Адрес"); tilenr = tilenr + 1;
+    if (StandardHansa==false) then begin
+      TileButton(tilenr,"Склад"); tilenr = tilenr + 1;
+    end;
+    tilenr = 1;
+    Tile(tilenr,350,false,tilenr,Addr0); tilenr = tilenr + 1;
+    EditField(h,v=6,l,"Склад",Normal,Addr0,false,0);
+  end else begin
+    EditField(h,v+=vs,l,"Склад",Normal,Addr0,false,0);
+  end;
+  EditField(h,v+=vs,l,"",Normal,Addr1,false,0);
+  EditField(h,v+=vs,l,"",Normal,Addr2,false,0);
+  EditField(h,v+=vs,l,"",Normal,Addr3,false,0);
+  EditField(h,v+=vs,l,"",Normal,Addr4,false,0);
+  EditField(h,v+=vs,l,"Контакт. лицо",Normal,Contact,false,0);
+  EditField(h,v+=vs,l,"Телефон",Normal,Phone,false,0);
+  EditField(h,v+=vs,l,"Факс",Normal,Fax,false,0);
+  EditField(h,v+=vs,l,"Электронная почта",Normal,Email,false,0);
+  if (IsEnterprise) then begin
+    if (StandardHansa==false) then begin
+      EditField(h,v+=vs,l,"Классификация",Normal,Classification,false,LocClSClass);
+    end;
+    EditField(h,v+=vs,100,"Ответственный",Normal,RespPerson,false,UserSClass);
+    EditField(h2,v,l,"Доступ резервир.",Normal,ReservLocAccess,false,ReservLocAccessSClass);
+  end;
+  if (HasModNL) then begin
+    EditField(h,v+=vs,100,"Счёт склада",Normal,StockAcc,false,AccSClass);
+  end;
+  if (HasObjects) then begin
+    EditField(h2,v,l,"Объект",Normal,Objects,false,ObjSClass);
+  end;
+  if (IsEnterprise) then begin
+  //  EditField(h,v+=vs,100,"Прейскурант",Normal,PriceList,false,PLDefSClass);//No Code
+    EditField(h,v+=vs,100,"Склад закупок",Normal,PurLoc,false,LocationSClass);
+    if (StandardHansa==false) then begin
+      EditField(h2,v,l,"Отгр. на счет",Normal,ShipToAccount,false,0);
+      EditField(h,v+=vs,100,"Через склад",Normal,ThrouLocation,false,LocationSClass);
+    end;
+    CheckBox(h,vm=(v+=30),0,"Игнорировать хронологию",IgnoreChronology);
+    if (StandardHansa==false) then begin
+      CheckBox(h,v+=vs,0,"Требовать место",RequirePos);
+    end;
+    CheckBox(h,v+=vs,0,"Склад ремонта",RepairLocationFlag); //Edit***************************Sasha2,17:06 12.06.2017
+    ButtonFrame(h2,v=vm+10,100,2,"Tип");
+    RadioButton(h2,v,0,0,"другое",Type);
+    RadioButton(h2,v+=16,1,0,"производство",Type);
+  end;
+  if (HasModWHM) then begin
+    Tile(tilenr,310,false,tilenr,WHMPalletArea); tilenr = tilenr + 1;
+    EditField(h=200,v=6,l=100,"Участок пустых паллет",Normal,WHMPalletArea,false,LocAreaSClass);
+    EditField(h,v+=vs,l,"Участок погрузки",Normal,WHMPickArea,false,LocAreaSClass);
+    EditField(h,v+=vs,l,"Место для поступлений",Normal,WHMDefPUPosCode,false,PosSClass);
+    EditField(h,v+=vs,l,"Место для производства",Normal,WHMDefProdPosCode,false,PosSClass);
+    EditField(h,v+=vs,l,"Место упаковочной машины",Normal,WHMWraperPosCode,false,PosSClass);
+    EditField(h,v+=vs,l,"Место передачи для погрузки",Normal,WHMDeliveryPosCode,false,PosSClass);//the same as WraperPosCode at ethe moment
+    EditField(h,v+=vs,l,"Участок доставки",Normal,WHMDeliveryArea,false,LocAreaSClass);
+    EditField(h,v+=vs,l,"Экспресс-счета",Normal,WHMExpressOrderClass,false,OrderClassSClass);
+    EditField(h,v+=vs,l,"Поставщик по умолчанию",Normal,WHMDefPUVECode,false,VESClass);
+    CheckBox(h,v+=24,0,"Требовать место",RequirePos);
+    CheckBox(h,v+=16,0,"Начинать с наиболее высокого места",WHMHighestPosCodeFirst);
+    ButtonFrame(h,v+=40,140,3,"Система погрузчика");
+    RadioButton(h,v,0,0,"Выкл.",WHMForkLiftSystem);
+    RadioButton(h,v+=16,1,0,"Вкл.",WHMForkLiftSystem);
+    RadioButton(h,v+=16,2,0,"Вкл.,реж.погруз.выкл.",WHMForkLiftSystem);
+  end;
+  EndWindow;
+end;
+
+window ActDClass:13
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real fs,h,h2,h3,h4,v,vm,vs;
+  string 255 label;
+  record LocalMachineBlock LMb;
+  record CompaniesBlock Cb;
+  Integer wn,tilenr;
+  record ActVc Actr;
+  Boolean showapprovaltile;
+  
+  WindowBegin("Деятельность",ActDClass,CGview,ActView);
+
+    BlockLoad(LMb);
+    BlockLoad(Cb);
+    SetWRect(64,80,760,500);
+    BrowseButtons(false);
+    Sizeable(-1,-1,0,0);
+    UseView(ActVc);
+    ActiveFieldOnNew("Comment");    
+    FormName(ActDocForm);
+    
+    showapprovaltile = false;
+    if (StandardHansa==false) then begin
+      DynamicWindow;
+      wn = CurWindow;
+      if (wn>0) then begin
+        if (GetWindowClass(wn)=="ActDClass") then begin  
+          GetWindowRecord(wn,Actr);
+          if (LMb.ApprovalTypeActDClass!=0) then begin
+          showapprovaltile = Actr.TodoFlag==kTodoFlagApproval;
+          end;
+        end;
+      end;
+    end;
+    if (MatRowCnt(Cb)>1) then begin
+    ToolBar;
+      if (WindowsMode) then begin
+        DropDownMenu(150,6,240,"$company",kSetUsersCompanies);
+      end else begin
+    DropDownMenu(300,6,420,"$company",kSetUsersCompanies);
+      end;
+    EndToolBar;
+    end;
+    
+    v = 6; vs = 20; h = 100; h2 = 275; h3 = 420; h4 = 450; fs = 100;
+    CommunicateButton;
+    Tile(0,130,false,"",Comment);
+    EditField(h,vm=6,-40,"Комментарий",Normal,Comment,false,0);
+    EditField(h,v+=vs,80,"Вид",Normal,ActType,false,ActTypeSClass);//ActType2SClass
+    EditField(h,v+=vs,80,"Сост.",Normal,ActState,false,ActStateSClass); 
+    EnterSkip(StartTime);
+    EditField(h,v+=vs,80,"Язык",Normal,LangCode,false,LangSClass);
+    EditField(h,v+=vs,80,"Приоритет",Normal,PrioLevel,false,ActPrioLevelSClass);
+    EditField(h2,v=vm+vs,-40,"",Normal,ActTypeComment,false,0);
+    EditField(h2,v+=vs,-40,"Статус",Normal,ActStateComment,false,0);
+    EditField(h2,v+=vs,140,"Сотрудники",Normal,MainPersons,false,UserSClass);
+    EditField(h4,v,-40,"Cc",Normal,CCPersons,false,UserSClass);
+    EditField(h2,v+=vs,80,"Контролер",Normal,Supervisor,false,UserSClass);
+    EditField(h4,v,-40,"Переадресовать",Normal,ApprovalFwdPersons,false,UserSClass);  
+    v = v + vs;
+    if (showapprovaltile==false) then begin
+      SoftEditField(h2,v,123,"Статус подтверждения",ViewOnly,"AcceptanceStatusFlag",false,0,M4Str,255); 
+    end;
+    EditField(h4,v,60,"Результат",Normal,ActResult,false,ActTypeSClass);
+    tilenr = 1;
+    if (showapprovaltile) then begin
+      TileButton(tilenr,"Утверждение"); tilenr = tilenr + 1;  
+    end;
+    TileButton(tilenr,"Время"); tilenr = tilenr + 1;  
+    TileButton(tilenr,"Клиент"); tilenr = tilenr + 1;  
+    TileButton(tilenr,"Текст"); tilenr = tilenr + 1;  
+    TileButton(tilenr,"Под-задачи"); tilenr = tilenr + 1;  
+    TileButton(tilenr,"Оповещения"); tilenr = tilenr + 1;  
+    if (StandardHansa==false) then begin
+      TileButton(tilenr,"Ресурсы"); tilenr = tilenr + 1;  
+      TileButton(tilenr,"Обслуживание"); tilenr = tilenr + 1;  
+      TileButton(tilenr,"Опред. пользователем"); tilenr = tilenr + 1;  
+      TileButton(tilenr,"Опред. пользователем"); tilenr = tilenr + 1; 
+    end;
+    CheckBox(-150,v,0,"Личное",PrivateFlag);
+    CheckBox(-80,v,0,"Выполнено",OKFlag);
+    tilenr = 1;
+    if (showapprovaltile) then begin
+      Tile(tilenr,100,false,"",-); tilenr = tilenr + 1;  
+      ButtonFrame(h=100,v=18,440,2,"Утверждение");  
+      HalPushButton(h+=5,v+=5,h+100,v+20,"ActDClassApproveActivity","Утвердить");  
+      HalPushButton(h+=110,v,h+100,v+20,"ActDClassForwardActivity","Перенаправить");  
+      HalPushButton(h+=110,v,h+100,v+20,"ActDClassRejectActivity","Отменить");  
+      HalPushButton(h+=110,v,h+100,v+20,"ActDClassSendFYI","Отправить для инф.");  
+      HalPushButton(h=105,v+=40,h+100,v+20,"ActDClassOpenApprovalRecord","Открыть запись");  
+      HalPushButton(h+=110,v,h+120,v+20,"ActDClassOpenApprovalAttach","Открыть вложенный файл");  
+    end;
+    Tile(tilenr,90,false,"1",StartTime); tilenr = tilenr + 1;  
+    h = 100; h2 = 275;
+    EditField(h,v=6,60,"Время начала",Normal,StartTime,false,PasteCurTime);
+    EditField(h,v+=vs,60,"Время оконч.",Normal,EndTime,false,PasteCurTime);
+    EditField(h,v+=vs,60,"Заплан. время",ViewOnly,PlannedTime,false,0); 
+//    EditField(h,v+=vs,60,"Счёт авансов дебиторов",ViewOnly,RecurringActSerNr,false,0);
+    EditField(h,v+=vs,60,"Итого времени",Normal,CostTime,false,0);
+    if (StandardHansa==false) then begin
+      EditField(h,v+=vs,60,"Валюта",Normal,CurncyCode,false,CurncyCodeSClass);
+    end;
+//    EditField(h,v+=vs,60,"New Dur.",Normal,TestDuration,false,0);
+    EditField(h2,v=6 ,80,"Дата начала",Normal,TransDate,false,PasteCurDate);
+    EditField(h2,v+=vs,80,"Дата оконч.",Normal,EndDate,false,PasteCurDate);
+    EditField(h2,v+=vs,80,"Заплан. дата",ViewOnly,PlannedDate,false,0); 
+    if (StandardHansa==false) then begin
+      EditField(h2,v+=vs,80,"Класс времени",Normal,TimeClass,false,TimeClassSClass);
+      EditField(h2,v+=vs,80,"Сумма",Normal,Value,true,0);   
+    end;
+    v = 18;
+    ButtonFrame(h3=h2+120,vm=v,120,7,"Тип задач");
+    RadioButton(h3,v,kTodoFlagCalendar,0,"Календарь",TodoFlag);
+    RadioButton(h3,v+=16,kTodoFlagTodo,0,"План",TodoFlag);
+    RadioButton(h3,v+=16,kTodoFlagTimedTodo,0,"План на время",TodoFlag);
+    if (StandardHansa==false) then begin
+      RadioButton(h3,v+=16,kTodoFlagWorkHours,0,"Рабочие часы",TodoFlag);
+    end;
+    RadioButton(h3,v+=16,kTodoFlagApproval,0,"Подтверждение",TodoFlag); 
+    RadioButton(h3,v+=16,kTodoFlagProject,0,"Проект",TodoFlag); 
+    RadioButton(h3,v+=16,kTodoFlagOther,0,"Другое",TodoFlag);         
+    EndFrame;
+  //  RadioButton(h3,v+=16,kTodoFlagBanner,0,"Banner",TodoFlag); // When will we do something behind this radio button?
+    h3 = h3+160;
+    ButtonFrame(h3,v=vm,120,3,"Календарь");
+    RadioButton(h3,v,kCalTimeFlagTime,0,"Время",CalTimeFlag);
+    RadioButton(h3,v+=16,kCalTimeFlagProfile,0,"Прогноз",CalTimeFlag);
+    RadioButton(h3,v+=16,kCalTimeFlagNoshow,0,"Не показывать",CalTimeFlag);
+    EnterSkip(PRCode);
+    Tile(tilenr,70,false,"2",PRCode); tilenr = tilenr + 1;
+    vm = 6;
+    v = 6;
+    if (HasModTS or IsEnterprise) then begin
+      EditField(h,v,80,"Проект",Normal,PRCode,false,PRSClass);
+      v = v+vs;
+    end;
+    EditField(h,v,80,"Контакт",Normal,CUCode,false,AllCUSClass);
+    if (StandardHansa==false) then begin
+      EditField(h,v+=vs,80,"Товар сч/ф",Normal,ItemCode,false,INSClass);
+    end;
+    EnterSkip(Math);
+    EditField(h2,v=vm,-40,"Наименование",Normal,CUName,false,0);
+    EditField(h2,v+=vs,100,"Телефон",Normal,Phone,false,0); //Edit***************************Sasha2,13:43 13.06.2017
+    HalPushButton(h2+110,v-3,h2+180,v+15,"CallToClientFromActDsm","Звонок");
+    EditField(h2,v+=vs,-40,"Контакт. лицо",Normal,Contact,false,ContactSClass);
+    EnterSkip(Math);
+    Tile(tilenr,100,true,"3",Math); tilenr = tilenr + 1;
+    MatrixBegin(4,v=24,-32,-30,ActRowType,199);
+    MatCol(1,32,"Код",0,TextCode,false,TextTypeSClass);
+    MatCol(  1,84,"Текст",0,Text,false,0);
+  //  MatColMLT(1,84,"Текст",0,Text,false,0);
+    EndMatrix;
+    if (GuiType!=kGuiiPhone and GuiType!=kGuiAndroid) then begin
+      HalPushButton(-140,-25,-40,-5,"ActDEndActivity","ActDEndActivity");
+    end else begin
+      HalPushButton(600,500,700,520,"ActDEndActivity","Завершить");  
+    end;
+    Tile(tilenr,200,true,"4",Comment); tilenr = tilenr + 1;
+    v = 10;
+    HalPushButton(h,v,h+100,v+20,"ActDClassCreateSubTask","Нов. подзадача");
+    HalPushButton(h2,v,h2+100,v+20,"ActDClassDeleteSubTask","Удалить подзадачу");
+    v = v + vs;
+    RecordList2(10,v+=vs,-30,-69,"ActVc");
+    RlColKey(4,4,"Задача",Comment,false,ActComment);
+    RlColKey(-50,-50,"Все",Comment,false,Comment);
+    Tile(tilenr,140,false,"5",-); tilenr = tilenr + 1;
+    h3 = 40;
+    ButtonFrame(h3,v=18,130,5,"Напоминание:");
+    RadioButton(h3,v,kAlarmTypeNone,0,"Нет",AlarmType);
+    RadioButton(h3,v+=16,kAlarmTypeMessage,0,"Сообщение",AlarmType); 
+    RadioButton(h3,v+=16,kAlarmTypeSMS,0,"SMS",AlarmType); 
+    RadioButton(h3,v+=16,kAlarmTypeEMail,0,"Эл. почта",AlarmType); 
+    RadioButton(h3,v+=16,kAlarmTypeNotification,0,"Уведомление",AlarmType); 
+    ButtonFrame(h3+=160,v=18,130,7,"Напомнить:");
+    RadioButton(h3,v,0,0,"Минут до",AlarmWhen);
+    RadioButton(h3,v+=16,1,0,"Часов до",AlarmWhen);
+    RadioButton(h3,v+=16,2,0,"Дней до",AlarmWhen);
+    RadioButton(h3,v+=16,3,0,"Минут после",AlarmWhen);
+    RadioButton(h3,v+=16,4,0,"Часов после",AlarmWhen);
+    RadioButton(h3,v+=16,5,0,"Дней после",AlarmWhen);
+    EditField(h3+75,v+=17,50,"Единиц до",Normal,AlarmUnits,false,0);
+    ButtonFrame(h4=h3+160,v=18,130,4,"Значок");
+    RadioButton(h4,v,kActivitySymbolCall,0,"Звонок",SymbNr);
+    RadioButton(h4,v+=16,kActivitySymbolMeeting,0,"Встреча",SymbNr); 
+    RadioButton(h4,v+=16,kActivitySymbolDeskwork,0,"Desk_work",SymbNr); 
+    RadioButton(h4,v+=16,kActivitySymbolOther,0,"Ot_her",SymbNr); 
+    if (StandardHansa==false) then begin
+      Tile(tilenr,30,false,"6",Resources); tilenr = tilenr + 1;
+      EditField(h,v=6,300,"Ресурсы",Normal,Resources,false,ResSClass);
+      EditField(h+400,v, fs,"Актив",Normal,InventoryNr,false,AT2UnitSClass);
+      Tile(tilenr,70,false,"7",SVOSerNr); tilenr = tilenr + 1;
+      EditField(h,v=6, fs,"Серийный №",Normal,SerialNr,false,SVOSerSClass);
+      EditField(h+200,v,fs,"Товар",Normal,ArtCode,false,INSClass);
+      EditField(h+400,v,fs,"Фактур. товар",Normal,ItemCode,false,INSClass); 
+      EditField(h,v+=vs, fs,"Заказ на обслуживание",Normal,SVOSerNr,false,SVOSClass); 
+      EditField(h+200,v, fs,"Опер. произ-ва",Normal,ProdOpSerNr,false,0); 
+      EditField(h+400,v, fs,"Производство",Normal,ProdSerNr,false,0);
+/*
+      EditField(h,v+=vs, fs,"From",ViewOnly,FromFileName,false,0); 
+      EditField(h+200,v, fs,"From No.",ViewOnly,FromSerNr,false,0); 
+      EditField(h+400,v, fs,"From Company",ViewOnly,FromCompanyNr,false,0); 
+*/
+//      EditField(h+400,v, fs,"Resort Event",ViewOnly,RsrtEventSerNr,false,0);//not finished
+      Tile(tilenr,240,false,"8",-); tilenr = tilenr + 1; 
+      EditField(h,v=6,300,"Очереди",Normal,PBXQueues,false,PBXQueueSClass);
+      Tile(tilenr,240,false,"8",-); tilenr = tilenr + 1;
+      fs = 80;
+      h = 180;
+      label = UserDefined("ActVc","UserStr1");
+      if (nonblank(label)) then begin
+        EditField(h,v=6 ,-20,label,Normal,UserStr1,false,0);
+      end;
+      label = UserDefined("ActVc","UserStr2");
+      if (nonblank(label)) then begin
+        EditField(h,v+=vs,-20,label,Normal,UserStr2,false,0);
+      end;
+      label = UserDefined("ActVc","UserStr3");
+      if (nonblank(label)) then begin
+        EditField(h,v+=vs,-20,label,Normal,UserStr3,false,0);
+      end;
+      label = UserDefined("ActVc","UserStr4");
+      if (nonblank(label)) then begin
+        EditField(h,v+=vs,-20,label,Normal,UserStr4,false,0);
+      end;
+      label = UserDefined("ActVc","UserStr5");
+      if (nonblank(label)) then begin
+        EditField(h,v+=vs,-20,label,Normal,UserStr5,false,0);
+      end;
+      label = UserDefined("ActVc","UserVal1");
+      if (nonblank(label)) then begin
+        EditField(h,v+=vs,50,label,Normal,UserVal1,true,0);
+      end;
+      label = UserDefined("ActVc","UserVal2");
+      if (nonblank(label)) then begin
+        EditField(h,v+=vs,50,label,Normal,UserVal2,true,0);
+      end;
+      label = UserDefined("ActVc","UserVal3");
+      if (nonblank(label)) then begin
+        EditField(h,v+=vs,50,label,Normal,UserVal3,true,0);
+      end;
+      label = UserDefined("ActVc","UserDate1");
+      if (nonblank(label)) then begin
+        EditField(h,v+=vs,80,label,Normal,UserDate1,true,PasteCurDate);
+      end;
+      label = UserDefined("ActVc","UserDate2");
+      if (nonblank(label)) then begin
+        EditField(h,v+=vs,80,label,Normal,UserDate2,true,PasteCurDate);
+      end;
+      label = UserDefined("ActVc","UserDate3");
+      if (nonblank(label)) then begin
+        EditField(h,v+=vs,80,label,Normal,UserDate3,true,PasteCurDate);
+      end;
+    end;
+    if (UserCanAction("EnabINF",false)) then begin
+      SpecialMenu("Информация о ключе",' ',5,"EnablerInfoDsm");
+    end;
+    if (UserCanReport("CustPSRn","",true) and HasCustomerStatusReport) then begin
+      SpecialMenu("Справка по клиенту",'e',6,"CUStatusActDsm");
+    end;
+    if (HasEMail or HasExternalEMail) then begin
+      SpecialMenu("Отправить приглашение",' ',7,"SendInvitationDsm2");         
+    end;
+    SpecialMenu("Открыть запись операции",'t',0,"OpenTRFromAct");
+    SpecialMenu("Открыть основную задачу",'o',4,"OpenMainTaskActDsm");
+    SpecialMenu("Запросить подтвержд.",' ',2,"SendforAcceptanceActDsm"); 
+    if (GuiType==kGuiCocoa) then begin
+      SpecialMenu("Копировать в iCal",' ',7,"CopyToLocalCalendarDsm");
+    end;
+    if (GuiType==kGuiiPhone) then begin
+      SpecialMenu("Подпись",' ',8,"SignActDsm");
+    end;
+    SpecMenuGroup("",kSpecMenuGroupTypeExtendedPlusMenu,0);         
+    SpecialMenu("Создать эл. письмо",'m',1,"MailFromActDsm");         
+    SpecialMenu("Создать письмо",'l',2,"LetFromActDsm");         
+    SpecialMenu("Создать письмо с цитатой",' ',2,"LetWithQuoteFromActDsm");         
+    SpecialMenu("Создать следующую деятельность",'n',9,"ActDClassCreateNextStep");         
+    SpecialMenu("Создать заказ",'G',3,"ORFromActDsm");         
+    SpecialMenu("Создать комм. предложение",' ',4,"QTFromActDsm");         
+    SpecialMenu("Создать суб-задачу",'T',9,"ActDClassCreateSubTask");         
+    if (StandardHansa==false) then begin
+      SpecialMenu("Создать путевой лист",' ',8,"WayListFromActDsm");         
+    end;
+    EndWindow;
 end;

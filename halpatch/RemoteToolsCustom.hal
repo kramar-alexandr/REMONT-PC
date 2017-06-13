@@ -2961,14 +2961,14 @@ begin
 	/*record ITVc ITr;
 	record CTypeVc CTyper;
 	record UnitVc Unitr;
-	record ActVc Actr;
 	record ObjVc Objr;
 	record LocationVc Locationr;
 	record PDVc PDr;
 	record CurncyCodeVc CurncyCoder;
 	record AccVc Accr*/
+	record ActVc Actr;
 	
-	//CUSTOM ASERVICE REGISTERS
+	                   //CUSTOM ASERVICE REGISTERS
 	//record MyLabelItemVc
 	record MyRepricingVc MyRepricingr;
 	//record GigieneTextVc GigieneTextr;
@@ -3451,7 +3451,14 @@ begin
 	  end;
 	end;
 	
-	//CUSTOM REGISTERS REMOVAL
+	TrHs = true;
+	while (LoopMain(Actr,1,TrHs)) begin
+	  if (TrHs) then begin
+	    RecordDelete(Actr);
+	    StepBack(Actr);
+	  end;
+	end;
+	                   //CUSTOM REGISTERS REMOVAL
 	
 	TrHs = true;
 	while (LoopMain(MyRepricingr,1,TrHs)) begin
@@ -3564,6 +3571,8 @@ begin
   string 20 location;
   Boolean anyAvailableItemsF;
   record IntSerBalVc IntSBr;
+  record IntISVc IntISp;
+  record INVc INr;
 
     errMes = "";
     if (UserCanAction("SVOToDispatch",true)) then begin
@@ -3583,12 +3592,23 @@ begin
           for (i=0;i<rwcnt;i=i+1) begin
             MatRowGet(SVOr,i,SVOrw);
             if (NonBlank(SVOrw.ArtCode) and NonBlank(SVOrw.SerialNr)) then begin
-              IntSBr.Item = SVOrw.ArtCode;
-              IntSBr.Serial = SVOrw.SerialNr;
-              IntSBr.Location = location;
-              if (ReadFirstMain(IntSBr,3,true) and IntSBr.Quant>0) then begin
-                anyAvailableItemsF = true;
-                i = rwcnt;
+              INr.Code = SVOrw.ArtCode;
+              ReadFirstMain(INr,1,true);
+              if ((INr.SerNrf>0) and (INr.SerNrf<3)) then begin
+                IntSBr.Item = SVOrw.ArtCode;
+                IntSBr.Serial = SVOrw.SerialNr;
+                IntSBr.Location = location;
+                if (ReadFirstMain(IntSBr,3,true) and IntSBr.Quant>0) then begin
+                  anyAvailableItemsF = true;
+                  i = rwcnt;
+                end;
+              end else begin
+                IntISp.Code = SVOrw.ArtCode;
+                IntISp.Location = location;
+                if (ReadFirstMain(IntISp,2,true) and IntISp.Instock>0) then begin
+                  anyAvailableItemsF = true;
+                  i = rwcnt;
+                end;
               end;
             end;
           end;

@@ -902,6 +902,7 @@ begin
   	if(!readfirstkey("SVOSerNr",Actr,1,true))then begin
   		creaetf = true;
   		recordnew(Actr);
+  		Actr.MainPersons = "";
   		Actr.Comment = SVOr.SerNr & " " & SVOr.Comment1;
   		//Actr.AlarmType = kAlarmTypeMessage; //Edit-------------------Vitalii 11:31 23.12.2016
       Actr.AlarmType = kAlarmTypeNone;

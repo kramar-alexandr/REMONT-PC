@@ -110,7 +110,6 @@ BEGIN
 					end;
 				end;
 			end;
-			logtext(0,cufound & " Новый контакт");
 			if(cufound==false)then begin
 				recordnew(CUr);
 				CUr.Code = Actr.Phone;

@@ -1131,10 +1131,10 @@ BEGIN
       INr.Code = SVOrw.ArtCode;
       found = ReadFirstMain(INr,1,true);
       
-      if(INr.ItemType!=1)then begin
+      if(INr.SerNrf!=1)then begin
       	ISr.Code = INr.Code;
       	if(readfirstmain(ISr,1,true)==false)then begin
-					INr.ItemType = 1;
+					INr.SerNrf = 1;
 					recordstore(INr,true);
       	end;
       end;

@@ -225,6 +225,8 @@ begin
     RecordField(GetItemDate,M4Date,0,0);
     RecordField(GetItemTime,M4Time,0,0);
     RecordField(Inspector,M4Str,100,0); //Edit***************************Sasha2,16:49 09.06.2017
+    RecordField(StatusText,M4Str,100,0); //Edit***************************Sasha2,16:49 09.06.2017
+    
     
     ArrayField(NewSerialNr,M4Str,60,0);// Edit ************************** Friday, 9 June 2017 09:29:41
     
@@ -270,12 +272,20 @@ begin
     KeySegment(InnerOrderNr);
     KeySegment(SerNr);  
     
+    SubsetKeyBegin2(StatusText);// Edit ************************** Wednesday, 14 June 2017 10:53:41
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    KeySegment(StatusText);
+    KeySegment(SerNr);  
+    
     //Ключи для необработанных заказов без сервисного менеджера для распределяющего ***************************************************************************************************
     SubsetKeyBegin2(UnServSerNr);
     StoreInBaseKey;
     AppendFieldToKeyName(SalesGroup);
     AppendFieldToKeyName(SalesMan);
     KeySegment(SerNr);
+    
     SubsetKeyBegin2(UnServTransDate);
     StoreInBaseKey;
     AppendFieldToKeyName(SalesGroup);
@@ -345,6 +355,13 @@ begin
     AppendFieldToKeyName(SalesMan);
     KeySegment(InnerOrderNr);
     KeySegment(SerNr);
+    
+    SubsetKeyBegin2(UnServStatusText);// Edit ************************** Wednesday, 14 June 2017 10:53:41
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    KeySegment(StatusText);
+    KeySegment(SerNr); 
     
     //Ключи для ВСех не закрытых заказов на обслуживание для распределяющего ***************************************************************************************************
     SubsetKeyBegin2(AllUnServSerNr);
@@ -423,6 +440,13 @@ begin
     KeySegment(InnerOrderNr);
     KeySegment(SerNr);
     
+    SubsetKeyBegin2(AllUnServStatusText);// Edit ************************** Wednesday, 14 June 2017 10:53:41
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    KeySegment(StatusText);
+    KeySegment(SerNr);
+    
     //Ключи для ВСех не закрытых заказов на обслуживание для сервисного менеджера  ****************************************************************************************
     SubsetKeyBegin2(AllServSerNr);
     StoreInBaseKey;
@@ -487,6 +511,13 @@ begin
     StoreInBaseKey;
     AppendFieldToKeyName(ServiceManager);
     KeySegment(InnerOrderNr);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(AllServStatusText);// Edit ************************** Wednesday, 14 June 2017 10:53:41
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    KeySegment(StatusText);
     KeySegment(SerNr);
     
   EndRecordAdd; 

@@ -1707,6 +1707,33 @@ integer mtrw,i;
 return;
 end;
 
+global updating procedure FillSVOStatusTextMn()
+begin
+record SVOVc SVOr;
+row SVOVc SVOrw;
+record SVOHistSerialVc SVHistr;
+integer mtrw,i;
+  
+  
+  while(loopmain(SVOr,1,true))begin
+    switch(SVOr.OrderStatus)begin
+			case 0: SVOr.StatusText = USetStr(31044);
+			case 1: SVOr.StatusText = USetStr(31045);
+			case 3: SVOr.StatusText = USetStr(31050);
+			case 2: SVOr.StatusText = USetStr(31046);
+			case 4: SVOr.StatusText = USetStr(31061);
+			case 5: SVOr.StatusText = USetStr(31085);
+			case 6: SVOr.StatusText = USetStr(31095);
+			case 7: SVOr.StatusText = USetStr(31096);
+			case 8: SVOr.StatusText = USetStr(31097);
+		end;
+    recordstore(SVOr,true);
+  end;
+
+
+return;
+end;
+
 
 global function string 200 DuplicateSVOSerial(string Serial)
 begin

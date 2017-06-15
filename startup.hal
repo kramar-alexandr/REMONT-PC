@@ -55,6 +55,8 @@ begin
   
   Maintenance("Git HAL Files",MyVClass,GitHALFilesMn,modTC);
   Maintenance("Удалить все записи",CustomRegisterRemoveVClass,CustomRegisterRemoveMn,modDBMain); //Edit***************************Sasha2,11:11 26.05.2017
+  Maintenance("Fill SVO Status",MyVClass,FillSVOStatusTextMn,modDBMain);
+  
   
   Import("Импорт контактов и заказов, выгруженных из ServiceMY",CUAndSVOInitSystemImportIClass,CUAndSVOInitSystemImportIn,modDBMain); //Edit***************************Sasha2,13:21 26.05.2017
 	

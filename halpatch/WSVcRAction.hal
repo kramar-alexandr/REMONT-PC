@@ -1302,3 +1302,28 @@ begin
   WSVcRecordProtectFields = res;
   return;
 end;
+
+
+global updating procedure IntOrdfromWSRemote(record WSVc WSr, var record IntORVc IntORr)
+begin
+	row WSVc WSrw;
+	row IntORVc IntORrw;
+	record INVc INr;
+	integer i,mtrw
+	
+	recordnew(IntORr);
+	
+	IntORr.Location = WSr.Location;
+	mtrw = matrowcnt(WSr);
+	For(i=0;i<mtrw;i=i+1) begin
+	  matrowget(WSr,i,WSrw);
+	  INr.Code = WSrw.ArtCode;
+	  if(readfirstmain(INr,1,true))then begin
+	  	if(INr.ItemType==kItemTypeStocked)then begin
+	  		
+	  	end;
+	  end;
+	end; 
+
+return;
+end;

@@ -2049,7 +2049,7 @@ begin
   Tile(0,170,false,"",CustCode);
   EditField(h=90,v=6, 82,"Номер",Normal,SerNr,false,TSerSClass);
   EnterSkip(CustCode);
-  EditField(h2=240,v,300,"Собств-к",Normal,Addr0,false,0);
+  EditField(h2=240,v,300,"ФИО",Normal,Addr0,false,0);
   EditField(h,vm=(v+=vs),82, "Клиент",Normal,CustCode,false,CUSClass);
   
   halpushbutton(h-45,vm+17,h+80,vm+50,"ChangeSVOSalesGroup","Перенести ремонт"); 
@@ -2127,15 +2127,15 @@ begin
   MatCol(t=1,250,"Наимен.",0,Spec,false,0);
   EnterSkip(ArtCode);
   MatCol(t,-124,"Тип",0,ItemType,false,SetSClass);
-  MatCol(t,-24,"Номер",0,WOEnum,true,0);
+  //MatCol(t,-24,"Номер",0,WOEnum,true,0);
   Flip(2);
   MatCol(t=1,144,"Станд.пробл.",0,StandProblem,false,StandProblemsSClass);
-  MatCol(t,-300,"Заказ на работу",0,WOSerNr,false,0);
-  MatCol(t,-130,"Сч/факт.",0,Invd,true,0);
-  MatCol(t,-70,"Дата отгруз.",0,PlanShiprw,true,0);
+  //MatCol(t,-300,"Заказ на работу",0,WOSerNr,false,0);
+  //MatCol(t,-130,"Сч/факт.",0,Invd,true,0);
+  //MatCol(t,-70,"Дата отгруз.",0,PlanShiprw,true,0);
   Flip(3);
   MatCol(t=1,144,"Наимен.",0,Spec,false,0);
-  MatCol(t,-180,"Стоим-ть ремонта",0,Cost,true,0);
+  //MatCol(t,-180,"Стоим-ть ремонта",0,Cost,true,0);
   //MatCol(t,-90,"Макс.стоим-сть",0,MaxCost,true,0);// Edit ************************** Friday, 9 June 2017 09:41:58
   MatCol(t,-90,"SerNr",0,SerialNr,false,0);// Edit ************************** Friday, 9 June 2017 09:42:00
   InsertRowTest;
@@ -2149,11 +2149,11 @@ begin
   v = v + 25;
   checkbox(100,v-20,0,"VIP",VIPStatus);
   checkbox(200,v-20,0,"Товар от партнера с возвратом",ItemFrPartner); //Edit***************************Sasha2,14:19 08.12.2015
- 	EditField(h=110,v,200,"Собственник",Normal,Vlastnik,false,0);
+ 	EditField(h=110,v,200,"ФИО",Normal,Vlastnik,false,0);
  	EditField(h+300,v,-20,"SN Зарегистр.",Normal,CustomField8,false,0);
- 	EditField(h,v+=vs,120,"Фамилия",Normal,Priynato,false,0);	
+ 	/*EditField(h,v+=vs,120,"Фамилия",Normal,Priynato,false,0);	
  	EditField(h+160,v,120,"Имя",Normal,Name,false,0);	
- 	EditField(h+360,v,120,"Отчество",Normal,MiddleName,false,0);	
+ 	EditField(h+360,v,120,"Отчество",Normal,MiddleName,false,0);	*/
  	
 	EditField(h,v+=vs,100,"Тел.1",Normal,Kontinfo1,false,0);	
 	HalPushButton(h+110,v-3,h+180,v+15,"CallToClientDsm","Звонок");
@@ -2171,7 +2171,7 @@ begin
   EditField(h,v+=vs,-20,"Жалобы собств-ка",Normal,Comment1,false,IssueSClass);
   EditField(h,v+=vs,-20,"",Normal,Comment2,false,IssueSClass);
   v=v+10;
-  EditField(h,v+=vs,-20,"Наличие деф.",Normal,Comment3,false,DefectSClass);// Edit ************************** Friday, 29 May 2015 17:19:51
+  EditField(h,v+=vs,-20,"Внешний вид",Normal,Comment3,false,DefectSClass);// Edit ************************** Friday, 29 May 2015 17:19:51
   EditField(h,v+=vs,-20,"",Normal,Comment4,false,DefectSClass);
   v=v+10;
   StaticText(h,v+=vs,"Комплектность",true);
@@ -2242,7 +2242,8 @@ begin
   RlCol(-370,-370,"Статус зв.",CallStatus,false);
   RlColKey(-290,-290,"Тел1.",Kontinfo1,false,Kontinfo1);
   //RlColKey(-180,-180,"Тел2.",Phone2,false,Phone2);
-  CalculatedColumn(-180,-180,"Статус","SVOServStatus",true);
+  RlColKey(-180,-180,"Статус",StatusText,false,StatusText);
+  //CalculatedColumn(-180,-180,"Статус","SVOServStatus",true);
   //RlCol(-140,-140,"Гар.",Garanty,false);
   RlColKey(-70,-70,"Рем.гот.",PlanShipDate,false,PlanShipDate);
   //if (HasOrderClasses) then begin
@@ -2288,7 +2289,8 @@ begin
   RlColKey(-210,-210,"Сер.Мен.",ServiceManager,false,UnServServiceManager);
   RlColKey(-160,-160,"VIP",VIPStatus,false,UnServVIPStatus);
   //RlColKey(-140,-140,"Гарантия",Garanty,false,UnServGaranty);
-  CalculatedColumn(-90,-90,"Статус","SVOServStatus",true);
+  //CalculatedColumn(-90,-90,"Статус","SVOServStatus",true);
+  RlColKey(-90,-90,"Статус",StatusText,false,UnServServiceStatusText);
   SearchField("Поиск");
   if (HasLimitedAccess) then begin 
     BrowseSubsetButton(-40,-15);
@@ -2328,7 +2330,8 @@ begin
   RlColKey(-210,-210,"Сер.Мен.",ServiceManager,false,AllUnServServiceManager);
   RlColKey(-160,-160,"VIP",VIPStatus,false,AllUnServVIPStatus);
   //RlColKey(-140,-140,"Гарантия",Garanty,false,AllUnServGaranty);
-  CalculatedColumn(-90,-90,"Статус","SVOServStatus",true);
+  //CalculatedColumn(-90,-90,"Статус","SVOServStatus",true);
+  RlColKey(-90,-90,"Статус",StatusText,false,AllUnServStatusText);
   SearchField("Поиск");
   if (HasLimitedAccess) then begin 
     BrowseSubsetButton(-40,-15);
@@ -2368,7 +2371,8 @@ begin
   RlColKey(-210,-210,"Сер.Мен.",ServiceManager,false,AllServServiceManager);
   RlColKey(-160,-160,"VIP",VIPStatus,false,AllServVIPStatus);
   RlColKey(-140,-140,"Гарантия",Garanty,false,AllServGaranty);
-  CalculatedColumn(-90,-90,"Статус","SVOServStatus",true);
+  //CalculatedColumn(-90,-90,"Статус","SVOServStatus",true);
+  RlColKey(-90,-90,"Статус",StatusText,false,AllServStatusText);
   SearchField("Поиск");
   if (HasLimitedAccess) then begin 
     BrowseSubsetButton(-40,-15);
@@ -2577,6 +2581,7 @@ begin
   if (HasTaxMatrix) then begin
     SpecialMenu("Открыть налог. матрицу",' ',25,"OpenVatMatrixWSDsm");
   end;
+  SpecialMenu("Печатать чек",' ',0,"PrintWSReceiptDsm");
   SpecMenuGroup("",kSpecMenuGroupTypeExtendedPlusMenu,0);         
   if (HasModCRM) then begin
 //    SpecialMenu("Activity",'c',4,"ActFromWSDsm");
@@ -2587,7 +2592,8 @@ begin
   if (HasReturnedGoods) then begin
     SpecialMenu("Создать возврат товаров",'B',6,"RetFromWSDsm");         
   end;
-  SpecialMenu("Печатать чек",' ',0,"PrintWSReceiptDsm");	//Edit----------------------Dima  17.09.2015
+  
+  SpecialMenu("Внутренний заказ",' ',0,"CreateIntOrdfromWSDsm");
 //  SpecMenuItem("Work Sheet Status",'r',4);
   EndWindow;
 end;

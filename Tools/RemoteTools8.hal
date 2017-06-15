@@ -2611,38 +2611,42 @@ record SVOVc SVOr;
 		Phoner.PhoneNum = phone;
 		if(readfirstmain(Phoner,1,true))then begin
 			recordcopy(Phonerres,Phoner);
-			res = Phoner.Priynato;
+			res = Phoner.Vlastnik;
+			/*res = Phoner.Priynato;
 			if(nonblank(Phoner.FirstName))then begin
 				res = Phoner.FirstName & " " & Phoner.LastName & " " & Phoner.MiddleName;
-			end;
+			end;*/
 			
 			num = Phoner.SVONrs;
 		end else begin
 			Phoner.PhoneNum = "044" & phone;
 			if(readfirstmain(Phoner,1,true))then begin
 				recordcopy(Phonerres,Phoner);
-				res = Phoner.Priynato;
+				/*res = Phoner.Priynato;
 				if(nonblank(Phoner.FirstName))then begin
 					res = Phoner.FirstName & " " & Phoner.LastName & " " & Phoner.MiddleName;
-				end;
+				end;*/
+				res = Phoner.Vlastnik;
 				num = Phoner.SVONrs;
 			end else begin
 				Phoner.PhoneNum = "+38044" & phone;
 				if(readfirstmain(Phoner,1,true))then begin
 					recordcopy(Phonerres,Phoner);
-					res = Phoner.Priynato;
+					/*res = Phoner.Priynato;
 					if(nonblank(Phoner.FirstName))then begin
 						res = Phoner.FirstName & " " & Phoner.LastName & " " & Phoner.MiddleName;
-					end;
+					end;*/
+					res = Phoner.Vlastnik;
 					num = Phoner.SVONrs;
 				end else begin
 					Phoner.PhoneNum = "+38" & phone;
 					if(readfirstmain(Phoner,1,true))then begin
 						recordcopy(Phonerres,Phoner);
-						res = Phoner.Priynato;
+						/*res = Phoner.Priynato;
 						if(nonblank(Phoner.FirstName))then begin
 							res = Phoner.FirstName & " " & Phoner.LastName & " " & Phoner.MiddleName;
-						end;
+						end;*/
+						res = Phoner.Vlastnik;
 						num = Phoner.SVONrs;
 					end;
 				end;

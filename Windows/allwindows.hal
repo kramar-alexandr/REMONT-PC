@@ -2084,7 +2084,7 @@ begin
   //EditField(h+350,vm+20,100,"К оплате",ViewOnly,WSCost,false,0);
   
   CheckBox(-80,16,0,"Завершено",DoneMark);
-  statictext(50,230,"_",false);// Edit ************************** Thursday, 24 November 2016 11:54:03!!!!!!!!!!!!!!!!!!!!!!!!!!!!!SIZEEEEEE
+  statictext(50,240,"_",false);// Edit ************************** Thursday, 24 November 2016 11:54:03!!!!!!!!!!!!!!!!!!!!!!!!!!!!!SIZEEEEEE
   TileButton(1,"Дата");
   TileButton(2,"Товары");
   //TileButton(3,"Валюта");
@@ -2115,7 +2115,7 @@ begin
   EditField(h2+145,v+=20,60, "Терминал",Normal,FastTerm,false,0);
   //EditField(h2+125,v+=20,60, "PlanShip",Normal,PlanShip,false,0);/////////
   EnterSkip(Math);
-  Tile(2,350,false,"2",Math);
+  Tile(2,380,false,"2",Math);
 
   v = 24;
   MatrixBegin(3,v,-50,v+45,-,50);

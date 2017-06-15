@@ -2065,8 +2065,8 @@ begin
   EditField(460,vm,100,"К оплате",ViewOnly,WSCost,false,0);
   EditField(260,vm+=20,100,"Ответственный менеджер",Normal,Inspector,false,UserSClass); //Edit***************************Sasha2,16:52 09.06.2017
 
-  vm = 10;
-  ButtonFrame(h+490,vm+16,130,9,"Статус");
+  vm = 30;
+  ButtonFrame(h+490,vm+16,220,5,"Статус");
 	RadioButton(h+490,vm+=16,0,0,"В ожидании",OrderStatus);
 	tvm = vm;
 	RadioButton(h+490,vm+=16,5,0,"На диагностике",OrderStatus);

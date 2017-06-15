@@ -2023,7 +2023,7 @@ end;
 window SVODClass:1
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
-  real h,h1,h2,h3,h4,t,v,vm,vs;
+  real h,h1,h2,h3,h4,t,v,vm,vs,tvm;
   string 255 label;
   Integer mode; //Edit***************************Sasha2,15:56 27.10.2016
   
@@ -2046,7 +2046,7 @@ begin
   ActiveFieldOnNew("CustCode");  
   //FormName(SVOForm);
   vs = 20; h3 = 550;
-  Tile(0,170,false,"",CustCode);
+  Tile(0,140,false,"",CustCode);
   EditField(h=90,v=6, 82,"Номер",Normal,SerNr,false,TSerSClass);
   EnterSkip(CustCode);
   EditField(h2=240,v,300,"ФИО",Normal,Addr0,false,0);
@@ -2062,27 +2062,29 @@ begin
   EditField(460,vm,60,"Время приемки",ViewOnly,GetItemDate,false,0);
 
   EditField(260,vm+=20,100,"Сер. мастер",Normal,ServiceManager,false,UserSClass);// Edit ************************** Monday, 31 May 2010 9:22:11 AM
-  EditField(260,vm+=20,100,"К оплате",ViewOnly,WSCost,false,0);
+  EditField(460,vm,100,"К оплате",ViewOnly,WSCost,false,0);
   EditField(260,vm+=20,100,"Ответственный менеджер",Normal,Inspector,false,UserSClass); //Edit***************************Sasha2,16:52 09.06.2017
 
   vm = 10;
   ButtonFrame(h+490,vm+16,130,9,"Статус");
 	RadioButton(h+490,vm+=16,0,0,"В ожидании",OrderStatus);
+	tvm = vm;
 	RadioButton(h+490,vm+=16,5,0,"На диагностике",OrderStatus);
 	RadioButton(h+490,vm+=16,4,0,"На согласовании",OrderStatus);
 	RadioButton(h+490,vm+=16,7,0,"Согласовано",OrderStatus);
 	RadioButton(h+490,vm+=16,1,0,"В ремонте",OrderStatus);
-	RadioButton(h+490,vm+=16,8,0,"В удал. сервисе",OrderStatus);
-	RadioButton(h+490,vm+=16,3,0,"Ожидает запч.",OrderStatus);
-  RadioButton(h+490,vm+=16,2,0,"Готов",OrderStatus);
-  RadioButton(h+490,vm+=16,6,0,"Отказ",OrderStatus);
+	vm = tvm;
+	RadioButton(h+600,vm+=16,8,0,"В удал. сервисе",OrderStatus);
+	RadioButton(h+600,vm+=16,3,0,"Ожидает запч.",OrderStatus);
+  RadioButton(h+600,vm+=16,2,0,"Готов",OrderStatus);
+  RadioButton(h+600,vm+=16,6,0,"Отказ",OrderStatus);
     
   vm = 36;//vm + 32;
   
   //EditField(h+350,vm+20,100,"К оплате",ViewOnly,WSCost,false,0);
   
   CheckBox(-80,16,0,"Завершено",DoneMark);
-  statictext(50,260,"_",false);// Edit ************************** Thursday, 24 November 2016 11:54:03!!!!!!!!!!!!!!!!!!!!!!!!!!!!!SIZEEEEEE
+  statictext(50,230,"_",false);// Edit ************************** Thursday, 24 November 2016 11:54:03!!!!!!!!!!!!!!!!!!!!!!!!!!!!!SIZEEEEEE
   TileButton(1,"Дата");
   TileButton(2,"Товары");
   //TileButton(3,"Валюта");

@@ -2034,7 +2034,7 @@ begin
   end;
   
 	WindowBegin("Заказ на обслуживание",SVODClass,CGview,-);
-  SetWRect(20,80,850,800);
+  SetWRect(20,80,850,750);
   Sizeable(-1,-1,0,0);
   AutoSizeWindow(false);
   DynamicWindow;
@@ -2115,7 +2115,7 @@ begin
   EditField(h2+145,v+=20,60, "Терминал",Normal,FastTerm,false,0);
   //EditField(h2+125,v+=20,60, "PlanShip",Normal,PlanShip,false,0);/////////
   EnterSkip(Math);
-  Tile(2,400,false,"2",Math);
+  Tile(2,350,false,"2",Math);
 
   v = 24;
   MatrixBegin(3,v,-50,v+45,-,50);
@@ -8956,16 +8956,16 @@ begin
     SpecialMenu("Создать контакт",' ',1,"NewContactCUDsm");
     SpecialMenu("Создать деятельность",'c',2,"NewActCUDsm");
   end else begin
-    if (UserCanReport("CustPSRn","",true) and HasCustomerStatusReport) then begin
-    SpecialMenu("Справка по клиенту",'e',0,"CUStatusCUDsm");
-  end;
-  if (UserCanReport("VEPSRn","",true)) then begin
-    SpecialMenu("Статус поставщика",'u',4,"VEStatusVEDsm");
-  end;
+    if (UserCanReport("CustPSRn","",true) /*and HasCustomerStatusReport*/) then begin
+      SpecialMenu("Справка по клиенту",'e',0,"CUStatusCUDsm");
+    end;
+    if (UserCanReport("VEPSRn","",true)) then begin
+      SpecialMenu("Статус поставщика",'u',4,"VEStatusVEDsm");
+    end;
     SpecialMenu("Связать существующий контакт",' ',1,"AddContactCUDsm");
     SpecialMenu("Удалить связанный контакт",' ',1,"DelContactCUDsm");
     SpecialMenu("Изменить данные связанного контакта",' ',1,"EditContactCUDsm");
-  SpecialMenu("Обновить контактные лица",' ',6,"UpdContactAddrCUDsm");
+    SpecialMenu("Обновить контактные лица",' ',6,"UpdContactAddrCUDsm");
     if (HasLocalization("ARG")) then begin
       SpecialMenu("Open Regional Perceptions",' ',1,"RPCUTaxDsm"); 
     end;

@@ -35,7 +35,7 @@ remote updating function LongInt RecordAction_raPasteWSInPO(record WSVc,var arra
 remote updating function Boolean RecordAction_raPasteQTInWS(var record WSVc,record QTVc);
 external procedure GetSalesGroup(string,var string); //Edit***************************Sasha2,16:06 31.05.2017
 external function string 60 AddObjectToObjectList(string,string); //Edit***************************Sasha2,10:19 01.06.2017
-remote updating procedure IntOrdfromWSRemote(record WSVc,var record IntORVc);// Edit ************************** Wednesday, 14 June 2017 11:40:41
+remote updating function LongInt IntOrdfromWSRemote(record WSVc,var record IntORVc);// Edit ************************** Wednesday, 14 June 2017 11:40:41
 
 global
 function Boolean WSDchrsum(record WSVc WSr,Integer rownr,Integer UseDiscount)
@@ -1200,17 +1200,18 @@ begin
 	record WSVc WSr;
 	record IntORVc IntORr;
 	integer wn;
+	LongInt err;
 	
 	wn = curwindow;
 	
 	if(windowstate(wn)==0)then begin
-		
 		getwindowrecord(wn,WSr);
-		IntOrdfromWSRemote(WSr,IntORr);
-		wn = OpenWindow("IntORDClass",1,0,"","",IntORr);
-	
+		err = IntOrdfromWSRemote(WSr,IntORr);
+		if (err==-1) then begin
+		  wn = OpenWindow("IntORDClass",1,0,"","",IntORr);
+		end;
 	end else begin
-		beep;
+		MessageBox(1356,"");
 	end;
 
 return;

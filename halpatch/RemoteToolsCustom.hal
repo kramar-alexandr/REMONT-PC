@@ -18,6 +18,9 @@ external function Boolean FindStringInString(string, string);
 remote updating function Integer RecordAction_raPasteSVOInOffHire(record SVOVc,var record OffHireVc,record LocalMachineBlock,Boolean); //Edit***************************Sasha2,11:57 09.06.2017
 remote updating function Integer RecordAction_raPasteSVOInDispatch(record SVOVc,var record DispatchVc,record LocalMachineBlock,Boolean); //Edit***************************Sasha2,11:59 09.06.2017
 external procedure GetCurUser(var record UserVc);
+remote function Boolean IntORVc_PasteArtCode(var record IntORVc,Integer,Boolean);
+remote function Boolean IntORchrsum(record IntORVc,Integer);
+remote procedure SumupIntOR(var record IntORVc,var val);
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -3561,6 +3564,62 @@ begin
 
 return;
 end; //Edit***************************Sasha2,11:22 22.09.2016 }
+
+global //Edit***************************Sasha2,13:38 15.06.2017 {
+updating function LongInt IntOrdfromWSRemote(record WSVc WSr, var record IntORVc IntORr)
+begin
+  LongInt res;
+	row WSVc WSrw;
+	row IntORVc IntORrw;
+	record INVc INr;
+	integer i,mtrw,rownr;
+	val t;
+	
+	recordnew(IntORr);
+
+	IntORr.Location = WSr.Location;
+	mtrw = matrowcnt(WSr);
+	rownr = 0;
+	For(i=0;i<mtrw;i=i+1) begin
+	  matrowget(WSr,i,WSrw);
+	  INr.Code = WSrw.ArtCode;
+	  if(readfirstmain(INr,1,true))then begin
+	  	if(INr.ItemType==kItemTypeStocked)then begin
+	  		ClearRow(IntORr,IntORrw,1);
+	  		IntORrw.ArtCode = INr.Code;
+	  		IntORrw.SerialNr = WSrw.SerialNr;
+	  		MatRowPut(IntORr,rownr,IntORrw);
+	  		IntORVc_PasteArtCode(IntORr,rownr,true);
+	  		MatRowGet(IntORr,rownr,IntORrw);
+	  		IntORrw.Quant = WSrw.Quant;
+	  		MatRowPut(IntORr,rownr,IntORrw);
+	  		IntORchrsum(IntORr,rownr);
+	  		rownr = rownr + 1;
+	  	end;
+	  end;
+	end; 
+	if (rownr>0) then begin
+	  SumupIntOR(IntORr,t);
+    IntORr.Total = t;
+  end else begin
+    res = 31500;
+	end;
+	if (res==-1) then begin
+  	IntORr.SerNr = NextSerNr("IntORVc",IntORr.TransDate,-1,false,"");
+    if (IntORr.SerNr==-1) then begin 
+      res = 1747;
+    end; 
+	end;
+  if (res==-1) then begin
+    if (RecordStore(IntORr,false)) then begin
+      CreateRecordLink(IntORr,CurrentCompany,WSr,CurrentCompany);  
+      CreateRecordLink(WSr,CurrentCompany,IntORr,CurrentCompany);  
+    end;
+  end;
+
+	IntOrdfromWSRemote = res;
+return;
+end; //Edit***************************Sasha2,13:38 15.06.2017 }
 
 global //Edit***************************Sasha2,11:35 09.06.2017 {
 updating function Integer CreateAndOKOffHireFromSVO(record SVOVc SVOr,record LocalMachineBlock LocMachBl,var string errMes)

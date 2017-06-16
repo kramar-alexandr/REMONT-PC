@@ -3774,7 +3774,7 @@ begin
   		if (NonBlank(SVOr.CustomField7)) then begin
 			  Actr.MainPersons = SVOr.CustomField7;
 			end;
-			if (NonBlank(SVOr.Inspector)) then begin
+			if (NonBlank(SVOr.Inspector) and SetInSet(SVOr.Inspector,Actr.MainPersons)==false) then begin
 			  Actr.MainPersons = SVOr.Inspector & "," & Actr.MainPersons;
 			end;
   		/*if(matrowcnt(SVOr)>0)then begin

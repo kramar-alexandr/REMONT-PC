@@ -3822,11 +3822,20 @@ return;
 end; //Edit***************************Sasha2,16:49 15.06.2017 }
 
 global //Edit***************************Sasha2,16:49 15.06.2017 { 
-updating procedure CreateActFromSVOForInspector(record SVOVc SVOr)
+updating procedure CreateActFromSVOForInspectorIfItemIssued(record SVOVc SVOr)
 begin
 	
 	CreateActFromSVOForInspectorWithActType(SVOr,"CLLCl",0,"Ремонт готов.");
 	CreateActFromSVOForInspectorWithActType(SVOr,"RMDCl",5,"Напомнить клиенту забрать отремонтированную технику.");
+
+return;
+end; //Edit***************************Sasha2,16:49 15.06.2017 }
+
+global //Edit***************************Sasha2,16:49 15.06.2017 { 
+updating procedure CreateActFromSVOForInspectorIfItemRejected(record SVOVc SVOr)
+begin
+	
+	CreateActFromSVOForInspectorWithActType(SVOr,"RJCTD",5,"Напомнить клиенту забрать не принятую на ремонт технику.");
 
 return;
 end; //Edit***************************Sasha2,16:49 15.06.2017 }

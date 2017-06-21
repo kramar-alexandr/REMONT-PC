@@ -17,6 +17,7 @@ global
 function LongInt InternMovVcRecordDefaults(var record InternMovVc Intmovr,record InternMovVc Disp2r,LongInt stat,LongInt long4)
 BEGIN
   LongInt res;
+  record UserVc Userr; //Edit***************************Sasha2,17:14 21.06.2017
   
   Intmovr.SerNr = -1;
   Intmovr.RegDate = CurrentDate;
@@ -29,6 +30,13 @@ BEGIN
   Intmovr.Comment = "";
   Intmovr.OKFlag = 0;
   Intmovr.SumQuant = BlankVal;
+  Userr.Code = CurrentUser; //Edit***************************Sasha2,17:16 21.06.2017 {
+  if (ReadFirstMain(Userr,1,true)) then begin
+		if (NonBlank(Userr.Location)) then begin
+			Intmovr.FrLocation = Userr.Location;
+		end;		
+	end; //Edit***************************Sasha2,17:16 21.06.2017 }
+	 
   InternMovVcRecordDefaults = res; 
   RETURN;
 END;

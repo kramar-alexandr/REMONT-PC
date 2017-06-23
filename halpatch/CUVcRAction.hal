@@ -37,6 +37,8 @@ external function Boolean ValidateBrazilianVATNr(string,string,Integer);
 external procedure AutoMails_StoreAct(string,string,string,var Longint);
 external procedure UpdateCustomerOnCC(record CUVc,record CUVc,Boolean);
 
+SetLangMode(LangRussian,"RUS",0);
+
 updating procedure AddToNumberLookupRegister(string phoneno,Integer compno,string custcode)
 begin
   record NormPhoneNumVc NormPhoneNumr;
@@ -163,6 +165,12 @@ begin
   CUr.AllowLogin = CSb.AllowLogin;
   CUr.eInvPostage = 2;
   CUr.TaxCondition = 2;
+  
+  CUr.PayDeal = "éî";// Edit ************************** Friday, 23 June 2017 10:58:45
+  CUr.VATCode = "0%";// Edit ************************** Friday, 23 June 2017 10:58:46
+  CUr.CurncyCode = "UAH";// Edit ************************** Friday, 23 June 2017 10:58:53
+  CUr.CustCat = "êéáç";// Edit ************************** Friday, 23 June 2017 10:58:53
+  
   if (IsBooks==false) or (ValuePack(1)) then begin
     if (CSb.CurrentUserasSalesman!=0) then begin
       Userr.Code = CurrentUser;

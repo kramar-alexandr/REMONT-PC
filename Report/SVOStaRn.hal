@@ -137,7 +137,7 @@ BEGIN
   				if(ISBr.Item!=SVOrw.ArtCode)then begin TrHs = false; end;
   				if(ISBr.Serial!=SVOrw.SerialNr)then begin TrHs = false; end;
   				
-  				if(TrHs)then begin
+  				if(TrHs and ISBr.Quant>0)then begin
   					StartFormat(15);
   						OutString(0,0,"Усройство:",false);
   						OutString(40,0,ISBr.Item,false);

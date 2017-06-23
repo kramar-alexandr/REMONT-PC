@@ -20,12 +20,14 @@ external updating procedure CreateNoterChangeInSVO(record SVOVc,string,string);
 external function Boolean FindStringInString(string,string);// Edit ************************** Thursday, 30 June 2016 10:55:59
 remote procedure CountNumberRepeatPhone(string,var array longint,var integer );
 external updating procedure CreateActFromSVOToEnginer(record SVOVc,string);
+external updating procedure CreateActFromSVOForInspectorIfItemIssued(record SVOVc);
 external updating procedure ChangeCostOfIVsInSVO(longint);//Edit-------------------Vitalii 10:13 25.11.2016
 external updating procedure PhonesFromSVO(longint);//Edit-------------------Vitalii 17:10 03.11.2016
 //remote procedure SENDSECONDSMS(longint);// Edit ************************** Friday, 18 November 2016 14:48:29
 remote updating procedure FastPayInvoicesSVO(record RcVc);// Edit ************************** Friday, 25 November 2016 13:09:52
 external procedure NextM4Number(string,var string);
 remote updating function Integer CreateAndOKOffHireFromSVO(record SVOVc,record LocalMachineBlock,var string); //Edit***************************Sasha2,11:57 09.06.2017
+external updating procedure CreateActFromSVOForInspectorIfItemRejected(record SVOVc);
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -429,31 +431,37 @@ BEGIN
     recordstore(SVOr,true);
   end;
     
-    mtrw = matrowcnt(SVOr);
-    for(i=0;i<mtrw;i=i+1)begin
-      matrowget(SVOr,i,SVOrw);
-      if(nonblank(SVOrw.NewSerialNr))then begin
-        recordnew(SVHistr);
-        SVHistr.SerialNr = SVOrw.NewSerialNr;
-        SVHistr.ArtCode = SVOrw.ArtCode;
-        SVHistr.Qty = SVOrw.Quant;
-        SVHistr.TransNr = SVOr.SerNr;
-        SVHistr.FileName = "SVOVc";
-        SVHistr.OKFlag = SVOr.DoneMark;
-        SVHistr.Type = SVOrw.ItemType;
-        SVHistr.TransDate = SVOr.TransDate;
-        SVHistr.OkDate = SVOr.PlanShipDate;
-        SVHistr.ReturnDate = SVOr.RegDate;
-        SVHistr.SalesMan = SVOr.CustomField7;
-        SVHistr.Client = SVOr.CustCode;
-        SVHistr.Vlastnik = SVOr.Vlastnik;
-        recordinsert(SVHistr,true);
-      end;
+  mtrw = matrowcnt(SVOr);
+  for(i=0;i<mtrw;i=i+1)begin
+    matrowget(SVOr,i,SVOrw);
+    if(nonblank(SVOrw.NewSerialNr))then begin
+      recordnew(SVHistr);
+      SVHistr.SerialNr = SVOrw.NewSerialNr;
+      SVHistr.ArtCode = SVOrw.ArtCode;
+      SVHistr.Qty = SVOrw.Quant;
+      SVHistr.TransNr = SVOr.SerNr;
+      SVHistr.FileName = "SVOVc";
+      SVHistr.OKFlag = SVOr.DoneMark;
+      SVHistr.Type = SVOrw.ItemType;
+      SVHistr.TransDate = SVOr.TransDate;
+      SVHistr.OkDate = SVOr.PlanShipDate;
+      SVHistr.ReturnDate = SVOr.RegDate;
+      SVHistr.SalesMan = SVOr.CustomField7;
+      SVHistr.Client = SVOr.CustCode;
+      SVHistr.Vlastnik = SVOr.Vlastnik;
+      recordinsert(SVHistr,true);
     end;
-  	
-  	if(SVOr.GetItemFlag>0)then begin
-  		CreateActFromSVOToEnginer(SVOr,"");
-		end;
+  end;
+	
+	if(SVOr.GetItemFlag>0)then begin
+		CreateActFromSVOToEnginer(SVOr,"");
+	end;
+	if (SVOr.OrderStatus==2 or NonBlankDate(SVOr.RegDate)) then begin
+    CreateActFromSVOForInspectorIfItemIssued(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
+	end;
+	if (SVOr.OrderStatus==6 or NonBlankDate(SVOr.RegDate)) then begin
+    CreateActFromSVOForInspectorIfItemRejected(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
+	end;
   	
   //SENDFIRSTSMS(SVOr);
   PhonesFromSVO(SVOr.SerNr);//Edit-------------------Vitalii 17:10 03.11.2016
@@ -686,6 +694,13 @@ BEGIN
 	if(SVOr.GetItemFlag>0)then begin
 		CreateActFromSVOToEnginer(SVOr,"");
 	end;
+	if ((SVO2r.OrderStatus!=2 and SVOr.OrderStatus==2) or (BlankDate(SVO2r.RegDate) and NonBlankDate(SVOr.RegDate))) then begin
+    CreateActFromSVOForInspectorIfItemIssued(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
+	end;
+	if ((SVO2r.OrderStatus!=6 and SVOr.OrderStatus==6) or (BlankDate(SVO2r.RegDate) and NonBlankDate(SVOr.RegDate))) then begin
+    CreateActFromSVOForInspectorIfItemRejected(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
+	end;
+	
   PhonesFromSVO(SVOr.SerNr);//Edit-------------------Vitalii 17:09 03.11.2016
   
   SVOVcRecordUpdateAfter = res;

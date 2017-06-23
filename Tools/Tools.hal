@@ -890,7 +890,7 @@ begin
 	string 50 sernum,curPhone;
 	row SVOVc SVOrw;
 	record INVc INr;
-	boolean creaetf;
+	boolean createf,TrHs,testf,foundf;
 	
 	if (SVOr.SerNr>-1) then begin
 	  curPhone = SVOr.Kontinfo1;
@@ -898,13 +898,41 @@ begin
 	    curPhone = SVOr.Phone2;
 	  end;
   	sernum = SVOr.SerNr;
-  	Actr.SVOSerNr = SVOr.SerNr;
   	if (NonBlank(curLocation)) then begin
-    	if(!readfirstkey("SVOSerNr",Actr,1,true))then begin
-    		creaetf = true;
+  	  Actr.SVOSerNr = SVOr.SerNr;
+  	  TrHs = true;
+  	  foundf = false;
+  	  while (LoopKey("SVOSerNr",Actr,1,TrHs)) begin
+  	    testf = true;
+  	    if (Actr.SVOSerNr!=SVOr.SerNr) then begin TrHs = false; testf = false; end;
+  	    if (Actr.ActType!="ENGNR") then begin testf = false; end;
+  	    if (testf) then begin
+  	      Actr.Comment = SVOr.SerNr & " " & SVOr.Comment1;
+      		if(matrowcnt(SVOr)>0)then begin
+      			matrowget(SVOr,0,SVOrw);
+      			INr.Code = SVOrw.ArtCode;
+      			if(readfirstmain(INr,1,true))then begin
+      				Actr.Comment = INr.Code & " " & Actr.Comment;
+      				Actr.Phone = curPhone; //left(SVOrw.Spec,20);
+      				Actr.MainPersons = FindUsersWithActiveTasksQueue(SVOr,curLocation);
+      				if (NonBlank(SVOr.Inspector) and SetInSet(SVOr.Inspector,Actr.MainPersons)==false) then begin
+      				  Actr.MainPersons = SVOr.Inspector & "," & Actr.MainPersons;
+      				end;
+      				Actr.Comment = addhours(currenttime,2) & " " & Actr.Comment; //Edit***************************Sasha2,16:14 23.05.2017 }
+      			end;	
+      		end;
+      		recordstore(Actr,true);
+  	      TrHs = false;
+  	      foundf = true;
+  	    end;
+  	  end;
+  	  if (foundf==false) then begin
+  	    createf = true;
     		recordnew(Actr);
     		Actr.MainPersons = "";
     		Actr.Comment = SVOr.SerNr & " " & SVOr.Comment1;
+    		Actr.CUCode = SVOr.CustCode;
+    		Actr.CUName = SVOr.Addr0;
     		//Actr.AlarmType = kAlarmTypeMessage; //Edit-------------------Vitalii 11:31 23.12.2016
         Actr.AlarmType = kAlarmTypeNone;
     		Actr.SVOSerNr = SVOr.SerNr;
@@ -924,36 +952,32 @@ begin
     				Actr.Comment = addhours(currenttime,2) & " " & Actr.Comment; //Edit***************************Sasha2,16:14 23.05.2017 }
     			end;	
     		end;			
-    	end else begin
-    		Actr.Comment = SVOr.SerNr & " " & SVOr.Comment1;
-    		if(matrowcnt(SVOr)>0)then begin
-    			matrowget(SVOr,0,SVOrw);
-    			INr.Code = SVOrw.ArtCode;
-    			if(readfirstmain(INr,1,true))then begin
-    				Actr.Comment = INr.Code & " " & Actr.Comment;
-    				Actr.Phone = curPhone; //left(SVOrw.Spec,20);
-    				Actr.MainPersons = FindUsersWithActiveTasksQueue(SVOr,curLocation);
-    				if (NonBlank(SVOr.Inspector)) then begin
-    				  Actr.MainPersons = SVOr.Inspector & "," & Actr.MainPersons;
-    				end;
-    				Actr.Comment = addhours(currenttime,2) & " " & Actr.Comment; //Edit***************************Sasha2,16:14 23.05.2017 }
-    			end;	
-    		end;
-    		recordstore(Actr,true);
-    	end;
+  	  end;
   	end;
   	if((SVOr.OrderStatus>0 or SVOr.DoneMark>0))then begin
   		Actr.SVOSerNr = SVOr.SerNr;
-  		if(readfirstkey("SVOSerNr",Actr,1,true))then begin
-  			if(Actr.OKFlag==0)then begin
-  				RecordCopy(oldActr,Actr);
-  				Actr.OKFlag = 1;		
-  				RecordUpdate(oldActr,Actr,true);
-  			end;
-  		end;
+  		TrHs = true;
+  	  RESETLOOP(Actr);
+  	  while (LoopKey("SVOSerNr",Actr,1,TrHs)) begin
+  	    testf = true;
+  	    if (Actr.SVOSerNr!=SVOr.SerNr) then begin TrHs = false; testf = false; end;
+  	    if (Actr.ActType!="ENGNR") then begin testf = false; end;
+  	    if (testf) then begin
+  	      if(Actr.OKFlag==0)then begin
+    				RecordCopy(oldActr,Actr);
+    				if (Blank(Actr.MainPersons)) then begin
+  	          Actr.MainPersons = ",";
+  	        end;
+    				Actr.OKFlag = 1;
+    				RecordUpdate(oldActr,Actr,true);
+    			end;
+  	      TrHs = false;
+  	    end;
+  	  end;
+  	  createf = false;
   	end;
   	
-  	if(creaetf)then begin	
+  	if(createf)then begin	
   		Actr.SerNr = NextSerNr("ActVc",Actr.TransDate,-1,false,"");
   		if(recordstore(Actr,true))then begin
   			CreateRecordLink(SVOr,CurrentCompany,Actr,CurrentCompany);  

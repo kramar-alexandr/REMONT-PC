@@ -2588,9 +2588,9 @@ begin
   if (HasModCRM) then begin
 //    SpecialMenu("Activity",'c',4,"ActFromWSDsm");
   end;
-  if (HasModPO) then begin
+  /*if (HasModPO) then begin// Edit ************************** Friday, 23 June 2017 16:42:11
     SpecialMenu("Создать заказ поставщику",' ',5,"POFromWSDsm");         
-  end;
+  end;*/
   if (HasReturnedGoods) then begin
     SpecialMenu("Создать возврат товаров",'B',6,"RetFromWSDsm");         
   end;

@@ -413,6 +413,10 @@ array longint sernr;
 integer count;
 integer i,mtrw;
 string 200 artcode,spec,price;
+record IntSerBalVc ISBr;// Edit ************************** Friday, 23 June 2017 16:51:36
+integer j,rwcnt;// Edit ************************** Friday, 23 June 2017 16:51:35
+boolean TrHs;
+record LocationVc Locr;
 		
 	CountNumberRepeatPhone(RepSpec.f1,sernr,count);
   startreportnoheaderjob("€нформациЯ по телефону клиента");
@@ -449,6 +453,41 @@ string 200 artcode,spec,price;
 					outstring(240,0,spec,false);
 					outstring(1,0,price,true);
 				endformat;
+				
+				rwcnt = matrowcnt(SVOr);// Edit ************************** Friday, 23 June 2017 16:51:40
+				if(rwcnt>0)then begin
+					matrowget(SVOr,0,SVOrw);
+					if(nonblank(SVOrw.ArtCode) and nonblank(SVOrw.SerialNr))then begin
+						ISBr.Item = SVOrw.ArtCode;
+						ISBr.Serial = SVOrw.SerialNr;
+						TrHs = true;
+						while(loopkey("ItemSerial",ISBr,2,TrHs))begin
+							if(ISBr.Item!=SVOrw.ArtCode)then begin TrHs = false; end;
+							if(ISBr.Serial!=SVOrw.SerialNr)then begin TrHs = false; end;
+					
+							if(TrHs)then begin
+								StartFormat(15);
+									OutString(0,0,"“сройство:",false);
+									OutString(40,0,ISBr.Item,false);
+									OutString(100,0,SVOrw.Spec,false);
+									OutString(200,0,"‘клад:",false);
+									Locr.Code = ISBr.Location;
+									readfirstmain(Locr,1,true);
+									if(nonblank(Locr.Name))then begin
+										OutString(230,0,Locr.Name,false);
+									end else begin
+										OutString(230,0,ISBr.Location,false);
+									end;
+							
+							
+								endformat;
+							end;
+						end;
+					end;
+				end;
+		
+			Gray_Divider(0,1);// Edit ************************** Friday, 23 June 2017 16:51:40
+				
 			end;
 		end;
 	end;

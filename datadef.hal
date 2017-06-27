@@ -1190,15 +1190,16 @@ begin
     RecordField(didNumber,M4Str,255,0);
     RecordField(didName,M4Str,255,0);
     RecordField(smsContent,M4Str,255,0);
-    
-    RecordField(CTid,M4Str,100,0);
+		RecordField(Math,M4Matrix,0,0);
+		
+		RecordField(CTid,M4Str,100,0);
     RecordField(CTgaClientId,M4Str,100,0);
     RecordField(CTfirstVisitAt,M4Str,100,0);
-    RecordField(CTutm_source,M4Str,100,0);
-    RecordField(CTutm_medium,M4Str,100,0);
-    RecordField(CTutm_campaign,M4Str,100,0);
-    RecordField(CTutm_content,M4Str,100,0);
-    RecordField(CTutm_term,M4Str,100,0);
+    RecordField(CTutmsource,M4Str,100,0);
+    RecordField(CTutmmedium,M4Str,100,0);
+    RecordField(CTutmcampaign,M4Str,100,0);
+    RecordField(CTutmcontent,M4Str,100,0);
+    RecordField(CTutmterm,M4Str,100,0);
     RecordField(CTipAddress,M4Str,100,0);
     RecordField(CTgeoipCountry,M4Str,100,0);
     RecordField(CTgeoipRegion,M4Str,100,0);
@@ -1207,10 +1208,8 @@ begin
     RecordField(CTdomain,M4Str,100,0);
     RecordField(CTgaTrackingId,M4Str,100,0);
     RecordField(CTtimeSpentOnSiteBeforeMakeCall,M4Str,100,0);
-    
-    
 		
-		RecordField(Math,M4Matrix,0,0);
+		
 		ArrayBegin(Math,-,1);
 		ArrayField(mdstNumber,M4Str,255,0);
     ArrayField(mwaitsec,M4Str,255,0);

@@ -200,23 +200,23 @@ begin
 		end;
 		node = "callDetails(callTrackingData)(utm_source)";
 		if(JSONNodeExists(jobj,node))then begin
-			BECr.CTutm_source = JSONGet(jobj,node);
+			BECr.CTutmsource = JSONGet(jobj,node);
 		end;
 		node = "callDetails(callTrackingData)(utm_medium)";
 		if(JSONNodeExists(jobj,node))then begin
-			BECr.CTutm_medium = JSONGet(jobj,node);
+			BECr.CTutmmedium = JSONGet(jobj,node);
 		end;
 		node = "callDetails(callTrackingData)(utm_campaign)";
 		if(JSONNodeExists(jobj,node))then begin
-			BECr.CTutm_campaign = JSONGet(jobj,node);
+			BECr.CTutmcampaign = JSONGet(jobj,node);
 		end;
 		node = "callDetails(callTrackingData)(utm_content)";
 		if(JSONNodeExists(jobj,node))then begin
-			BECr.CTutm_content = JSONGet(jobj,node);
+			BECr.CTutmcontent = JSONGet(jobj,node);
 		end;
 		node = "callDetails(callTrackingData)(utm_term)";
 		if(JSONNodeExists(jobj,node))then begin
-			BECr.CTutm_term = JSONGet(jobj,node);
+			BECr.CTutmterm = JSONGet(jobj,node);
 		end;
 		node = "callDetails(callTrackingData)(ipAddress)";
 		if(JSONNodeExists(jobj,node))then begin

@@ -17,6 +17,7 @@ begin
 	time timestamp;
 	date datestamp;
 	area delim;
+	boolean foundf;
 	
 	webgetpostdata(encodearea);
 	writeareatofile(encodearea,"WebBinotelAPICallEnd.txt",0);
@@ -129,31 +130,46 @@ begin
 			BECr.employeeEmail = JSONGet(jobj,node);
 		end;
 		
-		node = "callDetails(dstNumbers)(0)(dstNumber)";
-		if(JSONNodeExists(jobj,node))then begin
-			BECrw.mdstNumber = JSONGet(jobj,node);
-		end;
-		node = "callDetails(dstNumbers)(0)(waitsec)";
-		if(JSONNodeExists(jobj,node))then begin
-			BECrw.mwaitsec = JSONGet(jobj,node);
-		end;
-		node = "callDetails(dstNumbers)(0)(billsec)";
-		if(JSONNodeExists(jobj,node))then begin
-			BECrw.mbillsec = JSONGet(jobj,node);
-		end;
-		node = "callDetails(dstNumbers)(0)(disposition)";
-		if(JSONNodeExists(jobj,node))then begin
-			BECrw.mdisposition = JSONGet(jobj,node);
-		end;
-		node = "callDetails(dstNumbers)(0)(employeeName)";
-		if(JSONNodeExists(jobj,node))then begin
-			BECrw.memployeeName = JSONGet(jobj,node);
-		end;
-		node = "callDetails(dstNumbers)(0)(employeeEmail)";
-		if(JSONNodeExists(jobj,node))then begin
-			BECrw.memployeeEmail = JSONGet(jobj,node);
-		end;
-		matrowput(BECr,0,BECrw);
+		foundf = true;
+		For(i=0;i<20;i=i+1) begin
+	  	if(foundf)then begin
+	  		foundf = false;
+	  		ClearRow(BECr,BECrw,0);
+	  		node = "callDetails(dstNumbers)(" & i & ")(dstNumber)";
+				if(JSONNodeExists(jobj,node))then begin
+					BECrw.mdstNumber = JSONGet(jobj,node);
+					foundf = true;
+				end;
+				node = "callDetails(dstNumbers)(" & i & ")(waitsec)";
+				if(JSONNodeExists(jobj,node))then begin
+					BECrw.mwaitsec = JSONGet(jobj,node);
+					foundf = true;
+				end;
+				node = "callDetails(dstNumbers)(" & i & ")(billsec)";
+				if(JSONNodeExists(jobj,node))then begin
+					BECrw.mbillsec = JSONGet(jobj,node);
+					foundf = true;
+				end;
+				node = "callDetails(dstNumbers)(" & i & ")(disposition)";
+				if(JSONNodeExists(jobj,node))then begin
+					BECrw.mdisposition = JSONGet(jobj,node);
+					foundf = true;
+				end;
+				node = "callDetails(dstNumbers)(" & i & ")(employeeName)";
+				if(JSONNodeExists(jobj,node))then begin
+					BECrw.memployeeName = JSONGet(jobj,node);
+					foundf = true;
+				end;
+				node = "callDetails(dstNumbers)(" & i & ")(employeeEmail)";
+				if(JSONNodeExists(jobj,node))then begin
+					BECrw.memployeeEmail = JSONGet(jobj,node);
+					foundf = true;
+				end;
+				matrowput(BECr,i,BECrw);
+	  	end;
+		end; 
+		
+		
 		
 		
 		node = "callDetails(waitsec)";

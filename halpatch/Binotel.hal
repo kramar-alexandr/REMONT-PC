@@ -404,20 +404,8 @@ begin
 		node = "didName";
 		if(JSONNodeExists(jobj,node))then begin
 			BECr.didName = JSONGet(jobj,node);
-		end;
-		
-		
+		end;		
 	recordstore(BECr,true);
-	//logtext(0,"recidstr " & recidstr);
-	//SendAlarmMessage("@MESSAGE@","",tstr,recidstr);
-	//AllClientsRemoteAsync.AlarmMessage(Actr,1,"MESAGE");
-	
-	
-	if(BECr.requestType=="gettingCallSettings")then begin
-		str = "{\"customerData\":{\"name\":\"Balanovich Oleksandr\",\"description\":\"programer\"}}";
-		weboutstring(str);
-	end;
-	
 
 return;
 end;

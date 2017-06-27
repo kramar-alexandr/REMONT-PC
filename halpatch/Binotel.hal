@@ -294,6 +294,8 @@ begin
 		if(getstringfromarea(arequest,i,1)=="=" or i==lenth-1)then begin
 			tstr = urldecode(getstringfromarea(encodearea,lasti,i-lasti));
 			tstr = StrReplace(tstr,"+&gt;+", " > ");
+			tstr = StrReplace(tstr,"+", " ");
+			tstr = StrReplace(tstr,"&apos;", "'");
 			addtexttoarea(tstr,arequest);
 		end;
 	end;

@@ -31,6 +31,44 @@ external updating procedure CreateActFromSVOForInspectorIfItemRejected(record SV
 
 SetLangMode(LangRussian,"RUS",0);
 
+//Edit***************************Sasha2,16:48 27.06.2017 {
+updating
+procedure CreateApprovedActivity(record SVOVc SVOr)
+begin
+  record ActVc Actr;
+  date blankd;
+  string 50 curPhone;
+    
+    if (SVOr.SerNr>-1 and NonBlank(SVOr.ServiceManager)) then begin
+      curPhone = SVOr.Kontinfo1;
+  	  if (Blank(curPhone)) then begin
+  	    curPhone = SVOr.Phone2;
+  	  end;
+      
+      recordnew(Actr);
+  		Actr.Comment = SVOr.SerNr & ". Ремонт согласован.";
+  		Actr.CUCode = SVOr.CustCode;
+  		Actr.CUName = SVOr.Addr0;
+      Actr.AlarmType = kAlarmTypeNone;
+  		Actr.SVOSerNr = SVOr.SerNr;
+  		Actr.TodoFlag = kTodoFlagTodo;
+  		Actr.SymbNr = 3;
+  		Actr.ActType = "";
+  	  Actr.StartTime = StringToTime("00:00:00");
+  	  Actr.TransDate = CurrentDate;
+  	  Actr.EndDate = blankd;
+  		Actr.Phone = curPhone;
+  		Actr.MainPersons = SVOr.ServiceManager;
+  		Actr.SerNr = NextSerNr("ActVc",Actr.TransDate,-1,false,"");
+  		if(recordstore(Actr,true))then begin
+  			CreateRecordLink(SVOr,CurrentCompany,Actr,CurrentCompany);  
+  			CreateRecordLink(Actr,CurrentCompany,SVOr,CurrentCompany); 
+  		end;
+    end;
+
+  return;
+end; //Edit***************************Sasha2,16:48 27.06.2017 }
+
 global
 function Boolean GetNextInnerOrderNr(var string InnerOrderNr, string SalesGroup)
 BEGIN
@@ -462,6 +500,9 @@ BEGIN
 	if (SVOr.OrderStatus==6 or NonBlankDate(SVOr.RegDate)) then begin
     CreateActFromSVOForInspectorIfItemRejected(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
 	end;
+	if (SVOr.OrderStatus==7) then begin
+    CreateApprovedActivity(SVOr); //Edit***************************Sasha2,17:02 27.06.2017
+	end;
   	
   //SENDFIRSTSMS(SVOr);
   PhonesFromSVO(SVOr.SerNr);//Edit-------------------Vitalii 17:10 03.11.2016
@@ -699,6 +740,9 @@ BEGIN
 	end;
 	if ((SVO2r.OrderStatus!=6 and SVOr.OrderStatus==6) or (BlankDate(SVO2r.RegDate) and NonBlankDate(SVOr.RegDate))) then begin
     CreateActFromSVOForInspectorIfItemRejected(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
+	end;
+	if (SVO2r.OrderStatus==4 and SVOr.OrderStatus==7) then begin
+    CreateApprovedActivity(SVOr); //Edit***************************Sasha2,17:02 27.06.2017
 	end;
 	
   PhonesFromSVO(SVOr.SerNr);//Edit-------------------Vitalii 17:09 03.11.2016

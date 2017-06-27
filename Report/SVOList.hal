@@ -506,17 +506,18 @@ end;
 global procedure SVODateOff3RepRn(record RcVc RepSpec)
 begin
 	record SVOVc SVOr;
+	row SVOVc SVOrw;
 	record UserVc USr;
 	boolean testf;
 	integer countwdays;
 	
-	StartReportNoHeaderJob("Просрочені в діагностиці замовлення");
+	StartReportNoHeaderJob("Просроченные в ремонте заказы");
 		USr.Code = CurrentUser;
 		readfirstmain(USr,1,true);
 		
 		if(nonblank(RepSpec.f1))then begin
 			startformat(15);
-				outstring(0,"Dbl3RepRnAll","Показати всі просрочені в діагностиці замовлення",false);
+				outstring(0,"Dbl3RepRnAll","Показать все просроченные в ремонте заказы",false);
 			endformat;
 		
 			gray_divider(0,100);
@@ -524,9 +525,12 @@ begin
 		startformat(15);
 			outstring(0,0,"Номер",false);
 			outstring(50,0,"Дата",false);
-			outstring(90,0,"Проср.роб.днів",false);
-			outstring(150,0,"Власн.",false);
-			outstring(250,0,"Серв.майстр.",false);
+			outstring(90,0,"Проср.календ.дн.",false);
+			outstring(150,0,"Собств.",false);
+			outstring(220,0,"Серв.мастер.",false);
+			outstring(270,0,"Устройство",false);
+			outstring(350,0,"Сер.номер",false);
+			outstring(390,0,"Наименование",false);
 		endformat;
 		
 		while(loopkey("AllUnServTransDate",SVOr,1,true))begin
@@ -545,7 +549,11 @@ begin
 					outstring(50,0,SVOr.TransDate,false);
 					outstring(90,0,countwdays,false);
 					outstring(150,0,SVOr.Vlastnik,false);
-					outstring(250,0,SVOr.ServiceManager,false);
+					outstring(220,0,SVOr.ServiceManager,false);
+					MatRowGet(SVOr,0,SVOrw);
+					outstring(270,0,SVOrw.ArtCode,false);
+    			outstring(350,0,SVOrw.SerialNr,false);
+    			outstring(390,0,SVOrw.Spec,false);
 				endformat;
 			end;
 		end;
@@ -558,17 +566,18 @@ end;
 global procedure SVODateOff14RepRn(record RcVc RepSpec)
 begin
 	record SVOVc SVOr;
+	row SVOVc SVOrw;
 	record UserVc USr;
 	boolean testf;
 	integer countwdays;
 	
-	StartReportNoHeaderJob("Просрочені в ремонті замовлення");
+	StartReportNoHeaderJob("Просроченные в ремонте заказы");
 		USr.Code = CurrentUser;
 		readfirstmain(USr,1,true);
 		
 		if(nonblank(RepSpec.f1))then begin
 			startformat(15);
-				outstring(0,"Dbl14RepRnAll","Показати всі просрочені в ремонті замовлення",false);
+				outstring(0,"Dbl14RepRnAll","Показать все просроченные в ремонте заказы",false);
 			endformat;
 		
 			gray_divider(0,100);
@@ -577,9 +586,12 @@ begin
 		startformat(15);
 			outstring(0,0,"Номер",false);
 			outstring(50,0,"Дата",false);
-			outstring(90,0,"Проср.календ.днів",false);
-			outstring(150,0,"Власн.",false);
-			outstring(250,0,"Серв.майстр.",false);
+			outstring(90,0,"Проср.календ.дн.",false);
+			outstring(150,0,"Собств.",false);
+			outstring(220,0,"Серв.мастер",false);
+			outstring(270,0,"Устройство",false);
+			outstring(350,0,"Сер.номер",false);
+			outstring(390,0,"Наименование",false);
 		endformat;
 		
 		while(loopkey("AllUnServTransDate",SVOr,1,true))begin
@@ -598,7 +610,11 @@ begin
 					outstring(50,0,SVOr.TransDate,false);
 					outstring(90,0,countwdays,false);
 					outstring(150,0,SVOr.Vlastnik,false);
-					outstring(250,0,SVOr.ServiceManager,false);
+					outstring(220,0,SVOr.ServiceManager,false);
+					MatRowGet(SVOr,0,SVOrw);
+					outstring(270,0,SVOrw.ArtCode,false);
+    			outstring(350,0,SVOrw.SerialNr,false);
+    			outstring(390,0,SVOrw.Spec,false);
 				endformat;
 			end;
 		end;

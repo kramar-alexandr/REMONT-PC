@@ -20,7 +20,9 @@ begin
 	boolean foundf;
 	
 	webgetpostdata(encodearea);
-	writeareatofile(encodearea,"WebBinotelAPICallEnd.txt",0);
+	addtexttoarea(chr(13) & chr(10) & "*********" & currenttime & "************" & chr(13) & chr(10),delim);
+	writeareatofile(delim,"WebBinotelAPICallEnd.txt",1);
+	writeareatofile(encodearea,"WebBinotelAPICallEnd.txt",1);
 	logtext(0,"WebBinotelAPICallEnd1");
 	tstr = "";
 	lenth = getarealength(encodearea);
@@ -57,7 +59,6 @@ begin
 	end; 
 	addtexttoarea("}",newarea);
 	
-	addtexttoarea(chr(13) & chr(10) & "*********" & currenttime & "************" & chr(13) & chr(10),delim);
 	writeareatofile(delim,"WebBinotelAPICallEnd_nrm.txt",1);
 	writeareatofile(newarea,"WebBinotelAPICallEnd_nrm.txt",1);
 	weboutstring("{\"status\":\"success\"}");

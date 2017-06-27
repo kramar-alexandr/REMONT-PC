@@ -186,6 +186,72 @@ begin
 		end;
 		
 		
+		node = "callDetails(callTrackingData)(id)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.CTid = JSONGet(jobj,node);
+		end;
+		node = "callDetails(callTrackingData)(gaClientId)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.CTgaClientId = JSONGet(jobj,node);
+		end;
+		node = "callDetails(callTrackingData)(firstVisitAt)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.CTfirstVisitAt = JSONGet(jobj,node);
+		end;
+		node = "callDetails(callTrackingData)(utm_source)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.CTutm_source = JSONGet(jobj,node);
+		end;
+		node = "callDetails(callTrackingData)(utm_medium)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.CTutm_medium = JSONGet(jobj,node);
+		end;
+		node = "callDetails(callTrackingData)(utm_campaign)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.CTutm_campaign = JSONGet(jobj,node);
+		end;
+		node = "callDetails(callTrackingData)(utm_content)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.CTutm_content = JSONGet(jobj,node);
+		end;
+		node = "callDetails(callTrackingData)(utm_term)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.CTutm_term = JSONGet(jobj,node);
+		end;
+		node = "callDetails(callTrackingData)(ipAddress)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.CTipAddress = JSONGet(jobj,node);
+		end;
+		node = "callDetails(callTrackingData)(geoipCountry)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.CTgeoipCountry = JSONGet(jobj,node);
+		end;
+		node = "callDetails(callTrackingData)(geoipRegion)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.CTgeoipRegion = JSONGet(jobj,node);
+		end;
+		node = "callDetails(callTrackingData)(geoipCity)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.CTgeoipCity = JSONGet(jobj,node);
+		end;
+		node = "callDetails(callTrackingData)(geoipOrg)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.CTgeoipOrg = JSONGet(jobj,node);
+		end;
+		node = "callDetails(callTrackingData)(domain)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.CTdomain = JSONGet(jobj,node);
+		end;
+		node = "callDetails(callTrackingData)(gaTrackingId)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.CTgaTrackingId = JSONGet(jobj,node);
+		end;
+		node = "callDetails(callTrackingData)(timeSpentOnSiteBeforeMakeCall)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.CTtimeSpentOnSiteBeforeMakeCall = JSONGet(jobj,node);
+		end;
+		
+		
 	recordstore(BECr,true);
 	
 return;

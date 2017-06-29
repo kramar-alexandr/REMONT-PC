@@ -2953,6 +2953,9 @@ begin
 	record ProdVc Prodr;
 	record SVOVc SVOr;
 	record WSVc WSr;
+	record WSIVVc WSIVr;
+	record SVOSerVc SVOSerr;
+	record IntORVc IntORr;
 	
 	record SynkDBIDRegVc SynkDBIDRegr;
 	record SynkGlobalDBIDRegVc SynkGlobalDBIDRegr;
@@ -3350,6 +3353,30 @@ begin
 	  if (TrHs) then begin
 	    RecordDelete(WSr);
 	    StepBack(WSr);
+	  end;
+	end;
+	
+	TrHs = true;
+	while (LoopMain(WSIVr,1,TrHs)) begin
+	  if (TrHs) then begin
+	    RecordDelete(WSIVr);
+	    StepBack(WSIVr);
+	  end;
+	end;
+	
+	TrHs = true;
+	while (LoopMain(IntORr,1,TrHs)) begin
+	  if (TrHs) then begin
+	    RecordDelete(IntORr);
+	    StepBack(IntORr);
+	  end;
+	end;
+	
+	TrHs = true;
+	while (LoopMain(SVOSerr,1,TrHs)) begin
+	  if (TrHs) then begin
+	    RecordDelete(SVOSerr);
+	    StepBack(SVOSerr);
 	  end;
 	end;
 	

@@ -2921,6 +2921,7 @@ begin
   record CashierBalVc CashierBalr;
   record CLInVc CLInr;
 	record CLOutVc CLOutr;
+	record ERVc ERr;
 	record IPVc IPr;
 	record OPVc OPr;
 	record IVVc IVr;
@@ -2942,7 +2943,7 @@ begin
 	record SerBalVc SerBalr;
 	record PPVc PPr;
 	record CUVc CUr;
-	record INVc INr;
+	//record INVc INr;
 	record APVc APr;
 	record ARVc ARr;
 	record OPrsVc OPrsr;
@@ -2985,17 +2986,19 @@ begin
 	record AT2DprVc AT2Dprr; //Переоценка активов
 	record AT2TakeVc AT2Taker; //Статус активов
 	record AT2TransVc AT2Transr; //Операции/Движение активов
-	*/
-	//record DprModVc DprModr; //Модели амортизации
-	
-	/*record ITVc ITr;
+	record DprModVc DprModr; //Модели амортизации
+
+	record ITVc ITr;
+	record DIVc DIr;
 	record CTypeVc CTyper;
 	record UnitVc Unitr;
 	record ObjVc Objr;
 	record LocationVc Locationr;
 	record PDVc PDr;
 	record CurncyCodeVc CurncyCoder;
-	record AccVc Accr*/
+	record AccVc Accr;
+	record ActTypeVc ActTyper;
+	*/
 	record ActVc Actr;
 	
 	                   //CUSTOM ASERVICE REGISTERS
@@ -3017,7 +3020,7 @@ begin
 
 	Boolean TrHs;
 	
-  /*TrHs = true;
+  TrHs = true;
 	while (LoopMain(IVCashr,1,TrHs)) begin
 		recorddelete(IVCashr);
 		StepBack(IVCashr);
@@ -3068,6 +3071,14 @@ begin
 	  if (TrHs) then begin
 	    RecordDelete(CLOutr);
 	    StepBack(CLOutr);
+	  end;
+	end;
+	
+	TrHs = true;
+	while (LoopMain(ERr,1,TrHs)) begin
+	  if (TrHs) then begin
+	    RecordDelete(ERr);
+	    StepBack(ERr);
 	  end;
 	end;
 
@@ -3213,22 +3224,22 @@ begin
 	    RecordDelete(PPr);
 	    StepBack(PPr);
 	  end;
-	end;*/
-
+	end;
+/*
 	TrHs = true;
 	while (LoopMain(CUr,1,TrHs)) begin
 		RecordDelete(CUr);
 		StepBack(CUr);
 	end;
 
-	/*TrHs = true;
+	TrHs = true;
 	while (LoopMain(INr,1,TrHs)) begin
 	  if (TrHs) then begin
 	    RecordDelete(INr);
 	    StepBack(INr);
 	  end;
 	end; 
-	
+*/	
 	TrHs = true;
 	while (LoopMain(ARr,1,TrHs)) begin
 	  if (TrHs) then begin
@@ -3341,7 +3352,6 @@ begin
 	    StepBack(WSr);
 	  end;
 	end;
-	*/
 	
 	TrHs = true;
 	while (LoopMain(SVOr,1,TrHs)) begin
@@ -3454,8 +3464,7 @@ begin
 	    StepBack(IntSBr);
 	  end;
 	end;
-	
-	/*
+/*	
 	TrHs = true;
 	while (LoopMain(AgreeTyper,1,TrHs)) begin
 	  if (TrHs) then begin
@@ -3463,8 +3472,7 @@ begin
 	    StepBack(AgreeTyper);
 	  end;
 	end;
-	*/
-	
+*/	
 	TrHs = true;
 	while (LoopMain(INTransferr,1,TrHs)) begin
 	  if (TrHs) then begin

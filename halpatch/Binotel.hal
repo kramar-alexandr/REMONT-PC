@@ -26,34 +26,38 @@ begin
 	logtext(0,"WebBinotelAPICallEnd1");
 	tstr = "";
 	lenth = getarealength(encodearea);
+	
 	For(i=0;i<lenth;i=i+1) begin
-		if(getstringfromarea(arequest,i,1)=="=" or i==lenth-1)then begin
+		if(getstringfromarea(encodearea,i,1)=="=" or i==lenth-1)then begin
 			tstr = urldecode(getstringfromarea(encodearea,lasti,i-lasti));
 			tstr = StrReplace(tstr,"+&gt;+", " > ");
 			tstr = StrReplace(tstr,"+", " ");
+			tstr = StrReplace(tstr,chr(0), "");
 			tstr = StrReplace(tstr,"&apos;", "'");
 			addtexttoarea(tstr,arequest);
+			lasti = i;
 		end;
 	end;
 	
-	lenth = getarealength(arequest);
 	tstr = "";
 	lasti = 0;
 	addtexttoarea("{\"",newarea);
 	For(i=0;i<lenth;i=i+1) begin
 	  if(getstringfromarea(arequest,i,1)=="&" or i==lenth-1)then begin
-	  	tstr = urldecode(getstringfromarea(arequest,lasti,i-lasti));
+	  	//logtext(0,"do " & getstringfromarea(arequest,lasti,i-lasti));
+	  	tstr = urldecode(getstringfromarea(arequest,lasti,i-lasti+1));
+	  	//logtext(0,"po " & tstr);
 	  	tstr = StrReplace(tstr,"=", "\":\"");
 	  	tstr = StrReplace(tstr,"[", "(");
 	  	tstr = StrReplace(tstr,"]", ")");
-	  	tstr = StrReplace(tstr,"&", chr(13) & chr(10) & "\"");
+	  	tstr = StrReplace(tstr,"&","");
 	  	if(getstringfromarea(arequest,i,1)=="&")then begin
-	  		tstr = tstr & "\",";
+	  		tstr = tstr & "\"," & chr(13) & chr(10) & "\"";
 	  	end else begin
-	  		tstr = tstr & "\"";
+	  		tstr = tstr & "\"" & chr(13) & chr(10);
 	  	end;
 	  	addtexttoarea(tstr,newarea);
-	  	lasti = i;
+	  	lasti = i+1;
 	  	tstr = "";
 	  end;
 	end; 

@@ -2916,6 +2916,7 @@ updating procedure CustomRegisterRemoveMn(record RcVc RepSpec)
 begin
   record IVCashVc IVCashr;
   record POSEventVc POSEventr;
+  record CashupHistVc CashupHistr;
   record CashVc Cashr;
   record POSBalanceVc POSBalancer;
   record CashierBalVc CashierBalr;
@@ -3034,6 +3035,14 @@ begin
 	  if (TrHs) then begin
 	    RecordDelete(POSEventr);
 	    StepBack(POSEventr);
+	  end;
+	end;
+	
+	TrHs = true;
+	while (LoopMain(CashupHistr,1,TrHs)) begin
+	  if (TrHs) then begin
+	    RecordDelete(CashupHistr);
+	    StepBack(CashupHistr);
 	  end;
 	end;
 	
@@ -3248,6 +3257,14 @@ begin
 	  if (TrHs) then begin
 	    RecordDelete(ARr);
 	    StepBack(ARr);
+	  end;
+	end;
+	
+	TrHs = true;
+	while (LoopMain(APr,1,TrHs)) begin
+	  if (TrHs) then begin
+	    RecordDelete(APr);
+	    StepBack(APr);
 	  end;
 	end;
 	

@@ -177,7 +177,7 @@ BEGIN
   Userr.Code = CurrentUser;
   if (ReadFirstMain(Userr,1,true)) then begin end;
   SVOr.SalesMan = Userr.Code;
-  SVOr.SalesGroup = Userr.SalesGroup;
+  //SVOr.SalesGroup = Userr.SalesGroup;
   SVOr.OurContact = Userr.CurOurContact;
   SVOr.ServLocation = Userr.ServLocation;
  // Edit Start ---------------------------------------------- Edit Start
@@ -255,7 +255,7 @@ BEGIN
   if (SingleUserMode) then begin
     SVOr.SerNr = NextSerNr("SVOVc",SVOr.TransDate,-1,false,"");
   end;  
-  SVOr.CustomField7 = CurrentUser; //Edit***************************Sasha2,18:03 02.03.2017
+  //SVOr.CustomField7 = CurrentUser; //Edit***************************Sasha2,18:03 02.03.2017
   SVOVcRecordDefaults = res; 
   RETURN;
 END;
@@ -339,7 +339,7 @@ BEGIN
   Userr.Code = CurrentUser;
   if (ReadFirstMain(Userr,1,true)) then begin end;
   SVOr.SalesMan = Userr.Code;
-  SVOr.SalesGroup = Userr.SalesGroup;
+  //SVOr.SalesGroup = Userr.SalesGroup;
   SVOr.OurContact = Userr.CurOurContact;
   SVOr.ServLocation = Userr.ServLocation;
   
@@ -349,6 +349,7 @@ BEGIN
  	SVOr.OldPhone = "";
  	SVOr.GetItemFlag = 0;
  	SVOr.InnerOrderNr = "";
+ 	SVOr.CustomField7 = ""; 
  	
   SVOVcRecordDuplicate = res; 
   RETURN;
@@ -433,12 +434,14 @@ BEGIN
   	end;
   end;
   
-  SGr.SGroupCode = SVOr.SalesGroup;
-	if(readfirstmain(SGr,1,true))then begin
-		if(nonblank(SGr.InnerOrderNr))then begin
-			if(SVOr.InnerOrderNr>SGr.InnerOrderNr)then begin
-				SGr.InnerOrderNr = SVOr.InnerOrderNr;
-				recordstore(SGr,true);
+  if(SVOr.GetItemFlag>0)then begin
+		SGr.SGroupCode = SVOr.SalesGroup;
+		if(readfirstmain(SGr,1,true))then begin
+			if(nonblank(SGr.InnerOrderNr))then begin
+				if(SVOr.InnerOrderNr>SGr.InnerOrderNr)then begin
+					SGr.InnerOrderNr = SVOr.InnerOrderNr;
+					recordstore(SGr,true);
+				end;
 			end;
 		end;
 	end;
@@ -870,6 +873,7 @@ BEGIN
   record RejectReasonVc RRr;// Edit ************************** Thursday, 8 June 2017 16:39:10
   record SVOVc lSVOr;
   record ItemStatusVc ISr;
+  record USerVc Userr;
 
   res = 0;
   
@@ -878,6 +882,23 @@ BEGIN
   updatemode = 2;//Rs_update
   
   
+  if(stat==insertmode)then begin
+  	if(SVOr.GetItemFlag==1 and blank(SVOr.CustomField7))then begin
+  		SVOr.CustomField7 = currentuser;
+  		Userr.Code = CurrentUser;
+			if (ReadFirstMain(Userr,1,true)) then begin end;
+			SVOr.SalesGroup = Userr.SalesGroup;
+  	end;
+  end;
+  
+  if(stat==updatemode)then begin
+  	if(SVOr.GetItemFlag==1 and SVO2r.GetItemFlag==0 and blank(SVOr.CustomField7))then begin
+  		SVOr.CustomField7 = currentuser;
+  		Userr.Code = CurrentUser;
+			if (ReadFirstMain(Userr,1,true)) then begin end;
+			SVOr.SalesGroup = Userr.SalesGroup;
+  	end;
+  end;
   
   
   if((SVOr.OrderStatus==1 or SVOr.OrderStatus==2 or SVOr.OrderStatus==3) and blankdate(SVOr.EndDiagnDate))then begin //Edit***************************Sasha2,17:32 25.10.2016
@@ -974,18 +995,20 @@ BEGIN
 		end;
  	end;
  	
- 	if(blank(SVOr.SalesGroup))then begin// Edit ************************** Wednesday, 7 June 2017 14:53:49
+ 	if(blank(SVOr.SalesGroup) and nonblank(SVOr.CustomField7))then begin// Edit ************************** Wednesday, 7 June 2017 14:53:49
  		RecordCheckError(1058,"",-1,"SalesGroup");
 		res = -1;
 		goto LSVOVcRecordCheck;
  	end;
  	
- 	if(blank(SVOr.InnerOrderNr))then begin// Edit ************************** Wednesday, 7 June 2017 14:53:49
- 		GetNextInnerOrderNr(SVOr.InnerOrderNr,SVOr.SalesGroup);
- 		if(blank(SVOr.InnerOrderNr))then begin
-			RecordCheckError(1058,"",-1,"InnerOrderNr");
-			res = -1;
-			goto LSVOVcRecordCheck;
+ 	if(SVOr.GetItemFlag>0)then begin
+		if(blank(SVOr.InnerOrderNr))then begin// Edit ************************** Wednesday, 7 June 2017 14:53:49
+			GetNextInnerOrderNr(SVOr.InnerOrderNr,SVOr.SalesGroup);
+			if(blank(SVOr.InnerOrderNr))then begin
+				RecordCheckError(1058,"",-1,"InnerOrderNr");
+				res = -1;
+				goto LSVOVcRecordCheck;
+			end;
 		end;
  	end;
  	

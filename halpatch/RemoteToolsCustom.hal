@@ -2916,6 +2916,7 @@ updating procedure CustomRegisterRemoveMn(record RcVc RepSpec)
 begin
   record IVCashVc IVCashr;
   record POSEventVc POSEventr;
+  record CashupHistVc CashupHistr;
   record CashVc Cashr;
   record POSBalanceVc POSBalancer;
   record CashierBalVc CashierBalr;
@@ -2942,7 +2943,7 @@ begin
 	record ItemStatusVc ISr;
 	record SerBalVc SerBalr;
 	record PPVc PPr;
-	record CUVc CUr;
+	//record CUVc CUr;
 	//record INVc INr;
 	record APVc APr;
 	record ARVc ARr;
@@ -3034,6 +3035,14 @@ begin
 	  if (TrHs) then begin
 	    RecordDelete(POSEventr);
 	    StepBack(POSEventr);
+	  end;
+	end;
+	
+	TrHs = true;
+	while (LoopMain(CashupHistr,1,TrHs)) begin
+	  if (TrHs) then begin
+	    RecordDelete(CashupHistr);
+	    StepBack(CashupHistr);
 	  end;
 	end;
 	
@@ -3248,6 +3257,14 @@ begin
 	  if (TrHs) then begin
 	    RecordDelete(ARr);
 	    StepBack(ARr);
+	  end;
+	end;
+	
+	TrHs = true;
+	while (LoopMain(APr,1,TrHs)) begin
+	  if (TrHs) then begin
+	    RecordDelete(APr);
+	    StepBack(APr);
 	  end;
 	end;
 	
@@ -3874,3 +3891,32 @@ begin
 
 return;
 end; //Edit***************************Sasha2,16:49 15.06.2017 }
+
+global //Edit***************************Sasha2,11:47 03.07.2017 {
+updating procedure UpdateSVOOfServiceMYMn(record RcVc RepSpec)
+begin
+	record SVOVc SVOr;
+	Boolean TrHs,updateF;
+	
+    SVOr.SerNr = -1;
+    TrHs = true;
+    while (LoopMain(SVOr,1,TrHs)) begin
+      if (SVOr.SerNr>9999999) then begin TrHs = false; end;
+      if (TrHs) then begin
+        updateF = false;
+        if (NonBlankDate(SVOr.PlanShipDate) and SVOr.OrderStatus!=2) then begin
+          SVOr.OrderStatus = 2;
+          updateF = true;
+        end;
+        if (Blank(SVOr.Kontinfo1)) then begin
+          SVOr.Kontinfo1 = SVOr.CustCode;
+          updateF = true;
+        end;
+        if (updateF) then begin
+          RECORDSTORE(SVOr,true);
+        end;
+      end;
+    end;
+  
+return;
+end; //Edit***************************Sasha2,11:47 03.07.2017 }

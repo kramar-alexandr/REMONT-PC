@@ -36,6 +36,7 @@ external function Boolean IsVATCodeDefined(string);
 external function Boolean ValidateBrazilianVATNr(string,string,Integer);
 external procedure AutoMails_StoreAct(string,string,string,var Longint);
 external procedure UpdateCustomerOnCC(record CUVc,record CUVc,Boolean);
+external function Boolean IsNumeric(string);
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -1754,6 +1755,11 @@ begin
        
   BlockLoad(CSb);
   oldnr = CUr.Code;
+  if (IsNumeric(CUr.Code)==false or len(CUr.Code)!=10) then begin //Edit***************************Sasha2,15:21 03.07.2017 {
+    RecordCheckError(20434,". " & UsetStr(9031) & ": 10. " & CUr.Code,-1,"Code");      
+    res = -1; 
+    goto LCUVcRecordCheck;
+  end; //Edit***************************Sasha2,15:21 03.07.2017 }
   if (blank(CUr.Code)) then begin
     if (GetNextCustNr(tstr)) then begin end;
     CUr.Code = tstr;

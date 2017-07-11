@@ -348,7 +348,10 @@ LActPrintNote1:;
 		OUTFORMFIELD("MY_Region",SVOr.Region);
 		
 		if (FIELDINFORM("F_TEXTFIELD5")) then begin
-			ValToText(round(evaltoval(SVOr.CustomField5),SetRoundModeD(2)),M4Val,"UAH","UKR",tstr);
+			tstr = "";
+			if(nonblank(SVOr.CustomField5))then begin
+				ValToText(round(evaltoval(SVOr.CustomField5),SetRoundModeD(2)),M4Val,"UAH","UKR",tstr);
+			end;
 			OUTFORMFIELD("F_TEXTFIELD5",tstr);
 		end;
           

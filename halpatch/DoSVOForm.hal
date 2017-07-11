@@ -568,6 +568,7 @@ BEGIN
   string 30 formcode,langcode;
   record SVOSerVc SVOSerr;
 
+  logtext(0,"DoSVOForm " & SVOr.SerNr);
   
   GetLangNr(SVOr.LangCode,LangNrr);  
   BlockLoad(SysFormatRec);

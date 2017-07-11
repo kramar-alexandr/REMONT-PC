@@ -226,7 +226,7 @@ begin
     RecordField(GetItemTime,M4Time,0,0);
     RecordField(Inspector,M4Str,100,0); //Edit***************************Sasha2,16:49 09.06.2017
     RecordField(StatusText,M4Str,100,0); //Edit***************************Sasha2,16:49 09.06.2017
-    
+    RecordField(Math2,M4TextField,0,0);// Edit ************************** Tuesday, 11 July 2017 11:18:14
     
     ArrayField(NewSerialNr,M4Str,60,0);// Edit ************************** Friday, 9 June 2017 09:29:41
     

@@ -2165,21 +2165,23 @@ begin
 	CheckBox(-270,v,0,"Без СМС",NoSMS);
 	
 	EditField(-130,v,-105,"Пост.Кл.",Normal,CustomField9,false,0);	// Edit ************************** Thursday, 30 June 2016 10:21:49
-	HalPushButton(-90,v-3,-50,v+15,"ServClientOrderDsm","Отчет");
+	HalPushButton(-90,v-3,-40,v+15,"ServClientOrderDsm","Отчет");
 	
-	EditField(h,v+=vs,-20,"e-mail",Normal,Kontinfo2,false,0);	
-	EditField(h,v+=vs,-20,"Адрес клиента",Normal,Kontinfo3,false,0);
+	EditField(h,v+=vs,300,"e-mail",Normal,Kontinfo2,false,0);	
+	EditField(h,v+=vs,300,"Адрес клиента",Normal,Kontinfo3,false,0);
   v=v+10;
-  EditField(h,v+=vs,-20,"Жалобы собств-ка",Normal,Comment1,false,IssueSClass);
-  EditField(h,v+=vs,-20,"",Normal,Comment2,false,IssueSClass);
+  EditField(h,v+=vs,300,"Жалобы собств-ка",Normal,Comment1,false,IssueSClass);
+  EditField(h,v+=vs,300,"",Normal,Comment2,false,IssueSClass);
   v=v+10;
-  EditField(h,v+=vs,-20,"Внешний вид",Normal,Comment3,false,DefectSClass);// Edit ************************** Friday, 29 May 2015 17:19:51
-  EditField(h,v+=vs,-20,"",Normal,Comment4,false,DefectSClass);
+  EditField(h,v+=vs,300,"Внешний вид",Normal,Comment3,false,DefectSClass);// Edit ************************** Friday, 29 May 2015 17:19:51
+  EditField(h,v+=vs,300,"",Normal,Comment4,false,DefectSClass);
   v=v+10;
   StaticText(h,v+=vs,"Комплектность",true);
-  EditField(h,v+=vs-10,-20,"Батарея:",Normal,Batary,false,0);
-  EditField(h,v+=vs,-20,"Зар. устройство:",Normal,Zaryadka,false,0);
-  EditField(h,v+=vs,-20,"Другое:",Normal,Inshe,false,0);
+  EditField(h,v+=vs-10,300,"Батарея:",Normal,Batary,false,0);
+  EditField(h,v+=vs,300,"Зар. устройство:",Normal,Zaryadka,false,0);
+  EditField(h,v+=vs,300,"Другое:",Normal,Inshe,false,0);
+  
+  TextField(h+310,125,-10,-40,Math2,0);
   //v=v+10;
   EditField(h,v+=vs,50,"Производитель",Normal,Region,false,ITSClass);
   

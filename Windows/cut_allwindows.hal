@@ -2026,9 +2026,15 @@ begin
     Tile(0,87,false,"",Code);
   end;
   v = 6; vs = 20; h = 155; h1 = 300; h2 = 385; h3 = 395; h4 = 285; h5 = 433;
+  
+  
   EditField(h,v, 150,"Код товара",Normal,Code,false,0);
   EditField(h2,v,80,"Группа",Normal,Group,false,ITSClass);
   EditField(h,v+=vs,-40,"Наименование",Normal,Name,false,0);
+  
+  CheckBox(h,v+=2*vs,0,"Закрыт",Terminated);
+  CheckBox(h2,v,0,"Не для продажи",NotForSales);
+  
   if (HasJewelleryInterface) then begin
     EditField(h,v+=vs,150,"Альтернативный код",Normal,AlternativeCode,false,0);
   end;
@@ -2084,8 +2090,6 @@ begin
   RadioButton(h,v+=16,1,0,"на единицу",SerNrf);
   RadioButton(h,v+=16,2,0,"на партию",SerNrf);
   
-  CheckBox(h,-20,0,"Закрыт",Terminated);
-  CheckBox(h2,-20,0,"Не для продажи",NotForSales);
   
   
   /*Tile(tilenr,209,false,tilenr,Unittext); tilenr = tilenr + 1;

@@ -2056,7 +2056,7 @@ begin
   HalPushButton(h-45,vm+55,h+80,vm+80,"PrintAndSetRegDateInSVODsm","Выдать");//Edit-------------------Vitalii 13:51 27.10.2016
   EditField(260,vm,80, "Принял",Normal,CustomField7,false,UserSClass);// Edit ************************** Monday, 31 May 2010 9:22:11 AM
   CheckBox(360,vm,0,"Устройство принял",GetItemFlag);
-  EditField(260,vm+=20,80,"Гр.Пр.",Normal,SalesGroup,false,SalesGroupSClass);
+  EditField(260,vm+=20,80,"Гр.Пр.",ViewOnly,SalesGroup,false,SalesGroupSClass);
   EditField(460,vm,60,"Дата приемки",ViewOnly,GetItemTime,false,0);
   EditField(260,vm+=20,80,"Вн.номер ремонта",Normal,InnerOrderNr,false,0);
   EditField(460,vm,60,"Время приемки",ViewOnly,GetItemDate,false,0);
@@ -2171,10 +2171,10 @@ begin
 	EditField(h,v+=vs,300,"Адрес клиента",Normal,Kontinfo3,false,0);
   v=v+10;
   EditField(h,v+=vs,300,"Жалобы собств-ка",Normal,Comment1,false,IssueSClass);
-  EditField(h,v+=vs,300,"",Normal,Comment2,false,IssueSClass);
-  v=v+10;
   EditField(h,v+=vs,300,"Внешний вид",Normal,Comment3,false,DefectSClass);// Edit ************************** Friday, 29 May 2015 17:19:51
-  EditField(h,v+=vs,300,"",Normal,Comment4,false,DefectSClass);
+  v=v+10;
+  EditField(h,v+=vs,300,"Комментарий",Normal,Comment2,false,0);
+  EditField(h,v+=vs,300,"",Normal,Comment4,false,0);
   v=v+10;
   StaticText(h,v+=vs,"Комплектность",true);
   EditField(h,v+=vs-10,300,"Батарея:",Normal,Batary,false,0);
@@ -2185,9 +2185,9 @@ begin
   //v=v+10;
   EditField(h,v+=vs,50,"Производитель",Normal,Region,false,ITSClass);
   
-  EditField(h+=120,v,50,"Гарантия",Normal,Garanty,false,0);
-  EditField(h+=120,v,100,"Гарант. №",Normal,GarNo,false,0);
-  EditField(h+=220,v,100,"Гарант. от даты",Normal,GarDate,false,PasteCurDate);
+  EditField(h+120,v,50,"Гарантия",Normal,Garanty,false,0);
+  EditField(h,v+=vs,100,"Гарант. №",Normal,GarNo,false,0);
+  EditField(h+200,v,100,"Гарант. от даты",Normal,GarDate,false,PasteCurDate);
   
   SpecialMenu("Статус заказа на обсл.",'r',0,"SVOStaDsm");
   SpecialMenu("Статус клиента",'e',1,"SVOCustStatDsm");
@@ -2426,7 +2426,7 @@ begin
   tilenr = 1;
   Tile(tilenr,90,false,tilenr,TransDate); tilenr = tilenr + 1;
   vs = 20; h1 = 110; h2 = 290; h3 = 530; h4 = -100;
-  EditField(h1,vm=(v=6),82,"Сотрудник",Normal,EMCode,false,UserSClass); 
+  EditField(h1,vm=(v=6),82,"Сер. мастер",Normal,EMCode,false,UserSClass); 
   EditField(h1,v+=vs,82,"Дата",Normal,TransDate,false,PasteCurDate); 
   if (HasMultiLocations) then begin
   EditField(h1,v+=vs,82,"Локация",Normal,Location,false,LocationSClass); 

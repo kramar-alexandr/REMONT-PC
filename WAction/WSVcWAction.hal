@@ -703,6 +703,11 @@ BEGIN
         res = UserCanAction("AllowChangeRebate",false); //Edit***************************Sasha2,17:38 02.03.2017
       case "Sum": 
         res = UserCanAction("ChangeUnitPrices",true);      
+      case "EMCode": res = UsercanAction("AllowChangeServiceManager",false);// Edit ************************** Friday, 25 November 2016 12:57:36
+      case "Comment1": res = UsercanAction("AllowEditCommentsWS",false);// Edit ************************** Friday, 25 November 2016 12:57:36  
+      case "Comment2": res = UsercanAction("AllowEditCommentsWS",false);// Edit ************************** Friday, 25 November 2016 12:57:36  
+      case "Comment3": res = UsercanAction("AllowEditCommentsWS",false);// Edit ************************** Friday, 25 November 2016 12:57:36  
+      case "Comment4": res = UsercanAction("AllowEditCommentsWS",false);// Edit ************************** Friday, 25 November 2016 12:57:36  
     end;
   end;
 LWSDClassActiveEditField:;  

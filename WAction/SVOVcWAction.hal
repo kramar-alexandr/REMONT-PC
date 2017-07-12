@@ -652,7 +652,26 @@ begin
 return;
 end; //Edit***************************Sasha2,16:35 15.12.2015 }
 
-
+global //Edit***************************Sasha2,11:05 12.07.2017 {
+function Boolean SVODClassCustomField7EFAfter(integer wn, integer changed)
+begin
+  record SVOVc SVOr;
+  record USerVc Userr;
+  
+  GetWindowRecord(wn,SVOr);
+  if(changed>0)then begin
+  	if (NonBlank(SVOr.CustomField7)) then begin
+  	  Userr.Code = SVOr.CustomField7;
+			if (ReadFirstMain(Userr,1,true)) then begin end;
+			SVOr.SalesGroup = Userr.SalesGroup;
+  	end else begin
+  	  SVOr.SalesGroup = "";
+  	end;
+    PutWindowRecord(wn,SVOr);
+  end;
+	SVODClassCustomField7EFAfter = true;
+return;
+end; //Edit***************************Sasha2,11:05 12.07.2017 }
 
 global
 function Boolean SVODClassAfterEditField(Integer wn,string fieldname,Integer fn, Integer rownr,Integer changed)
@@ -679,6 +698,7 @@ BEGIN
     case "ItemType": res = SVODClassItemTypeEFAfter(wn,rownr,changed); //Edit***************************Sasha2,16:36 15.12.2015
     case "Kontinfo1": res = SVODClassKontinfo1EFAfter(wn,changed);// Edit ************************** Tuesday, 28 February 2017 15:54:49
     case "Phone2": res = SVODClassPhone2EFAfter(wn,changed);// Edit ************************** Tuesday, 28 February 2017 15:54:50
+    case "CustomField7": res = SVODClassCustomField7EFAfter(wn,changed); //Edit***************************Sasha2,11:05 12.07.2017
   end;
   SVODClassAfterEditField = res;
   RETURN;
@@ -1180,6 +1200,11 @@ BEGIN
     case "FastCash": res = UsercanAction("ViewCostPrice",false);// Edit ************************** Friday, 25 November 2016 12:57:36
     
     case "FastTerm": res = UsercanAction("ViewCostPrice",false);// Edit ************************** Friday, 25 November 2016 12:57:36
+    case "CustomField7": res = UsercanAction("AllowChangeAcceptor",false);// Edit ************************** Friday, 25 November 2016 12:57:36
+    case "ServiceManager": res = UsercanAction("AllowChangeServiceManager",false);// Edit ************************** Friday, 25 November 2016 12:57:36
+    case "Comment2": res = UsercanAction("AllowEditCommentsAndTextFieldSVO",false);// Edit ************************** Friday, 25 November 2016 12:57:36
+    case "Comment4": res = UsercanAction("AllowEditCommentsAndTextFieldSVO",false);// Edit ************************** Friday, 25 November 2016 12:57:36
+    case "Math2": res = UsercanAction("AllowEditCommentsAndTextFieldSVO",false);// Edit ************************** Friday, 25 November 2016 12:57:36
     
   end;
   if (rownr>=0) then begin

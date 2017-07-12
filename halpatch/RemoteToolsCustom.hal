@@ -3920,3 +3920,28 @@ begin
   
 return;
 end; //Edit***************************Sasha2,11:47 03.07.2017 }
+
+global //Edit***************************Sasha2,13:36 12.07.2017 {
+updating procedure RemoveCertainSVOMn(record RcVc RepSpec)
+begin
+	record SVOVc SVOr;
+	Boolean TrHs;
+	date forDate;
+	LongInt count;
+	
+    forDate = StringToDate("29/6/2017");
+    SVOr.TransDate = forDate;
+    TrHs = true;
+    count = 0;
+    while (LoopKey("TransDate",SVOr,1,TrHs)) begin
+      if (SVOr.TransDate!=forDate) then begin TrHs = false; end;
+      if (TrHs) then begin
+        RecordDelete(SVOr);
+        StepBack(SVOr);
+        count = count + 1;
+      end;
+    end;
+    LogText(0,count & " records removed for date 29/6/2017");
+  
+return;
+end; //Edit***************************Sasha2,13:36 12.07.2017 }

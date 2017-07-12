@@ -57,6 +57,7 @@ begin
   Maintenance("Удалить все записи",CustomRegisterRemoveVClass,CustomRegisterRemoveMn,modDBMain); //Edit***************************Sasha2,11:11 26.05.2017
   Maintenance("Fill SVO Status",MyVClass,FillSVOStatusTextMn,modDBMain);
   Maintenance("Обсл.на ремонт с ServiceMY:статус+телефон",MyVClass,UpdateSVOOfServiceMYMn,modDBMain); //Edit***************************Sasha2,12:03 03.07.2017
+  Maintenance("Удалить Заказы на обсл. за дату 29/6/2017",MyVClass,RemoveCertainSVOMn,modDBMain); //Edit***************************Sasha2,12:03 03.07.2017
   
   Import("Импорт контактов и заказов, выгруженных из ServiceMY",CUAndSVOInitSystemImportIClass,CUAndSVOInitSystemImportIn,modDBMain); //Edit***************************Sasha2,13:21 26.05.2017
 	
@@ -402,7 +403,11 @@ StrSetText(AllowAddingINtoRet,"Добавлять товары в возвраты");
   StrSetText(ViewDashboard,"Просмотр панели инструментов");
   StrSetText(AllowSplitItem,"Разделить товар на сч/ф сенсорн. экрана");
   StrSetText(AllowAmendLine,"Разрешить изменение строки на сч/ф (сенсорный экран)");
+  StrSetText(AllowChangeAcceptor,"Разрешить изменять приемщика"); //Edit***************************Sasha2,10:50 12.07.2017
+  StrSetText(AllowChangeServiceManager,"Разрешить изменять сервис мастера"); //Edit***************************Sasha2,10:50 12.07.2017
   StrSetText(AllowEditRemoveRecAfterPrint,"Разрешить удалять/редактировать записи после печати");// Edit ************************** Thursday, 11 May 2017 13:31:02
+  StrSetText(AllowEditCommentsAndTextFieldSVO,"Разрешить редактировать комментарии и нотатки в Заказе на обсл."); //Edit***************************Sasha2,13:55 12.07.2017
+  StrSetText(AllowEditCommentsWS,"Разрешить редактировать комментарии в Таблице работ"); //Edit***************************Sasha2,13:55 12.07.2017
   StrSetText(AllowSetPUOKFlag,"Разрешить ставить ОК в поступлениях");// Edit ************************** Thursday, 11 May 2017 13:33:00
   StrSetText(AllowUnCloseMoveForServiceVc,"Разрешить снимать \"Закрыто\" в движениях товара для обслуживания");// Edit ************************** Thursday, 11 May 2017 13:33:48
   StrSetText(AllowChangeRebate,"Разрешить менять скидку");// Edit ************************** Thursday, 11 May 2017 13:34:02

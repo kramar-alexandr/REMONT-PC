@@ -2182,6 +2182,8 @@ begin
   EditField(h,v+=vs,300,"Другое:",Normal,Inshe,false,0);
   
   TextField(h+310,125,-10,-40,Math2,0);
+  SoftEditField(h+350,-24,-20,"Сообщение",Normal,"SVOChatSend",false,0,M4Str,255);
+  
   //v=v+10;
   EditField(h,v+=vs,50,"Производитель",Normal,Region,false,ITSClass);
   

@@ -37,6 +37,7 @@ remote procedure FindPhonePerson(var record Phone1Vc,string);// Edit ***********
 external procedure PasteFromSysList(Integer,Integer);
 external function string 255 StringFromSysList(Integer,Integer);
 remote updating function Integer CreateAndOKDispatchFromSVO(record SVOVc,record LocalMachineBlock,var string); //Edit***************************Sasha2,18:00 09.06.2017
+external procedure WindowFieldGotoForTouchScreen(Integer,Integer,string,Boolean);
 
 // Edit Start ---------------------------------------------- Edit Start
 	//Wednesday, 3 June 2015 16:58:34
@@ -673,12 +674,39 @@ begin
 return;
 end; //Edit***************************Sasha2,11:05 12.07.2017 }
 
+
+updating function SVOChatSendAfterEF(integer wn,integer changed)
+begin
+	string 255 input;
+	record SVOVc SVOr;
+	
+	getwindowrecord(wn,SVOr);
+	
+	input = GetWindowString(wn,"SVOChatSend");
+	
+	
+	PutWindowString(wn,"SVOChatSend","");
+	if(nonblank(input))then begin
+		AddToText(CurrentDate & " ",SVOr);
+		AddToText(CurrentTime & " ",SVOr);
+		AddToText(CurrentUser & ": ",SVOr);
+		AddToText(input & chr(10),SVOr);
+		putwindowrecord(wn,SVOr);
+		WindowdoOk(wn,0);
+	end;
+	//WindowFieldGoto(wn,SVOr,-1,"SVOChatSend",true);
+	
+	//WindowFieldGotoForTouchScreen(wn,-1,"SVOChatSend",false);
+return;
+end;
+
 global
-function Boolean SVODClassAfterEditField(Integer wn,string fieldname,Integer fn, Integer rownr,Integer changed)
+updating function Boolean SVODClassAfterEditField(Integer wn,string fieldname,Integer fn, Integer rownr,Integer changed)
 BEGIN
   Boolean res;
 
   switch (fieldname) begin
+  	case "SVOChatSend": SVOChatSendAfterEF(wn,changed);
     case "CurncyCode": res = SVODClassCurncyCodeEFAfter(wn,changed);
     case "CustCode": res = SVODClassCustCodeEFAfter(wn,changed);
     case "InvoiceToCode": res = SVODClassInvoiceToCodeEFAfter(wn,changed);
@@ -1243,6 +1271,10 @@ BEGIN
     end;
   end;
   res = true;
+  if(fieldname=="Math2")then begin
+  	res = false;
+  end;
+  
 LSVODClassActiveEditField:;  
   SVODClassActiveEditField = res;
   RETURN;
@@ -2045,3 +2077,5 @@ record CUVc CUr;
   
   return;
 end;
+
+

@@ -703,24 +703,37 @@ BEGIN
         res = UserCanAction("AllowChangeRebate",false); //Edit***************************Sasha2,17:38 02.03.2017
       case "Sum": 
         res = UserCanAction("ChangeUnitPrices",true);      
-      case "EMCode": res = UsercanAction("AllowChangeServiceManager",false);// Edit ************************** Friday, 25 November 2016 12:57:36
-      case "Comment1": res = UsercanAction("AllowEditCommentsWS",false);// Edit ************************** Friday, 25 November 2016 12:57:36  
-      case "Comment2": res = UsercanAction("AllowEditCommentsWS",false);// Edit ************************** Friday, 25 November 2016 12:57:36  
-      case "Comment3": res = UsercanAction("AllowEditCommentsWS",false);// Edit ************************** Friday, 25 November 2016 12:57:36  
-      case "Comment4": res = UsercanAction("AllowEditCommentsWS",false);// Edit ************************** Friday, 25 November 2016 12:57:36  
     end;
   end;
 LWSDClassActiveEditField:;  
+  GetWindowRecord(wn,WSr);
   switch (fieldname) begin
     case "Returned": res = false;
     case "Invd": res = false;
     case "Spec": 
       if (HasLocalization("PRT")) then begin
-        GetWindowRecord(wn,WSr);
+        //GetWindowRecord(wn,WSr);
         MatRowGet(WSr,rownr,WSrw);
         if (nonblank(WSrw.ArtCode)) then begin
           res = false;
         end;
+      end;
+    case "EMCode": res = UsercanAction("AllowChangeServiceManager",false);// Edit ************************** Friday, 25 November 2016 12:57:36
+    case "Comment1": 
+      if (NonBlank(WSr.Comment1)) then begin
+        res = UsercanAction("AllowEditCommentsWS",false);// Edit ************************** Friday, 25 November 2016 12:57:36  
+      end;
+    case "Comment2": 
+      if (NonBlank(WSr.Comment2)) then begin
+        res = UsercanAction("AllowEditCommentsWS",false);// Edit ************************** Friday, 25 November 2016 12:57:36  
+      end;
+    case "Comment3": 
+      if (NonBlank(WSr.Comment3)) then begin
+        res = UsercanAction("AllowEditCommentsWS",false);// Edit ************************** Friday, 25 November 2016 12:57:36  
+      end;
+    case "Comment4": 
+      if (NonBlank(WSr.Comment4)) then begin
+        res = UsercanAction("AllowEditCommentsWS",false);// Edit ************************** Friday, 25 November 2016 12:57:36  
       end;
   end;
 

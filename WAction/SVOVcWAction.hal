@@ -1216,6 +1216,7 @@ BEGIN
         goto LSVODClassActiveEditField;
     end;
   end;
+  GetWindowRecord(wn,SVOr);
   switch (fieldname) begin
     case "VATNr": res = HasLocalization("PRT")==false;
     case "Addr0": res = HasLocalization("PRT")==false;
@@ -1230,9 +1231,18 @@ BEGIN
     case "FastTerm": res = UsercanAction("ViewCostPrice",false);// Edit ************************** Friday, 25 November 2016 12:57:36
     case "CustomField7": res = UsercanAction("AllowChangeAcceptor",false);// Edit ************************** Friday, 25 November 2016 12:57:36
     case "ServiceManager": res = UsercanAction("AllowChangeServiceManager",false);// Edit ************************** Friday, 25 November 2016 12:57:36
-    case "Comment2": res = UsercanAction("AllowEditCommentsAndTextFieldSVO",false);// Edit ************************** Friday, 25 November 2016 12:57:36
-    case "Comment4": res = UsercanAction("AllowEditCommentsAndTextFieldSVO",false);// Edit ************************** Friday, 25 November 2016 12:57:36
-    case "Math2": res = UsercanAction("AllowEditCommentsAndTextFieldSVO",false);// Edit ************************** Friday, 25 November 2016 12:57:36
+    case "Comment2": 
+    if (NonBlank(SVOr.Comment2)) then begin
+      res = UsercanAction("AllowEditCommentsAndTextFieldSVO",false);// Edit ************************** Friday, 25 November 2016 12:57:36
+    end;
+    case "Comment4": 
+    if (NonBlank(SVOr.Comment4)) then begin
+      res = UsercanAction("AllowEditCommentsAndTextFieldSVO",false);// Edit ************************** Friday, 25 November 2016 12:57:36
+    end;
+    case "Math2": 
+    //if (NonBlank(StringFromText(SVOr,0,255))) then begin
+      res = UsercanAction("AllowEditCommentsAndTextFieldSVO",false);// Edit ************************** Friday, 25 November 2016 12:57:36
+    //end;
     
   end;
   if (rownr>=0) then begin
@@ -1257,7 +1267,7 @@ BEGIN
         goto LSVODClassActiveEditField;
     end;
   end;
-  GetWindowRecord(wn,SVOr);
+  //GetWindowRecord(wn,SVOr);
   if (SVOMadeWOTest(SVOr,rownr)==false) then begin goto LSVODClassActiveEditField; end;
   if (WindowState(wn)==updatemode) then begin
     if ((rownr>=0) and (rownr<WindowOldRowcnt(wn))) then begin 

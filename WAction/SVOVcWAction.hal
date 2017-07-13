@@ -690,7 +690,7 @@ begin
 		AddToText(CurrentDate & " ",SVOr);
 		AddToText(CurrentTime & " ",SVOr);
 		AddToText(CurrentUser & ": ",SVOr);
-		AddToText(input & chr(10),SVOr);
+		AddToText(input & chr(13) & chr(10),SVOr);
 		putwindowrecord(wn,SVOr);
 		WindowdoOk(wn,0);
 	end;

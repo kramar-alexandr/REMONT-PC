@@ -98,6 +98,7 @@ record SVOVc SVOr;
 		getWindowRecord(wn,SVOr);
     RepSpec.long1 = SVOr.SerNr;
     RepSpec.f1 = WindowFormName(wn);
+    RepSpec.f2 = SVOr.SalesGroup;
   	nwn = OpenWindow("MyPrintTClass",0,wn,"","",RepSpec);
 return;
 end;

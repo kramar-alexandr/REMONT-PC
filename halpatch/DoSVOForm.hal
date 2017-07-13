@@ -262,6 +262,11 @@ L1:;
 		end;
 LActPrintNote1:;
 		
+		
+		OUTFORMFIELD("FMY_PrepayCash",SVOr.FastCash);
+		OUTFORMFIELD("FMY_PrepayTerm",SVOr.FastTerm);
+		OUTFORMFIELD("FMY_PrepayAll",SVOr.FastCash + SVOr.FastTerm);
+		
 		OUTFORMFIELD("MY_Vlastnik",SVOr.Vlastnik);
 		OUTFORMFIELD("MY_Priynato",SVOr.Name & " " & SVOr.Priynato & " " & SVOr.MiddleName);
 		OUTFORMFIELD("MY_Kontinfo1",SVOr.Kontinfo1);

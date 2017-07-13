@@ -28,6 +28,7 @@ remote updating procedure FastPayInvoicesSVO(record RcVc);// Edit **************
 external procedure NextM4Number(string,var string);
 remote updating function Integer CreateAndOKOffHireFromSVO(record SVOVc,record LocalMachineBlock,var string); //Edit***************************Sasha2,11:57 09.06.2017
 external updating procedure CreateActFromSVOForInspectorIfItemRejected(record SVOVc);
+remote procedure CheckSVOIV(record SVOVc,var val,var val);
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -1713,7 +1714,7 @@ end;*/
 global procedure FastPaySVODsm()
 begin
 integer wn;
-record SVOVc SVOr;
+record SVOVc SVOr,wSVOr;
 array longint sernr;
 integer count;
 record RcVc RepSpec;
@@ -1725,24 +1726,35 @@ string 50 location,ser;
 record SalesGroupVc SGr;
 	
 	wn = curwindow;
-	getwindowrecord(wn,SVOr);
-	if(windowstate(wn)==0)then begin
-		if(usercanaction("ViewCostPrice",false))then begin
-			RepSpec.vals0 = SVOr.FastCash;
-			RepSpec.vals1 = SVOr.FastTerm;
-			SGr.SGroupCode = SVOr.SalesGroup;
-			if(readfirstmain(SGr,1,true))then begin
-				RepSpec.f1 = SGr.FastPMCash;
-				RepSpec.f2 = SGr.FastPMCard;
-			end;
-			
-			RepSpec.long1 = SVOr.SerNr;
-			OpenWindow("ConfirmFastPaySVOWClass",0,0,"","",RepSpec); 
+	getwindowrecord(wn,wSVOr);
+	
+	if(nonblank(wSVOr.CustCode))then begin
+		if(windowstate(wn)==0)then begin
+				SVOr.SerNr = wSVOr.SerNr;
+				if(readfirstmain(SVOr,1,true))then begin
+					SGr.SGroupCode = SVOr.SalesGroup;
+					if(SVOr.WSCost>0)then begin
+						RepSpec.vals0 = SVOr.WSCost - SVOr.FastCash - SVOr.FastTerm;
+					end;
+					if(readfirstmain(SGr,1,true))then begin
+						RepSpec.f1 = SGr.FastPMCash;
+						RepSpec.f2 = SGr.FastPMCard;
+						RepSpec.long1 = SVOr.SerNr;
+						OpenWindow("ConfirmFastPaySVOWClass",0,0,"","",RepSpec);
+					end else begin
+						messagebox(0,"Условия оплаты не определенны");
+					end;
+				end;
+		end else begin
+			messagebox(0,"Сначала сохраните документ");
 		end;
+	end else begin
+		messagebox(0,"Укажите клиента");
 	end;
 	
 return
 end;
+
 
 global procedure DblCancelDsm()
 begin
@@ -1760,13 +1772,23 @@ global updating procedure DblConfirmPaymentDsm()
 begin
 	integer wn;
 	record RcVc RepSpec;
+	val ivsum,ivpaysum;
+	record SVOVc SVOr;
 	
 	wn = curwindow;
 	deselectwindow(wn,true);
 	getwindowrecord(wn,RepSpec);
 	if((RepSpec.vals0>0 and RepSpec.vals1==0) or (RepSpec.vals0==0 and RepSpec.vals1>0 and nonblank(RepSpec.f3)))then begin
-		closewindow(wn);
-		FastPayInvoicesSVO(RepSpec);
+		SVOr.SerNr = RepSpec.long1;
+		if(readfirstmain(SVOr,1,true))then begin
+			CheckSVOIV(SVOr,ivsum,ivpaysum);
+			if((ivsum>0 and ivpaysum<ivsum) or ivsum==0)then begin
+					closewindow(wn);
+					FastPayInvoicesSVO(RepSpec);
+			end else begin
+				messagebox(0,"Задолженость по сч/ф заказа отсутствует");
+			end;
+		end;
 	end else begin
 		if(RepSpec.vals1>0 and blank(RepSpec.f3))then begin
 			messagebox(31086,"");

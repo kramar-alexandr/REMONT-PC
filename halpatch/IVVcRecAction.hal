@@ -78,6 +78,8 @@ external function Boolean HasSLIntegratedWithNL();
 external function Boolean HasIntegratedNL();
 external updating function Boolean DoXMLExport_IVVc(var record IVVc);
 external function Boolean PasteInvIn2IPr(var record IPVc,Integer,Date,var val,Boolean,var Boolean);// Edit ************************** Friday, 25 November 2016 14:08:15
+external procedure IPVc_PasteRecVal(var record IPVc,Integer);// Edit ************************** Thursday, 13 July 2017 15:34:11
+external function Boolean IPVc_PasteCustCode(var record IPVc,Integer,var LongInt); //Edit***************************Sasha2,14:55 18.02.2015
 
 function Boolean CheckIfNextLegalSerNr(LongInt curivnr,string OfficialSerNr,Date invdate,record CUVc CUr)
 begin
@@ -2131,72 +2133,248 @@ begin
 	record IPVc IPr,oldIPr;
 	row IPVc IPrw;
 	val chk;
+	longint error;
+	record SVOVc SVOr;
+	boolean foundf;
 	
-	TrHs = true;
-	IVr.SVONr = RepSpec.long1;
-	while(loopkey("SVONr",IVr,1,TrHs))begin
-		if(IVr.SVONr!=RepSpec.long1)then begin TrHs = false; end;
-		
-		if(TrHs)then begin
-			ARr.InvoiceNr = IVr.SerNr;
-			if (ReadFirstMain(ARr,1,true)) then begin
-				sum = sum + ARr.RVal;
-			end;
-		end;
-	end;
-	resetloop(IVr);
-	
-	if(sum==RepSpec.vals0)then begin
-		IVr.SVONr = RepSpec.long1;
+	SVOr.SerNr = RepSpec.long1;
+	foundf = false;
+	if(readfirstmain(SVOr,1,true))then begin
 		TrHs = true;
+		IVr.SVONr = SVOr.SerNr;
 		while(loopkey("SVONr",IVr,1,TrHs))begin
-			if(IVr.SVONr!=RepSpec.long1)then begin TrHs = false; end;
+			if(IVr.SVONr!=SVOr.SerNr)then begin TrHs = false; end;
+		
 			if(TrHs)then begin
 				ARr.InvoiceNr = IVr.SerNr;
 				if (ReadFirstMain(ARr,1,true)) then begin
-					if(RepSpec.vals0>0)then begin
-						recordnew(IPr);
-							IPr.PayMode = RepSpec.f1;
-							IPr.Comment = "AutoPay Service Order# " & IVr.SVONr;
-							IPr.TransDate = currentdate;
-							IPrw.stp = 1;
-							IPrw.InvoiceNr = IVr.SerNr;///????
-							matrowput(IPr,0,IPrw);
-							PasteInvIn2IPr(IPr,0,IPr.TransDate,chk,false,installmentf);
-							IPr.SerNr = nextsernr("IPVc",currentdate,-1,true,"");
-						recordstore(IPr,true);
-						recordcopy(oldIPr,IPr);
-						IPr.OKFlag = 1;
-						recordupdate(oldIPr,IPr,true);
-						
-					end;
+					sum = sum + ARr.RVal;
 				end;
 			end;
 		end;
-	end;
+		resetloop(IVr);
+		
+		if(sum==0)then begin
+			if(RepSpec.vals0>0)then begin
+				recordnew(IPr);
+				foundf = true;
+				IPr.PayMode = RepSpec.f1;
+				IPr.Comment = "AutoPay Service Order# " & IVr.SVONr;
+				IPr.TransDate = currentdate;
+				ClearRow(IPr,IPrw,kReceiptRowTypeNormal);
+				IPrw.CustCode = SVOr.CustCode;
+				MatRowPut(IPr,0,IPrw);
+				IPVc_PasteCustCode(IPr,0,error);
+				MatRowGet(IPr,0,IPrw);
+				IPrw.RecVal = RepSpec.vals0;
+				matrowput(IPr,0,IPrw);
+				IPVc_PasteRecVal(IPr,0);
+				MatRowGet(IPr,0,IPrw);
+				IPrw.CUPNr = SVOr.SerNr;
+				matrowput(IPr,0,IPrw);
+				IPr.SerNr = nextsernr("IPVc",currentdate,-1,true,"");
+				recordstore(IPr,true);
+				recordcopy(oldIPr,IPr);
+				IPr.OKFlag = 1;
+				recordupdate(oldIPr,IPr,true);
+				createrecordlink(IPr,currentcompany,SVOr,currentcompany);
+				createrecordlink(SVOr,currentcompany,IPr,currentcompany);
+				SVOr.FastCash = SVOr.FastCash + RepSpec.vals0;
+				recordstore(SVOr,true);
+			end;
+			if(RepSpec.vals1>0)then begin
+				recordnew(IPr);
+				foundf = true;
+				IPr.PayMode = RepSpec.f2;
+				IPr.Comment = "AutoPay Service Order# " & IVr.SVONr;
+				IPr.TransDate = currentdate;
+				ClearRow(IPr,IPrw,kReceiptRowTypeNormal);
+				IPrw.CustCode = SVOr.CustCode;
+				MatRowPut(IPr,0,IPrw);
+				IPVc_PasteCustCode(IPr,0,error);
+				MatRowGet(IPr,0,IPrw);
+				IPrw.RecVal = RepSpec.vals1;
+				matrowput(IPr,0,IPrw);
+				IPVc_PasteRecVal(IPr,0);
+				MatRowGet(IPr,0,IPrw);
+				IPrw.CUPNr = SVOr.SerNr;
+				matrowput(IPr,0,IPrw);
+				IPr.SerNr = nextsernr("IPVc",currentdate,-1,true,"");
+				recordstore(IPr,true);
+				recordcopy(oldIPr,IPr);
+				IPr.OKFlag = 1;
+				recordupdate(oldIPr,IPr,true);
+				createrecordlink(IPr,currentcompany,SVOr,currentcompany);
+				createrecordlink(SVOr,currentcompany,IPr,currentcompany);
+				SVOr.FastTerm = SVOr.FastTerm + RepSpec.vals1;
+				recordstore(SVOr,true);
+			end;
+		
+		end else begin
 	
-	if(sum==RepSpec.vals1)then begin
-		IVr.SVONr = RepSpec.long1;
-		TrHs = true;
-		while(loopkey("SVONr",IVr,1,TrHs))begin
-			if(IVr.SVONr!=RepSpec.long1)then begin TrHs = false; end;
-			if(TrHs)then begin
-				ARr.InvoiceNr = IVr.SerNr;
-				if (ReadFirstMain(ARr,1,true)) then begin
-					if(RepSpec.vals1>0)then begin
-						recordnew(IPr);
-							IPr.PayMode = RepSpec.f2;
-							IPr.Comment = "Bank Trans # " & RepSpec.f3;
-							IPr.TransDate = currentdate;
-							IPrw.stp = 1;
-							IPrw.InvoiceNr = IVr.SerNr;///????
-							matrowput(IPr,0,IPrw);
-							PasteInvIn2IPr(IPr,0,IPr.TransDate,chk,false,installmentf);
-							IPr.SerNr = nextsernr("IPVc",currentdate,-1,true,"");
-						recordstore(IPr,true);
-						recordcopy(oldIPr,IPr);
-						IPr.OKFlag = 1;
-						recordupdate(oldIPr,IPr,true);
+			if(sum>=RepSpec.vals0)then begin
+				IVr.SVONr = SVOr.SerNr;
+				TrHs = true;
+				while(loopkey("SVONr",IVr,1,TrHs))begin
+					if(IVr.SVONr!=SVOr.SerNr)then begin TrHs = false; end;
+					if(TrHs)then begin
+						ARr.InvoiceNr = IVr.SerNr;
+						if (ReadFirstMain(ARr,1,true)) then begin
+							if(RepSpec.vals0>0)then begin
+								recordnew(IPr);
+									foundf = true;
+									IPr.PayMode = RepSpec.f1;
+									IPr.Comment = "AutoPay Service Order# " & IVr.SVONr;
+									IPr.TransDate = currentdate;
+									IPrw.stp = 1;
+									IPrw.InvoiceNr = IVr.SerNr;///????
+									matrowput(IPr,0,IPrw);
+									PasteInvIn2IPr(IPr,0,IPr.TransDate,chk,false,installmentf);
+									matrowget(IPr,0,IPrw);
+									IPrw.RecVal = RepSpec.vals0;
+									matrowput(IPr,0,IPrw);
+									IPVc_PasteRecVal(IPr,0);
+									IPr.SerNr = nextsernr("IPVc",currentdate,-1,true,"");
+								recordstore(IPr,true);
+								recordcopy(oldIPr,IPr);
+								IPr.OKFlag = 1;
+								recordupdate(oldIPr,IPr,true);
+								createrecordlink(IPr,currentcompany,SVOr,currentcompany);
+								createrecordlink(SVOr,currentcompany,IPr,currentcompany);
+								SVOr.FastCash = SVOr.FastCash + RepSpec.vals0;
+								recordstore(SVOr,true);
+							end;
+						end;
+					end;
+				end;
+			end else begin
+				IVr.SVONr = SVOr.SerNr;
+				TrHs = true;
+				while(loopkey("SVONr",IVr,1,TrHs))begin
+					if(IVr.SVONr!=SVOr.SerNr)then begin TrHs = false; end;
+					if(TrHs)then begin
+						ARr.InvoiceNr = IVr.SerNr;
+						if (ReadFirstMain(ARr,1,true)) then begin
+							if(RepSpec.vals0>0)then begin
+								recordnew(IPr);
+									foundf = true;
+									IPr.PayMode = RepSpec.f1;
+									IPr.Comment = "AutoPay Service Order# " & IVr.SVONr;
+									IPr.TransDate = currentdate;
+									IPrw.stp = 1;
+									IPrw.InvoiceNr = IVr.SerNr;///????
+									matrowput(IPr,0,IPrw);
+									PasteInvIn2IPr(IPr,0,IPr.TransDate,chk,false,installmentf);
+									matrowget(IPr,0,IPrw);
+									IPrw.RecVal = sum;
+									matrowput(IPr,0,IPrw);
+									IPVc_PasteRecVal(IPr,0);
+							
+									ClearRow(IPr,IPrw,kReceiptRowTypeNormal);
+									IPrw.CustCode = IVr.CustCode;
+									MatRowPut(IPr,1,IPrw);
+									IPVc_PasteCustCode(IPr,1,error);
+									MatRowGet(IPr,1,IPrw);
+									IPrw.RecVal = RepSpec.vals0 - sum;
+									matrowput(IPr,1,IPrw);
+									IPVc_PasteRecVal(IPr,1);
+									MatRowGet(IPr,1,IPrw);
+									IPrw.CUPNr = SVOr.SerNr;
+									matrowput(IPr,1,IPrw);
+									IPr.SerNr = nextsernr("IPVc",currentdate,-1,true,"");
+								recordstore(IPr,true);
+								recordcopy(oldIPr,IPr);
+								IPr.OKFlag = 1;
+								recordupdate(oldIPr,IPr,true);
+								createrecordlink(IPr,currentcompany,SVOr,currentcompany);
+								createrecordlink(SVOr,currentcompany,IPr,currentcompany);
+								SVOr.FastCash = SVOr.FastCash + RepSpec.vals0;
+								recordstore(SVOr,true);
+							end;
+						end;
+					end;
+				end;
+			end;
+	
+			if(sum>=RepSpec.vals1)then begin
+				IVr.SVONr = SVOr.SerNr;
+				TrHs = true;
+				while(loopkey("SVONr",IVr,1,TrHs))begin
+					if(IVr.SVONr!=SVOr.SerNr)then begin TrHs = false; end;
+					if(TrHs)then begin
+						ARr.InvoiceNr = IVr.SerNr;
+						if (ReadFirstMain(ARr,1,true)) then begin
+							if(RepSpec.vals1>0)then begin
+								recordnew(IPr);
+									foundf = true;
+									IPr.PayMode = RepSpec.f2;
+									IPr.Comment = "Bank Trans # " & RepSpec.f3;
+									IPr.TransDate = currentdate;
+									IPrw.stp = 1;
+									IPrw.InvoiceNr = IVr.SerNr;///????
+									matrowput(IPr,0,IPrw);
+									PasteInvIn2IPr(IPr,0,IPr.TransDate,chk,false,installmentf);
+									matrowget(IPr,0,IPrw);
+									IPrw.RecVal = RepSpec.vals1;
+									matrowput(IPr,0,IPrw);
+									IPVc_PasteRecVal(IPr,0);
+									IPr.SerNr = nextsernr("IPVc",currentdate,-1,true,"");
+								recordstore(IPr,true);
+								recordcopy(oldIPr,IPr);
+								IPr.OKFlag = 1;
+								recordupdate(oldIPr,IPr,true);
+								createrecordlink(IPr,currentcompany,SVOr,currentcompany);
+								createrecordlink(SVOr,currentcompany,IPr,currentcompany);
+								SVOr.FastTerm = SVOr.FastTerm + RepSpec.vals1;
+								recordstore(SVOr,true);
+							end;
+						end;
+					end;
+				end;
+			end else begin
+				IVr.SVONr = SVOr.SerNr;
+				TrHs = true;
+				while(loopkey("SVONr",IVr,1,TrHs))begin
+					if(IVr.SVONr!=SVOr.SerNr)then begin TrHs = false; end;
+					if(TrHs)then begin
+						ARr.InvoiceNr = IVr.SerNr;
+						if (ReadFirstMain(ARr,1,true)) then begin
+							if(RepSpec.vals1>0)then begin
+								recordnew(IPr);
+									foundf = true;
+									IPr.PayMode = RepSpec.f2;
+									IPr.Comment = "Bank Trans # " & RepSpec.f3;
+									IPr.TransDate = currentdate;
+									IPrw.stp = 1;
+									IPrw.InvoiceNr = IVr.SerNr;///????
+									matrowput(IPr,0,IPrw);
+									PasteInvIn2IPr(IPr,0,IPr.TransDate,chk,false,installmentf);
+									matrowget(IPr,0,IPrw);
+									IPrw.RecVal = RepSpec.vals1;
+									matrowput(IPr,0,IPrw);
+									IPVc_PasteRecVal(IPr,0);
+							
+									ClearRow(IPr,IPrw,kReceiptRowTypeNormal);
+									IPrw.CustCode = IVr.CustCode;
+									MatRowPut(IPr,1,IPrw);
+									IPVc_PasteCustCode(IPr,1,error);
+									MatRowGet(IPr,1,IPrw);
+									IPrw.RecVal = RepSpec.vals1 - sum;
+									matrowput(IPr,1,IPrw);
+									IPVc_PasteRecVal(IPr,1);
+									MatRowGet(IPr,1,IPrw);
+									IPrw.CUPNr = SVOr.SerNr;
+									IPr.SerNr = nextsernr("IPVc",currentdate,-1,true,"");
+								recordstore(IPr,true);
+								recordcopy(oldIPr,IPr);
+								IPr.OKFlag = 1;
+								recordupdate(oldIPr,IPr,true);
+								createrecordlink(IPr,currentcompany,SVOr,currentcompany);
+								createrecordlink(SVOr,currentcompany,IPr,currentcompany);
+								SVOr.FastTerm = SVOr.FastTerm + RepSpec.vals1;
+								recordstore(SVOr,true);
+							end;
+						end;
 					end;
 				end;
 			end;

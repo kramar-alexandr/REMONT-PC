@@ -2812,3 +2812,30 @@ begin
   end;
   return;
 end;
+
+
+global procedure CheckSVOIV(record SVOVc SVOr,var val sumiv,var val sumpay)
+begin
+	record IVVc IVr;
+	boolean TrHs,testf;
+	record ARVc ARr;
+		
+	TrHs = true;
+	IVr.SVONr = SVOr.SerNr;
+	while(loopkey("SVONr",IVr,1,TrHs))begin
+		testf = true;
+		if(IVr.SVONr!=SVOr.SerNr)then begin testf = false; TrHs = false; end;
+		if(IVr.OKFlag==0)then begin testf = false; end;
+		if(IVr.Invalid>0)then begin testf = false; end;
+		
+		if(testf)then begin
+			sumiv = sumiv + IVr.Sum4;
+			ARr.InvoiceNr = IVr.SerNr;
+			if(ReadFirstMain(ARr,1,true)) then begin
+					sumpay = IVr.Sum4 - ARr.RVal;
+			end;
+		end;
+	
+	end;
+return;
+end;

@@ -150,6 +150,10 @@ BEGIN
         ItemBC39(SVOrw.ArtCode,tstr);
         OUTFORMFIELD("F_ARTNRBC39",tstr);
       end;  
+      if (FIELDINFORM("MYF_SERIALNR")) then begin// Edit ************************** Thursday, 13 July 2017 12:31:17
+        OUTFORMFIELD("MYF_SERIALNR",SVOrw.NewSerialNr);
+      end;
+      
       if (FIELDINFORM("F_ARTNRBCEAN")) then begin
         ItemBCEAN(SVOrw.ArtCode,tstr);
         OUTFORMFIELD("F_ARTNRBCEAN",tstr);

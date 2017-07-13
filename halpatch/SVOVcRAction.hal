@@ -1778,7 +1778,7 @@ begin
 	wn = curwindow;
 	deselectwindow(wn,true);
 	getwindowrecord(wn,RepSpec);
-	if((RepSpec.vals0>0 and RepSpec.vals1==0) or (RepSpec.vals0==0 and RepSpec.vals1>0 and nonblank(RepSpec.f3)))then begin
+	if((RepSpec.vals0!=0 and RepSpec.vals1==0) or (RepSpec.vals0==0 and RepSpec.vals1!=0 and nonblank(RepSpec.f3)))then begin
 		SVOr.SerNr = RepSpec.long1;
 		if(readfirstmain(SVOr,1,true))then begin
 			CheckSVOIV(SVOr,ivsum,ivpaysum);

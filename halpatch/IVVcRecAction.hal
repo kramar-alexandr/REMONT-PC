@@ -2155,7 +2155,7 @@ begin
 		resetloop(IVr);
 		
 		if(sum==0)then begin
-			if(RepSpec.vals0>0)then begin
+			if(RepSpec.vals0!=0)then begin
 				recordnew(IPr);
 				foundf = true;
 				IPr.PayMode = RepSpec.f1;
@@ -2182,7 +2182,7 @@ begin
 				SVOr.FastCash = SVOr.FastCash + RepSpec.vals0;
 				recordstore(SVOr,true);
 			end;
-			if(RepSpec.vals1>0)then begin
+			if(RepSpec.vals1!=0)then begin
 				recordnew(IPr);
 				foundf = true;
 				IPr.PayMode = RepSpec.f2;
@@ -2220,7 +2220,7 @@ begin
 					if(TrHs)then begin
 						ARr.InvoiceNr = IVr.SerNr;
 						if (ReadFirstMain(ARr,1,true)) then begin
-							if(RepSpec.vals0>0)then begin
+							if(RepSpec.vals0!=0)then begin
 								recordnew(IPr);
 									foundf = true;
 									IPr.PayMode = RepSpec.f1;
@@ -2255,7 +2255,7 @@ begin
 					if(TrHs)then begin
 						ARr.InvoiceNr = IVr.SerNr;
 						if (ReadFirstMain(ARr,1,true)) then begin
-							if(RepSpec.vals0>0)then begin
+							if(RepSpec.vals0!=0)then begin
 								recordnew(IPr);
 									foundf = true;
 									IPr.PayMode = RepSpec.f1;
@@ -2304,7 +2304,7 @@ begin
 					if(TrHs)then begin
 						ARr.InvoiceNr = IVr.SerNr;
 						if (ReadFirstMain(ARr,1,true)) then begin
-							if(RepSpec.vals1>0)then begin
+							if(RepSpec.vals1!=0)then begin
 								recordnew(IPr);
 									foundf = true;
 									IPr.PayMode = RepSpec.f2;
@@ -2339,7 +2339,7 @@ begin
 					if(TrHs)then begin
 						ARr.InvoiceNr = IVr.SerNr;
 						if (ReadFirstMain(ARr,1,true)) then begin
-							if(RepSpec.vals1>0)then begin
+							if(RepSpec.vals1!=0)then begin
 								recordnew(IPr);
 									foundf = true;
 									IPr.PayMode = RepSpec.f2;

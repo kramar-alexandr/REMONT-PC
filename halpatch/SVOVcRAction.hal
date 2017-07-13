@@ -275,7 +275,7 @@ BEGIN
   record UserVc Userr;// Edit ************************** Monday, 31 October 2016 12:54:07
   record SVOVc SVO3r;
   
-  SVOr.Math2 = SVO3r.Math2;
+  //SVOr.Math2 = SVO3r.Math2;
   SVOr.SerNr = -1;
   SVOr.TransDate = CurrentDate;  
   SVOr.RegDate = blankd;

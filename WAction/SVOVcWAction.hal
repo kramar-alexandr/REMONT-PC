@@ -682,10 +682,9 @@ begin
 	
 	getwindowrecord(wn,SVOr);
 	
-	input = GetWindowString(wn,"SVOChatSend");
+	input = SVOr.SVOChatSend;
+	SVOr.SVOChatSend = "";
 	
-	
-	PutWindowString(wn,"SVOChatSend","");
 	if(nonblank(input))then begin
 		AddToText(CurrentDate & " ",SVOr);
 		AddToText(CurrentTime & " ",SVOr);
@@ -694,9 +693,7 @@ begin
 		putwindowrecord(wn,SVOr);
 		WindowdoOk(wn,0);
 	end;
-	//WindowFieldGoto(wn,SVOr,-1,"SVOChatSend",true);
 	
-	//WindowFieldGotoForTouchScreen(wn,-1,"SVOChatSend",false);
 return;
 end;
 

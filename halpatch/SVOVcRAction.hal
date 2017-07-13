@@ -253,6 +253,7 @@ BEGIN
   SVOr.BaseRate1 = br1;
   SVOr.BaseRate2 = br2;
   SVOr.PayDeal = "";
+  SVOr.GarantyMes = 6;// Edit ************************** Thursday, 13 July 2017 17:25:23
   if (SingleUserMode) then begin
     SVOr.SerNr = NextSerNr("SVOVc",SVOr.TransDate,-1,false,"");
   end;  
@@ -351,6 +352,7 @@ BEGIN
  	SVOr.GetItemFlag = 0;
  	SVOr.InnerOrderNr = "";
  	SVOr.CustomField7 = ""; 
+ 	SVOr.GarantyMes = 6;// Edit ************************** Thursday, 13 July 2017 17:25:23
  	
   SVOVcRecordDuplicate = res; 
   RETURN;

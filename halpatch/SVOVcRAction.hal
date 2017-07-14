@@ -376,12 +376,19 @@ BEGIN
   
   SVOr.FastCash = blankval;
  	SVOr.FastTerm = blankval; 
+ 	SVOr.ArtCodeTextSearch = "";
  	SVOr.SerialNrTextSearch = "";
  	SVOr.OldPhone = "";
  	SVOr.GetItemFlag = 0;
  	SVOr.InnerOrderNr = "";
  	SVOr.CustomField7 = ""; 
  	SVOr.GarantyMes = 6;// Edit ************************** Thursday, 13 July 2017 17:25:23
+ 	SVOr.GetItemDate = blankd;
+ 	SVOr.GetItemTime = blankt;
+ 	SVOr.Inspector = 0;
+ 	SVOr.CallStatus = "";
+ 	SVOr.RejectReason = "";
+ 	SVOr.StatusText = "";
  	
   SVOVcRecordDuplicate = res; 
   RETURN;

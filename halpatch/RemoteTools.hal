@@ -1236,6 +1236,53 @@ LAddPrepaymentRow:;
 end;
 
 global
+procedure AddPrepaymentRowsSVOR(var record IVVc IVp,LongInt OrderNr)
+BEGIN
+  Integer rwcnt;
+  record ARPayVc ARPayr;
+  Boolean found,testf;
+  row IVVc IVrw;
+  string 20 curcode;
+  val v,totprepv;
+
+  IVSumup(IVp,true);
+  found = true;
+  ARPayr.CustCode = IVp.CustCode;// Edit ************************** Wednesday, 12 October 2016 13:41:29
+  
+  while (LoopKey("CustCode",ARPayr,1,found)) begin// Edit ************************** Wednesday, 12 October 2016 13:41:48
+ // while (LoopKey("OrderNr",ARPayr,1,found)) begin// Edit ************************** Wednesday, 12 October 2016 13:41:46
+    //if (ARPayr.OrderNr!=OrderNr) then begin found = false; end;// Edit ************************** Wednesday, 12 October 2016 13:42:00
+    if (ARPayr.CustCode!=IVp.CustCode) then begin found = false; end;// Edit ************************** Wednesday, 12 October 2016 13:41:59
+    if(ARPayr.CUPNr!=OrderNr)then begin found = false; end;
+    if (totprepv>=IVp.Sum4) then begin found = false; end;
+    if (found) then begin
+      testf = true;
+      if (ARPayr.CurncyCode!=IVp.CurncyCode) then begin
+        if ((blank(ARPayr.CurncyCode)) or (blank(IVp.CurncyCode))) then begin
+          GetBaseCurncy(1,curcode);    
+          if (ARPayr.CurncyCode!=curcode) then begin    
+            if (IVp.CurncyCode!=curcode) then begin    
+              testf = false;
+            end;  
+          end;
+        end;  
+      end;
+      if (testf) then begin
+        ClearRow(IVp,IVrw,6);
+        IVrw.Spec = USetStr(1288);
+        IVrw.CUPNr = ARPayr.CUPNr;
+        PasteARPayInIV(IVp,IVrw,-1);
+        MatRowInsert(IVp,0,IVrw);
+        MatRowGet(IVp,0,IVrw);
+        totprepv = totprepv + IVrw.Sum;       
+      end;
+    end;
+  end;  
+LAddPrepaymentRow:;  
+  return;
+end;
+
+global
 function Boolean PasteOrdInInv(var record IVVc IVp,record ORVc ORp,Boolean addon,string lastcu,record RcVc RepSpec,var val orsum,Boolean addperceptionf,Boolean withholdingf,Boolean NLCostOnShipTestf,
                                var Integer err,Boolean maintf,array record XSrsVc aXSrsr,var Integer axsrscnt)
 begin

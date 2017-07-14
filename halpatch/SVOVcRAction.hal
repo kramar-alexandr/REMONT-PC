@@ -262,6 +262,18 @@ BEGIN
   RETURN;
 END;
 
+
+/*global
+function LongInt SVOVcRecordDuplicateClient(var record SVOVc SVOr,record SVOVc SVO2r,LongInt stat,LongInt long4)
+BEGIN
+  LongInt res;
+  
+  	SVOr.Math2 = blankval;
+  	
+  SVOVcRecordDuplicateClient = res; 
+  RETURN;
+END;*/
+
 global
 function LongInt SVOVcRecordDuplicate(var record SVOVc SVOr,record SVOVc SVO2r,LongInt stat,LongInt long4)
 BEGIN
@@ -273,15 +285,24 @@ BEGIN
   Date blankd;
   Time blankt;
   record UserVc Userr;// Edit ************************** Monday, 31 October 2016 12:54:07
-  area az;
+  area atmp,atmp1;
+  longint ii,lenth;
+  string 5 cr;
   
-  //SVOr.Math2;
-  rwcnt = LineTextCnt(SVOr);
-  for (i=0;i<rwcnt;i=i+1) begin
-    logtext(0,i);
-    LineTextPut(SVOr,i+1,"");
-  end;
-  //addareatotextfield(az,SVOr);
+  
+  cr = chr(9) & chr(13) & chr(13);
+  addrecordtoarea(SVOr,"SVOVc",atmp);
+  lenth = getarealength(atmp);
+  For(ii=0;ii<lenth-1;ii=ii+1) begin
+	  if(getstringfromarea(atmp,ii,3)==cr) then begin
+	  	getareafromarea(atmp,0,ii,atmp1);
+	  	ii=lenth;
+	  end;
+	end; 
+  GetRecordFromArea	(SVOr,"SVOVc",0,atmp1);
+  
+  matrowget(SVOr,0,SVOrw);
+  
   SVOr.SerNr = -1;
   SVOr.TransDate = CurrentDate;  
   SVOr.RegDate = blankd;
@@ -402,7 +423,7 @@ BEGIN
   
   CUr.Code = SVOr.CustCode;
   if(readfirstmain(CUr,1,true))then begin
-  	if(blank(CUr.Name) or CUr.Name=="Новый контакт")then begin
+  	if(blank(CUr.Name) or CUr.Name=="Новый контакт" or CUr.Name=="Новый клиент")then begin
   		if(nonblank(SVor.Vlastnik))then begin
   			CUr.Name = SVOr.Vlastnik;
   			modify = true;

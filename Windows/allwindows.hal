@@ -2169,8 +2169,6 @@ begin
 	HalPushButton(-90,v-3,-40,v+15,"ServClientOrderDsm","Отчет");
 	
 	EditField(h,v+=vs,300,"e-mail",Normal,Kontinfo2,false,0);	
-	EditField(h+380,v,-20,"Сообщение",Normal,SVOChatSend,false,0);
-	EnterSkip(SVOChatSend);
 	EditField(h,v+=vs,300,"Адрес клиента",Normal,Kontinfo3,false,0);
   v=v+10;
   EditField(h,v+=vs,300,"Жалобы собств-ка",Normal,Comment1,false,IssueSClass);
@@ -2187,8 +2185,9 @@ begin
   
   
   
-  TextField(h+310,150,-10,-25,Math2,0);
-  
+  TextField(h+310,125,-10,-40,Math2,0);
+  EditField(h+380,-25,-20,"Сообщение",Normal,SVOChatSend,false,0);
+	EnterSkip(SVOChatSend);
   //v=v+10;
   EditField(h,v+=vs,50,"Производитель",Normal,Region,false,ITSClass);
   

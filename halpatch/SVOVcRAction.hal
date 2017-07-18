@@ -929,7 +929,16 @@ BEGIN
     SVOr.SerNr = NextSerNr("SVOVc",SVOr.TransDate,GetUserSerNrSeries(-1),false,""); //Edit***************************Sasha2,16:59 18.05.2017
   end;
   
+  if(SVOr.GetItemFlag>0 and SVO2r.GetItemFlag==0)then begin// Edit ************************** Tuesday, 18 July 2017 15:50:38
+		SVOr.GetItemDate = currentdate;
+		SVOr.GetItemTime = CurrentTime;
+	end;
+  
   if(stat==insertmode)then begin
+  	if(SVOr.GetItemFlag>0)then begin// Edit ************************** Tuesday, 18 July 2017 15:50:38
+			SVOr.GetItemDate = currentdate;
+			SVOr.GetItemTime = CurrentTime;
+		end;
   	if(SVOr.GetItemFlag==1 and blank(SVOr.CustomField7))then begin
   		SVOr.CustomField7 = currentuser;
   		Userr.Code = CurrentUser;
@@ -942,6 +951,10 @@ BEGIN
   end;
   
   if(stat==updatemode)then begin
+  	if(SVOr.GetItemFlag>0 and SVO2r.GetItemFlag==0)then begin// Edit ************************** Tuesday, 18 July 2017 15:50:38
+			SVOr.GetItemDate = currentdate;
+			SVOr.GetItemTime = CurrentTime;
+		end;
   	if(SVOr.GetItemFlag==1 and SVO2r.GetItemFlag==0 and blank(SVOr.CustomField7))then begin
   		SVOr.CustomField7 = currentuser;
   		Userr.Code = CurrentUser;

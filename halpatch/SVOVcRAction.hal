@@ -926,6 +926,7 @@ BEGIN
   
   if(SVOr.GetItemFlag==1 and SVOr.OrderStatus==9)then begin
   	SVOr.OrderStatus = 0;
+    SVOr.SerNr = NextSerNr("SVOVc",SVOr.TransDate,GetUserSerNrSeries(-1),false,""); //Edit***************************Sasha2,16:59 18.05.2017
   end;
   
   if(stat==insertmode)then begin

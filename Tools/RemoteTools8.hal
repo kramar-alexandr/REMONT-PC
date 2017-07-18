@@ -2691,6 +2691,7 @@ begin
 	SVOr.Kontinfo1 = Actr.Phone;
 	SVOr.CustCode = Actr.CUCode;
 	PasteCUInSVO(SVOr,"",warning);
+	SVOr.SerNr = NextSerNr("SVOVc",SVOr.TransDate,GetUserSerNrSeries(-1),false,"");
 	if(recordinsert(SVOr,true))then begin
 		Actr.SVOSerNr = SVOr.SerNr;
 		createrecordlink(SVOr,currentcompany,Actr,currentcompany);

@@ -253,6 +253,7 @@ BEGIN
   SVOr.BaseRate1 = br1;
   SVOr.BaseRate2 = br2;
   SVOr.PayDeal = "";
+  SVOr.OrderStatus = 9;
   SVOr.GarantyMes = 6;// Edit ************************** Thursday, 13 July 2017 17:25:23
   if (SingleUserMode) then begin
     SVOr.SerNr = NextSerNr("SVOVc",SVOr.TransDate,-1,false,"");
@@ -923,6 +924,10 @@ BEGIN
   updatemode = 2;//Rs_update
   
   
+  if(SVOr.GetItemFlag==1 and SVOr.OrderStatus==9)then begin
+  	SVOr.OrderStatus = 0;
+  end;
+  
   if(stat==insertmode)then begin
   	if(SVOr.GetItemFlag==1 and blank(SVOr.CustomField7))then begin
   		SVOr.CustomField7 = currentuser;
@@ -1368,7 +1373,7 @@ BEGIN
 		case 6: SVOr.StatusText = USetStr(31095);
 		case 7: SVOr.StatusText = USetStr(31096);
 		case 8: SVOr.StatusText = USetStr(31097);
-		case 8: SVOr.StatusText = USetStr(31501);
+		case 9: SVOr.StatusText = USetStr(31501);
   end;
   
   LogText(0,"SVOVc " & SVOr.SerNr & "  was changed. Company: " & CurrentCompany & " User: " & CurrentUser & "  ServiceMan:" & SVOr.ServiceManager);	//Edit----------------------Dima  30.10.2015

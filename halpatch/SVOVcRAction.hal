@@ -1709,7 +1709,7 @@ BEGIN
   record LocalMachineBlock LMb; //Edit***************************Sasha2,14:00 09.06.2017
   
   BlockLoad(LMb); //Edit***************************Sasha2,14:35 09.06.2017
-	if(SVOr.GetItemFlag==1 and SVO2r.GetItemFlag==0)then begin //Edit***************************Sasha2,17:32 25.10.2016
+	if(SVOr.GetItemFlag>0 and SVO2r.GetItemFlag==0)then begin //Edit***************************Sasha2,17:32 25.10.2016
 		err = CreateAndOKOffHireFromSVO(SVOr,LMb,errMes);
 		if (err!=0) then begin
 			MessageBox(err,". " & errMes);

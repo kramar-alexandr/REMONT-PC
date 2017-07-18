@@ -1,6 +1,6 @@
 external function string 255 GetTextForPrint(integer,string);
 remote function Boolean Getformcode(Integer,Integer,string,string,string,LongInt,LongInt,string,string,Integer,string,var string);
-external procedure GetUserAccessGroup(string,var string);
+remote procedure GetUserAccessGroup(string,var string);
 
 
 SetLangMode(LangUkrainian,"RUS",0);
@@ -66,8 +66,13 @@ GetUserAccessGroup(CurrentUser,usergroup);
 		matrowget(FDr,i,FDrw);
 		formcode = ""; 
 		if(Getformcode(i,FDrw.intdocnr,FDrw.FPCode,FDrw.UserGroup,FDrw.LangCode,FDrw.SerNr,-1,FDrw.PrintGroupCode,"",i+1,recname,formcode))then begin
-			if(nonblank(SVOr.SalesGroup))then begin
-				if(SVOr.SalesGroup==FDrw.UserGroup or blank(FDrw.UserGroup))then begin
+			if(winclass=="SVODClass")then begin
+				if(nonblank(SVOr.SalesGroup))then begin
+					if(SVOr.SalesGroup==FDrw.UserGroup or blank(FDrw.UserGroup))then begin
+						RadioButton(h,v,FDrw.intdocnr,0,GetTextForPrint(i,recname),flags[0]); //Edit***************************Sasha2,11:21 20.01.2015
+						v=v+16;
+					end;
+				end else begin
 					RadioButton(h,v,FDrw.intdocnr,0,GetTextForPrint(i,recname),flags[0]); //Edit***************************Sasha2,11:21 20.01.2015
 					v=v+16;
 				end;

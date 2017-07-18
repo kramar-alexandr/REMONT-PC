@@ -13,8 +13,8 @@ record SVOPrintDataVc SVOPr;
 
   
   foundf = false;
-  wn = CurWindow;
-//  GetWindowRecord(wn,RepSpec);
+  //wn = CurWindow;
+	//  GetWindowRecord(wn,RepSpec);
   res = "";
   switch(rec) begin //Edit***************************Sasha2,12:03 20.01.2015 {
     case "ORVc":

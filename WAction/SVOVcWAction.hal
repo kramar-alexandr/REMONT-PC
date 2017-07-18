@@ -1346,12 +1346,15 @@ begin
   record OffHireVc OHr;
   Integer r;
   Integer wn,nwn;
+  record LocalMachineBlock LocMachBl;
+  
+  blockload(LocMachBl);
   
   wn = CurWindow;
   if (WindowState(wn)==0) then begin//Rs_normal
     if (UserCanAction("SVOToOffHire",true)) then begin
       GetWindowRecord(wn,SVOr);
-      r = RecordAction_raPasteSVOInOffHire(SVOr,OHr,CurMachineName,true); //Edit***************************Sasha2,11:57 09.06.2017
+      r = RecordAction_raPasteSVOInOffHire(SVOr,OHr,LocMachBl,true); //Edit***************************Sasha2,11:57 09.06.2017
       if (r==0) then begin
          nwn = OpenWindow("OffHireDClass",1,0,"","",OHr);
        end else begin

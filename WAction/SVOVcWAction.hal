@@ -2,7 +2,7 @@ external procedure ActVcRecordDefClient(var record ActVc);
 remote updating function Integer PasteSVOInRet(var record RetVc,LongInt,string);
 remote updating function LongInt RecordAction_raPasteSVOInPO(record SVOVc,var record POVc,var Integer,var string);
 remote updating function Integer RecordAction_raPasteSVOInDispatch(record SVOVc,var record DispatchVc,record LocalMachineBlock,Boolean); //Edit***************************Sasha2,18:45 11.06.2017
-remote updating function Integer RecordAction_raPasteSVOInOffHire(record SVOVc,var record OffHireVc,string,Boolean); //Edit***************************Sasha2,11:57 09.06.2017
+remote updating function Integer RecordAction_raPasteSVOInOffHire(record SVOVc,var record OffHireVc,record LocalMachineBlock,Boolean); //Edit***************************Sasha2,11:57 09.06.2017
 remote procedure SVOVc_PasteDelAddrCode(var record SVOVc);
 external function string 40 DelAddrSClassSpecPName(string);
 external procedure IVOpenPrepExists(string);

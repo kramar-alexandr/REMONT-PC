@@ -1,7 +1,7 @@
-external function string 255 GetTextForPrint(integer,string);
+remote function string 255 GetTextForPrint(integer,string);
 remote function Boolean Getformcode(Integer,Integer,string,string,string,LongInt,LongInt,string,string,Integer,string,var string);
 remote procedure GetUserAccessGroup(string,var string);
-
+remote procedure GeneratePrintListSVO(string,string,var array integer,var array string,var integer,record SVOVc);
 
 SetLangMode(LangUkrainian,"RUS",0);
 
@@ -10,13 +10,15 @@ window MyPrintTClass:1
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
 string 255 tstr;
-integer v,i,mtrw,h,vm,heiz;
+integer v,i,mtrw,h,vm,heiz,cnt;
 integer mwn,wn; //Edit***************************Sasha2,12:04 20.01.2015
 record FormDefVc FDr;
 row FormDefVc FDrw;
-string 200 formcode;
+string 200 formcode,fdname;
 string 20 winclass,recname,printfunc,usergroup; //Edit***************************Sasha2,11:20 20.01.2015
 record SVOVc SVOr;
+array integer intdoc;
+array string 200 textfor;
 
 
 GetUserAccessGroup(CurrentUser,usergroup);
@@ -40,9 +42,11 @@ GetUserAccessGroup(CurrentUser,usergroup);
 	       printfunc = "PrintDoStockMovForm";
 	 case "SVODClass": 
 	       FDr.repname = "SVOForm";
+	       fdname = "SVOForm";
 	       recname  = "SVOVc";			//Edit----------------------Dima  09.02.2015
 	       printfunc = "PrintDoSVOForm";
 	       getwindowrecord(mwn,SVOr);
+	       GeneratePrintListSVO(recname,fdname,intdoc,textfor,cnt,SVOr);
 	 case "IVDClass": 
 	       FDr.repname = "InvForm";
 	       recname  = "IVVc";
@@ -52,17 +56,28 @@ GetUserAccessGroup(CurrentUser,usergroup);
 	       goto L99;
 	end; //Edit***************************Sasha2,11:20 20.01.2015 }
 	
-	if (ReadFirstMain(FDr,1,true)==false) then begin
+	/*if (ReadFirstMain(FDr,1,true)==false) then begin
 		MessageBox(1624, " " & USetStr(1623));
 		goto L99;
-	end;
-	mtrw = matrowcnt(FDr);
-	heiz = 80 + 20 + 18 + mtrw*18;
+	end;*/
+	//mtrw = matrowcnt(FDr);
+	
+	
+	
+	
+	
+	heiz = 80 + 20 + 18 + cnt*18;
 	SetWRect(90,80,500,heiz);
 	v=10;
-	ButtonFrame(20,20,350,mtrw,"Формы документов");
+	ButtonFrame(20,20,350,cnt,"Формы документов");
 	h=20;v=20; 
-	for(i=0;i<mtrw;i=i+1)begin
+	
+	For(i=0;i<cnt;i=i+1) begin
+	  RadioButton(h,v,intdoc[i],0,textfor[i],flags[0]); //Edit***************************Sasha2,11:21 20.01.2015
+		v=v+16;
+	end; 
+	
+	/*for(i=0;i<mtrw;i=i+1)begin
 		matrowget(FDr,i,FDrw);
 		formcode = ""; 
 		if(Getformcode(i,FDrw.intdocnr,FDrw.FPCode,FDrw.UserGroup,FDrw.LangCode,FDrw.SerNr,-1,FDrw.PrintGroupCode,"",i+1,recname,formcode))then begin
@@ -80,18 +95,8 @@ GetUserAccessGroup(CurrentUser,usergroup);
 				RadioButton(h,v,FDrw.intdocnr,0,GetTextForPrint(i,recname),flags[0]); //Edit***************************Sasha2,11:21 20.01.2015
 				v=v+16;
 			end;
-			
-			/*if(usergroup=="ISTUD")then begin
-				if(FDrw.UserGroup=="ISTUD")then begin
-					RadioButton(h,v,FDrw.intdocnr,0,GetTextForPrint(i,recname),flags[0]); //Edit***************************Sasha2,11:21 20.01.2015
-					v=v+16;
-				end;
-			end else begin
-				RadioButton(h,v,FDrw.intdocnr,0,GetTextForPrint(i,recname),flags[0]); //Edit***************************Sasha2,11:21 20.01.2015
-				v=v+16;
-			end;*/
 		end;
-	end;
+	end;*/
 	v=v+16;
 	HalPushButton(h,v,h+100,v+50,printfunc,"Печать"); //Edit***************************Sasha2,11:21 20.01.2015
 L99:;

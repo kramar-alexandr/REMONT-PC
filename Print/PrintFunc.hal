@@ -1,4 +1,6 @@
 remote updating procedure CreatePrintNoter(record RcVc, record ORVc);
+external function Boolean Getformcode(Integer,Integer,string,string,string,LongInt,LongInt,string,string,Integer,string,var string);
+
 
 global function string 255 GetTextForPrint(integer i, string rec)
 begin
@@ -197,3 +199,52 @@ record SVOVc SVOr;
 return;
 end;
 
+global procedure GeneratePrintListSVO(string recname,string fdname,var array integer intdoc,var array string textfor,var integer cnt,record SVOVc SVOr)
+begin
+	string 255 tstr;
+	integer v,i,mtrw,h,vm,heiz;
+	integer mwn,wn; //Edit***************************Sasha2,12:04 20.01.2015
+	record FormDefVc FDr;
+	row FormDefVc FDrw;
+	string 200 formcode;
+	string 20 winclass,printfunc,usergroup; //Edit***************************Sasha2,11:20 20.01.2015
+	
+	cnt = 0;
+	FDr.repname = fdname;
+	if (ReadFirstMain(FDr,1,true)==false) then begin
+		MessageBox(1624, " " & USetStr(1623));
+		goto L99;
+	end;
+	mtrw = matrowcnt(FDr);
+
+	for(i=0;i<mtrw;i=i+1)begin
+		matrowget(FDr,i,FDrw);
+		formcode = ""; 
+		if(Getformcode(i,FDrw.intdocnr,FDrw.FPCode,FDrw.UserGroup,FDrw.LangCode,FDrw.SerNr,-1,FDrw.PrintGroupCode,"",i+1,recname,formcode))then begin
+			if(winclass=="SVODClass")then begin
+				if(nonblank(SVOr.SalesGroup))then begin
+					if(SVOr.SalesGroup==FDrw.UserGroup or blank(FDrw.UserGroup))then begin
+						intdoc[cnt] = FDrw.intdocnr;
+						textfor[cnt] = GetTextForPrint(i,recname);
+						v=v+16;
+						cnt = cnt + 1;
+					end;
+				end else begin
+					intdoc[cnt] = FDrw.intdocnr;
+						textfor[cnt] = GetTextForPrint(i,recname);
+						v=v+16;
+						cnt = cnt + 1;
+				end;
+			end else begin
+				intdoc[cnt] = FDrw.intdocnr;
+						textfor[cnt] = GetTextForPrint(i,recname);
+						v=v+16;
+						cnt = cnt + 1;
+			end;
+			
+		end;
+	end;
+L99:;
+
+return;
+end;

@@ -125,6 +125,8 @@ BEGIN
 				CUr.VATCode = "0%";
 				CUr.PayDeal = "ОФ";
 				logtext(0,"Новый контакт");
+				Actr.CUCode = CUr.Code;
+				Actr.CUName = CUr.Name;
 				recordinsert(CUr,true);
 			end;
 			Actr.MainPersons = users;
@@ -245,6 +247,8 @@ BEGIN
 					CUr.CurncyCode = "UAH";
 					CUr.VATCode = "0%";
 					CUr.PayDeal = "ОФ";
+					Actr.CUCode = CUr.Code;
+					Actr.CUName = CUr.Name;
 					logtext(0,"Новый контакт");
 					recordinsert(CUr,true);
 				end;

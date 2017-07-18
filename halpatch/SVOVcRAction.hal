@@ -619,9 +619,10 @@ BEGIN
   	end;
   end;
   
+  resetloop(Actr);
   Actr.CUCode = SVOr.CustCode;
   Actr.TransDate = SVOr.TransDate;
-  resetloop(Actr);
+  TrHs = true;
   while(loopkey("CUCode",Actr,2,TrHs))begin
 		testf = true;
 		if(Actr.CUCode!=SVOr.CustCode)then begin TrHs=false; testf = false; end;
@@ -1524,6 +1525,11 @@ BEGIN
 	// Edit End ---------------------------------------------- Edit End  
   
 LSVOVcRecordRemoveTest:;  
+	
+	if(curre)then begin
+	
+	end;
+	
   SVOVcRecordRemoveTest = res; 
   RETURN;
 END;

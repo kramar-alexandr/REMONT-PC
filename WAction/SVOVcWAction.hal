@@ -1278,10 +1278,7 @@ BEGIN
     end;
   end;
   res = true;
-  if(fieldname=="Math2")then begin
-  	res = false;
-  end;
-  
+    
 LSVODClassActiveEditField:;  
   SVODClassActiveEditField = res;
   RETURN;

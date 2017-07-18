@@ -1206,28 +1206,7 @@ BEGIN
         PasteARPayInIV(IVp,IVrw,-1);
         MatRowInsert(IVp,0,IVrw);
         MatRowGet(IVp,0,IVrw);
-        totprepv = totprepv + IVrw.Sum;
-/*      
-        ClearRow(IVp,IVrw,6);
-        if (ARPayr.RVal<=IVp.Sum4) then begin
-          v = ARPayr.RVal;
-        end else begin
-          v = IVp.Sum4;
-        end;
-        IVrw.CUPNr = ARPayr.CUPNr;
-        IVrw.Sum = v;
-        if (IVrw.Sum==ARPayr.RVal) then begin
-          IVrw.Price = ARPayr.VATVal;
-          IVrw.BasePrice = ARPayr.BookRVal;
-        end else begin
-          coff = IVrw.Sum/ARPayr.RVal;
-          IVrw.Price = ARPayr.VATVal*coff;
-          IVrw.BasePrice = ARPayr.BookRVal*coff;
-        end;
-        IVrw.Price = Round(IVrw.Price,3);
-        IVrw.BasePrice = Round(IVrw.BasePrice,3);
-        IVrw.Spec = USetStr(7812);
-*/        
+        totprepv = totprepv + IVrw.Sum;       
       end;
     end;
   end;  
@@ -1240,21 +1219,24 @@ procedure AddPrepaymentRowsSVOR(var record IVVc IVp,LongInt OrderNr)
 BEGIN
   Integer rwcnt;
   record ARPayVc ARPayr;
-  Boolean found,testf;
+  Boolean found,testf,TrHs;
   row IVVc IVrw;
   string 20 curcode;
   val v,totprepv;
 
   IVSumup(IVp,true);
-  found = true;
+  
+  TrHs = true;
   ARPayr.CustCode = IVp.CustCode;// Edit ************************** Wednesday, 12 October 2016 13:41:29
   
-  while (LoopKey("CustCode",ARPayr,1,found)) begin// Edit ************************** Wednesday, 12 October 2016 13:41:48
+  while (LoopKey("CustCode",ARPayr,1,TrHs)) begin// Edit ************************** Wednesday, 12 October 2016 13:41:48
+ 		found = true;
  // while (LoopKey("OrderNr",ARPayr,1,found)) begin// Edit ************************** Wednesday, 12 October 2016 13:41:46
     //if (ARPayr.OrderNr!=OrderNr) then begin found = false; end;// Edit ************************** Wednesday, 12 October 2016 13:42:00
-    if (ARPayr.CustCode!=IVp.CustCode) then begin found = false; end;// Edit ************************** Wednesday, 12 October 2016 13:41:59
+    if (ARPayr.CustCode!=IVp.CustCode) then begin TrHs = false; found = false; end;// Edit ************************** Wednesday, 12 October 2016 13:41:59
     if(ARPayr.CUPNr!=OrderNr)then begin found = false; end;
     if (totprepv>=IVp.Sum4) then begin found = false; end;
+    
     if (found) then begin
       testf = true;
       if (ARPayr.CurncyCode!=IVp.CurncyCode) then begin

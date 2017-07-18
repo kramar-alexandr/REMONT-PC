@@ -691,7 +691,9 @@ begin
 		AddToText(CurrentUser & ": ",SVOr);
 		AddToText(input & chr(13) & chr(10),SVOr);
 		putwindowrecord(wn,SVOr);
-		WindowdoOk(wn,0);
+		//WindowdoOk(wn,0);
+		//selectwindow(wn);
+		//WindowFieldGoto(wn,SVOr,-1,"SVOChatSend",true);
 	end;
 	
 return;

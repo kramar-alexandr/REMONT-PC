@@ -1525,11 +1525,7 @@ BEGIN
 	// Edit End ---------------------------------------------- Edit End  
   
 LSVOVcRecordRemoveTest:;  
-	
-	if(curre)then begin
-	
-	end;
-	
+		
   SVOVcRecordRemoveTest = res; 
   RETURN;
 END;

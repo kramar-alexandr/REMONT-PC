@@ -610,7 +610,7 @@ BEGIN
   		
   		if(TrHs)then begin
   			Actr.SVOSerNr = SVOr.SerNr;
-  			if(Actr.ActType=="†Š")then begin
+  			if(Actr.ActType=="†Š" or Actr.ActType=="…„‡")then begin
   				Actr.OKFlag = 1;
   			end;
   			recordstore(Actr,true);

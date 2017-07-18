@@ -10493,6 +10493,7 @@ begin
     EditField(h2,v=vm,-40,"Наименование",Normal,CUName,false,0);
     EditField(h2,v+=vs,100,"Телефон",Normal,Phone,false,0); //Edit***************************Sasha2,13:43 13.06.2017
     HalPushButton(h2+110,v-3,h2+180,v+15,"CallToClientFromActDsm","Звонок");
+    HalPushButton(h2+190,v-3,h2+300,v+15,"SVOFromActDsm","Заказ на обсл.");
     EditField(h2,v+=vs,-40,"Контакт. лицо",Normal,Contact,false,ContactSClass);
     EnterSkip(Math);
     Tile(tilenr,100,true,"3",Math); tilenr = tilenr + 1;

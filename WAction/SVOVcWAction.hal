@@ -38,6 +38,7 @@ external procedure PasteFromSysList(Integer,Integer);
 external function string 255 StringFromSysList(Integer,Integer);
 remote updating function Integer CreateAndOKDispatchFromSVO(record SVOVc,record LocalMachineBlock,var string); //Edit***************************Sasha2,18:00 09.06.2017
 external procedure WindowFieldGotoForTouchScreen(Integer,Integer,string,Boolean);
+remote updating procedure CreateSVOFromAcrtRem(var record ActVc, var record SVOVc);
 
 // Edit Start ---------------------------------------------- Edit Start
 	//Wednesday, 3 June 2015 16:58:34
@@ -2096,3 +2097,28 @@ record CUVc CUr;
 end;
 
 
+global updating procedure SVOFromActDsm()
+begin
+	integer wn;
+	record ActVc Actr;
+	record SVOVc SVOr;
+	string 200 warning;
+	
+	wn = curwindow;
+	getwindowrecord(wn,Actr);
+	
+	if(Actr.SVOSerNr>-1)then begin
+		SVOr.SerNr = Actr.SVOSerNr;
+		if(readfirstmain(SVOr,1,true))then begin
+			OpenWindow("SVODClass",1,0,"","",SVOr);
+		end;
+	end else begin
+		recordnew(SVOr);
+		CreateSVOFromAcrtRem(Actr,SVOr);
+		putwindowrecord(wn,Actr);
+		windowdook(wn,0);
+		OpenWindow("SVODClass",1,0,"","",SVOr);
+	end;
+
+return;
+end;

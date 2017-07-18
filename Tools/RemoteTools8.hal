@@ -2684,3 +2684,18 @@ string 50 tstr;
 return;
 end;
 
+global updating procedure CreateSVOFromAcrtRem(var record ActVc Actr,var record SVOVc SVOr)
+begin
+	string 200 warning;
+	
+	SVOr.Kontinfo1 = Actr.Phone;
+	SVOr.CustCode = Actr.CUCode;
+	PasteCUInSVO(SVOr,"",warning);
+	if(recordinsert(SVOr,true))then begin
+		Actr.SVOSerNr = SVOr.SerNr;
+		createrecordlink(SVOr,currentcompany,Actr,currentcompany);
+		createrecordlink(Actr,currentcompany,SVOr,currentcompany);
+	end;
+
+return;
+end;

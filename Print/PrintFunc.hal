@@ -216,32 +216,25 @@ begin
 		goto L99;
 	end;
 	mtrw = matrowcnt(FDr);
-
+	
+	//messagebox(0,SVOr.SalesGroup);
 	for(i=0;i<mtrw;i=i+1)begin
 		matrowget(FDr,i,FDrw);
 		formcode = ""; 
 		if(Getformcode(i,FDrw.intdocnr,FDrw.FPCode,FDrw.UserGroup,FDrw.LangCode,FDrw.SerNr,-1,FDrw.PrintGroupCode,"",i+1,recname,formcode))then begin
-			if(winclass=="SVODClass")then begin
-				if(nonblank(SVOr.SalesGroup))then begin
-					if(SVOr.SalesGroup==FDrw.UserGroup or blank(FDrw.UserGroup))then begin
-						intdoc[cnt] = FDrw.intdocnr;
-						textfor[cnt] = GetTextForPrint(i,recname);
-						v=v+16;
-						cnt = cnt + 1;
-					end;
-				end else begin
+			if(nonblank(SVOr.SalesGroup))then begin
+				if(SVOr.SalesGroup==FDrw.UserGroup or blank(FDrw.UserGroup))then begin
 					intdoc[cnt] = FDrw.intdocnr;
-						textfor[cnt] = GetTextForPrint(i,recname);
-						v=v+16;
-						cnt = cnt + 1;
+					textfor[cnt] = GetTextForPrint(i,recname);
+					v=v+16;
+					cnt = cnt + 1;
 				end;
 			end else begin
 				intdoc[cnt] = FDrw.intdocnr;
-						textfor[cnt] = GetTextForPrint(i,recname);
-						v=v+16;
-						cnt = cnt + 1;
+					textfor[cnt] = GetTextForPrint(i,recname);
+					v=v+16;
+					cnt = cnt + 1;
 			end;
-			
 		end;
 	end;
 L99:;

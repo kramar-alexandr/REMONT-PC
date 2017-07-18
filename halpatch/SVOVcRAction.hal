@@ -1235,8 +1235,8 @@ BEGIN
 			end;
     end;
   end;
-  if((SVOr.Name=="Новый контакт" or SVOr.Name=="Новый клиент") and SVOr.Name!=SVOr.Vlastnik)then begin
-  	SVOr.Name = SVOr.Vlastnik;
+  if((SVOr.Addr0=="Новый контакт" or SVOr.Addr0=="Новый клиент") and SVOr.Addr0!=SVOr.Vlastnik)then begin
+  	SVOr.Addr0 = SVOr.Vlastnik;
   end;
   
   res = CheckCUVATNrMask(SVOr.CustCode,SVOr.VATNr,tstr);

@@ -344,7 +344,7 @@ BEGIN
   SVOr.OutTime = blankt;
   SVOr.EndDiagnDate = blankd;
   SVOr.EndDiagnTime = blankt;
-  SVOr.OrderStatus = 0;
+  SVOr.OrderStatus = 9;
   SVOr.DoneMark = 0;
   SVOr.CustomField7 = "";
   SVOr.ServiceManager = "";
@@ -756,6 +756,7 @@ BEGIN
 			case 6: tstr = tstr & USetStr(31095);
 			case 7: tstr = tstr & USetStr(31096);
 			case 8: tstr = tstr & USetStr(31097);
+			case 9: tstr = tstr & USetStr(31501);
 		end;
 		tstr = tstr & "' " & USetStr(31058) & " '";
 		switch (SVOr.OrderStatus) begin
@@ -768,6 +769,7 @@ BEGIN
 			case 6: tstr = tstr & USetStr(31095);
 			case 7: tstr = tstr & USetStr(31096);
 			case 8: tstr = tstr & USetStr(31097);
+			case 9: tstr = tstr & USetStr(31501);
 		end;
 		tstr = tstr & "'";
 		comment = USetStr(31059);
@@ -927,6 +929,9 @@ BEGIN
   		Userr.Code = CurrentUser;
 			if (ReadFirstMain(Userr,1,true)) then begin end;
 			SVOr.SalesGroup = Userr.SalesGroup;
+			if(SVOr.OrderStatus==9)then begin
+				SVOr.OrderStatus = 0;
+			end;
   	end;
   end;
   
@@ -936,6 +941,9 @@ BEGIN
   		Userr.Code = CurrentUser;
 			if (ReadFirstMain(Userr,1,true)) then begin end;
 			SVOr.SalesGroup = Userr.SalesGroup;
+			if(SVOr.OrderStatus==9)then begin
+				SVOr.OrderStatus = 0;
+			end;
   	end;
   end;
   
@@ -1360,6 +1368,7 @@ BEGIN
 		case 6: SVOr.StatusText = USetStr(31095);
 		case 7: SVOr.StatusText = USetStr(31096);
 		case 8: SVOr.StatusText = USetStr(31097);
+		case 8: SVOr.StatusText = USetStr(31501);
   end;
   
   LogText(0,"SVOVc " & SVOr.SerNr & "  was changed. Company: " & CurrentCompany & " User: " & CurrentUser & "  ServiceMan:" & SVOr.ServiceManager);	//Edit----------------------Dima  30.10.2015

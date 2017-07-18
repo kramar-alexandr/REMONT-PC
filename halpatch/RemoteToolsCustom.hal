@@ -1729,6 +1729,7 @@ integer mtrw,i;
 			case 6: SVOr.StatusText = USetStr(31095);
 			case 7: SVOr.StatusText = USetStr(31096);
 			case 8: SVOr.StatusText = USetStr(31097);
+			case 9: SVOr.StatusText = USetStr(31501);
 		end;
     recordstore(SVOr,true);
   end;

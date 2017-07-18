@@ -2067,13 +2067,15 @@ begin
 
   vm = 30;
   ButtonFrame(h+490,vm+16,220,5,"Статус");
+  RadioButton(h+490,vm+=16,9,0,"Предварит.",OrderStatus);
 	RadioButton(h+490,vm+=16,0,0,"В ожидании",OrderStatus);
 	tvm = vm;
 	RadioButton(h+490,vm+=16,5,0,"На диагностике",OrderStatus);
 	RadioButton(h+490,vm+=16,4,0,"На согласовании",OrderStatus);
 	RadioButton(h+490,vm+=16,7,0,"Согласовано",OrderStatus);
-	RadioButton(h+490,vm+=16,1,0,"В ремонте",OrderStatus);
-	vm = tvm;
+	
+	vm = 30+16;
+	RadioButton(h+600,vm,1,0,"В ремонте",OrderStatus);
 	RadioButton(h+600,vm+=16,8,0,"В удал. сервисе",OrderStatus);
 	RadioButton(h+600,vm+=16,3,0,"Ожидает запч.",OrderStatus);
   RadioButton(h+600,vm+=16,2,0,"Готов",OrderStatus);

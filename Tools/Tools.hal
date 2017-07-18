@@ -954,7 +954,7 @@ begin
     		end;			
   	  end;
   	end;
-  	if((SVOr.OrderStatus>0 or SVOr.DoneMark>0))then begin
+  	if(((SVOr.OrderStatus>0 and SVOr.OrderStatus!=9) or SVOr.DoneMark>0))then begin
   		Actr.SVOSerNr = SVOr.SerNr;
   		TrHs = true;
   	  RESETLOOP(Actr);

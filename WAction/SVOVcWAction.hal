@@ -1780,6 +1780,7 @@ begin
 		case 6: res = USetStr(31095);// Edit ************************** Wednesday, 7 June 2017 14:24:29
 		case 7: res = USetStr(31096);// Edit ************************** Wednesday, 7 June 2017 14:24:32
 		case 8: res = USetStr(31097);// Edit ************************** Wednesday, 7 June 2017 14:24:32
+		case 9: res = USetStr(31501);
 
   end;
   
@@ -1797,6 +1798,7 @@ begin
 
   switch(SVOr.OrderStatus)begin
   	case 0: res = kRowColorNone;
+  	case 9: res = kRowColorNone;
   	case 3: res = kRowColorGreen;
   	case 1:	res = kRowcolorYellow;
   	case 2:	res = kRowColorNone;

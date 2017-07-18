@@ -1278,8 +1278,14 @@ BEGIN
     end;
   end;
   res = true;
+  
+  
     
 LSVODClassActiveEditField:;  
+
+	if(fieldname=="SVOChatSend")then begin
+  	res = true;
+  end;
   SVODClassActiveEditField = res;
   RETURN;
 END;

@@ -422,12 +422,31 @@ BEGIN
   record SVOHistSerialVc SVHistr;
   row SVOVc SVOrw;
   string 200 tstr;
-  boolean testf;
+  boolean testf,TrHs;
   integer mtrw,i;
   record SalesGroupVc SGr;
   record CUVc CUr;
   boolean modify;
+  record ActVc Actr;
   
+  
+  resetloop(Actr);
+  Actr.CUCode = SVOr.CustCode;
+  Actr.TransDate = SVOr.TransDate;
+  TrHs = true;
+  while(loopkey("CUCode",Actr,2,TrHs))begin
+		testf = true;
+		if(Actr.CUCode!=SVOr.CustCode)then begin TrHs=false; testf = false; end;
+		if(Actr.TransDate!=SVOr.TransDate)then begin TrHs=false; testf = false; end;
+		if(Actr.SVOSerNr>-1)then begin testf = false; end;
+		
+		if(testf)then begin
+			Actr.SVOSerNr = SVOr.SerNr;
+			recordstore(Actr,true);
+			createrecordlink(SVOr,currentcompany,Actr,Currentcompany);
+			createrecordlink(Actr,currentcompany,SVOr,Currentcompany);
+		end;
+	end;
   
   CUr.Code = SVOr.CustCode;
   if(readfirstmain(CUr,1,true))then begin

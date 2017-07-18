@@ -58,6 +58,7 @@ begin
   Maintenance("Fill SVO Status",MyVClass,FillSVOStatusTextMn,modDBMain);
   Maintenance("Обсл.на ремонт с ServiceMY:статус+телефон",MyVClass,UpdateSVOOfServiceMYMn,modDBMain); //Edit***************************Sasha2,12:03 03.07.2017
   Maintenance("Удалить Заказы на обсл. за дату 29/6/2017",MyVClass,RemoveCertainSVOMn,modDBMain); //Edit***************************Sasha2,12:03 03.07.2017
+  Maintenance("Заказы на обсл.: перенести суммы из матрицы в заголовок",MyVClass,MoveSumsFromMatrixToHeadSVOMn,modDBMain); //Edit***************************Sasha2,16:07 15.07.2017
   
   Import("Импорт контактов и заказов, выгруженных из ServiceMY",CUAndSVOInitSystemImportIClass,CUAndSVOInitSystemImportIn,modDBMain); //Edit***************************Sasha2,13:21 26.05.2017
 	

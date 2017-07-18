@@ -1235,7 +1235,7 @@ BEGIN
 			end;
     end;
   end;
-  if(SVOr.Name=="Новый контакт" or SVOr.Name=="Новый клиент" and SVOr.Name!=SVOr.Vlastnik)then begin
+  if((SVOr.Name=="Новый контакт" or SVOr.Name=="Новый клиент") and SVOr.Name!=SVOr.Vlastnik)then begin
   	SVOr.Name = SVOr.Vlastnik;
   end;
   

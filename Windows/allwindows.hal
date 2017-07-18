@@ -2182,9 +2182,11 @@ begin
   EditField(h,v+=vs,300,"Зар. устройство:",Normal,Zaryadka,false,0);
   EditField(h,v+=vs,300,"Другое:",Normal,Inshe,false,0);
   
-  TextField(h+310,125,-10,-40,Math2,0);
-  EditField(h+380,-24,-20,"Сообщение",Normal,SVOChatSend,false,0);
+  EditField(h+380,125,-20,"Сообщение",Normal,SVOChatSend,false,0);
   enterskip(SVOChatSend);
+  
+  TextField(h+310,150,-10,-25,Math2,0);
+  
   //v=v+10;
   EditField(h,v+=vs,50,"Производитель",Normal,Region,false,ITSClass);
   

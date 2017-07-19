@@ -2050,7 +2050,7 @@ begin
   EditField(h=90,v=6, 82,"Номер",Normal,SerNr,false,TSerSClass);
   EnterSkip(CustCode);
   EditField(h2=240,v,300,"ФИО",Normal,Addr0,false,0);
-  EditField(h,vm=(v+=vs),82, "Клиент",Normal,CustCode,false,CUSClass);
+  EditField(h,vm=(v+=vs),82, "Клиент (телефон)",Normal,CustCode,false,CUSClass);
   
   halpushbutton(h-45,vm+17,h+80,vm+50,"ChangeSVOSalesGroup","Перенести ремонт"); 
   HalPushButton(h-45,vm+55,h+80,vm+80,"PrintAndSetRegDateInSVODsm","Выдать");//Edit-------------------Vitalii 13:51 27.10.2016
@@ -7552,7 +7552,7 @@ begin
   DeleteRowTest;
   MatCol(1,28,"Товар",0,ArtCode,false,INSClass);
   MatCol(1,94,"К-во",0,Quant,true,0);
-  MatCol(1,144,"Сер. №",0,SerialNr,false,SerialNrSClass);
+  MatCol(1,144,"№ Заказа",0,SerialNr,false,SerialNrSClass);
   MatCol(1,250,"Наименование",0,Spec,false,0);
   if(usercanaction("ViewCostPrice",false))then begin// Edit ************************** Tuesday, 10 February 2015 15:14:27
     MatCol(1,-100,"Стоим. перемещ.",0,Cost,true,0);
@@ -10633,4 +10633,81 @@ begin
       SpecialMenu("Создать путевой лист",' ',8,"WayListFromActDsm");         
     end;
     EndWindow;
+end;
+
+window OffHireDClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,h2,h3,h4,v,vs;
+  WindowBegin("Прием товара",OffHireDClass,CGview,OffHireView);
+  SetWRect(20,80,620,400);
+  Sizeable(-1,-1,0,0);
+  UseView(OffHireVc);
+  FormName(OffHireForm);
+  Tile(0,80,false,"",TransDate);
+  v = 6; vs = 20; h=110; h2=295; h3=360; h4=490;
+  EditField(h,v,82, "Номер",St_i,SerNr,false,TSerSClass);
+  EnterSkip(CustCode);
+  EditField(h2,v,82,"Дата опер.",Normal,TransDate,false,PasteCurDate);
+  EditField(h,v+=20,82, "Клиент",Normal,CustCode,false,CUSClass);
+  EnterSkip(AgreementNr);
+  EditField(h2,v,-150,"Наим.",Normal,Addr0,false,0);
+  EditField(h,v+=vs,110, "Место",Normal,Site,false,DelAddr3SClass);
+  TileButton(1,"Идентификаторы");
+  TileButton(2,"Товары");
+  Tile(1,130,false,"1",AgreementNr);
+  EditField(h,v=6,60, "№ соглашения",Normal,AgreementNr,false,AgreementSClass);
+  EditField(h,v+=vs,60,"№ заказа на обсл.",ViewOnly,SVONr,false,0);
+  EditField(h,v+=vs,60,"Номер возврата",ViewOnly,CollectionNr,false,0);
+  EditField(h,v+=vs,82,"Склад",Normal,Location,false,LocationSClass);
+  EditField(h,v+=vs,60,"Язык",Normal,LangCode,false,LangSClass);
+  EditField(h,v+=vs,60,"Сотрудник",Normal,SalesMan,false,UserSClass);
+  EditField(h2,v=6,-40, "Конт.лицо",Normal,ClientContact,false,ContactSClass);
+  EditField(h2,v+=vs,-40,"Комментарий",Normal,Comment,false,0);
+  ButtonFrame(h2,v+=40,123,3,"Статус");
+  RadioButton(h2,v,0,0,"Создан",OKFlag);
+  RadioButton(h2,v+=16,2,255,"Получено",OKFlag);
+  RadioButton(h2,v+=16,1,255,"Принято",OKFlag);
+  EnterSkip(Math);
+  Tile(2,79,true,"2",Math);
+  EditField(104,-21,46,"Итог.кол.",ViewOnly,SumQuant,true,0);
+  v = 24;
+  MatrixBegin(4,v,-50,-22,OffHireRowType,199);
+  Flip(0);
+  MatCol(1,28,"Товар",0,ArtCode,false,INSClass);
+  MatCol(1,94,"К-во",0,Quant,true,0);
+  Flip(1);
+  MatCol(1,144,"№ заказа",0,SerialNr,false,SerialNrSClass);
+  MatCol(1,220,"Наимен.",0,Spec,false,0);
+  MatCol(1,-260,"Возвращено",0,ReturnedQty,false,0);
+  MatCol(1,-210,"На обслуживание",0,ServiceQty,false,0);
+  MatCol(1,-150,"Продано",0,SoldQty,false,0);
+  MatCol(1,-100,"Утеряно",0,MissingQty,false,0);
+  MatCol(1,-50,"Негодно",0,ScrapedQty,false,0);
+  Flip(2);
+  MatCol(1,144,"Сер. №",0,SerialNr,false,SerialNrSClass);
+  MatCol(1,220,"Наимен.",0,Spec,false,0);
+  MatCol(1,-270,"Цена покупки",0,Value,false,0);
+  MatCol(1,-180,"Дата покупки",0,PurchaseDate,false,PasteCurDate);
+  MatCol(1,-90,"Оконч. гарантии",0,WarrantyUntil,false,PasteCurDate);
+  Flip(3);
+  MatCol(1,144,"Сер. №",0,SerialNr,false,SerialNrSClass);
+  MatCol(1,220,"Наимен.",0,Spec,false,0);
+  MatCol(1,-300,"Стоимость",0,Cost,false,0);
+  MatCol(1,-200,"Поставщик",0,VECode,false,VESClass);
+  MatCol(1,-100,"Склад",0,Location,false,LocationSClass);
+//  Flip(4);
+//  MatCol(1,144,"Serial No.",0,SerialNr,false,SerialNrSClass);
+//  MatCol(1,300,"Описание",0,Spec,false,0);
+//  MatCol(1,-100,"Статус",0,Status,false,SetSClass); // Should not be used anymore.
+  DeleteRowTest;
+  EndMatrix;
+  vs = 20;
+  v = 18; VTab(-35,v,-16,v+vs,ToolFlip,1,"A");
+  v=v+vs;  VTab(-35,v,-16,v+vs,ToolFlip,2,"B");
+  v=v+vs;  VTab(-35,v,-16,v+vs,ToolFlip,3,"C");
+//  v=v+vs;  VTab(-35,v,-16,v+vs,ToolFlip,4,"D");
+  SpecMenuGroup("",kSpecMenuGroupTypeExtendedPlusMenu,0);         
+  SpecialMenu("Добавить начисление",' ',0,"OffHireChargeDsm");
+  EndWindow;
 end;

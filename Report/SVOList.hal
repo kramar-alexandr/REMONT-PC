@@ -483,6 +483,7 @@ record LocationVc Locr;
 								endformat;
 							end;
 						end;
+						resetloop(ISBr);
 					end;
 				end;
 		

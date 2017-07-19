@@ -8,7 +8,7 @@ remote procedure CountNumberRepeatPhone(string,var array longint,var integer );
 external function LongInt CountWorkingDays(Date,Date,string,string);
 external function LongInt DateDiff(Date,Date);
 
-
+SetLangMode(LangRussian,"RUS",0);
 
 procedure HTSWOrdStat(Integer notm,Integer parm,Integer mad, var string res)
 begin

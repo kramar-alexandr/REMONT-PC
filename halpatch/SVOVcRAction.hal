@@ -30,7 +30,51 @@ remote updating function Integer CreateAndOKOffHireFromSVO(record SVOVc,record L
 external updating procedure CreateActFromSVOForInspectorIfItemRejected(record SVOVc);
 remote procedure CheckSVOIV(record SVOVc,var val,var val);
 
+
+
 SetLangMode(LangRussian,"RUS",0);
+
+
+updating
+procedure CreateNaSoglasActivity(record SVOVc SVOr)
+begin
+  record ActVc Actr;
+  date blankd;
+  string 50 curPhone;
+    
+    if (SVOr.SerNr>-1 and NonBlank(SVOr.ServiceManager)) then begin
+      curPhone = SVOr.Kontinfo1;
+  	  if (Blank(curPhone)) then begin
+  	    curPhone = SVOr.Phone2;
+  	  end;
+      
+      recordnew(Actr);
+  		Actr.Comment = SVOr.SerNr & "Согласовать ремонт!";
+  		Actr.CUCode = SVOr.CustCode;
+  		Actr.CUName = SVOr.Addr0;
+      Actr.AlarmType = kAlarmTypeNone;
+  		Actr.SVOSerNr = SVOr.SerNr;
+  		Actr.TodoFlag = kTodoFlagTodo;
+  		Actr.SymbNr = 3;
+  		Actr.ActType = "";
+  	  Actr.StartTime = currenttime;//StringToTime("00:00:00");
+  	  Actr.TransDate = CurrentDate;
+  	  Actr.EndDate = blankd;
+  		Actr.Phone = curPhone;
+  		if(nonblank(SVOr.Inspector))then begin
+				Actr.MainPersons = SVOr.Inspector;
+  		end else begin
+  			Actr.MainPersons = currentuser;
+  		end;
+  		Actr.SerNr = NextSerNr("ActVc",Actr.TransDate,-1,false,"");
+  		if(recordstore(Actr,true))then begin
+  			CreateRecordLink(SVOr,CurrentCompany,Actr,CurrentCompany);  
+  			CreateRecordLink(Actr,CurrentCompany,SVOr,CurrentCompany); 
+  		end;
+    end;
+
+  return;
+end;
 
 //Edit***************************Sasha2,16:48 27.06.2017 {
 updating
@@ -842,6 +886,9 @@ BEGIN
 	end;
 	if (SVO2r.OrderStatus==4 and SVOr.OrderStatus==7) then begin
     CreateApprovedActivity(SVOr); //Edit***************************Sasha2,17:02 27.06.2017
+	end;
+	if (SVO2r.OrderStatus!=4 and SVOr.OrderStatus==4) then begin
+    CreateNaSoglasActivity(SVOr); //Edit***************************Sasha2,17:02 27.06.2017
 	end;
 	
   PhonesFromSVO(SVOr.SerNr);//Edit-------------------Vitalii 17:09 03.11.2016

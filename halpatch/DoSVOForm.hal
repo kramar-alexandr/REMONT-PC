@@ -275,6 +275,9 @@ LActPrintNote1:;
 		OUTFORMFIELD("MYF_PrepayTerm",SVOr.FastTerm);
 		OUTFORMFIELD("MYF_PrepayAll",SVOr.FastCash + SVOr.FastTerm);
 		OUTFORMFIELD("MYF_Garantymes",SVOr.GarantyMes);
+		if(SVOr.PrepaySum==0)then begin
+			SVOr.PrepaySum = 0;
+		end;
 		OUTFORMFIELD("MYF_Prepayment",SVOr.PrepaySum);
 		
 		OUTFORMFIELD("MYF_SUM",SVOr.WSCost);

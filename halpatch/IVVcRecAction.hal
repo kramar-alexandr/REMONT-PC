@@ -2136,6 +2136,9 @@ begin
 	longint error;
 	record SVOVc SVOr;
 	boolean foundf;
+	val prepaysum;
+	
+	prepaysum = 0;
 	
 	SVOr.SerNr = RepSpec.long1;
 	foundf = false;
@@ -2169,6 +2172,7 @@ begin
 				IPrw.RecVal = RepSpec.vals0;
 				matrowput(IPr,0,IPrw);
 				IPVc_PasteRecVal(IPr,0);
+				prepaysum = prepaysum + IPrw.RecVal;
 				MatRowGet(IPr,0,IPrw);
 				IPrw.CUPNr = SVOr.SerNr;
 				matrowput(IPr,0,IPrw);
@@ -2180,6 +2184,9 @@ begin
 				createrecordlink(IPr,currentcompany,SVOr,currentcompany);
 				createrecordlink(SVOr,currentcompany,IPr,currentcompany);
 				SVOr.FastCash = SVOr.FastCash + RepSpec.vals0;
+				if(prepaysum!=0)then begin
+					SVOr.PrepaySum = prepaysum;
+				end;
 				recordstore(SVOr,true);
 			end;
 			if(RepSpec.vals1!=0)then begin
@@ -2197,6 +2204,7 @@ begin
 				matrowput(IPr,0,IPrw);
 				IPVc_PasteRecVal(IPr,0);
 				MatRowGet(IPr,0,IPrw);
+				prepaysum = prepaysum + IPrw.RecVal;
 				IPrw.CUPNr = SVOr.SerNr;
 				matrowput(IPr,0,IPrw);
 				IPr.SerNr = nextsernr("IPVc",currentdate,-1,true,"");
@@ -2207,6 +2215,9 @@ begin
 				createrecordlink(IPr,currentcompany,SVOr,currentcompany);
 				createrecordlink(SVOr,currentcompany,IPr,currentcompany);
 				SVOr.FastTerm = SVOr.FastTerm + RepSpec.vals1;
+				if(prepaysum!=0)then begin
+					SVOr.PrepaySum = prepaysum;
+				end;
 				recordstore(SVOr,true);
 			end;
 		
@@ -2242,6 +2253,9 @@ begin
 								createrecordlink(IPr,currentcompany,SVOr,currentcompany);
 								createrecordlink(SVOr,currentcompany,IPr,currentcompany);
 								SVOr.FastCash = SVOr.FastCash + RepSpec.vals0;
+								if(prepaysum!=0)then begin
+									SVOr.PrepaySum = prepaysum;
+								end;
 								recordstore(SVOr,true);
 							end;
 						end;
@@ -2280,6 +2294,7 @@ begin
 									IPVc_PasteRecVal(IPr,1);
 									MatRowGet(IPr,1,IPrw);
 									IPrw.CUPNr = SVOr.SerNr;
+									prepaysum = prepaysum + IPrw.RecVal;
 									matrowput(IPr,1,IPrw);
 									IPr.SerNr = nextsernr("IPVc",currentdate,-1,true,"");
 								recordstore(IPr,true);
@@ -2289,6 +2304,9 @@ begin
 								createrecordlink(IPr,currentcompany,SVOr,currentcompany);
 								createrecordlink(SVOr,currentcompany,IPr,currentcompany);
 								SVOr.FastCash = SVOr.FastCash + RepSpec.vals0;
+								if(prepaysum!=0)then begin
+									SVOr.PrepaySum = prepaysum;
+								end;
 								recordstore(SVOr,true);
 							end;
 						end;
@@ -2326,6 +2344,9 @@ begin
 								createrecordlink(IPr,currentcompany,SVOr,currentcompany);
 								createrecordlink(SVOr,currentcompany,IPr,currentcompany);
 								SVOr.FastTerm = SVOr.FastTerm + RepSpec.vals1;
+								if(prepaysum!=0)then begin
+									SVOr.PrepaySum = prepaysum;
+								end;
 								recordstore(SVOr,true);
 							end;
 						end;
@@ -2363,6 +2384,7 @@ begin
 									matrowput(IPr,1,IPrw);
 									IPVc_PasteRecVal(IPr,1);
 									MatRowGet(IPr,1,IPrw);
+									prepaysum = prepaysum + IPrw.RecVal;
 									IPrw.CUPNr = SVOr.SerNr;
 									IPr.SerNr = nextsernr("IPVc",currentdate,-1,true,"");
 								recordstore(IPr,true);
@@ -2372,6 +2394,9 @@ begin
 								createrecordlink(IPr,currentcompany,SVOr,currentcompany);
 								createrecordlink(SVOr,currentcompany,IPr,currentcompany);
 								SVOr.FastTerm = SVOr.FastTerm + RepSpec.vals1;
+								if(prepaysum!=0)then begin
+									SVOr.PrepaySum = prepaysum;
+								end;
 								recordstore(SVOr,true);
 							end;
 						end;

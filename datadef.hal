@@ -229,6 +229,7 @@ begin
     RecordField(Math2,M4TextField,0,0);// Edit ************************** Tuesday, 11 July 2017 11:18:14
     RecordField(GarantyMes,M4Int,0,0);// Edit ************************** Tuesday, 11 July 2017 11:18:14
     RecordField(SVOChatSend,M4Str,255,0);// Edit ************************** Tuesday, 11 July 2017 11:18:14
+    RecordField(PrepaySum,M4Val,0,0);// Edit ************************** Tuesday, 11 July 2017 11:18:14
     
     ArrayField(NewSerialNr,M4Str,60,0);// Edit ************************** Friday, 9 June 2017 09:29:41
     

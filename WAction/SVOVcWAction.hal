@@ -1830,7 +1830,7 @@ begin
 				getwindowrecord(wn,SVOr);
 				if(SVOr.SalesGroup!=USr.SalesGroup)then begin
 					SVOr.SalesGroup=USr.SalesGroup;
-					SVOr.ServiceManager = "";// Edit ************************** Friday, 23 October 2015 09:54:42
+					//SVOr.ServiceManager = "";// Edit ************************** Friday, 23 October 2015 09:54:42
 					putwindowrecord(wn,SVOr);
 					WindowDoOK(wn,0);
 					//recordstore(SVOr,true);

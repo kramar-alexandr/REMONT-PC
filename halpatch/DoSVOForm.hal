@@ -269,6 +269,10 @@ LActPrintNote1:;
 		OUTFORMFIELD("FMY_Garantymes",SVOr.GarantyMes);
 		OUTFORMFIELD("FMY_Prepayment",SVOr.PrepaySum);
 		
+		OUTFORMFIELD("FMY_SUM",SVOr.WSCost);
+		OUTFORMFIELD("FMY_DOLGBEZPP",SVOr.WSCost - SVOr.PrepaySum);
+		OUTFORMFIELD("FMY_DOLGBEZ",SVOr.WSCost - SVOr.FastCash - SVOr.FastTerm);
+		
 		
 		OUTFORMFIELD("MY_Vlastnik",SVOr.Vlastnik);
 		OUTFORMFIELD("MY_Priynato",SVOr.Name & " " & SVOr.Priynato & " " & SVOr.MiddleName);

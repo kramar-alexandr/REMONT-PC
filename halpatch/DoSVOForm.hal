@@ -270,10 +270,8 @@ LActPrintNote1:;
 		OUTFORMFIELD("MYF_Prepayment",SVOr.PrepaySum);
 		
 		OUTFORMFIELD("MYF_SUM",SVOr.WSCost);
-		if(nonblank(SVOr.CustomField5))then begin
-				ValToText(SVOr.WSCost,M4Val,"UAH","RUS",tstr);
-				OUTFORMFIELD("MYF_SUMTEXT",tstr);
-			end;
+		ValToText(SVOr.WSCost,M4Val,"UAH","RUS",tstr);
+		OUTFORMFIELD("MYF_SUMTEXT",tstr);
 		OUTFORMFIELD("MYF_DOLGBEZPP",SVOr.WSCost - SVOr.PrepaySum);
 		OUTFORMFIELD("MYF_DOLGBEZ",SVOr.WSCost - SVOr.FastCash - SVOr.FastTerm);
 		

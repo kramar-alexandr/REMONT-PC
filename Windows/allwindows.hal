@@ -2125,7 +2125,7 @@ begin
   MatrixBegin(3,v,-50,v+45,-,50);
   MatTypedRow(stp);
   Flip(0);
-  MatCol(t=1,32,"Устройство",0,ArtCode,false,INSClass);
+  MatCol(t=1,32,"Устройство",0,ArtCode,false,INUsersSClass);
   MatCol(t,124,"Кол-во",0,Quant,true,0);
   Flip(1);
   MatCol(t=1,144,"Сер. №",0,NewSerialNr,false,0);
@@ -2471,7 +2471,7 @@ begin
   MatrixBegin(3,v,-50,-40,WSRowType,200);
   MatTypedRow(stp);
   Flip(0);
-  MatCol(t=1,32,"Услуга/Деталь",0,ArtCode,false,INSClass);
+  MatCol(t=1,32,"Услуга/Деталь",0,ArtCode,false,INEnginerSClass);
 //  MatCol(t,94,"Var",0,VARList,true,VARSClass);
   MatCol(t,134,"К-во",0,Quant,true,0);
   EnterSkip(ArtCode);
@@ -4917,7 +4917,60 @@ begin
 //  SearchField("Поиск");
   EndWindow;
 end;
+
+
+window INUsersSClass:4
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real v;
   
+  WindowBegin("Выберите товар",INUsersSClass,CGslist,-);
+  Sizeable(-1,-1,0,0);
+  UseView(INVc);
+  SpawnClass(INDClass);
+      v = 0;
+      SetWRect(210,80,850,298);// Edit ************************** Tuesday, July 15, 2014 at 9:58:01
+      RecordList(4,v+17,-21,-39);
+      RlColKey(4,4,"Код",Code,false,ActDICodeForSale);
+			RlColKey(105,105,"Группа",Group,false,ActDIGroupForSale);
+			RlColKey(160,160,"Наименование",Name,false,ActDINameForSale);
+      CalculatedColumn(-50,-50,"На складе","INSClassInStock",true);
+      SearchField("Поиск");
+      if (HasModIN) then begin
+        if (UserCanReport("INInfoRn","",true)) then begin
+      SpecialMenu("Статус товара",'i',0,"INStatusINSsm");
+        end;
+      end;
+      SpecialMenu("Поиск",'F',1,"INSearchSsm");
+  EndWindow;
+end;
+
+window INEnginerSClass:4
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real v;
+  
+  WindowBegin("Выберите товар",INEnginerSClass,CGslist,-);
+  Sizeable(-1,-1,0,0);
+  UseView(INVc);
+  SpawnClass(INDClass);
+      v = 0;
+      SetWRect(210,80,850,298);// Edit ************************** Tuesday, July 15, 2014 at 9:58:01
+      RecordList(4,v+17,-21,-39);
+      RlColKey(4,4,"Код",Code,false,ActDICodeForSale);
+			RlColKey(105,105,"Группа",Group,false,ActDIGroupForSale);
+			RlColKey(160,160,"Наименование",Name,false,ActDINameForSale);
+      CalculatedColumn(-50,-50,"На складе","INSClassInStock",true);
+      SearchField("Поиск");
+      if (HasModIN) then begin
+        if (UserCanReport("INInfoRn","",true)) then begin
+      SpecialMenu("Статус товара",'i',0,"INStatusINSsm");
+        end;
+      end;
+      SpecialMenu("Поиск",'F',1,"INSearchSsm");
+  EndWindow;
+end;
+
 window SHDClass:1
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
@@ -7551,7 +7604,7 @@ begin
   v = 24;
   MatrixBegin(4,v,-50,-25,InternMovRowType,99);
   DeleteRowTest;
-  MatCol(1,28,"Товар",0,ArtCode,false,INSClass);
+  MatCol(1,28,"Товар",0,ArtCode,false,INUsersSClass);
   MatCol(1,94,"К-во",0,Quant,true,0);
   MatCol(1,144,"№ Заказа",0,SerialNr,false,SerialNrSClass);
   MatCol(1,250,"Наименование",0,Spec,false,0);

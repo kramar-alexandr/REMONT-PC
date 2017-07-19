@@ -1267,3 +1267,25 @@ begin
   LocationSClassOnOpenWindow = false;
   return;
 end; //Edit***************************Sasha2,13:21 14.12.2015 ]
+
+
+global
+function Boolean INUsersSClassOnOpenWindow(Integer wn)
+begin
+  
+  setwindowsubset(wn,"USER");
+  
+  INUsersSClassOnOpenWindow = false;
+  return;
+end;// Edit ************************** Wednesday, 19 July 2017 14:53:36
+
+global
+function Boolean INEnginerSClassOnOpenWindow(Integer wn)
+begin
+  
+  setwindowsubset(wn,"SERV");
+  
+  INEnginerSClassOnOpenWindow = false;
+  return;
+end;// Edit ************************** Wednesday, 19 July 2017 14:53:36
+

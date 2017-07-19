@@ -7978,14 +7978,21 @@ begin
   RadioButton(h,v+=16,1,0,"Дата оконч.диагн.",ArtMode);
   RadioButton(h,v+=16,2,0,"Дата оконч. рем.",ArtMode);
   RadioButton(h,v+=16,3,0,"Дата выдачи",ArtMode);
-  ButtonFrame(h+=148,v = vm,123,6,"Статус");
-  CheckBox(h,v,0,"В ожидании",flags[1]);
-  CheckBox(h,v+=16,0,"На диагностике",flags[2]);
-  CheckBox(h,v+=16,0,"На согласовании",flags[3]);
-  CheckBox(h,v+=16,0,"Диаг. законч.",flags[9]);
-  CheckBox(h,v+=16,0,"Ожидает запч.",flags[10]);
-  CheckBox(h,v+=16,0,"Ремонт выполнен",flags[11]); //Edit***************************Sasha2,14:55 15.05.2017 }
-  CheckBox(h,v+=16,0,"Отказ",flags[12]); //Edit***************************Sasha2,14:55 15.05.2017 }
+  ButtonFrame(h+=148,v = vm,123,9,"Статус");
+  
+  
+  CheckBox(h,v,0,"Предварит.",flags[13]);//9
+  CheckBox(h,v+=16,0,"В ожидании",flags[1]);//0
+  CheckBox(h,v+=16,0,"На диагностике",flags[2]);//5
+  CheckBox(h,v+=16,0,"На согласовании",flags[3]);//4
+  CheckBox(h,v+=16,0,"Согласовано",flags[14]);//7
+  CheckBox(h,v+=16,0,"В ремонте",flags[9]);//1
+  CheckBox(h,v+=16,0,"В удал. сервисе",flags[10]);//8
+  CheckBox(h,v+=16,0,"Ожидает запч.",flags[15]);//3
+  CheckBox(h,v+=16,0,"Готов",flags[11]);//2 //Edit***************************Sasha2,14:55 15.05.2017 }
+  CheckBox(h,v+=16,0,"Отказ",flags[12]);//6 //Edit***************************Sasha2,14:55 15.05.2017 }
+  
+  
   ButtonFrame(h+=148,v = vm,123,3,"Заказ на работу");
   CheckBox(h,v,0,"Не выполнен",flags[4]);
   //CheckBox(h,v+=16,0,"Част. выполнен",flags[5]);  //origin field

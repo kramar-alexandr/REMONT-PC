@@ -284,56 +284,68 @@ begin
     if (nonblank(RepSpec.f3) and RepSpec.f3 <> SVOr.ServiceManager) then begin testf = false; end; //Edit***************************Sasha2,12:01 14.02.2017
     if (nonblank(RepSpec.f4) and RepSpec.f4 <> SVOr.CustomField7) then begin testf = false; end; //Edit***************************Sasha2,12:01 14.02.2017
     if (nonblank(RepSpec.f5) and RepSpec.f5 <> SVOr.SalesGroup) then begin testf = false; end; //Edit***************************Sasha2,12:01 14.02.2017
+    
+    
     if (RepSpec.flags[4]==0) then begin /* Not Completed  */
       if (SVOr.DoneMark==0) then begin testf = false; end;
     end;
     if (RepSpec.flags[6]==0) then begin /* Completed  */
       if (SVOr.DoneMark!=0) then begin testf = false; end;
     end;
+    
     if (testf) then begin 
-      testf = false;   
-      if (RepSpec.flags[1]==1) then begin /* В очікуванні */
+      testf = false; 
+      if (RepSpec.flags[13]==1) then begin /* Предварит */
+        if (SVOr.OrderStatus==9) then begin
+          testf = true;
+        end;
+      end;  
+      if (RepSpec.flags[1]==1) then begin /* В ожидании */
         if (SVOr.OrderStatus==0) then begin
           testf = true;
         end;
       end;
-      if (RepSpec.flags[2]==1) and (!testf) then begin /* На діагностиці */
-        //testf = false;
+      if (RepSpec.flags[2]==1) then begin /* На диагностике*/
         if (SVOr.OrderStatus==5) then begin
           testf = true;
         end;
-      end;        
-      if (RepSpec.flags[3]==1) and (!testf) then begin /* На узгодженні */
-        //testf = false;
+      end;
+      if (RepSpec.flags[3]==1) then begin /* На согласовании*/
         if (SVOr.OrderStatus==4) then begin
           testf = true;
         end;
-      end;   
-      if (RepSpec.flags[9]==1) then begin /* Діаг. заверш. */
-        //testf = false;
+      end;
+      if (RepSpec.flags[14]==1) then begin /* Согласовано*/
+        if (SVOr.OrderStatus==7) then begin
+          testf = true;
+        end;
+      end;
+      if (RepSpec.flags[9]==1) then begin /* В ремонте*/
         if (SVOr.OrderStatus==1) then begin
           testf = true;
         end;
       end;
-      if (RepSpec.flags[10]==1) and (!testf) then begin /* Очікує запч. */
-        //testf = false;
+      if (RepSpec.flags[10]==1) then begin /* В удал. сервисе*/
+        if (SVOr.OrderStatus==8) then begin
+          testf = true;
+        end;
+      end;
+      if (RepSpec.flags[15]==1) then begin /* Ожидает запч.*/
         if (SVOr.OrderStatus==3) then begin
           testf = true;
         end;
-      end;        
-      if (RepSpec.flags[11]==1) and (!testf) then begin /* Ремонт виконано */
-        //testf = false;
+      end;
+      if (RepSpec.flags[11]==1) then begin /* Готов.*/
         if (SVOr.OrderStatus==2) then begin
           testf = true;
         end;
       end;
-      
-      if (RepSpec.flags[12]==1) and (!testf) then begin /* Отказ */
-        //testf = false;
+      if (RepSpec.flags[12]==1) then begin /* Отказ.*/
         if (SVOr.OrderStatus==6) then begin
           testf = true;
         end;
-      end;    
+      end;
+       
     end;
     if(testf)then begin
       mtrw = matrowcnt(SVOr);
@@ -386,9 +398,9 @@ begin
           OutString(15,0,artcode,false);// Edit ************************** Tuesday, 11 October 2011 16:03:31
           OutString(15,0,serial,false);// Edit ************************** Tuesday, 11 October 2011 16:03:32
           OutString(15,0,SVOr.Comment1 & " " & SVOr.Comment2,false);// Edit ************************** Monday, 10 October 2011 16:31:26
-          OutString(16,0,SVOr.CustomField3,false); //Edit***************************Sasha2,10:20 28.04.2015
+          OutString(16,0,SVOr.PrepaySum,false); //Edit***************************Sasha2,10:20 28.04.2015
           OutString(17,0,SVOr.CustomField4,false); //Edit***************************Sasha2,10:20 28.04.2015
-          OutString(18,0,SVOr.CustomField5,false); //Edit***************************Sasha2,10:20 28.04.2015
+          OutString(18,0,SVOr.WSCost,false); //Edit***************************Sasha2,10:20 28.04.2015
           OutString(18,0,SVOr.Kontinfo1,false); //Edit***************************Sasha2,10:20 28.04.2015
           OutString(19,0,SVOr.ServiceManager,false); //Edit***************************Sasha2,14:20 14.02.2017
           OutString(19,0,SVOr.CustomField7,false); //Edit***************************Sasha2,14:20 14.02.2017

@@ -78,7 +78,7 @@ begin
     end;
   end;
   OUTFORMFIELD("MYF_PRICESUM",price);
-  OUTFORMFIELD("MYF_REBATE",(1-price/sum)*100);
+  OUTFORMFIELD("MYF_REBATE",(1-sum/price)*100);
   OUTFORMFIELD("MYF_REBATEABS",sum - price);
   
   

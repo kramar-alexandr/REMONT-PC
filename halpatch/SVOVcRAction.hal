@@ -56,7 +56,7 @@ begin
   		Actr.SVOSerNr = SVOr.SerNr;
   		Actr.TodoFlag = kTodoFlagTodo;
   		Actr.SymbNr = 3;
-  		Actr.ActType = "";
+  		Actr.ActType = "‘Žƒ‹";
   	  Actr.StartTime = currenttime;//StringToTime("00:00:00");
   	  Actr.TransDate = CurrentDate;
   	  Actr.EndDate = blankd;

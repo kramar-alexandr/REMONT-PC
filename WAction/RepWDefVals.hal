@@ -71,6 +71,8 @@ BEGIN
   RepSpec.flags[9] = 1; //Edit***************************Sasha2,13:46 14.02.2017
   RepSpec.flags[10] = 1; //Edit***************************Sasha2,13:46 14.02.2017
   RepSpec.flags[11] = 1; //Edit***************************Sasha2,13:46 14.02.2017
+  RepSpec.flags[14] = 1;
+  RepSpec.flags[15] = 1;
   PutWindowRecord(wn,RepSpec);
   SelectWindow(wn);
   RETURN;

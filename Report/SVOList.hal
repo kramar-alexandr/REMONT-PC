@@ -215,7 +215,7 @@ begin
     OutString(0,0,USetStr(12822),false);
     OutString(11,0,USetStr(12823),false);
     OutString(12,0,USetStr(12667),false);
-    OutString(13,0,USetStr(7796),false);
+    OutString(13,0,"Номер",false);
     OutString(13,0,USetStr(13796),false);
     OutString(14,0,USetStr(10565),false);
     OutString(15,0,USetStr(2358),false);
@@ -238,6 +238,7 @@ begin
     OutString(19,0,USetStr(31090),false); //Edit***************************Sasha2,14:19 14.02.2017
     OutString(19,0,USetStr(31091),false); //Edit***************************Sasha2,14:19 14.02.2017
     OutString(19,0,USetStr(8903),false); //Edit***************************Sasha2,14:19 14.02.2017
+    OutString(19,0,"Статус",false); //Edit***************************Sasha2,14:19 14.02.2017
   EndFormat;
   
   switch (RepSpec.ArtMode) begin
@@ -405,6 +406,7 @@ begin
           OutString(19,0,SVOr.ServiceManager,false); //Edit***************************Sasha2,14:20 14.02.2017
           OutString(19,0,SVOr.CustomField7,false); //Edit***************************Sasha2,14:20 14.02.2017
           OutString(19,0,SVOr.SalesGroup,false); //Edit***************************Sasha2,14:20 14.02.2017
+          OutString(19,0,SVOr.StatusText,false);
         EndFormat;
       end;
     end;    

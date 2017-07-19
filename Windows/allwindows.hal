@@ -7978,7 +7978,7 @@ begin
   RadioButton(h,v+=16,1,0,"Дата оконч.диагн.",ArtMode);
   RadioButton(h,v+=16,2,0,"Дата оконч. рем.",ArtMode);
   RadioButton(h,v+=16,3,0,"Дата выдачи",ArtMode);
-  ButtonFrame(h+=148,v = vm,123,9,"Статус");
+  ButtonFrame(h+=148,v = vm,123,10,"Статус");
   
   
   CheckBox(h,v,0,"Предварит.",flags[13]);//9

@@ -73,6 +73,7 @@ BEGIN
 					Actr.EndTime = currenttime;
 				end;
 			end;
+			Actr.BinotelCallEndSerNr = BCEr.SerNr;
 			Actr.TransDate = currentdate;
 			Actr.SerNr = NextSerNr("ActVc",Actr.TransDate,-1,false,"");
 			Actr.Comment = comment;
@@ -187,7 +188,8 @@ BEGIN
 		
 			if(nonblank(users))then begin
 				recordnew(Actr);
-			
+				
+				Actr.BinotelCallPushSerNr = BCEr.SerNr;
 				Actr.StartTime = currenttime;
 				if(nonblank(BCEr.billsec))then begin
 					if(evaltoval(BCEr.billsec)>0)then begin

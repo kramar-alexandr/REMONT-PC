@@ -1,7 +1,8 @@
 external function string 255 StrReplace(string,string,string);
 external procedure ExtractObj(string,var Integer,var string);
-external procedure OpenNewActivity(record ActVc,string);
-external procedure OpenNewCUInfo(record ActVc,string);
+//external procedure OpenNewActivity(record ActVc,string);
+//external procedure OpenNewCUInfo(record ActVc,string);
+external procedure RemoteUserFunction(string,string,string,string);
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -15,9 +16,10 @@ BEGIN
   integer i,mtrw,pos;
   string 100 outerphone, inergroup, acttype;
   string 255 users,comment,muser;
-  boolean testf,cufound;
+  boolean testf,cufound,foundfsvo;
   record CUVc CUr;
   record UserVc User;
+  record SVOVc SVOr;
  	
  	if(BCEr.disposition=="NOANSWER" or BCEr.disposition=="CANCEL" or BCEr.disposition=="BUSY" or BCEr.disposition=="ANSWER" or BCEr.disposition=="TRANSFER")then begin
 		
@@ -131,18 +133,33 @@ BEGIN
 				recordinsert(CUr,true);
 			end;
 			Actr.MainPersons = users;
+			SVOr.CustCode = Actr.CUCode;
+			foundfsvo = false;
+			if(readlastkey("CustCode",SVOr,1,true))then begin
+				if(SVOr.TransDate>addday(currentdate,-30))then begin
+					Actr.SVOSerNr = SVOr.SerNr;
+					foundfsvo = true;
+				end;
+			end;
+			
 			recordstore(Actr,true);
 			
+			if(foundfsvo)then begin
+				createrecordlink(Actr,currentcompany,SVOr,currentcompany);
+				createrecordlink(SVOr,currentcompany,Actr,currentcompany);
+			end;
 			
 			
-			pos = 0;
+			
+			AllClientsRemoteAsync.RemoteUserFunction(users,"OpenNewActivity",Actr.SerNr,"");
+			/*pos = 0;
 			ExtractObj(users,pos,muser);
 			while (nonblank(muser)) begin
 				if(nonblank(muser))then begin
 					AllClientsRemoteAsync.OpenNewActivity(Actr,muser);
 				end;
 				ExtractObj(users,pos,muser);
-			end;
+			end;*/
 		
 		end;
 		
@@ -258,15 +275,16 @@ BEGIN
 				//recordstore(Actr,true);
 			
 			
-			
-				pos = 0;
+				AllClientsRemoteAsync.RemoteUserFunction(users,"OpenNewCUInfo",Actr.Phone,"");
+				/*pos = 0;
+				
 				ExtractObj(users,pos,muser);
 				while (nonblank(muser)) begin
 					if(nonblank(muser))then begin
 						AllClientsRemoteAsync.OpenNewCUInfo(Actr,muser);
 					end;
 					ExtractObj(users,pos,muser);
-				end;
+				end;*/
 		
 			end;
 		end;

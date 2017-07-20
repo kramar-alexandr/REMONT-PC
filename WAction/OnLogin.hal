@@ -861,21 +861,11 @@ global procedure UpdateMasterWClassOnKPIs(string str)
 begin
 	Integer wn;
 	string 20 accessgroup;
-	//if(currentuser=="SA")then begin
-		GetUserAccessGroup(currentuser,accessgroup);
 		if(usercanaction("ViewRemontQueryToDO",false))then begin
-			wn = curwindow;
+			wn = FindWindow("ToDoWClass");
 			if(wn>0)then begin
-				if (WindowValid(wn)) then begin			
-					if(WindowState(wn)==0)then begin
-						wn = FindWindow("ToDoWClass");
-						if(wn>0)then begin
-							updatebrowses("ToDoWClass");
-						end;
-					end;
-				end;
+				updatebrowses("ToDoWClass");
 			end;
 		end;
-	//end;
 return;
 end;

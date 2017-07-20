@@ -7,7 +7,7 @@ BEGIN
   LongInt res;
 
   res = inner.ActVcRecordSaveAfter(Actr,Act2r,stat,long4);
-  logtext(0,"ActVcRecordSaveAfter");
+  logtext(0,"ActVcRecordSaveAfter " & Actr.MainPersons & " UpdateToDoWclass");
   AllClientsRemoteAsync.RemoteUserFunction(Actr.MainPersons,"UpdateToDoWclass","","");
   
   ActVcRecordSaveAfter = res;
@@ -21,7 +21,7 @@ BEGIN
   LongInt res;
 
   res = inner.ActVcRecordUpdateAfter(Actr,Act2r,stat,long4);
-  logtext(0,"ActVcRecordUpdateAfter");
+  logtext(0,"ActVcRecordUpdateAfter " & Actr.MainPersons & " UpdateToDoWclass");
   AllClientsRemoteAsync.RemoteUserFunction(Actr.MainPersons,"UpdateToDoWclass","","");
   
   ActVcRecordUpdateAfter = res;

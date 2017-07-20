@@ -150,7 +150,7 @@ BEGIN
 			end;
 			
 			
-			
+			logtext(0,"RemoteUserFunction " & users & " OpenNewActivity");
 			AllClientsRemoteAsync.RemoteUserFunction(users,"OpenNewActivity",Actr.SerNr,"");
 			/*pos = 0;
 			ExtractObj(users,pos,muser);
@@ -274,7 +274,7 @@ BEGIN
 				Actr.MainPersons = users;
 				//recordstore(Actr,true);
 			
-			
+				logtext(0,"RemoteUserFunction " & users & " OpenNewCUInfo");
 				AllClientsRemoteAsync.RemoteUserFunction(users,"OpenNewCUInfo",Actr.Phone,"");
 				/*pos = 0;
 				

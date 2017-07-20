@@ -37,6 +37,7 @@ external updating procedure ActOK(record ActVc);
 external function Boolean ActivityIsForAbsence(record ActVc);
 external function Boolean DateLocked(Date,string);
 external function Boolean DateWarned(Date,string);
+external procedure RemoteUserFunction(string,string,string,string);// Edit ************************** Thursday, 20 July 2017 16:34:18
 
 procedure ActNLTSer(Date td,var LongInt tserstart,var LongInt tserend)
 begin
@@ -1322,6 +1323,10 @@ BEGIN
   if (Actr.OKFlag==0) then begin
     CreateAlarm(Actr);  
   end;
+  
+  logtext(0,"ActVcRecordSaveAfter " & Actr.MainPersons & " UpdateToDoWclass");
+  AllClientsRemoteAsync.RemoteUserFunction(Actr.MainPersons,"UpdateToDoWclass","","");
+  
   ActVcRecordSaveAfter = res;
   RETURN;
 END;
@@ -1351,6 +1356,10 @@ BEGIN
         end;
     end;
   end;
+  
+  logtext(0,"ActVcRecordUpdateAfter " & Actr.MainPersons & " UpdateToDoWclass");
+  AllClientsRemoteAsync.RemoteUserFunction(Actr.MainPersons,"UpdateToDoWclass","","");
+  
   ActVcRecordUpdate = res;
   RETURN;
 END;

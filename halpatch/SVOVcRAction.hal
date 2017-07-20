@@ -663,7 +663,7 @@ BEGIN
 	record SalesGroupVc SGr;
   record CUVc CUr;
   boolean modify;
-  record ActVc Actr;
+  record ActVc Actr,oldActr;
   
   if(SVO2r.SerNr!=SVOr.SerNr)then begin
   	TrHs = true;
@@ -672,11 +672,12 @@ BEGIN
   		if(Actr.SVOSerNr!=SVO2r.SerNr)then begin TrHs=false; end;
   		
   		if(TrHs)then begin
+  			recordcopy(oldActr,Actr);
   			Actr.SVOSerNr = SVOr.SerNr;
   			if(Actr.ActType=="éÜä" or Actr.ActType=="èêÖÑá")then begin
   				Actr.OKFlag = 1;
   			end;
-  			recordstore(Actr,true);
+  			recordupdate(oldActr,Actr,true);
   			stepback(Actr);
   		end;
   	end;

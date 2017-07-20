@@ -2040,6 +2040,12 @@ global procedure UpdateToDoWclass()
     UpdateMasterWClassOnKPIs("");
 end;
 
+global procedure AsyncUpdateToDoWclass()
+	begin
+    AllClientsRemoteAsync.UpdateMasterWClassOnKPIs("");
+end;
+
+
 global procedure RemoteUserFunction(string users,string action,string param1,string param2)
 begin
 	record ActVc Actr;

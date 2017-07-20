@@ -468,11 +468,12 @@ BEGIN
   row SVOVc SVOrw;
   string 200 tstr;
   boolean testf,TrHs;
-  integer mtrw,i;
+  integer mtrw,i,cnt;
   record SalesGroupVc SGr;
   record CUVc CUr;
   boolean modify;
-  record ActVc Actr;
+  record ActVc Actr,lActr;
+  record RLinkVc RLr;
   
   
   resetloop(Actr);
@@ -488,6 +489,14 @@ BEGIN
 		if(testf)then begin
 			Actr.SVOSerNr = SVOr.SerNr;
 			recordstore(Actr,true);
+			cnt = 1;
+			while(ReadRecordLink(Actr,cnt,lActr,RLr)) begin
+				cnt = cnt+1;
+				if (lActr.SVOSerNr<0) then begin
+					lActr.SVOSerNr = SVOr.SerNr;
+					recordstore(lActr,true);
+				end;
+			end;
 			createrecordlink(SVOr,currentcompany,Actr,Currentcompany);
 			createrecordlink(Actr,currentcompany,SVOr,Currentcompany);
 		end;

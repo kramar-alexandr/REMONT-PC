@@ -665,23 +665,6 @@ BEGIN
   boolean modify;
   record ActVc Actr,oldActr;
   
-  if(SVO2r.SerNr!=SVOr.SerNr)then begin
-  	TrHs = true;
-  	Actr.SVOSerNr = SVO2r.SerNr;
-  	while(loopkey("SVOSerNr",Actr,1,TrHs))begin
-  		if(Actr.SVOSerNr!=SVO2r.SerNr)then begin TrHs=false; end;
-  		
-  		if(TrHs)then begin
-  			recordcopy(oldActr,Actr);
-  			Actr.SVOSerNr = SVOr.SerNr;
-  			if(Actr.ActType=="éÜä" or Actr.ActType=="èêÖÑá")then begin
-  				Actr.OKFlag = 1;
-  			end;
-  			recordupdate(oldActr,Actr,true);
-  			stepback(Actr);
-  		end;
-  	end;
-  end;
   
   resetloop(Actr);
   Actr.CUCode = SVOr.CustCode;
@@ -700,6 +683,28 @@ BEGIN
 			createrecordlink(Actr,currentcompany,SVOr,Currentcompany);
 		end;
 	end;
+	
+	if(SVO2r.SerNr!=SVOr.SerNr or SVO2r.GetItemFlag!=SVOr.GetItemFlag)then begin
+  	logtext(0,"Try Close OJK Act from SVO " & SVOr.SerNr);
+  	TrHs = true;
+  	Actr.SVOSerNr = SVO2r.SerNr;
+  	while(loopkey("SVOSerNr",Actr,1,TrHs))begin
+  		if(Actr.SVOSerNr!=SVO2r.SerNr)then begin TrHs=false; end;
+  		
+  		if(TrHs)then begin
+  			recordcopy(oldActr,Actr);
+  			Actr.SVOSerNr = SVOr.SerNr;
+  			if(Actr.ActType=="éÜä" or Actr.ActType=="èêÖÑá")then begin
+  				Actr.OKFlag = 1;
+  			end;
+  			logtext(0,"Try Close OJK Act from SVO update " & SVOr.SerNr);
+  			recordupdate(oldActr,Actr,true);
+  			stepback(Actr);
+  		end;
+  	end;
+  end;
+	
+	
   
   CUr.Code = SVOr.CustCode;
   if(readfirstmain(CUr,1,true))then begin

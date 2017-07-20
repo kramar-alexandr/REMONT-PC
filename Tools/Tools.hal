@@ -989,13 +989,6 @@ begin
 return;
 end;
 
-
-global procedure UpdateToDoWclass()
-	begin
-    AllClientsRemoteAsync.UpdateMasterWClassOnKPIs("");
-end;
-
-
 global function Boolean HasProjects() 
 begin 
 

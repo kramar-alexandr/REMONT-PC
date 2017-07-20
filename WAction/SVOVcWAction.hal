@@ -39,6 +39,7 @@ external function string 255 StringFromSysList(Integer,Integer);
 remote updating function Integer CreateAndOKDispatchFromSVO(record SVOVc,record LocalMachineBlock,var string); //Edit***************************Sasha2,18:00 09.06.2017
 external procedure WindowFieldGotoForTouchScreen(Integer,Integer,string,Boolean);
 remote updating procedure CreateSVOFromAcrtRem(var record ActVc, var record SVOVc);
+external procedure UpdateMasterWClassOnKPIs(string);
 
 // Edit Start ---------------------------------------------- Edit Start
 	//Wednesday, 3 June 2015 16:58:34
@@ -2034,6 +2035,10 @@ record RcVc RepSpec;
 return;
 end;
 
+global procedure UpdateToDoWclass()
+	begin
+    UpdateMasterWClassOnKPIs("");
+end;
 
 global procedure RemoteUserFunction(string users,string action,string param1,string param2)
 begin
@@ -2054,6 +2059,7 @@ begin
 																	if(readfirstmain(Actr,1,true))then begin
 																		OpenNewActivity(Actr);
 																	end;
+					case "UpdateToDoWclass": UpdateToDoWclass;
 				end;
 			end;
 		end;

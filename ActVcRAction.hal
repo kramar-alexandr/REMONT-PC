@@ -1,0 +1,30 @@
+external procedure RemoteUserFunction(string,string,string,string);
+
+
+global
+updating function LongInt ActVcRecordSaveAfter(var record ActVc Actr,record ActVc Act2r,LongInt stat,LongInt long4)
+BEGIN
+  LongInt res;
+
+  res = inner.ActVcRecordSaveAfter(Actr,Act2r,stat,long4);
+  
+  AllClientsRemoteAsync.RemoteUserFunction(Actr.MainPersons,"UpdateToDoWclass","","");
+  
+  ActVcRecordSaveAfter = res;
+  RETURN;
+END;
+
+
+global
+updating function LongInt ActVcRecordUpdateAfter(var record ActVc Actr,record ActVc Act2r,LongInt stat,LongInt long4)
+BEGIN
+  LongInt res;
+
+  res = inner.ActVcRecordUpdateAfter(Actr,Act2r,stat,long4);
+  AllClientsRemoteAsync.RemoteUserFunction(Actr.MainPersons,"UpdateToDoWclass","","");
+  
+  ActVcRecordUpdateAfter = res;
+  RETURN;
+END;
+
+

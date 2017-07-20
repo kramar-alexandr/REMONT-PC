@@ -2060,6 +2060,9 @@ begin
 																		OpenNewActivity(Actr);
 																	end;
 					case "UpdateToDoWclass": UpdateToDoWclass;
+																		if(currentuser=="SA5")then begin
+																			messagebox(0,"UpdateToDoWclass");
+																		end;
 				end;
 			end;
 		end;

@@ -1,4 +1,4 @@
-inner procedure RemoteUserFunction(string,string,string,string);
+external inner procedure RemoteUserFunction(string,string,string,string);
 
 
 global

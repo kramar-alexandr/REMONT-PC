@@ -659,14 +659,15 @@ BEGIN
   row SVOVc SVOrw;// Edit ************************** Thursday, 14 July 2011 12:31:04
   string 200 tstr,comment;// Edit ************************** Thursday, 14 July 2011 12:31:03
   boolean testf,TrHs;// Edit ************************** Thursday, 14 July 2011 12:31:02
-  integer mtrw,i;// Edit ************************** Thursday, 14 July 2011 12:31:01
+  integer mtrw,i,cnt;// Edit ************************** Thursday, 14 July 2011 12:31:01
 	record SalesGroupVc SGr;
   record CUVc CUr;
   boolean modify;
-  record ActVc Actr,oldActr;
+  record ActVc Actr,oldActr,lActr;
+  record RLinkVc RLr;
   
   
-  resetloop(Actr);
+  
   Actr.CUCode = SVOr.CustCode;
   Actr.TransDate = SVOr.TransDate;
   TrHs = true;
@@ -679,11 +680,21 @@ BEGIN
 		if(testf)then begin
 			Actr.SVOSerNr = SVOr.SerNr;
 			recordstore(Actr,true);
+			
+			cnt = 1;
+			while(ReadRecordLink(Actr,cnt,lActr,RLr)) begin
+				cnt = cnt+1;
+				if (lActr.SVOSerNr<0) then begin
+					lActr.SVOSerNr = SVOr.SerNr;
+					recordstore(lActr,true);
+				end;
+			end;
+			
 			createrecordlink(SVOr,currentcompany,Actr,Currentcompany);
 			createrecordlink(Actr,currentcompany,SVOr,Currentcompany);
 		end;
 	end;
-	
+	resetloop(Actr);
 	if(SVO2r.SerNr!=SVOr.SerNr or SVO2r.GetItemFlag!=SVOr.GetItemFlag)then begin
   	logtext(0,"Try Close OJK Act from SVO " & SVOr.SerNr);
   	TrHs = true;

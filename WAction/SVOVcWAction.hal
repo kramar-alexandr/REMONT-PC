@@ -2063,6 +2063,7 @@ begin
 				end;
 			end;
 		end;
+		ExtractObjWithSeparator(",",users,true,pos,tstr);
 	end;
 
 return;

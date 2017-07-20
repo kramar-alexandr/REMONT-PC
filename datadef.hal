@@ -625,6 +625,11 @@ begin
     RecordField(RepairLocationFlag,M4Mark,0,0); //Edit***************************Sasha2,14:25 15.04.2016
   EndRecordAdd;
   
+   RecordAddBegin(ActVc,"ActVc_Custom");
+    RecordField(BinotelCallPushSerNr,M4Long,0,0); //Edit***************************Sasha2,14:25 15.04.2016
+    RecordField(BinotelCallEndSerNr,M4Long,0,0); //Edit***************************Sasha2,14:25 15.04.2016
+  EndRecordAdd;
+  
   ////------------------------------------------------PRICE ETICETKA
   RecordBegin(MyLabelItemVc,-,""); //Edit***************************Sasha2,12:57 22.10.2014 {
   	RecordField(ArtCode,M4Code,20,INVc);

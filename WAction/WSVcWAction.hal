@@ -49,7 +49,7 @@ begin
   if (s!=WSrw.Sum) or ((s==0.00) and (blank(WSrw.Sum))) then begin
     chsum = true;
     RoundRowSum(WSr.CurncyCode,"","WSVc",s);
-    WSrw.Sum = s;
+    WSrw.Sum = round(s,SetRoundModeD(0));// Edit ************************** Thursday, 20 July 2017 11:24:15
     RowCalculateTaxMatrix_WSVc(WSr,rownr,WSrw);
     MatRowPut(WSr,rownr,WSrw);
   end;      

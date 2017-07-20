@@ -2040,7 +2040,7 @@ global procedure UpdateToDoWclass()
     UpdateMasterWClassOnKPIs("");
 end;
 
-global procedure AsyncUpdateToDoWclass()
+global procedure AsyncUpdateToDo()
 	begin
     AllClientsRemoteAsync.UpdateMasterWClassOnKPIs("");
 end;

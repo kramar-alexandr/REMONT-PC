@@ -29,6 +29,7 @@ external procedure NextM4Number(string,var string);
 remote updating function Integer CreateAndOKOffHireFromSVO(record SVOVc,record LocalMachineBlock,var string); //Edit***************************Sasha2,11:57 09.06.2017
 external updating procedure CreateActFromSVOForInspectorIfItemRejected(record SVOVc);
 remote procedure CheckSVOIV(record SVOVc,var val,var val);
+external procedure RemoteUserFunction(string,string,string,string);// Edit ************************** Thursday, 20 July 2017 16:34:18
 
 
 
@@ -703,13 +704,17 @@ BEGIN
   		if(Actr.SVOSerNr!=SVO2r.SerNr)then begin TrHs=false; end;
   		
   		if(TrHs)then begin
-  			recordcopy(oldActr,Actr);
+  			//recordcopy(oldActr,Actr);
   			Actr.SVOSerNr = SVOr.SerNr;
   			if(Actr.ActType=="éÜä" or Actr.ActType=="èêÖÑá")then begin
+  				Actr.ActResult = "äè";
   				Actr.OKFlag = 1;
   			end;
   			logtext(0,"Try Close OJK Act from SVO update " & SVOr.SerNr);
-  			recordupdate(oldActr,Actr,true);
+  			recordstore(Actr,true);
+  			logtext(0,"ActVcRecordSaveAfter " & Actr.MainPersons & " UpdateToDoWclass");
+  			AllClientsRemoteAsync.RemoteUserFunction(Actr.MainPersons,"UpdateToDoWclass","","");
+  			//recordupdate(oldActr,Actr,true);
   			stepback(Actr);
   		end;
   	end;

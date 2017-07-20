@@ -1356,10 +1356,7 @@ BEGIN
         end;
     end;
   end;
-  
-  logtext(0,"ActVcRecordUpdateAfter " & Actr.MainPersons & " UpdateToDoWclass");
-  AllClientsRemoteAsync.RemoteUserFunction(Actr.MainPersons,"UpdateToDoWclass","","");
-  
+    
   ActVcRecordUpdate = res;
   RETURN;
 END;
@@ -1395,6 +1392,10 @@ BEGIN
     end;
   end;
   gActVcRecordUpdateAfterf = false;
+  
+  logtext(0,"ActVcRecordUpdateAfter " & Actr.MainPersons & " UpdateToDoWclass");
+  AllClientsRemoteAsync.RemoteUserFunction(Actr.MainPersons,"UpdateToDoWclass","","");
+  
   ActVcRecordUpdateAfter = res;
   RETURN;
 END;

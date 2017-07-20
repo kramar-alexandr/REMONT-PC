@@ -3969,3 +3969,16 @@ begin
   
 return;
 end; //Edit***************************Sasha2,15:59 15.07.2017 }
+
+global //Edit***************************Sasha2,13:36 12.07.2017 {
+updating procedure ClrarActVc(record RcVc RepSpec)
+begin
+	record ActVc Acrt;
+
+    while (LoopMain(Acrt,1,true)) begin
+			RecordDelete(Acrt);
+			StepBack(Acrt);
+    end;
+  
+return;
+end; //Edit***************************Sasha2,13:36 12.07.2017 }

@@ -1300,7 +1300,7 @@ BEGIN
 END;
 
 global
-function LongInt ActVcRecordSave(var record ActVc Actr,record ActVc Act2r,LongInt stat,LongInt long4)
+updating function LongInt ActVcRecordSave(var record ActVc Actr,record ActVc Act2r,LongInt stat,LongInt long4)
 BEGIN
   LongInt res;
 	record SVOVc SVOr;

@@ -721,7 +721,7 @@ begin
   record BaseCurBlock BCb;
   record VITBlock VITb;
   val from,to1,to2,base1,base2;
-  string 255 tstr,viitgroup;
+  string 255 tstr,viitgroup,locacc;// Edit ************************** Friday, 21 July 2017 11:57:17
   val purowsum,puqinvd,puqord,powopuqtyinvd;
   record POVc POr;
   record POVc rPOr;
@@ -731,7 +731,14 @@ begin
   record TaxMatrixVc TMr;
   record SMVc VATr;
   record CYBlock CYb;
-
+  record LocationVc Locr;
+	
+	
+	Locr.Code = PUp.Location;// Edit ************************** Friday, 21 July 2017 11:58:21
+	if(readfirstmain(Locr,1,true))then begin
+		locacc = Locr.StockAcc;
+	end;
+	
   res = 0;
   BlockLoad(BCb);
   BlockLoad(ARb);
@@ -974,6 +981,9 @@ begin
       VIrw.VATCode = tstr;
     end;  
     GetPurchaseControlAcc(PUrw.CredAcc,CAb.ItemGroupAccounts,PUrw.ArtCode,ARb,VEr.AccCost,tstr,PUp.VECode);
+    if(blank(tstr))then begin// Edit ************************** Friday, 21 July 2017 11:54:37
+    	tstr = locacc;// Edit ************************** Friday, 21 July 2017 11:56:56
+    end;
     VIrw.AccNumber = tstr;
     if (GetAccName(VIrw.AccNumber,tstr,60)) then begin end;
     VIrw.Comment = tstr;    

@@ -270,6 +270,25 @@ record RcVc RepSpec;
 return
 end;
 
+global 
+procedure ServClientOrderActDsm()
+begin
+integer wn;
+record ActVc Actr;
+array longint sernr;
+integer count;
+record RcVc RepSpec;
+	
+	wn = curwindow;
+	getwindowrecord(wn,Actr);
+	RepSpec.f1 = Actr.Phone;
+	RepSpec.Media = mtScreen;
+	RepSpec.repname = "ServClientOrderRn";
+	runreport(RepSpec,0);
+
+return
+end;
+
 function string 20 NormalPhone(string phone)
 begin
 	string 20 res;

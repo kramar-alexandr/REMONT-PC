@@ -1992,7 +1992,7 @@ begin
 	wn = curwindow;
 	deselectwindow(wn,true);
 	getwindowrecord(wn,RepSpec);
-	if((RepSpec.vals0!=0 and RepSpec.vals1==0) or (RepSpec.vals0==0 and RepSpec.vals1!=0 and nonblank(RepSpec.f3)))then begin
+	//if((RepSpec.vals0!=0 and RepSpec.vals1==0) or (RepSpec.vals0==0 and RepSpec.vals1!=0/* and nonblank(RepSpec.f3)*/))then begin
 		SVOr.SerNr = RepSpec.long1;
 		if(readfirstmain(SVOr,1,true))then begin
 			CheckSVOIV(SVOr,ivsum,ivpaysum);
@@ -2003,12 +2003,12 @@ begin
 				messagebox(0,"‡адолженость по сч/ф заказа отсутствует");
 			end;
 		end;
-	end else begin
+	/*end else begin
 		if(RepSpec.vals1>0 and blank(RepSpec.f3))then begin
 			messagebox(31086,"");
 		end;
 		beep;
-	end;
+	end;*/
 
 return;
 end;

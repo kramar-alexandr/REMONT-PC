@@ -1314,6 +1314,8 @@ BEGIN
 		if(readlastkey("CustCode",SVOr,1,true))then begin
 			if(SVOr.TransDate>addday(currentdate,-30))then begin
 				Actr.SVOSerNr = SVOr.SerNr;
+				createrecordlink(Actr,currentcompany,SVOr,currentcompany);
+				createrecordlink(SVOr,currentcompany,Actr,currentcompany);
 			end;
 		end;
 	end;
@@ -1374,6 +1376,8 @@ BEGIN
 		if(readlastkey("CustCode",SVOr,1,true))then begin
 			if(SVOr.TransDate>addday(currentdate,-30))then begin
 				Actr.SVOSerNr = SVOr.SerNr;
+				createrecordlink(Actr,currentcompany,SVOr,currentcompany);
+				createrecordlink(SVOr,currentcompany,Actr,currentcompany);
 			end;
 		end;
 	end;

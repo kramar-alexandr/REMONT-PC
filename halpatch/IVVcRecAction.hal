@@ -2185,7 +2185,7 @@ begin
 				createrecordlink(SVOr,currentcompany,IPr,currentcompany);
 				SVOr.FastCash = SVOr.FastCash + RepSpec.vals0;
 				if(prepaysum!=0)then begin
-					SVOr.PrepaySum = prepaysum;
+					SVOr.PrepaySum = SVOr.PrepaySum + prepaysum;
 				end;
 				recordstore(SVOr,true);
 			end;
@@ -2216,7 +2216,7 @@ begin
 				createrecordlink(SVOr,currentcompany,IPr,currentcompany);
 				SVOr.FastTerm = SVOr.FastTerm + RepSpec.vals1;
 				if(prepaysum!=0)then begin
-					SVOr.PrepaySum = prepaysum;
+					SVOr.PrepaySum = SVOr.PrepaySum + prepaysum;
 				end;
 				recordstore(SVOr,true);
 			end;
@@ -2254,7 +2254,7 @@ begin
 								createrecordlink(SVOr,currentcompany,IPr,currentcompany);
 								SVOr.FastCash = SVOr.FastCash + RepSpec.vals0;
 								if(prepaysum!=0)then begin
-									SVOr.PrepaySum = prepaysum;
+									SVOr.PrepaySum = SVOr.PrepaySum + prepaysum;
 								end;
 								recordstore(SVOr,true);
 							end;
@@ -2305,7 +2305,7 @@ begin
 								createrecordlink(SVOr,currentcompany,IPr,currentcompany);
 								SVOr.FastCash = SVOr.FastCash + RepSpec.vals0;
 								if(prepaysum!=0)then begin
-									SVOr.PrepaySum = prepaysum;
+									SVOr.PrepaySum = SVOr.PrepaySum + prepaysum;
 								end;
 								recordstore(SVOr,true);
 							end;
@@ -2345,7 +2345,7 @@ begin
 								createrecordlink(SVOr,currentcompany,IPr,currentcompany);
 								SVOr.FastTerm = SVOr.FastTerm + RepSpec.vals1;
 								if(prepaysum!=0)then begin
-									SVOr.PrepaySum = prepaysum;
+									SVOr.PrepaySum = SVOr.PrepaySum + prepaysum;
 								end;
 								recordstore(SVOr,true);
 							end;
@@ -2395,7 +2395,7 @@ begin
 								createrecordlink(SVOr,currentcompany,IPr,currentcompany);
 								SVOr.FastTerm = SVOr.FastTerm + RepSpec.vals1;
 								if(prepaysum!=0)then begin
-									SVOr.PrepaySum = prepaysum;
+									SVOr.PrepaySum = SVOr.PrepaySum + prepaysum;
 								end;
 								recordstore(SVOr,true);
 							end;

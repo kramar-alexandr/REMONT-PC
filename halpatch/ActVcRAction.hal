@@ -1294,6 +1294,7 @@ BEGIN
     end;
     ActVcUpdatePRrs(Actr);
   end;
+    
   ActVcRecordImportAfter = res;
   RETURN;
 END;
@@ -1302,10 +1303,21 @@ global
 function LongInt ActVcRecordSave(var record ActVc Actr,record ActVc Act2r,LongInt stat,LongInt long4)
 BEGIN
   LongInt res;
-
+	record SVOVc SVOr;
+	
   Actr.LengthClass = ActLenClass(Actr.TransDate,Actr.EndDate);
   Actr.CreationDate = CurrentDate;
   Actr.LastChangedDate = CurrentDate;
+  
+  if(Actr.SVOSerNr<0 and nonblank(Actr.CUCode))then begin
+		SVOr.CustCode = Actr.CUCode;
+		if(readlastkey("CustCode",SVOr,1,true))then begin
+			if(SVOr.TransDate>addday(currentdate,-30))then begin
+				Actr.SVOSerNr = SVOr.SerNr;
+			end;
+		end;
+	end;
+  
   ActVcRecordSave = res;
   RETURN;
 END;
@@ -1335,6 +1347,7 @@ global
 updating function LongInt ActVcRecordUpdate(var record ActVc Actr,record ActVc Act2r,LongInt stat,LongInt long4)
 BEGIN
   LongInt res;
+  record SVOVc SVOr;
 
   Actr.LengthClass = ActLenClass(Actr.TransDate,Actr.EndDate);
   Actr.LastChangedDate = CurrentDate;
@@ -1356,6 +1369,14 @@ BEGIN
         end;
     end;
   end;
+  if(Actr.SVOSerNr<0 and nonblank(Actr.CUCode))then begin
+		SVOr.CustCode = Actr.CUCode;
+		if(readlastkey("CustCode",SVOr,1,true))then begin
+			if(SVOr.TransDate>addday(currentdate,-30))then begin
+				Actr.SVOSerNr = SVOr.SerNr;
+			end;
+		end;
+	end;
     
   ActVcRecordUpdate = res;
   RETURN;

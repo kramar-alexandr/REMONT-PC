@@ -1357,6 +1357,11 @@ begin
     ArrayField(Comment,M4Str,255,0);
 		EndArray;
 	EndBlock;
+	
+	RecordAddBegin(IntORVc,"IntORVc_Custom");
+    RecordField(SVONr,M4Long,0,0);// Edit ************************** Monday, 24 July 2017 14:31:24
+    RecordField(WSNr,M4Long,0,0);// Edit ************************** Monday, 24 July 2017 14:31:24
+  EndRecordAdd; 
   
 return;
 end;

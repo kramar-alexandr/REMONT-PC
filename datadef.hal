@@ -1346,7 +1346,15 @@ begin
     ArrayField(ActType,M4Code,100,0);
     ArrayField(ActComment,M4Str,255,0);
 		EndArray;
-	EndBlock;	
+	EndBlock;
+	
+	BlockBegin(LogisticUserBlock,-,"");
+		RecordField(Math,M4Matrix,0,0);
+		ArrayBegin(Math,-,1);
+		ArrayField(User,M4Code,20,UserVc);
+    ArrayField(Location,M4Code,100,0);
+		EndArray;
+	EndBlock;
   
 return;
 end;

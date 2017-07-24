@@ -1205,7 +1205,10 @@ BEGIN
   	res = false;
     goto LSVODClassActiveEditField;
   end;
-  
+  if(fieldname=="InnerOrderNr")then begin// Edit ************************** Monday, 24 July 2017 12:06:35
+  	res = false;
+    goto LSVODClassActiveEditField;
+  end;
   
   insertmode = 1;//Rs_insert
   updatemode = 2;//Rs_update

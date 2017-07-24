@@ -1353,6 +1353,8 @@ begin
 		ArrayBegin(Math,-,1);
 		ArrayField(User,M4Code,20,UserVc);
     ArrayField(Location,M4Code,100,0);
+    ArrayField(ActType,M4Code,20,0);
+    ArrayField(Comment,M4Str,255,0);
 		EndArray;
 	EndBlock;
   

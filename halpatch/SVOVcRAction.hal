@@ -507,13 +507,24 @@ BEGIN
   resetloop(Actr);
   Actr.SVOSerNr = SVOr.SerNr;
   TrHs = true;
-  
-  if(SVO2r.OrderStatus==4 and SVOr.OrderStatus==7)then begin
-		if(loopkey("SVOSerNr",Actr,1,TrHs))then begin
-			testf = true;
-			if(Actr.SVOSerNr!=SVOr.SerNr)then begin TrHs=false; testf = false; end;
-			if(Actr.OKFlag>0)then begin testf = false; end;
-			
+	while(loopkey("SVOSerNr",Actr,1,TrHs)) begin
+		testf = true;
+		if(Actr.SVOSerNr!=SVOr.SerNr)then begin TrHs=false; testf = false; end;
+		if(Actr.OKFlag>0)then begin testf = false; end;
+		
+		if(SVO2r.OrderStatus==4 and SVOr.OrderStatus==6)then begin//îòêàç
+			testf1 = true;
+			if(Actr.ActType!="‘ƒ‹")then begin testf1 = false; end;
+			testf1 = (testf1 and testf);
+			if(testf1)then begin
+				recordcopy(lActr,Actr);
+				Actr.ActResult = "’Š€‡";
+				Actr.OKFlag = 1;
+				recordupdate(lActr,Actr,true);
+			end;
+		end;
+		
+		if(SVO2r.OrderStatus==4 and SVOr.OrderStatus==7)then begin//ñîãëàñîâàíî
 			testf1 = true;
 			if(Actr.ActType!="‘ƒ‹")then begin testf1 = false; end;
 			testf1 = (testf1 and testf);
@@ -523,7 +534,9 @@ BEGIN
 				Actr.OKFlag = 1;
 				recordupdate(lActr,Actr,true);
 			end;
-			
+		end;
+		
+		if(SVO2r.OrderStatus==4 and SVOr.OrderStatus==7)then begin//óøëî â ğåìîíò
 			testf1 = true;
 			if(Actr.ActType!="‘ƒŠ")then begin testf1 = false; end;
 			testf1 = (testf1 and testf);
@@ -532,10 +545,9 @@ BEGIN
 				Actr.ActResult = "Š";
 				Actr.OKFlag = 1;
 				recordupdate(lActr,Actr,true);
-			end;			
-			
-		end;
-  end;
+			end;		
+		end;	
+	end;
   
   CUr.Code = SVOr.CustCode;
   if(readfirstmain(CUr,1,true))then begin
@@ -1109,6 +1121,7 @@ BEGIN
 		end;
   	if(SVOr.GetItemFlag==1 and blank(SVOr.CustomField7))then begin
   		SVOr.CustomField7 = currentuser;
+  		SVOr.Inspector = currentuser;
   		Userr.Code = CurrentUser;
 			if (ReadFirstMain(Userr,1,true)) then begin end;
 			SVOr.SalesGroup = Userr.SalesGroup;

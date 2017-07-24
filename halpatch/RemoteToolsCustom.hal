@@ -3629,7 +3629,10 @@ begin
 	val t;
 	
 	recordnew(IntORr);
-
+	
+	IntORr.SVONr = WSr.SVONr;// Edit ************************** Monday, 24 July 2017 14:38:16
+	IntORr.WSNr = WSr.SerNr;// Edit ************************** Monday, 24 July 2017 14:38:17
+	
 	IntORr.Location = WSr.Location;
 	mtrw = matrowcnt(WSr);
 	rownr = 0;

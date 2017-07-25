@@ -2157,11 +2157,15 @@ begin
 			OpenWindow("SVODClass",1,0,"","",SVOr);
 		end;
 	end else begin
-		recordnew(SVOr);
-		CreateSVOFromAcrtRem(Actr,SVOr);
-		putwindowrecord(wn,Actr);
-		windowdook(wn,0);
-		OpenWindow("SVODClass",1,0,"","",SVOr);
+		if(windowstate(wn)==0)then begin
+			recordnew(SVOr);
+			CreateSVOFromAcrtRem(Actr,SVOr);
+			putwindowrecord(wn,Actr);
+			windowdook(wn,0);
+			OpenWindow("SVODClass",1,0,"","",SVOr);
+		end else begin
+			messagebox(0,"Сперва сохраните деятельность");
+		end;
 	end;
 
 return;

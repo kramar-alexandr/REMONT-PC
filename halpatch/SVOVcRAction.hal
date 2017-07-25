@@ -675,7 +675,7 @@ BEGIN
   integer mtrw,i,cnt;// Edit ************************** Thursday, 14 July 2011 12:31:01
 	record SalesGroupVc SGr;
   record CUVc CUr;
-  boolean modify;
+  boolean modify,testf1;
   record ActVc Actr,oldActr,lActr;
   record RLinkVc RLr;
   
@@ -731,7 +731,7 @@ BEGIN
 			end;
 		end;
 		
-		if(SVO2r.OrderStatus==4 and SVOr.OrderStatus==7 and )then begin//согласовано
+		if(SVO2r.OrderStatus==4 and SVOr.OrderStatus==7)then begin//согласовано
 			testf1 = true;
 			if(Actr.ActType!="СОГЛ")then begin testf1 = false; end;
 			testf1 = (testf1 and testf);

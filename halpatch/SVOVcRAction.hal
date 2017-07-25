@@ -513,7 +513,7 @@ BEGIN
 		if(Actr.SVOSerNr!=SVOr.SerNr)then begin TrHs=false; testf = false; end;
 		if(Actr.OKFlag>0)then begin testf = false; end;
 		
-		if(SVO2r.OrderStatus==4 and SVOr.OrderStatus==6)then begin//отказ
+		if(SVOr.OrderStatus==6)then begin//отказ
 			testf1 = true;
 			if(Actr.ActType!="СОГЛ")then begin testf1 = false; end;
 			testf1 = (testf1 and testf);
@@ -525,7 +525,7 @@ BEGIN
 			end;
 		end;
 		
-		if(SVO2r.OrderStatus==4 and SVOr.OrderStatus==7)then begin//согласовано
+		if(SVOr.OrderStatus==7)then begin//согласовано
 			testf1 = true;
 			if(Actr.ActType!="СОГЛ")then begin testf1 = false; end;
 			testf1 = (testf1 and testf);
@@ -537,7 +537,7 @@ BEGIN
 			end;
 		end;
 		
-		if(SVO2r.OrderStatus==4 and SVOr.OrderStatus==7)then begin//ушло в ремонт
+		if(SVOr.OrderStatus==7)then begin//ушло в ремонт
 			testf1 = true;
 			if(Actr.ActType!="СОГОК")then begin testf1 = false; end;
 			testf1 = (testf1 and testf);

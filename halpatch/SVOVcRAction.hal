@@ -504,53 +504,6 @@ BEGIN
 		end;
 	end;
   
-  logtext(0,"SVOVcRecordSaveAfter 2");
-  resetloop(Actr);
-  Actr.SVOSerNr = SVOr.SerNr;
-  TrHs = true;
-	while(loopkey("SVOSerNr",Actr,1,TrHs)) begin
-		testf = true;
-		if(Actr.SVOSerNr!=SVOr.SerNr)then begin TrHs=false; testf = false; end;
-		if(Actr.OKFlag>0)then begin testf = false; end;
-		
-		if(SVOr.OrderStatus==6)then begin//отказ
-			testf1 = true;
-			if(Actr.ActType!="СОГЛ")then begin testf1 = false; end;
-			testf1 = (testf1 and testf);
-			if(testf1)then begin
-				recordcopy(lActr,Actr);
-				Actr.ActResult = "ОТКАЗ";
-				Actr.OKFlag = 1;
-				recordupdate(lActr,Actr,true);
-			end;
-		end;
-		
-		if(SVOr.OrderStatus==7)then begin//согласовано
-			testf1 = true;
-			if(Actr.ActType!="СОГЛ")then begin testf1 = false; end;
-			testf1 = (testf1 and testf);
-			if(testf1)then begin
-				recordcopy(lActr,Actr);
-				Actr.ActResult = "ОК";
-				Actr.OKFlag = 1;
-				recordupdate(lActr,Actr,true);
-			end;
-		end;
-		
-		if(SVOr.OrderStatus==7)then begin//ушло в ремонт
-			testf1 = true;
-			if(Actr.ActType!="СОГОК")then begin testf1 = false; end;
-			testf1 = (testf1 and testf);
-			if(testf1)then begin
-				recordcopy(lActr,Actr);
-				Actr.ActResult = "ОК";
-				Actr.OKFlag = 1;
-				recordupdate(lActr,Actr,true);
-			end;		
-		end;	
-	end;
-  
-  
   logtext(0,"SVOVcRecordSaveAfter 3");
   CUr.Code = SVOr.CustCode;
   if(readfirstmain(CUr,1,true))then begin
@@ -755,6 +708,54 @@ BEGIN
 		end;
 	end;
 	resetloop(Actr);
+	
+	
+	logtext(0,"SVOVcRecordSaveAfter 2");
+  resetloop(Actr);
+  Actr.SVOSerNr = SVOr.SerNr;
+  TrHs = true;
+	while(loopkey("SVOSerNr",Actr,1,TrHs)) begin
+		testf = true;
+		if(Actr.SVOSerNr!=SVOr.SerNr)then begin TrHs=false; testf = false; end;
+		if(Actr.OKFlag>0)then begin testf = false; end;
+		
+		if(SVO2r.OrderStatus==4 and SVOr.OrderStatus==6)then begin//отказ
+			testf1 = true;
+			if(Actr.ActType!="СОГЛ")then begin testf1 = false; end;
+			testf1 = (testf1 and testf);
+			if(testf1)then begin
+				recordcopy(lActr,Actr);
+				Actr.ActResult = "ОТКАЗ";
+				Actr.OKFlag = 1;
+				recordupdate(lActr,Actr,true);
+			end;
+		end;
+		
+		if(SVO2r.OrderStatus==4 and SVOr.OrderStatus==7 and )then begin//согласовано
+			testf1 = true;
+			if(Actr.ActType!="СОГЛ")then begin testf1 = false; end;
+			testf1 = (testf1 and testf);
+			if(testf1)then begin
+				recordcopy(lActr,Actr);
+				Actr.ActResult = "ОК";
+				Actr.OKFlag = 1;
+				recordupdate(lActr,Actr,true);
+			end;
+		end;
+		
+		if(SVO2r.OrderStatus==4 and SVOr.OrderStatus==7)then begin//ушло в ремонт
+			testf1 = true;
+			if(Actr.ActType!="СОГОК")then begin testf1 = false; end;
+			testf1 = (testf1 and testf);
+			if(testf1)then begin
+				recordcopy(lActr,Actr);
+				Actr.ActResult = "ОК";
+				Actr.OKFlag = 1;
+				recordupdate(lActr,Actr,true);
+			end;		
+		end;	
+	end;
+	
 	if(SVO2r.SerNr!=SVOr.SerNr or SVO2r.GetItemFlag!=SVOr.GetItemFlag)then begin
   	logtext(0,"Try Close OJK Act from SVO " & SVOr.SerNr);
   	TrHs = true;
@@ -771,7 +772,7 @@ BEGIN
   			end;
   			logtext(0,"Try Close OJK Act from SVO update " & SVOr.SerNr);
   			recordstore(Actr,true);
-  			logtext(0,"ActVcRecordSaveAfter " & Actr.MainPersons & " UpdateToDoWclass");
+  			logtext(0,"ActVcRecordUpdateAfter " & Actr.MainPersons & " UpdateToDoWclass");
   			AllClientsRemoteAsync.RemoteUserFunction(Actr.MainPersons,"UpdateToDoWclass","","");
   			//recordupdate(oldActr,Actr,true);
   			stepback(Actr);

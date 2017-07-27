@@ -3399,10 +3399,10 @@ begin
 	end;
 	
 	TrHs = true;
-	SVOr.SerNr = 36064;
+	SVOr.SerNr = 36043;
 	while (LoopMain(SVOr,1,TrHs)) begin
 	  testf = true;
-	  if (SVOr.SerNr<36064) then begin testf = false; end;
+	  if (SVOr.SerNr<36043) then begin testf = false; end;
 	  if (testf) then begin
 	    RecordDelete(SVOr);
 	    StepBack(SVOr);

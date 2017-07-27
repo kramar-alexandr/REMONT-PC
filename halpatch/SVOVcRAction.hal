@@ -1078,49 +1078,6 @@ record LetVc Letr;
 return
 end; //Edit***************************Sasha2,16:57 18.05.2017 }
 
-
-global
-updating function LongInt SVOVcRecordCheckClient(var record SVOVc SVOr,record SVOVc SVO2r,LongInt stat,LongInt check)
-BEGIN
-	LongInt res;
-	record UserVc Userr;
-	record LocalMachineBlock LMb;
-	integer insertmode,updatemode;
-	
-	blockload(LMb);
-	insertmode = 1;//Rs_insert
-  updatemode = 2;//Rs_update
-	if(stat==updatemode)then begin
-		if(SVOr.GetItemFlag>0 and SVO2r.GetItemFlag==0)then begin// Edit ************************** Tuesday, 18 July 2017 15:50:38
-  		Userr.Code = CurrentUser;
-			if (ReadFirstMain(Userr,1,true)) then begin end;
-			SVOr.SalesGroup = Userr.SalesGroup;
-  		if(nonblank(LMb.SalesGroup))then begin				
-				SVOr.SalesGroup = LMb.SalesGroup;
-			end;
-		end;
-	end;
-  
-  if(stat==insertmode)then begin
-  	if(SVOr.GetItemFlag>0)then begin// Edit ************************** Tuesday, 18 July 2017 15:50:38
-			SVOr.GetItemDate = currentdate;
-			SVOr.GetItemTime = CurrentTime;
-		end;
-  	if(SVOr.GetItemFlag==1 and blank(SVOr.CustomField7))then begin
-  		Userr.Code = CurrentUser;
-			if (ReadFirstMain(Userr,1,true)) then begin end;
-			SVOr.SalesGroup = Userr.SalesGroup;
-  		if(nonblank(LMb.SalesGroup))then begin				
-				SVOr.SalesGroup = LMb.SalesGroup;
-			end;
-  	end;
-  end;
-	res = 0;
-	
-	SVOVcRecordCheckClient = res;
-return;
-end;
-
 global
 updating function LongInt SVOVcRecordCheck(var record SVOVc SVOr,record SVOVc SVO2r,LongInt stat,LongInt check)
 BEGIN
@@ -1162,9 +1119,9 @@ BEGIN
 			SVOr.GetItemTime = CurrentTime;
 			SVOr.CustomField7 = currentuser;
   		SVOr.Inspector = currentuser;
-  		//Userr.Code = CurrentUser;
-			//if (ReadFirstMain(Userr,1,true)) then begin end;
-			//SVOr.SalesGroup = Userr.SalesGroup;
+  		Userr.Code = CurrentUser;
+			if (ReadFirstMain(Userr,1,true)) then begin end;
+			SVOr.SalesGroup = Userr.SalesGroup;
   		if(SVOr.OrderStatus==9)then begin
 				SVOr.OrderStatus = 0;
 			end;
@@ -1179,9 +1136,9 @@ BEGIN
   	if(SVOr.GetItemFlag==1 and blank(SVOr.CustomField7))then begin
   		SVOr.CustomField7 = currentuser;
   		SVOr.Inspector = currentuser;
-  		//Userr.Code = CurrentUser;
-			//if (ReadFirstMain(Userr,1,true)) then begin end;
-			//SVOr.SalesGroup = Userr.SalesGroup;
+  		Userr.Code = CurrentUser;
+			if (ReadFirstMain(Userr,1,true)) then begin end;
+			SVOr.SalesGroup = Userr.SalesGroup;
 			if(SVOr.OrderStatus==9)then begin
 				SVOr.OrderStatus = 0;
 			end;
@@ -1195,9 +1152,9 @@ BEGIN
 		end;
   	if(SVOr.GetItemFlag==1 and SVO2r.GetItemFlag==0 and blank(SVOr.CustomField7))then begin
   		SVOr.CustomField7 = currentuser;
-  		//Userr.Code = CurrentUser;
-			//if (ReadFirstMain(Userr,1,true)) then begin end;
-			//SVOr.SalesGroup = Userr.SalesGroup;
+  		Userr.Code = CurrentUser;
+			if (ReadFirstMain(Userr,1,true)) then begin end;
+			SVOr.SalesGroup = Userr.SalesGroup;
 			if(SVOr.OrderStatus==9)then begin
 				SVOr.OrderStatus = 0;
 			end;

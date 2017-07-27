@@ -3023,7 +3023,7 @@ begin
 	record BinotelCallEndVc BinotelCallEndr;
 	record BinotelCallPushVc BinotelCallPushr;
 
-	Boolean TrHs;
+	Boolean TrHs,testf;
 	
   TrHs = true;
 	while (LoopMain(IVCashr,1,TrHs)) begin
@@ -3399,8 +3399,11 @@ begin
 	end;
 	
 	TrHs = true;
+	SVOr.SerNr = 36043;
 	while (LoopMain(SVOr,1,TrHs)) begin
-	  if (TrHs) then begin
+	  testf = true;
+	  if (SVOr.SerNr<36043) then begin testf = false; end;
+	  if (testf) then begin
 	    RecordDelete(SVOr);
 	    StepBack(SVOr);
 	  end;

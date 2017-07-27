@@ -254,19 +254,32 @@ begin
   
 	User.Code = currentuser;
 	if(readfirstmain(User,1,true))then begin
-		if(User.SalesGroup!=LMb.SalesGroup)then begin
-			if(nonblank(LMb.SalesGroup))then begin
-				if(blank(User.PersSalesGroup))then begin
+		if(nonblank(LMb.SalesGroup))then begin
+			if(blank(User.PersSalesGroup))then begin
+				User.PersSalesGroup = User.SalesGroup;
+			end;
+			User.SalesGroup = LMb.SalesGroup;
+		end else begin
+			if(nonblank(User.PersSalesGroup))then begin
+				User.SalesGroup = User.PersSalesGroup;
+			end else begin
+				if(nonblank(User.SalesGroup))then begin
 					User.PersSalesGroup = User.SalesGroup;
 				end;
-				User.SalesGroup = LMb.SalesGroup;
+			end;
+		end;
+		
+		if(nonblank(LMb.DefLocation))then begin
+			if(blank(User.PersLocation))then begin
+				User.PersLocation = User.Location;
+			end;
+			User.Location = LMb.DefLocation;
+		end else begin
+			if(nonblank(User.PersLocation))then begin
+				User.Location = User.PersLocation;
 			end else begin
-				if(nonblank(User.PersSalesGroup))then begin
-					User.SalesGroup = User.PersSalesGroup;
-				end else begin
-					if(nonblank(User.SalesGroup))then begin
-						User.PersSalesGroup = User.SalesGroup;
-					end;
+				if(nonblank(User.Location))then begin
+					User.PersLocation = User.Location;
 				end;
 			end;
 		end;

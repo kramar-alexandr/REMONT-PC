@@ -7011,7 +7011,8 @@ end;
     EditField(h3+260,v,-20,"Миним. прейскурант",Normal,MinPLCode,false,PLDefSClass);
   end;
   EditField(h,v+=vs,65,"Склад",Normal,Location,false,LocationSClass);
-  EditField(h3,v,120,"Отдел",Normal,Department,false,DepSClass);
+  //EditField(h3,v,120,"Отдел",Normal,Department,false,DepSClass);
+  EditField(h3,v,120,"Персональный Склад",Normal,PersLocation,false,LocationSClass);// Edit ************************** Thursday, 27 July 2017 15:58:37
   EditField(h,v+=vs,65,"Промежуточный склад",Normal,ThroughLocation,false,LocationSClass);	//Edit----------------------Dima  10.12.2015
   if (StandardHansa==false) then begin
     EditField(h,v+=vs,65,"Склад обслуживания",Normal,ServLocation,false,LocationSClass);

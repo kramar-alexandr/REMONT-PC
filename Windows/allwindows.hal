@@ -446,7 +446,7 @@ begin
   Tile(2,380,false,"2",Math);
 
   v = 24;
-  MatrixBegin(3,v,-50,v+45,-,50);
+  MatrixBegin(3,v,-50,v+45,-,1);
   MatTypedRow(stp);
   Flip(0);
   MatCol(t=1,32,"Устройство",0,ArtCode,false,INUsersSClass);

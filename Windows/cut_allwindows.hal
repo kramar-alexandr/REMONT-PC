@@ -2032,8 +2032,8 @@ begin
   EditField(h2,v,80,"Группа",Normal,Group,false,ITSClass);
   EditField(h,v+=vs,-40,"Наименование",Normal,Name,false,0);
   
-  CheckBox(h,v+=2*vs,0,"Закрыт",Terminated);
-  CheckBox(h2,v,0,"Не для продажи",NotForSales);
+  CheckBox(-150,-40,0,"Закрыт",Terminated);
+  CheckBox(-150,-20,0,"Не для продажи",NotForSales);
   
   if (HasJewelleryInterface) then begin
     EditField(h,v+=vs,150,"Альтернативный код",Normal,AlternativeCode,false,0);

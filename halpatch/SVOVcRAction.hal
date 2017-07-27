@@ -1274,6 +1274,18 @@ BEGIN
 				goto LSVOVcRecordCheck;
 			end;
 		end;
+		if(matrowcnt(SVOr)==0)then begin
+			RecordCheckError(1058,"",0,"ArtCode");
+			res = -1;
+			goto LSVOVcRecordCheck;
+		end else begin
+			matrowget(SVOr,0,SVOrw);
+			if(blank(SVOrw.ArtCode))then begin
+				RecordCheckError(1058,"",0,"ArtCode");
+				res = -1;
+				goto LSVOVcRecordCheck;
+			end;
+		end;
  	end;
  	
  	if(nonblank(SVOr.InnerOrderNr))then begin

@@ -180,7 +180,7 @@ begin
   record RestAccVc RestAccr;
   record RestAccVc RestAcc2r;
   record RcVc RepSpec;
-  record UserVc Userr;
+  record UserVc Userr,User;
   record CUVc CUr;
   Integer nwn;
   Boolean res,newf,openmaster;
@@ -251,6 +251,27 @@ begin
   end;
   BlockLoad(AAMb);
   BlockLoad(LMb);
+  
+	User.Code = currentuser;
+	if(readfirstmain(User,1,true))then begin
+		if(User.SalesGroup!=LMb.SalesGroup)then begin
+			if(nonblank(LMb.SalesGroup))then begin
+				if(blank(User.PersSalesGroup))then begin
+					User.PersSalesGroup = User.SalesGroup;
+				end;
+				User.SalesGroup = LMb.SalesGroup;
+			end else begin
+				if(nonblank(User.PersSalesGroup))then begin
+					User.SalesGroup = User.PersSalesGroup;
+				end else begin
+					if(nonblank(User.SalesGroup))then begin
+						User.PersSalesGroup = User.SalesGroup;
+					end;
+				end;
+			end;
+		end;
+		recordstore(User,true);
+	end;
   savef = true;
   if (CompileType!=ctWindowsCE and CompileType!=ctSeries80 and CompileType!=ctSeries60 and CompileType!=ctNokiaE90 and CompileType!=ctBPadCE and CompileType!=ctWindowsCELandscape) then begin
 /*

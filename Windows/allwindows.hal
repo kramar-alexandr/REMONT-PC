@@ -6949,6 +6949,7 @@ begin
   if (HasSalesGroup) then begin
     EditField(h,v+=vs,100,"Простая функция",Normal,OneFunction,false,OneFunctionSClass);
     EditField(h,v+=vs,100,"Группа по продажам",Normal,SalesGroup,false,SalesGroupSClass);
+    EditField(h,v+=vs,100,"Личная гр. пр.",Normal,PersSalesGroup,false,SalesGroupSClass);
   end;
   EditField(h,v+=vs,100,"Язык",Normal,LangCode,false,LangSClass);
   if (StandardHansa==false) then begin

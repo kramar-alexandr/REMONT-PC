@@ -83,7 +83,7 @@ BEGIN
     Userr.Code = SVOp.SalesMan;
     if (ReadFirstMain(Userr,1,true)) then begin
       SVOp.Objects = AddObjectToObjectList(SVOp.Objects,Userr.PersObjx);
-      SVOp.SalesGroup = Userr.SalesGroup;
+      //SVOp.SalesGroup = Userr.SalesGroup;// Edit ************************** Thursday, 27 July 2017 15:15:42
     end;   
     SVOp.LangCode = CUr.LangCode;
     if(nonblank(CUr.CurncyCode)) then begin //Tuesday, 1 June 2010 2:05:41 PM {

@@ -415,13 +415,18 @@ BEGIN
   record SVOVc SVOr;
   record UserVc Userr;
   string 255 efstr,tstr;
-
+	record LocalMachineBlock LMb;// Edit ************************** Thursday, 27 July 2017 15:17:22
+	
+	blockload(LMb);// Edit ************************** Thursday, 27 July 2017 15:17:23
   if (changed!=0) then begin
     DeselectWindow(wn,false);
     GetWindowRecord(wn,SVOr);    
     Userr.Code = SVOr.SalesMan;
     if (ReadFirstMain(Userr,1,true)) then begin
       SVOr.SalesGroup = Userr.SalesGroup;
+      if(nonblank(LMb.SalesGroup))then begin	// Edit ************************** Thursday, 27 July 2017 15:17:20			
+				SVOr.SalesGroup = LMb.SalesGroup;
+			end;
       efstr = WindEFstr(wn);
       if ((efstr!=SVOr.SalesMan) and (nonblank(efstr))) then begin
         tstr = SVOr.Objects;
@@ -660,6 +665,9 @@ function Boolean SVODClassCustomField7EFAfter(integer wn, integer changed)
 begin
   record SVOVc SVOr;
   record USerVc Userr;
+  record LocalMachineBlock LMb;// Edit ************************** Thursday, 27 July 2017 15:17:59
+  
+  blockload(LMb);// Edit ************************** Thursday, 27 July 2017 15:17:57
   
   GetWindowRecord(wn,SVOr);
   if(changed>0)then begin
@@ -667,8 +675,14 @@ begin
   	  Userr.Code = SVOr.CustomField7;
 			if (ReadFirstMain(Userr,1,true)) then begin end;
 			SVOr.SalesGroup = Userr.SalesGroup;
+			if(nonblank(LMb.SalesGroup))then begin				
+				SVOr.SalesGroup = LMb.SalesGroup;
+			end;
   	end else begin
   	  SVOr.SalesGroup = "";
+  	  if(nonblank(LMb.SalesGroup))then begin				
+				SVOr.SalesGroup = LMb.SalesGroup;
+			end;
   	end;
     PutWindowRecord(wn,SVOr);
   end;
@@ -1828,6 +1842,9 @@ begin
 	record SVOVc SVOr;
 	integer wn;
 	integer state;
+	record LocalMachineBlock LMb;
+	
+	blockload(LMb);
 	
 	wn = curwindow;
 	state = windowstate(wn);
@@ -1840,6 +1857,9 @@ begin
 				getwindowrecord(wn,SVOr);
 				if(SVOr.SalesGroup!=USr.SalesGroup)then begin
 					SVOr.SalesGroup=USr.SalesGroup;
+					if(nonblank(LMb.SalesGroup))then begin				
+						SVOr.SalesGroup = LMb.SalesGroup;
+					end;
 					//SVOr.ServiceManager = "";// Edit ************************** Friday, 23 October 2015 09:54:42
 					putwindowrecord(wn,SVOr);
 					WindowDoOK(wn,0);

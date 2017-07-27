@@ -930,7 +930,7 @@ begin
   	    createf = true;
     		recordnew(Actr);
     		Actr.MainPersons = "";
-    		Actr.Comment = SVOr.SerNr & " " & SVOr.Comment1;
+    		Actr.Comment = SVOr.Comment2 & " " & SVOr.Comment1;
     		Actr.CUCode = SVOr.CustCode;
     		Actr.CUName = SVOr.Addr0;
     		//Actr.AlarmType = kAlarmTypeMessage; //Edit-------------------Vitalii 11:31 23.12.2016
@@ -943,13 +943,13 @@ begin
     			matrowget(SVOr,0,SVOrw);
     			INr.Code = SVOrw.ArtCode;
     			if(readfirstmain(INr,1,true))then begin
-    				Actr.Comment = INr.Code & " " & Actr.Comment;
+    				Actr.Comment = SVOrw.Spec & " " & Actr.Comment;
     				Actr.Phone = curPhone; //left(SVOrw.Spec,20);
     				Actr.MainPersons = FindUsersWithActiveTasksQueue(SVOr,curLocation);
     				if (NonBlank(SVOr.Inspector)) then begin
     				  Actr.MainPersons = SVOr.Inspector & "," & Actr.MainPersons;
     				end;
-    				Actr.Comment = addhours(currenttime,2) & " " & Actr.Comment; //Edit***************************Sasha2,16:14 23.05.2017 }
+    				//Actr.Comment = addhours(currenttime,2) & " " & Actr.Comment; //Edit***************************Sasha2,16:14 23.05.2017 }
     			end;	
     		end;			
   	  end;

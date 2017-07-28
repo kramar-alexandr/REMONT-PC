@@ -209,37 +209,64 @@ begin
   rw = 1;
   TotSum = 0;
   StartReportnoheaderJob(USetStr(7620));
-  StartFormat(15);
-    OutString(0,0,USetStr(14365),false);
-    OutString(0,0,USetStr(14713),false);
-    OutString(0,0,USetStr(12822),false);
-    OutString(11,0,USetStr(12823),false);
-    OutString(12,0,USetStr(12667),false);
+  /*StartFormat(15);
+    OutString(0,0,"Клиент",false);
+    OutString(0,0,"Имя",false);
+    OutString(0,0,"Устройство",false);
+    OutString(11,0,"Описание",false);
+    OutString(12,0,"Сер. №",false);
     OutString(13,0,"Номер",false);
-    OutString(13,0,USetStr(13796),false);
-    OutString(14,0,USetStr(10565),false);
-    OutString(15,0,USetStr(2358),false);
-    OutString(15,0,USetStr(7795),false);
-    if(SVOr.DoneMark==1)then begin
-      OutString(15,0,USetStr(14174),false);
-    end else begin
-      OutString(15,0,USetStr(15219),false);
-    end;
-    OutString(15,0,USetStr(12877),false);
-    OutString(15,0,USetStr(11580),false);// Edit ************************** Monday, 10 October 2011 16:32:52
+    OutString(13,0,"Дата",false);
+    OutString(14,0,"Гарантия",false);
+    //OutString(15,0,"Тип",false);
+    //OutString(15,0,"Класс",false);
+    OutString(15,0,"Статус",false);
+    OutString(15,0,"Дата окон.",false);
+    OutString(15,0,"Выдача товара",false);// Edit ************************** Monday, 10 October 2011 16:32:52
     OutString(15,0,"Service ArtCode",false);// Edit ************************** Monday, 10 October 2011 16:32:52
     OutString(15,0,"Service Serial",false);// Edit ************************** Monday, 10 October 2011 16:32:52
-    OutString(15,0,USetStr(31024),false);// Edit ************************** Tuesday, 19 July 2011 15:34:57
-    
-    OutString(16,0,USetStr(23351),false); //Edit***************************Sasha2,10:20 28.04.2015
-    OutString(17,0,USetStr(31042),false); //Edit***************************Sasha2,10:20 28.04.2015
-    OutString(18,0,USetStr(22423),false); //Edit***************************Sasha2,10:20 28.04.2015
-    OutString(18,0,USetStr(12489),false); //Edit***************************Sasha2,10:20 28.04.2015
-    OutString(19,0,USetStr(31090),false); //Edit***************************Sasha2,14:19 14.02.2017
-    OutString(19,0,USetStr(31091),false); //Edit***************************Sasha2,14:19 14.02.2017
-    OutString(19,0,USetStr(8903),false); //Edit***************************Sasha2,14:19 14.02.2017
+    OutString(15,0,"Жалобы собственника",false);// Edit ************************** Tuesday, 19 July 2011 15:34:57
+    OutString(16,0,"Предоплата дата",false); //Edit***************************Sasha2,10:20 28.04.2015
+    //OutString(17,0,"N квитанции",false); //Edit***************************Sasha2,10:20 28.04.2015
+    OutString(18,0,"Сумма",false); //Edit***************************Sasha2,10:20 28.04.2015
+    OutString(18,0,"Телефон",false); //Edit***************************Sasha2,10:20 28.04.2015
+    OutString(19,0,"Сервис. мастер",false); //Edit***************************Sasha2,14:19 14.02.2017
+    OutString(19,0,"Принял",false); //Edit***************************Sasha2,14:19 14.02.2017
+    OutString(19,0,"Груп.прод.",false); //Edit***************************Sasha2,14:19 14.02.2017
     OutString(19,0,"Статус",false); //Edit***************************Sasha2,14:19 14.02.2017
+  EndFormat;*/
+  
+  StartFormat(15);
+    OutString(0,0,"№",false);
+    OutString(50,0,"Вн. Номер",false);
+    OutString(100,0,"Клиент",false);
+    OutString(150,0,"Имя",false);
+    OutString(300,0,"Телефон",false);
+    OutString(340,0,"Дата",false);
+    OutString(1,0,"Статус",true);
+   // OutString(260,0,"Устройство",false);
+    
+    /*OutString(13,0,"Номер",false);
+    OutString(13,0,"Дата",false);
+    OutString(14,0,"Гарантия",false);
+    //OutString(15,0,"Тип",false);
+    //OutString(15,0,"Класс",false);
+    OutString(15,0,"Статус",false);
+    OutString(15,0,"Дата окон.",false);
+    OutString(15,0,"Выдача товара",false);// Edit ************************** Monday, 10 October 2011 16:32:52
+    OutString(15,0,"Service ArtCode",false);// Edit ************************** Monday, 10 October 2011 16:32:52
+    OutString(15,0,"Service Serial",false);// Edit ************************** Monday, 10 October 2011 16:32:52
+    OutString(15,0,"Жалобы собственника",false);// Edit ************************** Tuesday, 19 July 2011 15:34:57
+    OutString(16,0,"Предоплата дата",false); //Edit***************************Sasha2,10:20 28.04.2015
+    //OutString(17,0,"N квитанции",false); //Edit***************************Sasha2,10:20 28.04.2015
+    OutString(18,0,"Сумма",false); //Edit***************************Sasha2,10:20 28.04.2015
+    OutString(18,0,"Телефон",false); //Edit***************************Sasha2,10:20 28.04.2015
+    OutString(19,0,"Сервис. мастер",false); //Edit***************************Sasha2,14:19 14.02.2017
+    OutString(19,0,"Принял",false); //Edit***************************Sasha2,14:19 14.02.2017
+    OutString(19,0,"Груп.прод.",false); //Edit***************************Sasha2,14:19 14.02.2017
+    OutString(19,0,"Статус",false); //Edit***************************Sasha2,14:19 14.02.2017*/
   EndFormat;
+  
   
   switch (RepSpec.ArtMode) begin
     case 0:
@@ -352,7 +379,53 @@ begin
       mtrw = matrowcnt(SVOr);
       for(i=0;i<mtrw;i=i+1) begin
         matrowget(SVOr,i,SVOrw);
+        
         StartFormat(15);
+					OutString(0,"DblSVOVc",SVOr.SerNr,false);
+					OutString(50,0,SVOr.InnerOrderNr,false);
+					OutString(100,"DblCUVc",SVOr.CustCode,false);
+					OutString(150,0,SVOr.Addr0,false);
+					OutString(300,0,SVOr.Kontinfo1,false);
+					OutString(340,0,SVOr.TransDate,false);
+					OutString(1,0,SVOr.StatusText,true);
+					//OutString(260,0,SVOrw.Spec,false);
+		
+				EndFormat;
+				
+				StartFormat(15);
+					OutString(0,0,"Устройство:",false);
+					OutString(50,0,SVOrw.ArtCode,false);	
+					OutString(150,0,SVOrw.Spec,false);	
+				EndFormat;
+				StartFormat(15);
+					OutString(0,0,"Жалобы:",false);
+					OutString(50,0,SVOr.Comment1,false);	
+				EndFormat;
+				StartFormat(15);
+					OutString(0,0,"Внешний вид:",false);
+					OutString(50,0,SVOr.Comment3,false);	
+				EndFormat;
+				StartFormat(15);
+					OutString(0,0,"Гр.Пр.:",false);
+					OutString(50,0,SVOr.SalesGroup,false);	
+					OutString(150,0,"Принял:",false);
+					OutString(200,0,SVOr.CustomField7,false);	
+					OutString(300,0,"Сер. мастер:",false);
+					OutString(350,0,SVOr.ServiceManager,false);	
+				EndFormat;
+				StartFormat(15);
+					OutString(0,0,"Предопл:",false);
+					OutString(50,0,SVOr.PrepaySum,false);	
+					OutString(150,0,"К оплате:",false);
+					OutString(200,0,SVOr.WSCost,false);		
+				EndFormat;
+				StartFormat(15);
+					OutString(0,0,"",false);
+				EndFormat;
+				
+				gray_divider(0,1);
+        
+        /*StartFormat(15);
           OutString(0,0,SVOr.CustCode,false);
           OutString(0,0,SVOr.Vlastnik,false);
           OutString(0,0,SVOrw.ArtCode,false);
@@ -368,8 +441,8 @@ begin
             case 3: tstr = USetStr(8156);
             case 4: tstr = USetStr(31003);
           end;  
-          OutString(15,0,tstr,false);
-          OutString(15,0,SVOr.OrderClass,false);
+          //OutString(15,0,tstr,false);
+          //OutString(15,0,SVOr.OrderClass,false);
           if(SVOr.DoneMark==1)then begin
             OutString(15,0,USetStr(14174),false);
           end else begin
@@ -400,14 +473,14 @@ begin
           OutString(15,0,serial,false);// Edit ************************** Tuesday, 11 October 2011 16:03:32
           OutString(15,0,SVOr.Comment1 & " " & SVOr.Comment2,false);// Edit ************************** Monday, 10 October 2011 16:31:26
           OutString(16,0,SVOr.PrepaySum,false); //Edit***************************Sasha2,10:20 28.04.2015
-          OutString(17,0,SVOr.CustomField4,false); //Edit***************************Sasha2,10:20 28.04.2015
+          //OutString(17,0,SVOr.CustomField4,false); //Edit***************************Sasha2,10:20 28.04.2015
           OutString(18,0,SVOr.WSCost,false); //Edit***************************Sasha2,10:20 28.04.2015
           OutString(18,0,SVOr.Kontinfo1,false); //Edit***************************Sasha2,10:20 28.04.2015
           OutString(19,0,SVOr.ServiceManager,false); //Edit***************************Sasha2,14:20 14.02.2017
           OutString(19,0,SVOr.CustomField7,false); //Edit***************************Sasha2,14:20 14.02.2017
           OutString(19,0,SVOr.SalesGroup,false); //Edit***************************Sasha2,14:20 14.02.2017
           OutString(19,0,SVOr.StatusText,false);
-        EndFormat;
+        EndFormat;*/
       end;
     end;    
   end;

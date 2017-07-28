@@ -1074,15 +1074,55 @@ record CUVc CUr;
 			if(SVOr.CustCode!=CUr.Code)then begin TrHs = false; end;
 			
 			if(TrHs)then begin
-				//recordnew(Letr);
-				//AddToText(SVOr.Kontinfo1,Letr);
-				//if(StringInText(phone,Letr))then begin
-					sernr[count] = SVOr.SerNr;
-					count = count + 1;
-				//end;	
+				sernr[count] = SVOr.SerNr;
+				count = count + 1;
 			end;
 		end;
-	
+	end else begin
+		CUr.Phone = phone;
+		if(readfirstkey("Phone",CUr,1,true))then begin
+			count = 0;
+			SVOr.CustCode = CUr.Code;
+			TrHs = true;
+			while(loopkey("CustCode",SVOr,1,TrHs))begin
+				if(SVOr.CustCode!=CUr.Code)then begin TrHs = false; end;
+			
+				if(TrHs)then begin
+					sernr[count] = SVOr.SerNr;
+					count = count + 1;
+				end;
+			end;
+		end else begin
+			CUr.AltPhone = phone;
+			if(readfirstkey("AltPhone",CUr,1,true))then begin
+				count = 0;
+				SVOr.CustCode = CUr.Code;
+				TrHs = true;
+				while(loopkey("CustCode",SVOr,1,TrHs))begin
+					if(SVOr.CustCode!=CUr.Code)then begin TrHs = false; end;
+			
+					if(TrHs)then begin
+						sernr[count] = SVOr.SerNr;
+						count = count + 1;
+					end;
+				end;
+			end else begin
+				CUr.Mobile = phone;
+				if(readfirstkey("Mobile",CUr,1,true))then begin
+					count = 0;
+					SVOr.CustCode = CUr.Code;
+					TrHs = true;
+					while(loopkey("CustCode",SVOr,1,TrHs))begin
+						if(SVOr.CustCode!=CUr.Code)then begin TrHs = false; end;
+			
+						if(TrHs)then begin
+							sernr[count] = SVOr.SerNr;
+							count = count + 1;
+						end;
+					end;
+				end;
+			end;
+		end;
 	end;
 	
 	

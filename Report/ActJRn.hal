@@ -122,7 +122,11 @@ BEGIN
 					testf = readfirstmain(ActTyper,1,true);
          OutString(270,0,ActTyper.Comment,false);// Edit ************************** Friday, 28 July 2017 17:12:36
          OutString(320,0,Actr.MainPersons,false);// Edit ************************** Friday, 28 July 2017 17:12:36OutString(340,0,"Заказ",false);
-         OutString(360,"DblSVOVc",Actr.SVOSerNr,false);
+         if(Actr.SVOSerNr>0)then begin
+					 OutString(360,"DblSVOVc",Actr.SVOSerNr,false);
+         end else begin
+         	OutString(360,"","",false);
+         end;
         EndFormat;
       end;
     end;  

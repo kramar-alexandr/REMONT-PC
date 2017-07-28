@@ -15,6 +15,7 @@ begin
   Setting("Дефекты",DefectLClass,modSVO);
   Setting("Контроль пропущенных звонков",BinotelUserTClass,modSVO);
   Setting("Контроль внутрених заказов",LogisticUserTClass,modPO);
+  Setting("Настройки Binotel",BinotelSettingsTClass,modSY);
 	
   Report("Отчет по истории товаров технический ",FindErrorInIHRClass,FindErrorInIHRn,0,modDBMain);
 	Report("Отчет по телефонам клиентов",ServClientOrderRClass,ServClientOrderRn,0,modSVO);// Edit ************************** Monday, 4 July 2016 17:52:38

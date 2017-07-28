@@ -31,6 +31,7 @@ BEGIN
   OutString(80,0,"Клиент",false);
   OutString(120,0,USetStr(9823),false);
   //OutString(200,0,USetStr(9824),false);
+   OutString(190,0,"Вып.",false);
   OutString(200,0,USetStr(7589),false);
   OutString(270,0,"Результат",false);
   OutString(320,0,"Сотрудник",false);
@@ -116,9 +117,17 @@ BEGIN
         StartFormat(15);
          OutLongInt(0,"DblActVc",Actr.SerNr,false);
          OutString(30,0,Actr.TransDate,false);
-         OutString(80,0,CUr.Code,false);// Edit ************************** Friday, 28 July 2017 17:34:44
+         OutString(80,"DblCUVc",CUr.Code,false);// Edit ************************** Friday, 28 July 2017 17:34:44
          OUtString(120,0,ActTyper.Comment,false);
          //OUtString(200,0,acttype,false);
+         
+         if(Actr.OKFlag==1)then begin
+         	 OutString(190,0,chr(195),false);
+         end else begin
+         	 OutString(190,0,"",false);
+         end;
+         
+         
          OutString(200,0,Actr.Comment,false);
          ActTyper.Code = Actr.ActResult;
 					testf = readfirstmain(ActTyper,1,true);

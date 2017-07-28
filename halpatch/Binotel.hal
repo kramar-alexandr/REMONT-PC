@@ -511,10 +511,13 @@ procedure MakeBinotelCallFromExtNumToPhone(string fromExtNumber,string toPhoneNu
 begin
   string 255 key,secret,host,keyNode,signatureNode,extNumNode,phoneNode,page;
   Area req,reply;
+  record BinotelSettingsBlock BSb;
+  
+  blockload(BSb);
     
     if (NonBlank(fromExtNumber) and NonBlank(toPhoneNumber)) then begin
-      key = "bc327a-61c63b1";
-      secret = "1546c2-8c393b-fcf888-acbaba-3ec826a2";
+      key = BSb.ApiKey;//"bc327a-61c63b1";
+      secret = BSb.ApiSecret;//"1546c2-8c393b-fcf888-acbaba-3ec826a2";
       host = "api.binotel.com";
       page = "/api/2.0/calls/ext-to-phone.json";
       

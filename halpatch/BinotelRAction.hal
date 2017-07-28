@@ -146,6 +146,12 @@ BEGIN
 				end;
 			end;
 			
+			if(BCEr.callType=="1")then begin
+				Actr.OKFlag = 1;
+				Actr.ActResult = "ЗВ";
+				comment = "Исходящий вызов";
+			end;
+			
 			recordstore(Actr,true);
 			
 			if(foundfsvo)then begin

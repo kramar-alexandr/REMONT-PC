@@ -8850,3 +8850,34 @@ begin
 
   EndWindow;
 end;
+
+window ActJRClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,v2,vm,vs;
+  WindowBegin("Определите журнал деятельностей",ActJRClass,CGRcW,RcType);
+  SetWRect(20,80,450,340);
+  v = 6; vs = 20; h = 120;
+  PeriodField(h,v,"Период");
+  EditFieldTL(h,v+=vs, 150,"Сотрудник",   M4UStr,Normal,50,f6,false,UserSClass);
+  EditFieldTL(h,v+=vs, 150,"Клиенты",   M4UStr,Normal,50,f1,false,AllCUSClass);
+  EditFieldTL(h,v+=vs, 60,"Категория клиентов", M4UStr,Normal,5,f4,false,CCatSClass);
+  EditFieldTL(h,v+=vs, 60,"Классификация",M4UStr,Normal,30,f2,false,CClassSClass);
+  EditFieldTL(h,v+=vs, 60,"Вид деятельности", M4UStr,Normal,5,f3,false,ActTypeSClass);
+  EditFieldTL(h,v+=vs, 60,"Результат", M4UStr,Normal,5,f7,false,ActTypeSClass);
+  /*if (HasModTS or IsEnterprise) then begin
+  EditFieldTL(h,v+=vs, 60,"Проект", M4UStr,Normal,20,f5,false,PRSClass);
+  end;*/
+  h = 30; v2 = v+=50; vm = 16;
+  ButtonFrame(h,v,130,3,"Исключать тип календаря");
+  Checkbox(h,v,0,"Время",flags[3]);
+  CheckBox(h,v+=16,0,"Прогноз",flags[4]);
+  CheckBox(h,v+=16,0,"Не показывать",flags[5]);
+  h = 200; v = v2;
+  ButtonFrame(h,v,200,4,"Деятельности");
+  Checkbox(h,v,0,"Искл. начатые в периоде",flags[0]);
+  CheckBox(h,v+=16,0,"Созд. в периоде",flags[1]);
+  CheckBox(h,v+=16,0,"Обновл. в периоде",flags[2]);
+  CheckBox(h,v+=16,0,"Выпол. в периоде",flags[6]);
+  EndWindow;
+end;

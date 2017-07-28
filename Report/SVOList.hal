@@ -409,13 +409,13 @@ begin
 							if(ISBr.Serial!=SVOrw.SerialNr)then begin TrHs1 = false; end;
 					
 							if(TrHs1 and ISBr.Quant>0)then begin
-								OutString(250,0,"Склад:",false);
+								OutString(350,0,"Склад:",false);
 								Locr.Code = ISBr.Location;
 								readfirstmain(Locr,1,true);
 								if(nonblank(Locr.Name))then begin
-									OutString(300,0,Locr.Name,false);
+									OutString(400,0,Locr.Name,false);
 								end else begin
-									OutString(300,0,ISBr.Location,false);
+									OutString(400,0,ISBr.Location,false);
 								end;
 							end;
 						end;

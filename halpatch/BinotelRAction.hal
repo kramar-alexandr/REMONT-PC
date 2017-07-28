@@ -51,7 +51,11 @@ BEGIN
 		
 		if(BCEr.disposition=="ANSWER" or BCEr.disposition=="TRANSFER")then begin
 			acttype = "CALL";
-			comment = "Принятый вызов";
+			if(BCEr.callType==0)then begin
+				comment = "Принятый вызов";
+			end else begin
+				comment = "Исходящий вызов";
+			end;
 			if(nonblank(BCEr.internalNumber))then begin
 				while(loopmain(User,1,true))begin
 					if(User.Phone2==BCEr.internalNumber)then begin

@@ -91,7 +91,7 @@ BEGIN
     end; //Tuesday, 1 June 2010 2:05:41 PM }
     SVOp.ShipDeal = CUr.ShipDeal;
     SVOp.ShipMode = CUr.ShipMode;
-    SVOp.Comment1 = CUr.OrderComment;
+    //SVOp.Comment1 = CUr.OrderComment;
     SVOp.RebCode = CUr.RebCode;
     SVOp.ItemFrPartner = CUr.IsPartner; //Edit***************************Sasha2,16:21 15.12.2015 {
     SVOp.Vlastnik = CUr.Name;

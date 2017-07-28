@@ -33,6 +33,7 @@ BEGIN
   OutString(200,0,USetStr(7589),false);
   OutString(270,0,"Результат",false);
   OutString(320,0,"Сотрудник",false);
+  OutString(340,0,"Заказ",false);
   EndFormat;
   Gray_Divider(0,1);
   foundf = true;
@@ -120,7 +121,8 @@ BEGIN
          ActTyper.Code = Actr.ActResult;
 					testf = readfirstmain(ActTyper,1,true);
          OutString(270,0,ActTyper.Comment,false);// Edit ************************** Friday, 28 July 2017 17:12:36
-         OutString(320,0,Actr.MainPersons,false);// Edit ************************** Friday, 28 July 2017 17:12:36
+         OutString(320,0,Actr.MainPersons,false);// Edit ************************** Friday, 28 July 2017 17:12:36OutString(340,0,"Заказ",false);
+         OutString(340,"DblSVOVc",Actr.SVOSerNr,false);
         EndFormat;
       end;
     end;  

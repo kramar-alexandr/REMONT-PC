@@ -122,7 +122,7 @@ BEGIN
          //OUtString(200,0,acttype,false);
          
          if(Actr.OKFlag==1)then begin
-         	 OutString(190,0,chr(251),false);
+         	 OutString(190,0,"Ok",false);
          end else begin
          	 OutString(190,0,"",false);
          end;

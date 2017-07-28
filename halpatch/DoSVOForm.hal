@@ -270,7 +270,7 @@ L1:;
 		end;
 LActPrintNote1:;
 		
-		
+		OUTFORMFIELD("MYF_InnerOrderNr",SVOr.InnerOrderNr);
 		OUTFORMFIELD("MYF_PrepayCash",SVOr.FastCash);
 		OUTFORMFIELD("MYF_PrepayTerm",SVOr.FastTerm);
 		OUTFORMFIELD("MYF_PrepayAll",SVOr.FastCash + SVOr.FastTerm);

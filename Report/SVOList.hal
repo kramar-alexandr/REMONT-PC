@@ -201,6 +201,8 @@ begin
   string 255 serial,artcode;// Edit ************************** Tuesday, 11 October 2011 16:03:06
   string 20 key;
   date compareDate;
+  record IntSerBalVc ISBr;// Edit ************************** Friday, 23 June 2017 16:51:36
+	record LocationVc Locr;
   
   afr = RepSpec.sStartDate;//FirstInRange(RepSpec.f1,30);
   ato = RepSpec.sEndDate;//LastInRange(RepSpec.f1,30);
@@ -396,6 +398,30 @@ begin
 					OutString(0,0,"Устройство:",false);
 					OutString(50,0,SVOrw.ArtCode,false);	
 					OutString(150,0,SVOrw.Spec,false);	
+					
+					if(nonblank(SVOrw.ArtCode) and nonblank(SVOrw.SerialNr))then begin
+						ISBr.Item = SVOrw.ArtCode;
+						ISBr.Serial = SVOrw.SerialNr;
+						TrHs1 = true;
+						
+						while(loopkey("ItemSerial",ISBr,2,TrHs1))begin
+							if(ISBr.Item!=SVOrw.ArtCode)then begin TrHs1 = false; end;
+							if(ISBr.Serial!=SVOrw.SerialNr)then begin TrHs1 = false; end;
+					
+							if(TrHs1 and ISBr.Quant>0)then begin
+								OutString(250,0,"Склад:",false);
+								Locr.Code = ISBr.Location;
+								readfirstmain(Locr,1,true);
+								if(nonblank(Locr.Name))then begin
+									OutString(300,0,Locr.Name,false);
+								end else begin
+									OutString(300,0,ISBr.Location,false);
+								end;
+							end;
+						end;
+						resetloop(ISBr);
+					end;
+					
 				EndFormat;
 				StartFormat(15);
 					OutString(0,0,"Жалобы:",false);

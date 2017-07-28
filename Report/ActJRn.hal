@@ -27,7 +27,8 @@ BEGIN
   EndHeader;
   StartFormat(15);
   OutString(0,0,USetStr(7250),false);
-  OutString(50,0,USetStr(9822),false);
+  OutString(30,0,USetStr(9822),false);
+  OutString(80,0,"Клиент",false);
   OutString(120,0,USetStr(9823),false);
   //OutString(200,0,USetStr(9824),false);
   OutString(200,0,USetStr(7589),false);
@@ -114,7 +115,8 @@ BEGIN
         testf = readfirstmain(ActTyper,1,true);
         StartFormat(15);
          OutLongInt(0,"DblActVc",Actr.SerNr,false);
-         OutString(50,0,Actr.TransDate,false);
+         OutString(30,0,Actr.TransDate,false);
+         OutString(80,0,CUr.Code,false);// Edit ************************** Friday, 28 July 2017 17:34:44
          OUtString(120,0,ActTyper.Comment,false);
          //OUtString(200,0,acttype,false);
          OutString(200,0,Actr.Comment,false);

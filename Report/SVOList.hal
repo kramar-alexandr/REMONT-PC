@@ -433,7 +433,7 @@ boolean TrHs;
 record LocationVc Locr;
 		
 	CountNumberRepeatPhone(RepSpec.f1,sernr,count);
-  startreportnoheaderjob("Информация по телефону клиента");
+  startreportnoheaderjob("Информация по клиенту");
 	
 	startformat(15);
 		outstring(0,0,"№",false);

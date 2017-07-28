@@ -1061,19 +1061,31 @@ end;
 global procedure CountNumberRepeatPhone(string phone,var array longint sernr,var integer count)
 begin
 record SVOVc SVOr;
-boolean testf;
+boolean testf,TrHs;
 record LetVc Letr;
-
+record CUVc CUr;
 	
-	count = 0;
-	while(loopmain(SVOr,1,true))begin
-		recordnew(Letr);
-		AddToText(SVOr.Kontinfo1,Letr);
-		if(StringInText(phone,Letr))then begin
-			sernr[count] = SVOr.SerNr;
-			count = count + 1;
-		end;	
+	CUr.Code = phone;
+	if(readfirstmain(CUr,1,true))then begin
+		count = 0;
+		SVOr.CustCode = CUr.Code;
+		TrHs = true;
+		while(loopkey("CustCode",SVOr,1,TrHs))begin
+			if(SVOr.CustCode!=CUr.Code)then begin TrHs = false; end;
+			
+			if(TrHs)then begin
+				//recordnew(Letr);
+				//AddToText(SVOr.Kontinfo1,Letr);
+				//if(StringInText(phone,Letr))then begin
+					sernr[count] = SVOr.SerNr;
+					count = count + 1;
+				//end;	
+			end;
+		end;
+	
 	end;
+	
+	
 	
 return
 end; //Edit***************************Sasha2,16:57 18.05.2017 }

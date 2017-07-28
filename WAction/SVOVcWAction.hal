@@ -1360,10 +1360,13 @@ global
 function string 40 SVODClassSpecPasteName(Integer wn,string defpsname)
 begin
   string 40 psname;
-  
+    
   psname = defpsname;
   switch (WindowActiveField(wn)) begin
     case "DelAddrCode": psname = DelAddrSClassSpecPName(defpsname);
+    case "Comment1": psname = "IssueSClass";
+    case "Comment3": psname = "DefectSClass";
+    
   end;
   SVODClassSpecPasteName = psname;
   return;

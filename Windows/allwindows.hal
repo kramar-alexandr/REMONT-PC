@@ -498,8 +498,10 @@ begin
 	EditField(h,v+=vs,300,"e-mail",Normal,Kontinfo2,false,0);	
 	EditField(h,v+=vs,300,"Адрес клиента",Normal,Kontinfo3,false,0);
   v=v+10;
-  EditField(h,v+=vs,300,"Жалобы собств-ка",Normal,Comment1,false,IssueSClass);
-  EditField(h,v+=vs,300,"Внешний вид",Normal,Comment3,false,DefectSClass);// Edit ************************** Friday, 29 May 2015 17:19:51
+  //EditField(h,v+=vs,300,"Жалобы собств-ка",Normal,Comment1,false,IssueSClass);
+  //EditField(h,v+=vs,300,"Внешний вид",Normal,Comment3,false,DefectSClass);// Edit ************************** Friday, 29 May 2015 17:19:51
+  EditField(h,v+=vs,300,"Жалобы собств-ка",Normal,Comment1,false,0);
+  EditField(h,v+=vs,300,"Внешний вид",Normal,Comment3,false,0);
   v=v+10;
   EditField(h,v+=vs,300,"Комментарий",Normal,Comment2,false,0);
   EditField(h,v+=vs,300,"",Normal,Comment4,false,0);

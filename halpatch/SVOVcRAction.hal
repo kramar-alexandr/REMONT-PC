@@ -2079,6 +2079,7 @@ record SalesGroupVc SGr;
 					if(readfirstmain(SGr,1,true))then begin
 						RepSpec.f1 = SGr.FastPMCash;
 						RepSpec.f2 = SGr.FastPMCard;
+						RepSpec.f3 = SGr.FastPMBN;
 						RepSpec.long1 = SVOr.SerNr;
 						OpenWindow("ConfirmFastPaySVOWClass",0,0,"","",RepSpec);
 					end else begin

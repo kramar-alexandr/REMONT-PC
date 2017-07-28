@@ -440,6 +440,7 @@ begin
   halpushbutton(h2+220,v,h2+325,v+50,"FastPaySVODsm","Быстрая оплата");// Edit ************************** Friday, 25 November 2016 11:32:03 
   EditField(h2+145,v,60, "Наличные",ViewOnly,FastCash,false,0);
   EditField(h2+400,v,60, "Предопл.",ViewOnly,PrepaySum,false,0);
+  EditField(h2+510,v,60, "Безнал.",ViewOnly,FastPMBN,false,0);
   EditField(h2+145,v+=20,60, "Терминал",ViewOnly,FastTerm,false,0);
   //EditField(h2+125,v+=20,60, "PlanShip",Normal,PlanShip,false,0);/////////
   EnterSkip(Math);

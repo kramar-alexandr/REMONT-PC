@@ -701,6 +701,7 @@ begin
     RecordField(InTasksQueue,M4Mark,0,0); //Edit***************************Sasha2,15:51 23.05.2017
     RecordField(PersSalesGroup,M4Code,20,0); //Edit***************************Sasha2,15:51 23.05.2017
     RecordField(PersLocation,M4Code,20,0); //Edit***************************Sasha2,15:51 23.05.2017
+    RecordField(PersPhone2,M4Code,20,0);
   EndRecordAdd;
   
   RecordAddBegin(IVVc,"IVVc_Custom");
@@ -1460,6 +1461,7 @@ begin
   RecordField(LocalMachineCode,M4Code,20,0);
   LocalMachineBlockDefinition;
   RecordField(SalesGroup,M4Code,20,0);// Edit ************************** Thursday, 27 July 2017 15:04:02
+  RecordField(PersPhone2,M4Str,20,0);
   EndBlock;
 return;
 end;

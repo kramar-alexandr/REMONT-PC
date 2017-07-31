@@ -1,4 +1,4 @@
-global
+/*global
 procedure NoteFromArchiveWsm()
 BEGIN
   Integer wn,mwn,nwn,thewn;
@@ -20,4 +20,4 @@ BEGIN
   PutWindowString(nwn,"NotepadRLinkComment",CurrentDate & " " & currentuser); //Edit***************************Sasha2,12:03 03.06.2015
 	LNoteFromArchiveWsm:;
   RETURN;
-END;
+END;*/

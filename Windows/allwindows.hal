@@ -372,7 +372,8 @@ begin
   Tile(0,140,false,"",CustCode);
   EditField(h=90,v=6, 82,"Номер",Normal,SerNr,false,TSerSClass);
   EnterSkip(CustCode);
-  EditField(h2=240,v,300,"ФИО",Normal,Addr0,false,0);
+  EditField(h2=240,v,250,"ФИО",Normal,Addr0,false,0);
+  EditField(h2+300,v,70,"Создал",ViewOnly,SalesMan,false,0);
   EditField(h,vm=(v+=vs),82, "Клиент (телефон)",Normal,CustCode,false,CUSClass);
   
   halpushbutton(h-45,vm+17,h+80,vm+50,"ChangeSVOSalesGroup","Перенести ремонт"); 

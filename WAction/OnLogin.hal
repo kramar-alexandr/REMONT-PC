@@ -283,6 +283,22 @@ begin
 				end;
 			end;
 		end;
+		
+		if(nonblank(LMb.PersPhone2))then begin
+			if(blank(User.PersPhone2))then begin
+				User.PersPhone2 = User.Phone2;
+			end;
+			User.Phone2 = LMb.PersPhone2;
+		end else begin
+			if(nonblank(User.PersPhone2))then begin
+				User.Phone2 = User.PersPhone2;
+			end else begin
+				if(nonblank(User.Phone2))then begin
+					User.PersPhone2 = User.Phone2;
+				end;
+			end;
+		end;
+		
 		recordstore(User,true);
 	end;
   savef = true;
@@ -901,5 +917,36 @@ begin
 				updatebrowses("ToDoWClass");
 			end;
 		end;
+return;
+end;
+
+global procedure ChangeBinotelPhoneDsm()
+begin
+	record RcVc RepSpec;
+	record UserVc User;
+	
+	User.Code = currentuser;
+	readfirstmain(User,1,true);
+	RepSpec.f1 = User.Phone2;
+	OpenWindow("ChangeBinotelPhoneWClass",1,0,"","",RepSpec);
+	
+return
+end;
+
+global updating procedure ConfirmBinotelPhoneChangeDsm()
+begin
+	integer wn;
+	record RcVc RepSpec;
+	record UserVc User,oldUser;
+	
+	wn = curwindow;
+	deselectwindow(wn,true);
+	getwindowrecord(wn,RepSpec);
+	User.Code = currentuser;
+	readfirstmain(User,1,true);
+	recordcopy(oldUser,User);
+	User.Phone2 = left(RepSpec.f1,3);
+	recordupdate(oldUser,User,true);
+	closewindow(wn);
 return;
 end;

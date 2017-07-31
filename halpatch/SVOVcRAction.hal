@@ -1214,9 +1214,13 @@ BEGIN
   end;
   
   
-  if((SVOr.OrderStatus==1 or SVOr.OrderStatus==2 or SVOr.OrderStatus==3) and blankdate(SVOr.EndDiagnDate))then begin //Edit***************************Sasha2,17:32 25.10.2016
-  	SVOr.EndDiagnDate = currentdate;
-  	SVOr.EndDiagnTime = CurrentTime;
+  if(/*(SVOr.OrderStatus==1 or SVOr.OrderStatus==2 or SVOr.OrderStatus==3) and*/ blankdate(SVOr.EndDiagnDate))then begin //Edit***************************Sasha2,17:32 25.10.2016
+  	if (stat==updatemode) then begin
+  	  if (SVOr.OrderStatus!=5 and SVO2r.OrderStatus==5) then begin
+  	    SVOr.EndDiagnDate = currentdate;
+  	    SVOr.EndDiagnTime = CurrentTime;
+  	  end;
+  	end;
   end;
   if(SVOr.OrderStatus==2 and blankdate(SVOr.PlanShipDate))then begin
   	SVOr.PlanShipDate = currentdate;// Edit ************************** Thursday, 10 September 2015 17:31:49

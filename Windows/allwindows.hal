@@ -7025,7 +7025,7 @@ end;
   end else begin
     EditField(h,v+=vs,120,"Телефон 1",Normal,Phone1,false,0);   // From dict
   end;
-  EditField(h3,v,120,"Телефон 2",Normal,Phone2,false,0);
+  EditField(h3,v,120,"Binotel",Normal,Phone2,false,0);EditField(h3+160,v,100,"B-Pers",Normal,PersPhone2,false,0);
   if (StandardHansa==false) then begin
     EditField(h,v+=vs,-20,"Доступ резерв. заказа",Normal,ReservLocAccess,false,ReservLocAccessSClass);
   end;
@@ -8670,6 +8670,8 @@ begin
   EditField(h,v+=vs,120,"Принтер по умолч.",Normal,DefPrinter,false,0);
   EditField(h2,v,60,"Группа продаж",Normal,SalesGroup,false,SalesGroupSClass);// Edit ************************** Thursday, 27 July 2017 15:03:51
   EditFieldTL(h,v+=vs,180,"Кодировка экспорта по умолч.",M4StrSet,Normal,89,DefExpCodepage,false,StrSetSClass);
+  EditField(h2+100,v,60,"Binotel",Normal,PersPhone2,false,0);
+
 //  EditField(h,v+=vs,100,"Printer",Normal,FiscalPrinter,false,SetSClass); used difrent way now afaik ,jj
   if (StandardHansa==false) then begin
     EditField(h,v+=vs,60,"Смещение по GMT",Normal,GMTOffset,false,0);           
@@ -8881,5 +8883,302 @@ begin
   CheckBox(h,v+=16,0,"Созд. в периоде",flags[1]);
   CheckBox(h,v+=16,0,"Обновл. в периоде",flags[2]);
   CheckBox(h,v+=16,0,"Выпол. в периоде",flags[6]);
+  EndWindow;
+end;
+
+
+window MasterWClass:7
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real es,h,h2,hfirst,hs,v,v1,v2,voff,vs,ggn,hcount;
+  record UserVc Userr;
+  string 255 tstr;
+  record ModuleBlock Modb;
+ 
+  BlockLoad(Modb);
+  GetCurUser(Userr);
+
+  tstr = "Панель управления";
+  if (HasEMail or HasExternalEMail) then begin
+    ggn = 5; 
+  end else begin
+  ggn = 4;
+  end;
+  WindowBegin(tstr,MasterWClass,CGother,RcType); //!!
+  DynamicWindow;
+  UseView(RcVc);
+  if (GuiType==kGuiMetro) then begin
+    GroupedGridView;
+  end;
+  if (StandardHansa and HasInAppsAvailable) then begin
+    if (WindowStyle("MasterWClass")==kWindowStyleWindows8Desktop) then begin
+      v1 = 87;
+    end else begin
+      v1 = 65;
+    end;
+  end else begin
+    v1 = 0;
+  end;
+// Since this had C code adding buttons, I couldn't get this to work in any other way than adding it to the same place in C code.
+  if (WindowStyle("MasterWClass")==kWindowStyleWindows8Desktop) then begin
+    SetWRect(20,65,780,594+v1);
+    ArchiveList(-354,32,-16,-120);
+    
+    RecordList2(-366,-102,-16,-1,"KPIDefVc");
+    v = 5;
+    BlackFrame(-354,v+=5,-1,v+=20,"Ярлыки",kFrameShadeNone);
+    RlColKey(4,4,"КПЭ",OwnTitle,false,Sign); // should have "Сортировка"
+    CalculatedColumn(-215,80,"Пред.","KPIRowPrevText",true);
+    CalculatedColumn(-130,200,"Текущий","KPIRowCurText",true);  
+    CalculatedColumnTL(-45,200,"Тренд","KPIRowTrend",M4Image,true);  
+    HalPushButtonWithIcon(-15,-96-23,-3,-96+12,1083,"RecalculateKPIsClientNoArg","");
+    h = 20;
+    v = 5;
+    es = 87;
+    vs = 3;
+    hfirst = h;
+    BlackFrame(h,v+=5,200,v+=20,"Личное",kFrameShadeNone);
+    AddBic(503,504,h,v,ToolCalendar,0,"Календарь");
+    AddBic(501,502,h+=es,v,ToolMail,0,"Почтовый ящик");
+    AddBic(623,624,h+=es,v,ToolTodo,0,"Задачи");
+    AddBic(21423,21424,h+=es,v,ToolConferences,0,"Конференции"); 
+    h = hfirst; v = v + es + vs;
+    AddBic(635,735,h,v,ToolResources,0,"Ресурсы"); 
+    if (BuildProductCode!="TBAS" and BuildProductCode!="PAYYAPERP") then begin 
+    AddBic(739,739,h+=es,v,ToolForms,0,"Смарт-прилож."); 
+    end;
+    if (UserCanAction("ViewDashboard",true)) then begin
+      if (Modb.Dashboard) then begin
+        AddBic(5092,5092,h+=es,v,ToolDashboard,0,"Аналитика");
+      end;
+    end;
+    AddBic(741,742,h+=es,v,ToolAggregator,0,"Чтение каналов"); 
+    if (BuildProductCode=="PAYYAPERP") then begin 
+      AddBic(639,640,h+=es,v,ToolInAppPurchase,0,"Marketplace"); // Marketplace 
+    end;
+    h = hfirst; v = v + es + vs;
+    BlackFrame(h,v+=20,200,v+=20,"Модуль: $",kFrameShadeNone);
+    AddBic(701+0,700,h,v,ToolRegs,0,"Регистры"); 
+    AddBic(737,738,h+=es,v,ToolSetup,0,"Настройки"); 
+    AddBic(731,734,h+=es,v,ToolReport,0,"Отчёты"); 
+    AddBic(625,626,h+=es,v,ToolRoutines,0,"Рутины"); 
+//    AddBic(718,750,h+=es,v,ToolDocument,0,"Forms");
+    h = hfirst;  v = v + es + vs;
+    AddBic(718,750,h,v,ToolDocument,0,"Формы"); 
+    AddBic(637,638,h+=es,v,ToolModule,0,"Модуль"); 
+    AddBic(632,730,h+=es,v,ToolOpen,0,  "Компании"); 
+    if (nonblank(USetStr(915)) or WhiteLabel==false) then begin
+      BottomBar;
+      WebPage(-365,-94,-1,-1,MasterBannerURL,"$MASTERBANNER");
+    end;
+    goto LMasterWClass7_SpecMenu;
+  end;
+
+  if (WindowStyle("MasterWClass")==kWindowStyleRedmond) then begin
+    es = 6; hs = 40;
+    SetWRect(20,65,630+hs,479+11*4+15+v1);
+    ScrollBar(-24,16+8+1,-8,-19);
+    h = 48; v=40; h2 = 80; hfirst = h;
+    if (WhiteLabel==false) then begin
+      WebPage(342,0,-1,94,MasterBannerURL,"$MASTERBANNER");
+    end;
+    if (HasKPIs) then begin
+      RecordList2(343,-82,-16,-1,"KPIDefVc");
+      RlColKey(4,4,"КПЭ",OwnTitle,false,Sign); // should have "Сортировка"
+      CalculatedColumn(-215,80,"Пред.","KPIRowPrevText",true);
+      CalculatedColumn(-130,200,"Текущий","KPIRowCurText",true);  
+      CalculatedColumnTL(-45,200,"Тренд","KPIRowTrend",M4Image,true);  
+    end;
+  end else begin
+    es = 6; hs = 40;
+    if (GuiType==kGuiCocoa or GuiType==kGuiMetro) then begin
+      SetWRect(20,65,630+hs,479+11*4+15+v1);
+      if (GuiType==kGuiMetro) then begin
+        GridViewGroup(ggn,"Ярлыки",kGridViewGroupTypeArchive);
+        ggn = ggn - 1;
+      end;
+      if (WhiteLabel) then begin
+        PersonalDesktopHeader(341,-5,-1,24);
+        ArchiveList(342,39,-16,-114);
+      end else begin
+        PersonalDesktopHeader(341,95,-1,118);
+        if (StandardHansa==false) then begin
+          ArchiveList(342,133,-16,-114);
+        end else begin
+          ArchiveList(342,133,-16,-1);
+        end;
+      end;
+      if (StandardHansa==false) then begin
+        if (GuiType==kGuiMetro) then begin
+          GridViewGroup(ggn,"Действие",kGridViewGroupTypeKPI);
+        end;
+        RecordList2(341,-96,-17,-1,"KPIDefVc");
+        RlColKey(4,4,"КПЭ",OwnTitle,false,Sign); // should have "Сортировка"
+        CalculatedColumn(-215,80,"Пред.","KPIRowPrevText",true);
+        CalculatedColumn(-130,200,"Текщий","KPIRowCurText",true);  
+        CalculatedColumnTL(-45,200,"Тренд","KPIRowTrend",M4Image,true);  
+//        HalPushButtonWithIcon(-16,-106-20,-1,-106+10,607,"","");
+      end;
+
+    end else begin
+      if (WindowsMode!=0) then begin
+        SetWRect(20,65,630+hs,479+11*4+v1);
+        ScrollBar(-25,16+8+2,-9,-20);
+      end else begin
+        SetWRect(20,65,630+hs,479+11*3+v1);
+        ScrollBar(-25,16+8+2,-9,-20);
+      end;
+    end;
+    h = 48; v=40; h2 = 80; hfirst = h;
+    if (WhiteLabel==false) then begin
+      if (IsWebClient) then begin
+        WebPage(-365,-128,-1,-35,MasterBannerURL,"$MASTERBANNER"); 
+      end else begin
+      WebPage(342,0,-1,94,MasterBannerURL,"$MASTERBANNER");
+      end;
+    end;
+    if (GuiType!=kGuiCocoa) then begin
+      StaticText(340+hs,19 + 70,"Личный рабочий стол",false);
+    end;
+  end;
+
+  ggn = 0;
+  if (GuiType==kGuiMetro) then begin 
+    if (HasEMail or HasExternalEMail) then begin
+      GridViewGroup(ggn,"Личные",kGridViewGroupTypeNormal);
+      ggn = ggn + 1;
+    end;
+  end;
+  if (GuiType==kGuiCocoa) then begin
+    BlackFrame(0,v-40,342,v+35+es*2+8,"Личные",kFrameShadeLight);
+  end else begin
+    BlackFrame(15,v-30+4,312,v+35+es*2+8,"Личные",kFrameShadeNone);
+  end;
+  v = v+es;
+
+  voff = 0;
+
+  if (GuiType==kGuiMetro) then begin
+    AddBic(503,504,h,v+voff,ToolCalendar,0,"Календарь");
+    AddBic(623,624,h+=es,v,ToolTodo,0,"Задачи");
+    if (HasEMail or HasExternalEMail) then begin
+      AddBic(501,502,h,v+voff,ToolMail,0,"Почтовый ящик");
+//      AddBic(21423,21424,h+=h2,v+voff,ToolConferences,0,"Конференции");
+    end;
+    if (HasWorkflowOverview) then begin
+    if (AddBicToMasterWindow(ToolPipeline,h,v,es,vs,hfirst,hcount)) then begin
+      AddBic(1100,1101,h+=h2,v,ToolPipeline,0,"Обзор рабочего процесса");         
+      end;
+    end;
+  end else begin
+    AddBic(503,504,h,v+voff,ToolCalendar,0,"Календарь");
+    AddBic(501,502,h+=h2,v+voff,ToolMail,0,"Почтовый ящик");
+//  AddBic(29017,29018,h+=h2,v+voff,ToolArchive,0,"Desktop");
+    AddBic(623,624,h+=h2,v+voff,ToolTodo,0,"Задачи");
+    AddBic(21423,21424,h+=h2,v+voff,ToolConferences,0,"Конференции");  
+  end;
+  if (StandardHansa and HasInAppsAvailable) then begin
+    h = hfirst; v=v+70;
+    AddBic(639,640,h,v,ToolInAppPurchase,0,"Магазин")
+  end;
+  h = hfirst; v=v+78+2*es;
+  if (StandardHansa==false) then begin
+    AddBic(635,735,h,v+voff,ToolResources,0,"Ресурсы"); 
+    if (BuildProductCode!="TBAS" and BuildProductCode!="PAYYAPERP") then begin 
+    if (GuiType!=kGuiMetro or HasMetroTestFeatures) then begin
+      AddBic(739,739,h+=h2,v+voff,ToolForms,0,"Смарт-прилож."); 
+      end;
+    end;
+    if (UserCanAction("ViewDashboard",true)) then begin
+      if (Modb.Dashboard) then begin
+    AddBic(5092,5092,h+=h2,v+voff,ToolDashboard,0,"Аналитика");    
+      end;
+end;
+    AddBic(741,742,h+=h2,v+voff,ToolAggregator,0,"Агрегатор");
+    if (BuildProductCode=="PAYYAPERP") then begin 
+      AddBic(639,640,h+=h2,v+voff,ToolInAppPurchase,0,"Marketplace"); // Marketplace 
+    end;
+  end;
+
+  if (GuiType==kGuiMetro) then begin
+    GridViewGroup(ggn,"Компания",kGridViewGroupTypeNormal);
+    ggn = ggn + 1;
+    BlackFrame(15,v-30+4,312,v+35+es*2+8,"Компания",kFrameShadeNone);
+    if (HasEMail or HasExternalEMail) then begin
+      AddBic(21423,21424,h+=h2,v+voff,ToolConferences,0,"Конференции");         
+    end;
+    AddBic(637,638,h+=h2,v+voff,ToolModule,0,  "Модуль:$");
+  end;
+  v = v+es;
+  h = hfirst; v=v+78+2*es;
+
+  if (GuiType==kGuiMetro) then begin
+    GridViewGroup(ggn,"Процедуры",kGridViewGroupTypeNormal);
+//    GridViewGroup(ggn,"Routines:$",kGridViewGroupTypeNormal);
+    ggn = ggn + 1;
+  end;
+  BlackFrame(0,v-50,312,v+35,"Навигация:$",kFrameShadeLight); 
+  AddBic(701+0,700,h,v,ToolRegs,0,"Регистры"); 
+  AddBic(737,738,h+=h2,v,ToolSetup,0,"Настройки"); 
+  AddBic(731,734,h+=h2,v,ToolReport,0,"Отчёты"); 
+  AddBic(625,626,h+=h2,v,ToolRoutines,0,"Процедуры"); 
+
+  h = hfirst; v=v+78+2*es;
+  AddBic(718,750,h,v,ToolDocument,0,"Формы"); 
+  if (GuiType==kGuiMetro) then begin
+  end else begin
+    AddBic(637,638,h+=h2,v,ToolModule,0,  "Модули"); 
+  end;
+  AddBic(632,730,h+=h2,v,ToolOpen,0,  "Компании"); 
+/*  
+add when working
+//  if (TestModule("")) then begin
+    h = hfirst; v=v+78+2*es;  
+    AddBic(701+0,700,h,v,ToolPipeline,0,"Projects"); 
+    AddBic(623,624,h+=h2,v+voff,ToolTodo,0,"Issues"); 
+//  end;
+*/
+
+LMasterWClass7_SpecMenu:;
+  if (HasMetroTestFeatures) then begin
+    SpecMenuGroup("Добавить ярлык",kSpecMenuGroupTypeMenuInBottomBarLeft,4306);
+  end;
+  if (GuiType!=kGuiCocoa) then begin
+    SpecMenuItem("Присоединить файл",'a',mOpsMenuAttachFile);
+    SpecMenuItem("Загрузить файл",' ',mOpsMenuDownloadFile);
+    SpecMenuItem("Открыть запись",' ',mOpsMenuOpenRecord);
+    SpecMenuItem("Редактировать комментарий связи",' ',mOpsMenuEditLinkComment);
+    if (StandardHansa==false) then begin
+      SpecMenuItem("Редактировать Web ссылку",' ',mEditWebLink);
+    end;
+//    SpecialMenu("Show To Links",' ',5,"ShowToLinksMasterWsm"); //can we connect Master Control to smthing ?
+    SpecialMenu("(-",' ',6,"");
+    SpecialMenu("Создать email",' ',10,"MailFromArchiveWsm");
+    SpecialMenu("Создать записку",' ',7,"NoteFromMasterWsm");
+    SpecialMenu("Создать архив",' ',8,"ArchiveFromMasterWsm");
+    if (StandardHansa==false) then begin
+      SpecialMenu("Создать Web Nav ссылку",' ',11,"TWebNavLinkFromArchiveWsm");
+    end;
+  end;
+  SpecialMenu("Сменить пароль",' ',9,"ChangePasswdMasterWsm");
+  if (nonblank(Userr.MinPLCode)) then begin
+    SpecialMenu("Сменить пароль на скидку",' ',9,"ChangeDiscPasswdMasterWsm");
+  end;
+  SpecialMenu("(-",' ',10,"");
+  if (StandardHansa==false) then begin
+    SpecialMenu("Чат: внешний доступ",' ',11,"ExtChatMasterWsm"); // This should be somewhere else...
+//  SpecialMenu("Shares",' ',12,"SharesInfoWsm"); // This should be somewhere else...
+    SpecMenuItem("Синхронизация",' ',mOpsMenuSync);
+  end;
+  if (UserCanAction("AllowNoClockInOut",true)) then begin
+    if (StandardHansa==false) then begin
+      SpecialMenu("Начать работу",' ',14,"ClockInMasterWsm");
+      SpecialMenu("Завершить работу",' ',15,"ClockOutMasterWsm");
+    end;
+  end;
+  SpecialMenu("Открыть фильтр импорта чата",' ',16,"OpenChatFilterWsm");  
+  SpecialMenu("Показать фон",' ',9,"OpenBackgroundMasterWsm");
+  SpecialMenu("Телефон Binotel",' ',9,"ChangeBinotelPhoneDsm"); 
+
   EndWindow;
 end;

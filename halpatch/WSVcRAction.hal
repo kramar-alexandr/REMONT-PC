@@ -541,12 +541,12 @@ begin
   end;          
   SVOr.SerNr = WSp.SVONr;
   if (ReadFirstMain(SVOr,1,true)==false) then begin
-    RecordCheckError(1252,"",-1,"WONr");      
+    RecordCheckError(1252,"",-1,"SVONr");      
     res = -1;
     goto LWSVcRecordCheck;  
   end else begin
     if (SVOr.DoneMark!=0) then begin
-      RecordCheckError(1977,"",-1,"WONr");      
+      RecordCheckError(1977,"",-1,"SVONr");      
       res = -1;
       goto LWSVcRecordCheck;  
     end;

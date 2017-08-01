@@ -1242,7 +1242,7 @@ begin
     Dispr.DelAddr3 = SVOp.DelAddr3;
     Dispr.DelAddr4 = SVOp.DelAddr4;
   end;
-  Dispr.Addr3 = Dispr.Addr3 & " DispTm:" & CurrentTime;  //Edit***************************Sasha2,14:10 01.08.2017
+  Dispr.Addr0 = Dispr.Addr0 & " DispTm:" & CurrentTime;  //Edit***************************Sasha2,14:10 01.08.2017
   Dispr.SalesMan = SVOp.SalesMan;
   Dispr.ShipMode = SVOp.ShipMode;  
   Dispr.ShipDeal = SVOp.ShipDeal;  

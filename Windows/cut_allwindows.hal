@@ -2032,8 +2032,6 @@ begin
   EditField(h2,v,80,"Группа",Normal,Group,false,ITSClass);
   EditField(h,v+=vs,-40,"Наименование",Normal,Name,false,0);
   
-  CheckBox(-150,-40,0,"Закрыт",Terminated);
-  CheckBox(-150,-20,0,"Не для продажи",NotForSales);
   
   if (HasJewelleryInterface) then begin
     EditField(h,v+=vs,150,"Альтернативный код",Normal,AlternativeCode,false,0);
@@ -2069,7 +2067,12 @@ begin
   tilenr = 1;*/
   
   EditField(h,v+=vs,-240,"Классификация",Normal,DispGroups,false,DISClass);
-  v = v + vs;
+  v = v + 2*vs;
+  
+  CheckBox(h,v,0,"Закрыт",Terminated);
+  CheckBox(h,v+=vs,0,"Не для продажи",NotForSales);
+  v = v + 2*vs;
+  
   if (StandardHansa==false) then begin
     ButtonFrame(h,v+=vs,120,4,"Тип товара");
   end else begin

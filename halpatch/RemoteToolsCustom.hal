@@ -3988,3 +3988,90 @@ begin
   
 return;
 end; //Edit***************************Sasha2,13:36 12.07.2017 }
+
+global //Edit***************************Sasha2,13:07 01.08.2017 {
+updating procedure ActFromPUIfIntOrExists(record PUVc PUr,boolean delflag)
+begin
+	record ActVc Actr;
+	record SVOVc SVOr;
+	record WSVc WSr;
+	record POVc POr;
+	record IntORVc IntORr;
+	record LogisticUserBlock LUb;
+	row LogisticUserBlock LUrw;
+	integer i,rwcnt;
+	string 255 users;
+	date blankd;
+	boolean testf,TrHs;
+	
+	blankd = Actr.EndDate;
+	
+  if (PUr.PONr>-1) then begin
+    POr.SerNr = PUr.PONr;
+    if (ReadFirstMain(POr,1,true) and POr.IntORNo>-1) then begin
+      IntORr.SerNr = POr.IntORNo;
+      if (ReadFirstMain(IntORr,1,true) and IntORr.WSNr>-1) then begin
+        blockload(LUb);
+        if(delflag==false)then begin
+          WSr.SerNr = IntORr.WSNr;
+			    readfirstmain(WSr,1,true);
+        	recordnew(Actr);
+        	Actr.Comment = "По внутреннему заказу №" & IntORr.SerNr & " сделано Поступление №" & PUr.SerNr;
+        	Actr.CUCode = WSr.CustCode;
+        	Actr.CUName = WSr.Addr0;
+        	Actr.AlarmType = kAlarmTypeNone;
+        	Actr.SVOSerNr = WSr.SVONr;
+        	Actr.TodoFlag = kTodoFlagTodo;
+        	Actr.SymbNr = 3;
+        	Actr.ActType = "ВНУТР";
+        	Actr.StartTime = currenttime;//StringToTime("00:00:00");
+        	Actr.TransDate = CurrentDate;
+        	Actr.EndDate = blankd;
+        	users = IntORr.OurUser & ",";
+        	/*rwcnt = matrowcnt(LUb);
+        	For(i=0;i<rwcnt;i=i+1) begin
+        		matrowget(LUb,i,LUrw);
+        		if(nonblank(LUrw.User))then begin
+        			if(blank(LUrw.Location))then begin
+        				users = users & LUrw.User & ",";
+        			end;
+        			if(nonblank(LUrw.Location) and LUrw.Location==IntORr.Location)then begin
+        				users = users & LUrw.User & ",";
+        			end;
+        		end;
+        	end;*/ 
+        	
+        	users = left(users,len(users)-1);
+        	if(nonblank(users))then begin
+        		Actr.MainPersons = users;
+        	end else begin
+        		Actr.MainPersons = currentuser;
+        	end;
+        	Actr.SerNr = NextSerNr("ActVc",Actr.TransDate,-1,false,"");
+        	if(recordstore(Actr,true))then begin
+        		CreateRecordLink(IntORr,CurrentCompany,Actr,CurrentCompany);  
+        		CreateRecordLink(Actr,CurrentCompany,IntORr,CurrentCompany); 
+        		CreateRecordLink(IntORr,CurrentCompany,PUr,CurrentCompany);  
+        		CreateRecordLink(PUr,CurrentCompany,IntORr,CurrentCompany); 
+        	end;
+        end else begin
+        	/*WSr.SerNr = IntORr.WSNr;
+        	readfirstmain(WSr,1,true);
+        	Actr.SVOSerNr = WSr.SVONr;
+        	TrHs = true;
+        	while(loopkey("SVOSerNr",Actr,1,TrHs))begin
+        		testf = true;
+        		if(Actr.SVOSerNr!=WSr.SVONr)then begin TrHs = false; testf = false; end;
+        		if(Actr.ActType = "ВНУТР")then begin testf = false; end;
+        		
+        		if(testf)then begin
+        		
+        		end;
+        	end;*/
+        end;
+	    end;
+	  end;
+  end;
+	
+return;
+end; //Edit***************************Sasha2,13:07 01.08.2017 }

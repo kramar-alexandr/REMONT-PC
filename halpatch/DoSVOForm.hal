@@ -26,19 +26,58 @@ external procedure PrintBranchData(string);
 external function roundmode SetRoundModeD(Integer);
 external procedure GetFieldArgument(record DocVc,Integer,var string);
 
+//Edit***************************Sasha2,11:50 02.08.2017 {
+procedure PrintWorkRow(string item,Boolean isCodeF)
+begin
+  record INVc INr;
+    
+    if (FIELDINFORM("MYF_WSWORKNAME") or FIELDINFORM("MYF_WSWORKCODE")) then begin
+      if(isCodeF)then begin
+        INr.Code = item;
+        if(readfirstmain(INr,1,true)) begin
+          if(INr.ItemType==3 or INr.ItemType==0)then begin
+            OUTFORMFIELD("MYF_WSWORKNAME",INr.Name); 
+            OUTFORMFIELD("MYF_WSWORKCODE",INr.Code); 
+          end;
+        end;
+      end else begin
+        OUTFORMFIELD("MYF_WSWORKNAME",item); 
+      end;
+    end;
+    
+    if (FIELDINFORM("MYF_WSITEMNAME") or FIELDINFORM("MYF_WSITEMCODE")) then begin
+      if(nonblank(item))then begin
+        INr.Code = item;
+        if(readfirstmain(INr,1,true)) begin
+          if(INr.ItemType==1 or INr.ItemType==2)then begin
+            OUTFORMFIELD("MYF_WSITEMNAME",INr.Name); 
+            OUTFORMFIELD("MYF_WSITEMCODE",INr.Code); 
+          end;
+        end;
+      end;
+    end;
+  
+  return;
+end; //Edit***************************Sasha2,11:50 02.08.2017 }
 
 procedure PrintWorksRows(record SVOVc SVOr)// Edit ************************** Tuesday, 10 February 2015 18:48:46
 begin
   boolean TrHs,testf;
   record WSVc WSr;
   row WSVc WSrw;
+  record IVVc IVr;
+  row IVVc IVrw;
   integer mtrw,i;
   record INVc INr;
   val price,sum,rebate;
+  vector val artCodeQty;
+  vector val artSpecQty;
+  val tQty,tSum;
+  array string 255 atags;
   
-  WSr.SVONr = SVOr.SerNr;
+  /*WSr.SVONr = SVOr.SerNr;
   TrHs = true;
-  while(loopkey("SVONr",WSr,1,TrHs))begin
+  while (loopkey("SVONr",WSr,1,TrHs)) begin
     testf = true;
     if(WSr.SVONr!=SVOr.SerNr)then begin testf = false; TrHs = false; end;
     if(WSr.OKFlag==0)then begin testf = false; end;
@@ -47,36 +86,80 @@ begin
       mtrw = matrowcnt(WSr);
       For(i=0;i<mtrw;i=i+1) begin
 	      matrowget(WSr,i,WSrw);
-	      	price = price + WSrw.Price*WSrw.Quant;
-	      	sum = sum + WSrw.Sum;
-	        if (FIELDINFORM("MYF_WSWORKNAME") or FIELDINFORM("MYF_WSWORKCODE")) then begin
-	          if(nonblank(WSrw.ArtCode))then begin
-              INr.Code = WSrw.ArtCode;
-              if(readfirstmain(INr,1,true))begin
-                if(INr.ItemType==3 or INr.ItemType==0)then begin
-                  OUTFORMFIELD("MYF_WSWORKNAME",WSrw.Spec); 
-                  OUTFORMFIELD("MYF_WSWORKCODE",WSrw.ArtCode); 
-                end;
+      	price = price + WSrw.Price*WSrw.Quant;
+      	sum = sum + WSrw.Sum;
+        if (FIELDINFORM("MYF_WSWORKNAME") or FIELDINFORM("MYF_WSWORKCODE")) then begin
+          if(nonblank(WSrw.ArtCode))then begin
+            INr.Code = WSrw.ArtCode;
+            if(readfirstmain(INr,1,true)) begin
+              if(INr.ItemType==3 or INr.ItemType==0)then begin
+                OUTFORMFIELD("MYF_WSWORKNAME",WSrw.Spec); 
+                OUTFORMFIELD("MYF_WSWORKCODE",WSrw.ArtCode); 
               end;
-	          end else begin
-              OUTFORMFIELD("MYF_WSWORKNAME",WSrw.Spec); 
-	          end;
-	        end;
-	        
-	        if (FIELDINFORM("MYF_WSITEMNAME") or FIELDINFORM("MYF_WSITEMCODE")) then begin
-	          if(nonblank(WSrw.ArtCode))then begin
-              INr.Code = WSrw.ArtCode;
-              if(readfirstmain(INr,1,true))begin
-                if(INr.ItemType==1 or INr.ItemType==2)then begin
-                  OUTFORMFIELD("MYF_WSITEMNAME",WSrw.Spec); 
-                  OUTFORMFIELD("MYF_WSITEMCODE",WSrw.ArtCode); 
-                end;
+            end;
+          end else begin
+            OUTFORMFIELD("MYF_WSWORKNAME",WSrw.Spec); 
+          end;
+        end;
+        
+        if (FIELDINFORM("MYF_WSITEMNAME") or FIELDINFORM("MYF_WSITEMCODE")) then begin
+          if(nonblank(WSrw.ArtCode))then begin
+            INr.Code = WSrw.ArtCode;
+            if(readfirstmain(INr,1,true)) begin
+              if(INr.ItemType==1 or INr.ItemType==2)then begin
+                OUTFORMFIELD("MYF_WSITEMNAME",WSrw.Spec); 
+                OUTFORMFIELD("MYF_WSITEMCODE",WSrw.ArtCode); 
               end;
-	          end;
-	        end;
+            end;
+          end;
+        end;
       end; 
     end;
+  end;*/
+  
+  IVr.SVONr = SVOr.SerNr;
+  TrHs = true;
+  while (loopkey("SVONr",IVr,1,TrHs)) begin
+    testf = true;
+    if(IVr.SVONr!=SVOr.SerNr)then begin testf = false; TrHs = false; end;
+    if(IVr.OKFlag==0)then begin testf = false; end;
+    if(testf)then begin
+      mtrw = matrowcnt(IVr);
+      for (i=0;i<mtrw;i=i+1) begin
+        matrowget(IVr,i,IVrw);
+        if (IVrw.stp==kInvoiceRowTypeNormal) then begin
+          tQty = IVrw.Quant;
+          tSum = IVrw.Sum;
+          if (IVr.InvType==kInvoiceTypeCredit or IVr.InvType==kInvoiceTypeCreditSpecialSales) then begin
+            tQty = -tQty;
+            tSum = -tSum;
+          end;
+          price = price + IVrw.Price*tQty;
+      	  sum = sum + tSum;
+      	  if (nonblank(IVrw.ArtCode)) then begin
+      	    artCodeQty[IVrw.ArtCode] = artCodeQty[IVrw.ArtCode] + tQty;
+      	  end else begin
+      	    artSpecQty[IVrw.Spec] = artSpecQty[IVrw.Spec] + tQty;
+      	  end;
+        end;
+      end;
+    end;
   end;
+  
+  GetVectorTags(artCodeQty,atags);
+  for (i=0;i<atags.length;i=i+1) begin
+    if (artCodeQty[atags[i]]<>0) then begin
+      PrintWorkRow(atags[i],true);
+    end;
+  end;
+  
+  GetVectorTags(artSpecQty,atags);
+  for (i=0;i<atags.length;i=i+1) begin
+    if (artSpecQty[atags[i]]<>0) then begin
+      PrintWorkRow(atags[i],false);
+    end;
+  end;
+  
   OUTFORMFIELD("MYF_PRICESUM",price);
   OUTFORMFIELD("MYF_REBATE",(1-sum/price)*100);
   OUTFORMFIELD("MYF_REBATEABS",sum - price);

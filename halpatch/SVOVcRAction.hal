@@ -745,6 +745,28 @@ BEGIN
 				recordupdate(lActr,Actr,true);
 			end;
 		end;
+		if(SVO2r.OrderStatus!=2 and SVOr.OrderStatus==2)then begin//согласовано
+			testf1 = true;
+			if(Actr.ActType!="СОГЛ")then begin testf1 = false; end;
+			testf1 = (testf1 and testf);
+			if(testf1)then begin
+				recordcopy(lActr,Actr);
+				Actr.ActResult = "ОК";
+				Actr.OKFlag = 1;
+				recordupdate(lActr,Actr,true);
+			end;
+		end;
+		if(SVO2r.OrderStatus!=6 and SVOr.OrderStatus==6)then begin//согласовано
+			testf1 = true;
+			if(Actr.ActType!="СОГЛ")then begin testf1 = false; end;
+			testf1 = (testf1 and testf);
+			if(testf1)then begin
+				recordcopy(lActr,Actr);
+				Actr.ActResult = "ОТКАЗ";
+				Actr.OKFlag = 1;
+				recordupdate(lActr,Actr,true);
+			end;
+		end;
 		
 		if(SVO2r.OrderStatus==7 and SVOr.OrderStatus==1)then begin//ушло в ремонт
 			testf1 = true;

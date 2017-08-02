@@ -43,6 +43,8 @@ begin
   date blankd;
   string 50 curPhone;
     
+    
+    
     if (SVOr.SerNr>-1 and NonBlank(SVOr.ServiceManager)) then begin
       curPhone = SVOr.Kontinfo1;
   	  if (Blank(curPhone)) then begin
@@ -68,6 +70,8 @@ begin
   			Actr.MainPersons = currentuser;
   		end;
   		Actr.SerNr = NextSerNr("ActVc",Actr.TransDate,-1,false,"");
+  		
+  		logtext(0,"CreateNaSoglasActivity " & SVOr.SerNr & " " & Actr.SerNr);
   		if(recordstore(Actr,true))then begin
   			CreateRecordLink(SVOr,CurrentCompany,Actr,CurrentCompany);  
   			CreateRecordLink(Actr,CurrentCompany,SVOr,CurrentCompany); 

@@ -40,6 +40,7 @@ remote updating function Integer CreateAndOKDispatchFromSVO(record SVOVc,record 
 external procedure WindowFieldGotoForTouchScreen(Integer,Integer,string,Boolean);
 remote updating procedure CreateSVOFromAcrtRem(var record ActVc, var record SVOVc);
 external procedure UpdateMasterWClassOnKPIs(string);
+remote function boolean FindCustByPhone(var record CUVc,var record SVOVc,var string);
 
 // Edit Start ---------------------------------------------- Edit Start
 	//Wednesday, 3 June 2015 16:58:34
@@ -573,41 +574,48 @@ begin
   string 100 tstr;
   array string 100 fio;
   record Phone1Vc Phoner;
+  record CUVc CUr;
   
   GetWindowRecord(wn,SVOr);
-  if(changed>0 and Blank(SVOr.Vlastnik))then begin
-  	
-  	FindPhonePerson(Phoner,SVOr.Kontinfo1);
-  	SVOr.Vlastnik = Phoner.Vlastnik;
-  	SVOr.Priynato = Phoner.Priynato;
-  	if(nonblank(Phoner.FirstName))then begin
-			SVOr.Priynato = Phoner.LastName;
-			SVOr.Name = Phoner.FirstName;
-			SVOr.MiddleName = Phoner.MiddleName;
-  	end else begin
+  
+  
+  if(FindCustByPhone(CUr,SVOr,tstr))then begin
+  	PutWindowRecord(wn,SVOr);
+  end else begin
+		if(changed>0 and Blank(SVOr.Vlastnik))then begin
+		
+			FindPhonePerson(Phoner,SVOr.Kontinfo1);
+			SVOr.Vlastnik = Phoner.Vlastnik;
+			SVOr.Priynato = Phoner.Priynato;
+			if(nonblank(Phoner.FirstName))then begin
+				SVOr.Priynato = Phoner.LastName;
+				SVOr.Name = Phoner.FirstName;
+				SVOr.MiddleName = Phoner.MiddleName;
+			end else begin
 
-			k=0;
-			pos = 0;
-			ExtractObjWithSeparator(" ",SVOr.Priynato,true,pos,tstr);
-			while (nonblank(tstr)) begin    
-				fio[k] = tstr;
-				k=k+1;
+				k=0;
+				pos = 0;
 				ExtractObjWithSeparator(" ",SVOr.Priynato,true,pos,tstr);
-			end;
+				while (nonblank(tstr)) begin    
+					fio[k] = tstr;
+					k=k+1;
+					ExtractObjWithSeparator(" ",SVOr.Priynato,true,pos,tstr);
+				end;
 	
-			if(k>0)then begin
-				SVOr.Priynato = fio[0];
+				if(k>0)then begin
+					SVOr.Priynato = fio[0];
+				end;
+				if(k>1)then begin
+					SVOr.Name = fio[1];
+				end;
+				if(k>2)then begin
+					SVOr.MiddleName = fio[2];
+				end;
+			
 			end;
-			if(k>1)then begin
-				SVOr.Name = fio[1];
-			end;
-			if(k>2)then begin
-				SVOr.MiddleName = fio[2];
-			end;
-  		
-  	end;
-  	
-    PutWindowRecord(wn,SVOr);
+		
+			PutWindowRecord(wn,SVOr);
+		end;
   end;
 	SVODClassKontinfo1EFAfter = true;
 return;
@@ -621,40 +629,44 @@ begin
   string 100 tstr;
   array string 100 fio;
   record Phone1Vc Phoner;
+  record CUVc CUr;
   
   GetWindowRecord(wn,SVOr);
-  if(changed>0 and Blank(SVOr.Vlastnik))then begin
-  	
-  	FindPhonePerson(Phoner,SVOr.Phone2);
-  	SVOr.Vlastnik = Phoner.Vlastnik;
-  	SVOr.Priynato = Phoner.Priynato;
-  	if(nonblank(Phoner.FirstName))then begin
-			SVOr.Priynato = Phoner.LastName;
-			SVOr.Name = Phoner.FirstName;
-			SVOr.MiddleName = Phoner.MiddleName;
-  	end else begin
-  		k=0;
-			pos = 0;
-			ExtractObjWithSeparator(" ",SVOr.Priynato,true,pos,tstr);
-			while (nonblank(tstr)) begin    
-				fio[k] = tstr;
-				k=k+1;
+  if(FindCustByPhone(CUr,SVOr,tstr))then begin		
+		PutWindowRecord(wn,SVOr);
+  end else begin
+		if(changed>0 and Blank(SVOr.Vlastnik))then begin
+			FindPhonePerson(Phoner,SVOr.Phone2);
+			SVOr.Vlastnik = Phoner.Vlastnik;
+			SVOr.Priynato = Phoner.Priynato;
+			if(nonblank(Phoner.FirstName))then begin
+				SVOr.Priynato = Phoner.LastName;
+				SVOr.Name = Phoner.FirstName;
+				SVOr.MiddleName = Phoner.MiddleName;
+			end else begin
+				k=0;
+				pos = 0;
 				ExtractObjWithSeparator(" ",SVOr.Priynato,true,pos,tstr);
-			end;
+				while (nonblank(tstr)) begin    
+					fio[k] = tstr;
+					k=k+1;
+					ExtractObjWithSeparator(" ",SVOr.Priynato,true,pos,tstr);
+				end;
 	
-			if(k>0)then begin
-				SVOr.Priynato = fio[0];
+				if(k>0)then begin
+					SVOr.Priynato = fio[0];
+				end;
+				if(k>1)then begin
+					SVOr.Name = fio[1];
+				end;
+				if(k>2)then begin
+					SVOr.MiddleName = fio[2];
+				end;
 			end;
-			if(k>1)then begin
-				SVOr.Name = fio[1];
-			end;
-			if(k>2)then begin
-				SVOr.MiddleName = fio[2];
-			end;
-  	end;
-  	
-  	
-    PutWindowRecord(wn,SVOr);
+		
+		
+			PutWindowRecord(wn,SVOr);
+		end;
   end;
 	SVODClassPhone2EFAfter = true;
 return;

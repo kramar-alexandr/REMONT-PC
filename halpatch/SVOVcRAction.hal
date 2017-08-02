@@ -1135,7 +1135,7 @@ return
 end; //Edit***************************Sasha2,16:57 18.05.2017 }
 
 
-function boolean FindCustByPhone(var record CUVc CUr,var record SVOVc SVOr,var string tstr)
+global function boolean FindCustByPhone(var record CUVc CUr,var record SVOVc SVOr,var string tstr)
 begin
 	boolean res;
 	

@@ -1407,19 +1407,19 @@ BEGIN
   
   if(nonblank(SVOr.Phone2))then begin
   	if(left(SVOr.Phone2,1)!="0")then begin
-  		RecordCheckError(31087,"",-1,"Phone2");
+  		RecordCheckError(31087,SVOr.Phone2,-1,"Phone2");
       res = -1;
       goto LSVOVcRecordCheck;
   	end;
   	if(len(SVOr.Phone2)!=10)then begin
-  		RecordCheckError(31087,"",-1,"Phone2");
+  		RecordCheckError(31087,SVOr.Phone2,-1,"Phone2");
       res = -1;
       goto LSVOVcRecordCheck;
   	end;
   	rwcnt = len(SVOr.Phone2);
   	For(i=0;i<rwcnt;i=i+1) begin
 	  	if(asc(mid(SVOr.Phone2,i,1))<48 or asc(mid(SVOr.Phone2,i,1))>57)then begin
-	  		RecordCheckError(31087,"",-1,"Phone2");
+	  		RecordCheckError(31087,SVOr.Phone2,-1,"Phone2");
 				res = -1;
 				goto LSVOVcRecordCheck;
 	  	end;

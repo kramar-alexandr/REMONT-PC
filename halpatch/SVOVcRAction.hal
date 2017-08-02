@@ -1385,19 +1385,19 @@ BEGIN
 	 
   if(nonblank(SVOr.Kontinfo1))then begin
   	if(left(SVOr.Kontinfo1,1)!="0")then begin
-  		RecordCheckError(31087,"",-1,"Kontinfo1");
+  		RecordCheckError(31087,SVOr.Kontinfo1,-1,"Kontinfo1");
       res = -1;
       goto LSVOVcRecordCheck;
   	end;
   	if(len(SVOr.Kontinfo1)!=10)then begin
-  		RecordCheckError(31087,"",-1,"Kontinfo1");
+  		RecordCheckError(31087,SVOr.Kontinfo1,-1,"Kontinfo1");
       res = -1;
       goto LSVOVcRecordCheck;
   	end;
   	rwcnt = len(SVOr.Kontinfo1);
   	For(i=0;i<rwcnt;i=i+1) begin
 	  	if(asc(mid(SVOr.Kontinfo1,i,1))<48 or asc(mid(SVOr.Kontinfo1,i,1))>57)then begin
-	  		RecordCheckError(31087,"",-1,"Kontinfo1");
+	  		RecordCheckError(31087,SVOr.Kontinfo1,-1,"Kontinfo1");
 				res = -1;
 				goto LSVOVcRecordCheck;
 	  	end;

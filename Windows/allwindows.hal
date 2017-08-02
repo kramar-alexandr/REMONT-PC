@@ -772,7 +772,7 @@ begin
   if (HasModSVO) then begin
     EditField(h3,v+=vs,82,"№ заказа на раб.",Normal,WONr,false,0);
   end;
-  EditField(h3,v+=vs,50,"Таблица скидок",ViewOnly,RebCode,false,RebSClass); //Edit***************************Sasha2,14:51 28.02.2017
+  EditField(h3,v+=vs,50,"Таблица скидок",Normal,RebCode,false,RebSClass); //Edit***************************Sasha2,14:51 28.02.2017
   if (HasModIN) then begin
     CheckBox(h4,v=vm,0,"Обновить склад",UpdStockFlag);
   end;

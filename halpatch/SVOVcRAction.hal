@@ -1140,66 +1140,76 @@ begin
 	boolean res;
 	
 	res = false;
-	CUr.Code = SVOr.CustCode;
-	if(readfirstmain(CUr,1,true))then begin 
-		res = true;
-		goto lFindCustByPhone;
+	if(nonblank(SVOr.CustCode))then begin
+		CUr.Code = SVOr.CustCode;
+		if(readfirstmain(CUr,1,true))then begin 
+			res = true;
+			goto lFindCustByPhone;
+		end;
 	end;
-	CUr.Code = SVOr.Kontinfo1;
-	if(readfirstmain(CUr,1,true))then begin 
-		res = true;
-		SVOr.CustCode = CUr.Code;
-		PasteCUInSVO(SVOr,"",tstr);
-		goto lFindCustByPhone;
+	if(nonblank(SVOr.Kontinfo1))then begin
+		CUr.Code = SVOr.Kontinfo1;
+		if(readfirstmain(CUr,1,true))then begin 
+			res = true;
+			SVOr.CustCode = CUr.Code;
+			PasteCUInSVO(SVOr,"",tstr);
+			goto lFindCustByPhone;
+		end;
 	end;
-	CUr.Code = SVOr.Phone2;
-	if(readfirstmain(CUr,1,true))then begin 
-		res = true;
-		SVOr.CustCode = CUr.Code;
-		PasteCUInSVO(SVOr,"",tstr);
-		goto lFindCustByPhone;
+	if(nonblank(SVOr.Phone2))then begin
+		CUr.Code = SVOr.Phone2;
+		if(readfirstmain(CUr,1,true))then begin 
+			res = true;
+			SVOr.CustCode = CUr.Code;
+			PasteCUInSVO(SVOr,"",tstr);
+			goto lFindCustByPhone;
+		end;
 	end;
-	CUr.Phone = SVOr.Kontinfo1;
-	if(readfirstkey("Phone",CUr,1,true))then begin 
-		res = true;
-		SVOr.CustCode = CUr.Code;
-		PasteCUInSVO(SVOr,"",tstr);
-		goto lFindCustByPhone;
+	if(nonblank(SVOr.Kontinfo1))then begin
+		CUr.Phone = SVOr.Kontinfo1;
+		if(readfirstkey("Phone",CUr,1,true))then begin 
+			res = true;
+			SVOr.CustCode = CUr.Code;
+			PasteCUInSVO(SVOr,"",tstr);
+			goto lFindCustByPhone;
+		end;
+		CUr.AltPhone = SVOr.Kontinfo1;
+		if(readfirstkey("AltPhone",CUr,1,true))then begin 
+			res = true;
+			SVOr.CustCode = CUr.Code;
+			PasteCUInSVO(SVOr,"",tstr);
+			goto lFindCustByPhone;
+		end;
+		CUr.Mobile = SVOr.Kontinfo1;
+		if(readfirstkey("Mobile",CUr,1,true))then begin 
+			res = true;
+			SVOr.CustCode = CUr.Code;
+			PasteCUInSVO(SVOr,"",tstr);
+			goto lFindCustByPhone;
+		end;
 	end;
-	CUr.AltPhone = SVOr.Kontinfo1;
-	if(readfirstkey("AltPhone",CUr,1,true))then begin 
-		res = true;
-		SVOr.CustCode = CUr.Code;
-		PasteCUInSVO(SVOr,"",tstr);
-		goto lFindCustByPhone;
-	end;
-	CUr.Mobile = SVOr.Kontinfo1;
-	if(readfirstkey("Mobile",CUr,1,true))then begin 
-		res = true;
-		SVOr.CustCode = CUr.Code;
-		PasteCUInSVO(SVOr,"",tstr);
-		goto lFindCustByPhone;
-	end;
-	CUr.Phone = SVOr.Phone2;
-	if(readfirstkey("Phone",CUr,1,true))then begin 
-		res = true;
-		SVOr.CustCode = CUr.Code;
-		PasteCUInSVO(SVOr,"",tstr);
-		goto lFindCustByPhone;
-	end;
-	CUr.AltPhone = SVOr.Phone2;
-	if(readfirstkey("AltPhone",CUr,1,true))then begin 
-		res = true;
-		SVOr.CustCode = CUr.Code;
-		PasteCUInSVO(SVOr,"",tstr);
-		goto lFindCustByPhone;
-	end;
-	CUr.Mobile = SVOr.Phone2;
-	if(readfirstkey("Mobile",CUr,1,true))then begin 
-		res = true;
-		SVOr.CustCode = CUr.Code;
-		PasteCUInSVO(SVOr,"",tstr);
-		goto lFindCustByPhone;
+	if(nonblank(SVOr.Phone2))then begin
+		CUr.Phone = SVOr.Phone2;
+		if(readfirstkey("Phone",CUr,1,true))then begin 
+			res = true;
+			SVOr.CustCode = CUr.Code;
+			PasteCUInSVO(SVOr,"",tstr);
+			goto lFindCustByPhone;
+		end;
+		CUr.AltPhone = SVOr.Phone2;
+		if(readfirstkey("AltPhone",CUr,1,true))then begin 
+			res = true;
+			SVOr.CustCode = CUr.Code;
+			PasteCUInSVO(SVOr,"",tstr);
+			goto lFindCustByPhone;
+		end;
+		CUr.Mobile = SVOr.Phone2;
+		if(readfirstkey("Mobile",CUr,1,true))then begin 
+			res = true;
+			SVOr.CustCode = CUr.Code;
+			PasteCUInSVO(SVOr,"",tstr);
+			goto lFindCustByPhone;
+		end;
 	end;
 	
 lFindCustByPhone:;

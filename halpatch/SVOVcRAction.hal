@@ -1134,6 +1134,79 @@ record CUVc CUr;
 return
 end; //Edit***************************Sasha2,16:57 18.05.2017 }
 
+
+function boolean FindCustByPhone(var record CUVc CUr,var record SVOVc SVOr,var string tstr)
+begin
+	boolean res;
+	
+	res = false;
+	CUr.Code = SVOr.CustCode;
+	if(readfirstmain(CUr,1,true))then begin 
+		res = true;
+		goto lFindCustByPhone;
+	end;
+	CUr.Code = SVOr.Kontinfo1;
+	if(readfirstmain(CUr,1,true))then begin 
+		res = true;
+		SVOr.CustCode = CUr.Code;
+		PasteCUInSVO(SVOr,"",tstr);
+		goto lFindCustByPhone;
+	end;
+	CUr.Code = SVOr.Phone2;
+	if(readfirstmain(CUr,1,true))then begin 
+		res = true;
+		SVOr.CustCode = CUr.Code;
+		PasteCUInSVO(SVOr,"",tstr);
+		goto lFindCustByPhone;
+	end;
+	CUr.Phone = SVOr.Kontinfo1;
+	if(readfirstkey("Phone",CUr,1,true))then begin 
+		res = true;
+		SVOr.CustCode = CUr.Code;
+		PasteCUInSVO(SVOr,"",tstr);
+		goto lFindCustByPhone;
+	end;
+	CUr.AltPhone = SVOr.Kontinfo1;
+	if(readfirstkey("AltPhone",CUr,1,true))then begin 
+		res = true;
+		SVOr.CustCode = CUr.Code;
+		PasteCUInSVO(SVOr,"",tstr);
+		goto lFindCustByPhone;
+	end;
+	CUr.Mobile = SVOr.Kontinfo1;
+	if(readfirstkey("Mobile",CUr,1,true))then begin 
+		res = true;
+		SVOr.CustCode = CUr.Code;
+		PasteCUInSVO(SVOr,"",tstr);
+		goto lFindCustByPhone;
+	end;
+	CUr.Phone = SVOr.Phone2;
+	if(readfirstkey("Phone",CUr,1,true))then begin 
+		res = true;
+		SVOr.CustCode = CUr.Code;
+		PasteCUInSVO(SVOr,"",tstr);
+		goto lFindCustByPhone;
+	end;
+	CUr.AltPhone = SVOr.Phone2;
+	if(readfirstkey("AltPhone",CUr,1,true))then begin 
+		res = true;
+		SVOr.CustCode = CUr.Code;
+		PasteCUInSVO(SVOr,"",tstr);
+		goto lFindCustByPhone;
+	end;
+	CUr.Mobile = SVOr.Phone2;
+	if(readfirstkey("Mobile",CUr,1,true))then begin 
+		res = true;
+		SVOr.CustCode = CUr.Code;
+		PasteCUInSVO(SVOr,"",tstr);
+		goto lFindCustByPhone;
+	end;
+	
+lFindCustByPhone:;
+	FindCustByPhone = res;
+return
+end;
+
 global
 updating function LongInt SVOVcRecordCheck(var record SVOVc SVOr,record SVOVc SVO2r,LongInt stat,LongInt check)
 BEGIN
@@ -1468,34 +1541,31 @@ BEGIN
       goto LSVOVcRecordCheck;
     end;
   end;
-  CUr.Code = SVOr.CustCode;
-  if (ReadFirstMain(CUr,1,true)==false) then begin
-  	if(blank(SVOr.Kontinfo1))then begin
-			RecordCheckError(1120,SVOr.CustCode,-1,"CustCode");      
-			res = -1; 
-			goto LSVOVcRecordCheck;
-    end else begin
-    	recordnew(CUr);
-			CUr.Code = SVOr.Kontinfo1;
-			CUr.Phone = SVOr.Kontinfo1;
-			if(nonblank(SVOr.Vlastnik))then begin
-				CUr.Name = SVOr.Vlastnik;
-			end else begin
-				CUr.Name = "Новый контакт";
-			end;
-			CUr.CustCat = "РОЗН";
-			CUr.CUType = 1;
-			CUr.CurncyCode = "UAH";
-			CUr.VATCode = "0%";
-			CUr.PayDeal = "ОФ";
-			SVOr.PayDeal = "ОФ";
-			recordinsert(CUr,true);
-			SVOr.CustCode = CUr.Code;
-			if (PasteCUInSVO(SVOr,"",tstr)) then begin
-			
-			end;
-    end;
+  //CUr.Code = SVOr.CustCode;
+  if(FindCustByPhone(CUr,SVOr,tstr)==false)then begin
+  //if (ReadFirstMain(CUr,1,true)==false) then begin
+
+		recordnew(CUr);
+		CUr.Code = SVOr.Kontinfo1;
+		CUr.Phone = SVOr.Kontinfo1;
+		if(nonblank(SVOr.Vlastnik))then begin
+			CUr.Name = SVOr.Vlastnik;
+		end else begin
+			CUr.Name = "Новый контакт";
+		end;
+		CUr.CustCat = "РОЗН";
+		CUr.CUType = 1;
+		CUr.CurncyCode = "UAH";
+		CUr.VATCode = "0%";
+		CUr.PayDeal = "ОФ";
+		SVOr.PayDeal = "ОФ";
+		recordinsert(CUr,true);
+		SVOr.CustCode = CUr.Code;
+		if (PasteCUInSVO(SVOr,"",tstr)) then begin
+
+		end;			
   end;
+  
   if((SVOr.Addr0=="Новый контакт" or SVOr.Addr0=="Новый клиент") and SVOr.Addr0!=SVOr.Vlastnik)then begin
   	SVOr.Addr0 = SVOr.Vlastnik;
   end;

@@ -481,7 +481,7 @@ begin
 	//Monday, 25 November 2013 10:10:41
 	  
   User.Code = CurrentUser;
-  if(readfirstmain(User,1,true))then begin
+  /*if(readfirstmain(User,1,true))then begin
   	if(nonblank(User.Location) and (WSp.Location!=User.Location))then begin
   		if(usercanaction("DisallowOtherStockWSVc",true)==false)then begin
   			RecordCheckError(31033,"",-1,"Location");      
@@ -496,7 +496,7 @@ begin
 				goto LWSVcRecordCheck;
 			end;
 		end;  	
-  end;
+  end;*/
 
 	// Edit End ---------------------------------------------- Edit End
   if ((WSp.PrelOK==0) and (WS2p.PrelOK!=0) and (WSp.OKFlag==0)) then begin

@@ -554,8 +554,8 @@ begin
 		HalPushButton(250,16,350,16+10,"SVOLClassOpenSVO1LClass","Без сер.мен.");
 		HalPushButton(360,16,460,16+10,"SVOLClassOpenSVO2LClass","Все в работе");
 		HalPushButton(470,16,570,16+10,"SVOLClassOpenSVO3LClass","Свои");
-		HalPushButton(580,16,630,16+10,"RunSVODateOff3RepRn","5 Дней!");
-		//HalPushButton(640,16,700,16+10,"RunSVODateOff14RepRn","14 Дня!");
+		HalPushButton(580,16,630,16+10,"RunSVODateOff3RepRn","3 Дня!");
+		HalPushButton(640,16,700,16+10,"RunSVODateOff14RepRn","5 Дней!");
   EndToolBar; //Edit***************************Sasha2,17:21 10.05.2017 }
   FormName(PrintSVOL);
   RecordList(4,17,-21,-39);

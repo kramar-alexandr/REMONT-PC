@@ -625,13 +625,13 @@ begin
 	boolean testf;
 	integer countwdays;
 	
-	StartReportNoHeaderJob("Џросроченные в ремонте заказы");
+	StartReportNoHeaderJob("Џросроченные в диагностике заказы!!!!");
 		USr.Code = CurrentUser;
 		readfirstmain(USr,1,true);
 		
 		if(nonblank(RepSpec.f1))then begin
 			startformat(15);
-				outstring(0,"Dbl3RepRnAll","Џоказать все просроченные в ремонте заказы",false);
+				outstring(0,"Dbl3RepRnAll","Џоказать все просроченные в диагностике заказы",false);
 			endformat;
 		
 			gray_divider(0,100);
@@ -660,12 +660,16 @@ begin
 				
 			*/
 			if(SVOr.OrderStatus==9)then begin testf = false; end;
+			if(SVOr.OrderStatus==7)then begin testf = false; end;
+			if(SVOr.OrderStatus==1)then begin testf = false; end;
+			if(SVOr.OrderStatus==8)then begin testf = false; end;
+			if(SVOr.OrderStatus==3)then begin testf = false; end;
 			if(SVOr.OrderStatus==2)then begin testf = false; end;
 			if(SVOr.OrderStatus==6)then begin testf = false; end;
 			if(SVOr.DoneMark>0)then begin testf = false; end;
 			if(nonblank(RepSpec.f1) and SVOr.ServiceManager!=RepSpec.f1)then begin testf = false; end;
 			countwdays = CountWorkingDays(SVOr.TransDate,Currentdate,"","UA");		
-			if(countwdays<5)then begin testf = false; end;
+			if(countwdays<3)then begin testf = false; end;
 			
 			if(testf)then begin
 				startformat(15);
@@ -723,9 +727,11 @@ begin
 			if(USr.SalesGroup!=SVOr.SalesGroup)then begin testf = false; end;
 			if(SVOr.DoneMark>0)then begin testf = false; end;
 			if(SVOr.OrderStatus==2)then begin testf = false; end;
+			if(SVOr.OrderStatus==9)then begin testf = false; end;
+			if(SVOr.OrderStatus==6)then begin testf = false; end;
 			if(nonblank(RepSpec.f1) and SVOr.ServiceManager!=RepSpec.f1)then begin testf = false; end;
 			countwdays = datediff(currentdate,SVOr.TransDate);
-			if(countwdays<14)then begin testf = false; end;
+			if(countwdays<5)then begin testf = false; end;
 			
 			
 			if(testf)then begin

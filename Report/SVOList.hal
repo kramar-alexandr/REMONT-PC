@@ -730,7 +730,7 @@ begin
 			if(SVOr.OrderStatus==9)then begin testf = false; end;
 			if(SVOr.OrderStatus==6)then begin testf = false; end;
 			if(nonblank(RepSpec.f1) and SVOr.ServiceManager!=RepSpec.f1)then begin testf = false; end;
-			countwdays = datediff(currentdate,SVOr.TransDate);
+			countwdays = CountWorkingDays(SVOr.TransDate,Currentdate,"","UA");		
 			if(countwdays<5)then begin testf = false; end;
 			
 			

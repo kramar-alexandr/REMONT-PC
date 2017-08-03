@@ -867,7 +867,7 @@ record SHVc SHr;
 			if(IHr.ArtCode!=artcode and nonblank(artcode)) then begin testf = false; end;
 			if(IHr.SerialNr!=serial) then begin testf = false;  TrHs = false; end;
 			//if(IHr.FileName=="IVVc") then begin testf = false; end;
-			if(IHr.StockAffectf==0)then begin testf = false; end;
+			//if(IHr.StockAffectf==0)then begin testf = false; end;
 			
 			if(testf) then begin
 				

@@ -651,10 +651,14 @@ begin
 			testf = true;	
 			if(USr.SalesGroup!=SVOr.SalesGroup)then begin testf = false; end;
 			if(SVOr.DoneMark>0)then begin testf = false; end;
-			if(SVOr.OrderStatus>0 and SVOr.OrderStatus!=4 and SVOr.OrderStatus!=9)then begin testf = false; end;
+			//if(SVOr.OrderStatus>0 and SVOr.OrderStatus!=4 and SVOr.OrderStatus!=9)then begin testf = false; end;
+			if(SVOr.OrderStatus==9)then begin testf = false; end;
+			if(SVOr.OrderStatus==2)then begin testf = false; end;
+			if(SVOr.OrderStatus==6)then begin testf = false; end;
+			
 			if(nonblank(RepSpec.f1) and SVOr.ServiceManager!=RepSpec.f1)then begin testf = false; end;
 			countwdays = CountWorkingDays(SVOr.TransDate,Currentdate,"","UA");
-			if(countwdays<3)then begin testf = false; end;
+			if(countwdays<5)then begin testf = false; end;
 			
 			
 			if(testf)then begin

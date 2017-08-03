@@ -2515,6 +2515,7 @@ begin
   EditField(h,v+=vs,25,"Условие опл. (кл.)",Normal,PayDeal,false,PDSClass);
   EditField(h,v+=vs,20,"Код НДС (кл.)",Normal,VATCode,false,VATCodeSClass);
   EditField(h,v+=vs,80,"Валюта (кл.)",Normal,CurncyCode,false,CurncyCodeSClass);
+  EditField(h,v+=vs ,80, "Таблица скидок",Normal,RebCode,false,RebSClass);
   EditField(h,v+=vs,-20,"Комментарий",Normal,Comment0,false,0);
   EditField(h,v+=vs,-20,"",Normal,Comment1,false,0);
   

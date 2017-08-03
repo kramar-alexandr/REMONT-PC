@@ -3900,7 +3900,7 @@ updating procedure CreateActFromSVOForInspectorIfItemRejected(record SVOVc SVOr)
 begin
 
 	CreateActFromSVOForInspectorWithActType(SVOr,"RJCTD",5,"Напомнить клиенту забрать не принятую на ремонт технику.","");
-	CreateActFromSVOForInspectorWithActType(SVOr,"RJC",0,"Заказ отменен.",SVOr.ServiceManager);
+	CreateActFromSVOForInspectorWithActType(SVOr,"RJC",0,"Заказ отменен. Собрать устройство на выдачу!",SVOr.ServiceManager);
 
 return;
 end; //Edit***************************Sasha2,16:49 15.06.2017 }

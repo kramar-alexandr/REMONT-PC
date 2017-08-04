@@ -1284,15 +1284,6 @@ BEGIN
   	SVOr.OrderStatus = 0;
     SVOr.SerNr = NextSerNr("SVOVc",SVOr.TransDate,GetUserSerNrSeries(-1),false,""); //Edit***************************Sasha2,16:59 18.05.2017
   end;
-  /*
-  //for case when Dispatch is made but WindowDoOK(wn,0) returns false in PrintAndSetRegDateInSVODsm()
-  if (BlankDate(SVOr.RegDate)) then begin //Edit***************************Sasha2,14:13 01.08.2017 {
-    Dispatchr.SVONr = SVOr.SerNr;
-    if (ReadFirstKey("SVONr",Dispatchr,1,true)) then begin
-      SVOr.RegDate = Dispatchr.RegDate;
-    end;
-  end; //Edit***************************Sasha2,14:13 01.08.2017 }
-  */
   
   if(stat==updatemode)then begin
 		if(SVOr.GetItemFlag>0 and SVO2r.GetItemFlag==0)then begin// Edit ************************** Tuesday, 18 July 2017 15:50:38
@@ -1792,6 +1783,14 @@ BEGIN
   end;
   
   LogText(0,"SVOVc " & SVOr.SerNr & "  was changed. Company: " & CurrentCompany & " User: " & CurrentUser & "  ServiceMan:" & SVOr.ServiceManager);	//Edit----------------------Dima  30.10.2015
+  
+  //for case when Dispatch is made but WindowDoOK(wn,0) returns false in PrintAndSetRegDateInSVODsm()
+  if (BlankDate(SVOr.RegDate) and SVOr.SerNr>-1) then begin //Edit***************************Sasha2,14:13 01.08.2017 {
+    Dispatchr.SVONr = SVOr.SerNr;
+    if (ReadFirstKey("SVONr",Dispatchr,1,true)) then begin
+      SVOr.RegDate = Dispatchr.RegDate;
+    end;
+  end; //Edit***************************Sasha2,14:13 01.08.2017 }
   
 LSVOVcRecordCheck:;
   if (res!=0) then begin SVOr.SerNr = oldnr; end;

@@ -1390,6 +1390,11 @@ BEGIN
       res = -1;
       goto LSVOVcRecordCheck;
     end;
+    if(SVOr.WSCost>SVOr.FastCash+SVOr.FastPMBN+SVOr.FastTerm)then begin
+    	RecordCheckError(24177,"",-1,"WSCost");
+      res = -1;
+      goto LSVOVcRecordCheck;
+    end;
     /*if (FindOpenActTrans(SVOr.SerNr)) then begin //Edit***************************Sasha2,16:58 18.05.2017
       RecordCheckError(20269,"",-1,"CustCode");
       res = -1;

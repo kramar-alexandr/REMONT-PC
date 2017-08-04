@@ -4083,3 +4083,61 @@ begin
 	
 return;
 end; //Edit***************************Sasha2,13:07 01.08.2017 }
+
+global //Edit***************************Sasha2,22:25 04.08.2017 {
+function LongInt IssueVcRecordCheck(record IssueVc Issuer,record IssueVc Issue2r,LongInt stat,LongInt check)
+begin
+  LongInt res;
+  Integer insertmode,updatemode;
+  
+  res = 0;
+  insertmode = 1;//Rs_insert
+  updatemode = 2;//Rs_update
+  
+  if (Issuer.SerNr==-1) then begin
+    Issuer.SerNr = NextSerNr("IssueVc",CurrentDate,-1,false,"");
+  end;
+  
+LIssueVcRecordCheck:;  
+  IssueVcRecordCheck = res;
+  return;
+end; //Edit***************************Sasha2,22:25 04.08.2017 }
+
+global //Edit***************************Sasha2,22:25 04.08.2017 {
+function LongInt RejectReasonVcRecordCheck(record RejectReasonVc RejectReasonr,record RejectReasonVc RejectReason2r,LongInt stat,LongInt check)
+begin
+  LongInt res;
+  Integer insertmode,updatemode;
+  
+  res = 0;
+  insertmode = 1;//Rs_insert
+  updatemode = 2;//Rs_update
+  
+  if (RejectReasonr.SerNr==-1) then begin
+    RejectReasonr.SerNr = NextSerNr("RejectReasonVc",CurrentDate,-1,false,"");
+  end;
+  
+LRejectReasonVcRecordCheck:;  
+  RejectReasonVcRecordCheck = res;
+  return;
+end; //Edit***************************Sasha2,22:25 04.08.2017 }
+
+global //Edit***************************Sasha2,22:25 04.08.2017 {
+function LongInt DefectVcRecordCheck(record DefectVc Defectr,record DefectVc Defect2r,LongInt stat,LongInt check)
+begin
+  LongInt res;
+  Integer insertmode,updatemode;
+  
+  res = 0;
+  insertmode = 1;//Rs_insert
+  updatemode = 2;//Rs_update
+  
+  if (Defectr.SerNr==-1) then begin
+    Defectr.SerNr = NextSerNr("DefectVc",CurrentDate,-1,false,"");
+  end;
+  
+LDefectVcRecordCheck:;  
+  DefectVcRecordCheck = res;
+  return;
+end; //Edit***************************Sasha2,22:25 04.08.2017 }
+

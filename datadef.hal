@@ -608,8 +608,7 @@ begin
     
     SubsetKeyBegin2(AllServStatusText);// Edit ************************** Wednesday, 14 June 2017 10:53:41
     StoreInBaseKey;
-    AppendFieldToKeyName(SalesGroup);
-    AppendFieldToKeyName(SalesMan);
+    AppendFieldToKeyName(ServiceManager);
     KeySegment(StatusText);
     KeySegment(SerNr);
     
@@ -966,22 +965,34 @@ begin
 	RecordBegin(IssueVc,-,"");
     ImpExpLevel(0);
     RecordField(IssueName,M4Str,60,IssueVc);
-    MainKeyBegin(IssueName,0);
+    RecordField(SerNr,M4Long,0,0);
+    MainKeyBegin(SerNr,0);
+    KeySegment(SerNr);
+    KeyBegin(IssueName);
     KeySegment(IssueName);
+    KeySegment(SerNr);
   EndRecord;
   
   RecordBegin(RejectReasonVc,-,"");// Edit ************************** Wednesday, 7 June 2017 12:54:32
     ImpExpLevel(0);
     RecordField(RejectReason,M4Str,255,0);
-    MainKeyBegin(RejectReason,0);
+    RecordField(SerNr,M4Long,0,0);
+    MainKeyBegin(SerNr,0);
+    KeySegment(SerNr);
+    KeyBegin(RejectReason);
     KeySegment(RejectReason);
+    KeySegment(SerNr);
   EndRecord;
   
 	RecordBegin(DefectVc,-,"");
 		ImpExpLevel(0);
 		RecordField(DefectName,M4Str,60,DefectVc);
-		MainKeyBegin(DefectName,0);
-		KeySegment(DefectName);
+		RecordField(SerNr,M4Long,0,0);
+		MainKeyBegin(SerNr,0);
+		KeySegment(SerNr);
+		KeyBegin(DefectName);
+    KeySegment(DefectName);
+    KeySegment(SerNr);
   EndRecord;
   
   RecordBegin(MonthsStructVc,-,"");	//Edit----------------------Dima  02.02.2016

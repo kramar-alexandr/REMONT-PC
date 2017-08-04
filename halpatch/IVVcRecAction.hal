@@ -2162,7 +2162,7 @@ begin
 				recordnew(IPr);
 				foundf = true;
 				IPr.PayMode = RepSpec.f1;
-				IPr.Comment = "AutoPay Service Order# " & IVr.SVONr;
+				IPr.Comment = "AutoPay Service Order# " & SVOr.SerNr;
 				IPr.TransDate = currentdate;
 				ClearRow(IPr,IPrw,kReceiptRowTypeNormal);
 				IPrw.CustCode = SVOr.CustCode;
@@ -2193,7 +2193,7 @@ begin
 				recordnew(IPr);
 				foundf = true;
 				IPr.PayMode = RepSpec.f2;
-				IPr.Comment = "AutoPay Service Order# " & IVr.SVONr;
+				IPr.Comment = "AutoPay Service Order# " & SVOr.SerNr;
 				IPr.TransDate = currentdate;
 				ClearRow(IPr,IPrw,kReceiptRowTypeNormal);
 				IPrw.CustCode = SVOr.CustCode;
@@ -2224,7 +2224,7 @@ begin
 				recordnew(IPr);
 				foundf = true;
 				IPr.PayMode = RepSpec.f3;
-				IPr.Comment = "AutoPay Service Order# " & IVr.SVONr;
+				IPr.Comment = "AutoPay Service Order# " & SVOr.SerNr;
 				IPr.TransDate = currentdate;
 				ClearRow(IPr,IPrw,kReceiptRowTypeNormal);
 				IPrw.CustCode = SVOr.CustCode;
@@ -2257,7 +2257,7 @@ begin
 			if(sum>=RepSpec.vals0)then begin
 				IVr.SVONr = SVOr.SerNr;
 				TrHs = true;
-				while(loopkey("SVONr",IVr,1,TrHs))begin
+				while(loopkey("SVONr",IVr,1,TrHs)) begin
 					if(IVr.SVONr!=SVOr.SerNr)then begin TrHs = false; end;
 					if(TrHs)then begin
 						ARr.InvoiceNr = IVr.SerNr;
@@ -2295,7 +2295,7 @@ begin
 			end else begin
 				IVr.SVONr = SVOr.SerNr;
 				TrHs = true;
-				while(loopkey("SVONr",IVr,1,TrHs))begin
+				while(loopkey("SVONr",IVr,1,TrHs)) begin
 					if(IVr.SVONr!=SVOr.SerNr)then begin TrHs = false; end;
 					if(TrHs)then begin
 						ARr.InvoiceNr = IVr.SerNr;
@@ -2348,7 +2348,7 @@ begin
 			if(sum>=RepSpec.vals1)then begin
 				IVr.SVONr = SVOr.SerNr;
 				TrHs = true;
-				while(loopkey("SVONr",IVr,1,TrHs))begin
+				while(loopkey("SVONr",IVr,1,TrHs)) begin
 					if(IVr.SVONr!=SVOr.SerNr)then begin TrHs = false; end;
 					if(TrHs)then begin
 						ARr.InvoiceNr = IVr.SerNr;
@@ -2386,7 +2386,7 @@ begin
 			end else begin
 				IVr.SVONr = SVOr.SerNr;
 				TrHs = true;
-				while(loopkey("SVONr",IVr,1,TrHs))begin
+				while(loopkey("SVONr",IVr,1,TrHs)) begin
 					if(IVr.SVONr!=SVOr.SerNr)then begin TrHs = false; end;
 					if(TrHs)then begin
 						ARr.InvoiceNr = IVr.SerNr;
@@ -2438,7 +2438,7 @@ begin
 			if(sum>=RepSpec.vals2)then begin
 				IVr.SVONr = SVOr.SerNr;
 				TrHs = true;
-				while(loopkey("SVONr",IVr,1,TrHs))begin
+				while(loopkey("SVONr",IVr,1,TrHs)) begin
 					if(IVr.SVONr!=SVOr.SerNr)then begin TrHs = false; end;
 					if(TrHs)then begin
 						ARr.InvoiceNr = IVr.SerNr;

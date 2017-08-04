@@ -1390,7 +1390,7 @@ BEGIN
       res = -1;
       goto LSVOVcRecordCheck;
     end;
-    if(SVOr.WSCost>SVOr.FastCash+SVOr.FastPMBN+SVOr.FastTerm)then begin
+    if(SVOr.WSCost>(SVOr.FastCash+SVOr.FastPMBN+SVOr.FastTerm))then begin
     	RecordCheckError(24177,"",-1,"WSCost");
       res = -1;
       goto LSVOVcRecordCheck;

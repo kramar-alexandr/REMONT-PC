@@ -2263,3 +2263,20 @@ begin
 
 return;
 end;
+
+
+
+global updating procedure RejectReasonVcDelMn(record RcVc RepSpec)
+begin
+	record RejectReasonVc RRr;
+	
+	while(loopmain(RRr,1,true))begin
+		if(len(RRr.RejectReason)>50)then begin
+			recorddelete(RRr);
+			stepback(RRr);
+		end;
+	
+	end;
+
+return;
+end;

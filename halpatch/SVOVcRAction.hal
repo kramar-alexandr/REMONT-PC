@@ -857,7 +857,7 @@ BEGIN
   SGr.SGroupCode = SVOr.SalesGroup;
 	if(readfirstmain(SGr,1,true))then begin
 		if(nonblank(SGr.InnerOrderNr))then begin
-			if(SVOr.InnerOrderNr>SGr.InnerOrderNr)then begin
+			if(SVOr.InnerOrderNr!=SVO2r.InnerOrderNr and SVOr.InnerOrderNr>SGr.InnerOrderNr)then begin
 				SGr.InnerOrderNr = SVOr.InnerOrderNr;
 				recordstore(SGr,true);
 			end;

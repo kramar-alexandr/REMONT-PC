@@ -3721,7 +3721,9 @@ begin
 
     errMes = "";
     if (UserCanAction("SVOToDispatch",true)) then begin
-      GetCurUser(Userr);
+      //GetCurUser(Userr);
+      Userr.Code = CurrentUser;
+      ReadFirstMain(Userr,1,true);
       if (Blank(LocMachBl.DefLocation) and Blank(Userr.Location)) then begin
         err = 31098;
       end else begin

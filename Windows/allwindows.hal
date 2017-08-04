@@ -564,7 +564,7 @@ begin
     //RlColKey(79,79,"Заказ",WOMark,false,WOMark);
   //end;
   //RlColKey(111,111,"WS",WSMark,false,WSMark);
-  RlColKey(79,79,"Сч/ф",InvMark,false,InvFlag);
+  RlCol(79,79,"Гот.",DoneMark,false);
   RlColKey(111,111,"Дата счета",TransDate,false,TransDate);
   //RlColKey(255,255,"№ зак.кл.",CustOrdNr,false,CustOrdNr);
   //RlColKey(335,335,"Клиент",CustCode,false,CustCode);

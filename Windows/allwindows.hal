@@ -363,7 +363,7 @@ begin
   DynamicWindow;
   UseView(SVOVc);
   ToolBar;
-  HalPushButton(250,5,350,25,"WorkSheetSVODsm","План работ");
+  HalPushButton(250,5,350,25,"ConfirmWorkSheetSVODsm","Таблица работ");
 	HalPushButton(370,5,430,25,"PrintDoSVOFormButton","Печать");	//Edit----------------------Dima  09.02.2015
   EndToolBar;
   ActiveFieldOnNew("CustCode");  

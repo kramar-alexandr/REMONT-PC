@@ -1012,20 +1012,27 @@ BEGIN
   record WSVc WSr;
   LongInt r;
   Integer wn,nwn;
+  record RcVc RepSpec;
   
   wn = CurWindow;
   if (WindowState(wn)==0) then begin//Rs_normal
     if (UserCanAction("DisallowWSFromSVO",false)==false) then begin
-      GetWindowRecord(wn,SVOr);
-      if (SVOr.DoneMark==0) then begin
-        r = RecordAction_raPasteSVOInWS(SVOr,WSr);
-        switch (r) begin
-          case -1: Beep;
-          case -2: MessageBox(1281,"");
-          otherwise
-            nwn = OpenWindow("WSDClass",1,0,"","",WSr);
-        end;
-        UpdateBrowses("SVOVc");
+      GetWindowRecord(wn,RepSpec);
+      closewindow(wn);
+      SVOr.SerNr = RepSpec.long1;
+      if(readfirstmain(SVOr,1,true))then begin
+				if (SVOr.DoneMark==0) then begin
+					r = RecordAction_raPasteSVOInWS(SVOr,WSr);
+					switch (r) begin
+						case -1: Beep;
+						case -2: MessageBox(1281,"");
+						otherwise
+							nwn = OpenWindow("WSDClass",1,0,"","",WSr);
+					end;
+					UpdateBrowses("SVOVc");
+				end;
+      end else begin
+      	beep;
       end;
     end else begin
       MessageBox(1274,StringFromStringSet(3,"DisallowWSFromSVO"));
@@ -1035,6 +1042,25 @@ BEGIN
   end;
   RETURN;
 END;
+
+global
+updating procedure ConfirmWorkSheetSVODsm()
+BEGIN
+	record RcVc RepSpec;
+	integer wn;
+	record SVOVc SVOr;
+	
+	wn = curwindow;
+	if (WindowState(wn)==0) then begin
+		getwindowrecord(wn,SVOr);
+		RepSpec.long1 = SVOr.SerNr;
+		OpenWindow("CreateWSWClass",1,0,"","",RepSpec);
+	end else begin
+		beep;
+	end;
+	
+return;
+end;
 
 global
 procedure WorkOrderSVOLsm()

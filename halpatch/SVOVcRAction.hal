@@ -681,6 +681,7 @@ BEGIN
   boolean modify,testf1;
   record ActVc Actr,oldActr,lActr;
   record RLinkVc RLr;
+  integer counter;
   
   
   
@@ -782,6 +783,7 @@ BEGIN
 	end;
 	
 	resetloop(Actr);
+	counter = 0;
 	if(SVO2r.SerNr!=SVOr.SerNr or SVO2r.GetItemFlag!=SVOr.GetItemFlag)then begin
   	logtext(0,"Try Close OJK Act from SVO " & SVOr.SerNr);
   	TrHs = true;
@@ -796,17 +798,23 @@ BEGIN
   				Actr.ActResult = "Š";
   				Actr.OKFlag = 1;
   			end;
+  			
   			logtext(0,"Try Close OJK Act from SVO update " & SVOr.SerNr);
   			recordstore(Actr,true);
   			logtext(0,"ActVcRecordUpdateAfter " & Actr.MainPersons & " UpdateToDoWclass");
   			AllClientsRemoteAsync.RemoteUserFunction(Actr.MainPersons,"UpdateToDoWclass","","");
   			//recordupdate(oldActr,Actr,true);
   			stepback(Actr);
+  			counter = counter +1;
+  			if(counter>20)then begin
+  				TrHs = false;
+  				goto lEndLoopMy;
+  			end;
   		end;
   	end;
   end;
 	
-	
+	lEndLoopMy:;
   
   CUr.Code = SVOr.CustCode;
   if(readfirstmain(CUr,1,true))then begin

@@ -784,7 +784,7 @@ BEGIN
 	
 	resetloop(Actr);
 	counter = 0;
-	if(SVO2r.SerNr!=SVOr.SerNr or SVO2r.GetItemFlag!=SVOr.GetItemFlag)then begin
+	if(SVO2r.SerNr!=SVOr.SerNr/* or SVO2r.GetItemFlag!=SVOr.GetItemFlag*/)then begin
   	logtext(0,"Try Close OJK Act from SVO " & SVOr.SerNr);
   	TrHs = true;
   	Actr.SVOSerNr = SVO2r.SerNr;

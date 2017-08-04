@@ -963,7 +963,7 @@ begin
 	EndBlock; //Edit***************************Sasha2,17:27 11.09.2014 }
 	
 	RecordBegin(IssueVc,-,"");
-    ImpExpLevel(0);
+    //ImpExpLevel(0);
     RecordField(IssueName,M4Str,60,IssueVc);
     RecordField(SerNr,M4Long,0,0);
     MainKeyBegin(SerNr,0);
@@ -974,7 +974,7 @@ begin
   EndRecord;
   
   RecordBegin(RejectReasonVc,-,"");// Edit ************************** Wednesday, 7 June 2017 12:54:32
-    ImpExpLevel(0);
+    //ImpExpLevel(0);
     RecordField(RejectReason,M4Str,255,0);
     RecordField(SerNr,M4Long,0,0);
     MainKeyBegin(SerNr,0);
@@ -985,7 +985,7 @@ begin
   EndRecord;
   
 	RecordBegin(DefectVc,-,"");
-		ImpExpLevel(0);
+		//ImpExpLevel(0);
 		RecordField(DefectName,M4Str,60,DefectVc);
 		RecordField(SerNr,M4Long,0,0);
 		MainKeyBegin(SerNr,0);

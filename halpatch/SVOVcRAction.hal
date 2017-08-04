@@ -1433,7 +1433,7 @@ BEGIN
  	
  	if(nonblank(SVOr.RejectReason))then begin// Edit ************************** Wednesday, 7 June 2017 14:53:49
  		RRr.RejectReason = SVOr.RejectReason;
- 		if(readfirstmain(RRr,1,true)==false)then begin
+ 		if(readfirstKey("RejectReason",RRr,1,true)==false)then begin
 			RecordCheckError(1290,"",-1,"RejectReason");
 			res = -1;
 			goto LSVOVcRecordCheck;

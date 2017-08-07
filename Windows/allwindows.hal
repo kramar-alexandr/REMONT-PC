@@ -348,12 +348,18 @@ window SVODClass:1
 begin
   real h,h1,h2,h3,h4,t,v,vm,vs,tvm;
   string 255 label;
-  Integer mode; //Edit***************************Sasha2,15:56 27.10.2016
+  Integer mode,adminMode; //Edit***************************Sasha2,15:56 27.10.2016
   
   if (UserCanAction("UnOKAll",false)) then begin //Edit***************************Sasha2,15:56 27.10.2016
     mode = Normal;
   end else begin
     mode = ViewOnly;
+  end;
+  
+  if (Left(CurrentUser,2)=="SA") then begin
+    adminMode = Normal;
+  end else begin
+    adminMode = ViewOnly;
   end;
   
 	WindowBegin("Заказ на обслуживание",SVODClass,CGview,-);
@@ -439,10 +445,10 @@ begin
   
   v=vm-20;
   halpushbutton(h2+220,v,h2+325,v+50,"FastPaySVODsm","Быстрая оплата");// Edit ************************** Friday, 25 November 2016 11:32:03 
-  EditField(h2+145,v,60, "Наличные",ViewOnly,FastCash,false,0);
-  EditField(h2+400,v,60, "Предопл.",ViewOnly,PrepaySum,false,0);
-  EditField(h2+510,v,60, "Безнал.",ViewOnly,FastPMBN,false,0);
-  EditField(h2+145,v+=20,60, "Терминал",ViewOnly,FastTerm,false,0);
+  EditField(h2+145,v,60, "Наличные",adminMode,FastCash,false,0);
+  EditField(h2+400,v,60, "Предопл.",adminMode,PrepaySum,false,0);
+  EditField(h2+510,v,60, "Безнал.",adminMode,FastPMBN,false,0);
+  EditField(h2+145,v+=20,60, "Терминал",adminMode,FastTerm,false,0);
   //EditField(h2+125,v+=20,60, "PlanShip",Normal,PlanShip,false,0);/////////
   EnterSkip(Math);
   Tile(2,380,false,"2",Math);

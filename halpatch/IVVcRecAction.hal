@@ -2291,7 +2291,7 @@ begin
 							end;
 						end;
 					end;
-				end;
+				end; RESETLOOP(IVr);
 			end else begin
 				IVr.SVONr = SVOr.SerNr;
 				TrHs = true;
@@ -2342,7 +2342,7 @@ begin
 							end;
 						end;
 					end;
-				end;
+				end; RESETLOOP(IVr);
 			end;
 	
 			if(sum>=RepSpec.vals1)then begin
@@ -2382,7 +2382,7 @@ begin
 							end;
 						end;
 					end;
-				end;
+				end; RESETLOOP(IVr);
 			end else begin
 				IVr.SVONr = SVOr.SerNr;
 				TrHs = true;
@@ -2432,7 +2432,7 @@ begin
 							end;
 						end;
 					end;
-				end;
+				end; RESETLOOP(IVr);
 			end;
 			
 			if(sum>=RepSpec.vals2)then begin
@@ -2472,11 +2472,11 @@ begin
 							end;
 						end;
 					end;
-				end;
+				end; RESETLOOP(IVr);
 			end else begin
 				IVr.SVONr = SVOr.SerNr;
 				TrHs = true;
-				while(loopkey("SVONr",IVr,1,TrHs))begin
+				while(loopkey("SVONr",IVr,1,TrHs)) begin
 					if(IVr.SVONr!=SVOr.SerNr)then begin TrHs = false; end;
 					if(TrHs)then begin
 						ARr.InvoiceNr = IVr.SerNr;
@@ -2522,7 +2522,7 @@ begin
 							end;
 						end;
 					end;
-				end;
+				end; RESETLOOP(IVr);
 			end;
 			
 		end;

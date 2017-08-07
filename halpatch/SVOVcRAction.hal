@@ -2260,6 +2260,7 @@ begin
 			if((ivsum>0 and ivpaysum<ivsum) or ivsum==0)then begin
 					closewindow(wn);
 					FastPayInvoicesSVO(RepSpec);
+					UpdateBrowses("SVOVc");
 			end else begin
 				messagebox(0,"‡адолженость по сч/ф заказа отсутствует");
 			end;

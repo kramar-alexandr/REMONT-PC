@@ -2164,7 +2164,7 @@ begin
 				recordnew(IPr);
 				foundf = true;
 				IPr.PayMode = RepSpec.f1;
-				IPr.Comment = "AutoPay Service Order# " & SVOr.SerNr;
+				IPr.Comment = "CPr AutoPay Service Order# " & SVOr.SerNr;
 				IPr.TransDate = currentdate;
 				ClearRow(IPr,IPrw,kReceiptRowTypeNormal);
 				IPrw.CustCode = SVOr.CustCode;
@@ -2195,7 +2195,7 @@ begin
 				recordnew(IPr);
 				foundf = true;
 				IPr.PayMode = RepSpec.f2;
-				IPr.Comment = "AutoPay Service Order# " & SVOr.SerNr;
+				IPr.Comment = "TPr AutoPay Service Order# " & SVOr.SerNr;
 				IPr.TransDate = currentdate;
 				ClearRow(IPr,IPrw,kReceiptRowTypeNormal);
 				IPrw.CustCode = SVOr.CustCode;
@@ -2226,7 +2226,7 @@ begin
 				recordnew(IPr);
 				foundf = true;
 				IPr.PayMode = RepSpec.f3;
-				IPr.Comment = "AutoPay Service Order# " & SVOr.SerNr;
+				IPr.Comment = "NPr AutoPay Service Order# " & SVOr.SerNr;
 				IPr.TransDate = currentdate;
 				ClearRow(IPr,IPrw,kReceiptRowTypeNormal);
 				IPrw.CustCode = SVOr.CustCode;
@@ -2268,7 +2268,7 @@ begin
 								recordnew(IPr);
 									foundf = true;
 									IPr.PayMode = RepSpec.f1;
-									IPr.Comment = "AutoPay Service Order# " & IVr.SVONr;
+									IPr.Comment = "C1 AutoPay Service Order# " & IVr.SVONr;
 									IPr.TransDate = currentdate;
 									IPrw.stp = 1;
 									IPrw.InvoiceNr = IVr.SerNr;///????
@@ -2306,7 +2306,7 @@ begin
 								recordnew(IPr);
 									foundf = true;
 									IPr.PayMode = RepSpec.f1;
-									IPr.Comment = "AutoPay Service Order# " & IVr.SVONr;
+									IPr.Comment = "C2 AutoPay Service Order# " & IVr.SVONr;
 									IPr.TransDate = currentdate;
 									IPrw.stp = 1;
 									IPrw.InvoiceNr = IVr.SerNr;///????
@@ -2359,7 +2359,7 @@ begin
 								recordnew(IPr);
 									foundf = true;
 									IPr.PayMode = RepSpec.f2;
-									IPr.Comment = "Bank Trans # " & RepSpec.f3;
+									IPr.Comment = "T1 Bank Trans # " & RepSpec.f3 & ". Order# " & IVr.SVONr;
 									IPr.TransDate = currentdate;
 									IPrw.stp = 1;
 									IPrw.InvoiceNr = IVr.SerNr;///????
@@ -2397,7 +2397,7 @@ begin
 								recordnew(IPr);
 									foundf = true;
 									IPr.PayMode = RepSpec.f2;
-									IPr.Comment = "Bank Trans # " & RepSpec.f3;
+									IPr.Comment = "T2 Bank Trans # " & RepSpec.f3 & ". Order# " & IVr.SVONr;
 									IPr.TransDate = currentdate;
 									IPrw.stp = 1;
 									IPrw.InvoiceNr = IVr.SerNr;///????
@@ -2449,7 +2449,7 @@ begin
 								recordnew(IPr);
 									foundf = true;
 									IPr.PayMode = RepSpec.f3;
-									IPr.Comment = "Безнал";
+									IPr.Comment = "N1 Безнал" & ". Order# " & IVr.SVONr;
 									IPr.TransDate = currentdate;
 									IPrw.stp = 1;
 									IPrw.InvoiceNr = IVr.SerNr;///????
@@ -2487,7 +2487,7 @@ begin
 								recordnew(IPr);
 									foundf = true;
 									IPr.PayMode = RepSpec.f3;
-									IPr.Comment = "Безнал";
+									IPr.Comment = "N2 Безнал" & ". Order# " & IVr.SVONr;
 									IPr.TransDate = currentdate;
 									IPrw.stp = 1;
 									IPrw.InvoiceNr = IVr.SerNr;///????

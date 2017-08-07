@@ -81,6 +81,8 @@ external function Boolean PasteInvIn2IPr(var record IPVc,Integer,Date,var val,Bo
 external procedure IPVc_PasteRecVal(var record IPVc,Integer);// Edit ************************** Thursday, 13 July 2017 15:34:11
 external function Boolean IPVc_PasteCustCode(var record IPVc,Integer,var LongInt); //Edit***************************Sasha2,14:55 18.02.2015
 
+SetLangMode(LangRussian,"RUS",0);
+
 function Boolean CheckIfNextLegalSerNr(LongInt curivnr,string OfficialSerNr,Date invdate,record CUVc CUr)
 begin
   Boolean res;

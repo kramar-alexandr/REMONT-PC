@@ -538,7 +538,7 @@ begin
   SpecialMenu("Создать деятельность",'c',3,"ActFromSVODsm");
   SpecialMenu("Создать заказ на работу",' ',4,"WorkOrderSVODsm");
   SpecialMenu("Создать запл. опер. по заказу",' ',5,"SVGMFromSVODsm");
-  SpecialMenu("Создать план работ",' ',6,"WorkSheetSVODsm");
+  SpecialMenu("Создать план работ",' ',6,"ConfirmWorkSheetSVODsm");
   SpecialMenu("Выписать сч/факт. клиенту",'F',7,"IVFromSVODsm");
   SpecialMenu("Создать прибытие товара",' ',8,"OffHireFromSVODsm");
   SpecialMenu("Создать выбытие товара",' ',0,"DispatchFromSVODsm");

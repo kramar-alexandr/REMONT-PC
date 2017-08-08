@@ -1017,7 +1017,7 @@ BEGIN
   wn = CurWindow;
   if (WindowState(wn)==0) then begin//Rs_normal
     if (UserCanAction("DisallowWSFromSVO",false)==false) then begin
-      GetWindowRecord(wn,SVOr);
+      //GetWindowRecord(wn,SVOr);
       GetWindowRecord(wn,RepSpec);
       closewindow(wn);
       SVOr.SerNr = RepSpec.long1;

@@ -240,7 +240,7 @@ updating function LongInt InternMovVcRecordUpdateAfter(var record InternMovVc In
 BEGIN
   LongInt res;
 
-  if (InternMovr.OKFlag!=0) then begin
+  if (InternMov2r.OKFlag==0 and InternMovr.OKFlag!=0) then begin
     InternMovUpdateINrs(InternMovr,false,false);
     InternMovUpdateStock(InternMovr);
     InternMovUpdateRentIN(InternMovr);

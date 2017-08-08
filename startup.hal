@@ -16,7 +16,7 @@ begin
   Setting("Контроль пропущенных звонков",BinotelUserTClass,modSVO);
   Setting("Контроль внутрених заказов",LogisticUserTClass,modPO);
   Setting("Настройки Binotel",BinotelSettingsTClass,modSY);
-  Setting("Вспомог. рег. Внутренние Серийные номера",IntSerBalDClass,modDBMain); //Edit***************************Sasha2,14:59 08.08.2017
+  Setting("Вспомог. рег. Внутренние Серийные номера",IntSerBalLClass,modDBMain); //Edit***************************Sasha2,14:59 08.08.2017
 	
   Report("Отчет по истории товаров технический ",FindErrorInIHRClass,FindErrorInIHRn,0,modDBMain);
 	Report("Отчет по телефонам клиентов",ServClientOrderRClass,ServClientOrderRn,0,modSVO);// Edit ************************** Monday, 4 July 2016 17:52:38

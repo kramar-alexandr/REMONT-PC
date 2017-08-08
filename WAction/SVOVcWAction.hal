@@ -1018,10 +1018,10 @@ BEGIN
   if (WindowState(wn)==0) then begin//Rs_normal
     if (UserCanAction("DisallowWSFromSVO",false)==false) then begin
       GetWindowRecord(wn,SVOr);
-      /*GetWindowRecord(wn,RepSpec);
+      GetWindowRecord(wn,RepSpec);
       closewindow(wn);
       SVOr.SerNr = RepSpec.long1;
-      if(readfirstmain(SVOr,1,true))then begin*/
+      if(readfirstmain(SVOr,1,true))then begin
 				if (SVOr.DoneMark==0) then begin
 					r = RecordAction_raPasteSVOInWS(SVOr,WSr);
 					switch (r) begin
@@ -1032,9 +1032,9 @@ BEGIN
 					end;
 					UpdateBrowses("SVOVc");
 				end;
-      /*end else begin
+      end else begin
       	beep;
-      end;*/
+      end;
     end else begin
       MessageBox(1274,StringFromStringSet(3,"DisallowWSFromSVO"));
     end;

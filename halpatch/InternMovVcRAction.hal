@@ -201,15 +201,19 @@ updating procedure SendInternMovDataForEngineerAct(record InternMovVc InternMovr
 begin
   record SVOVc SVOr;
   row InternMovVc InternMovrw;
+  integer rwcnt,i;
     
-    if(matrowcnt(InternMovr)>0)then begin
-    	matrowget(InternMovr,0,InternMovrw);
-    	if(nonblank(InternMovrw.ArtCode) and  NonBlank(InternMovrw.SerialNr))then begin
-    	  SVOr.InnerOrderNr = InternMovrw.SerialNr;
-    	  if (ReadLastKey("InnerOrderNr",SVOr,1,true)) then begin
-    	    CreateActFromSVOToEnginer(SVOr,InternMovr.ToLocation);
-    	  end;
-    	end;
+    rwcnt = matrowcnt(InternMovr);
+    if(rwcnt>0)then begin
+      for (i=0;i<rwcnt;i=i+1) begin
+        matrowget(InternMovr,i,InternMovrw);
+      	if(nonblank(InternMovrw.ArtCode) and  NonBlank(InternMovrw.SerialNr))then begin
+      	  SVOr.InnerOrderNr = InternMovrw.SerialNr;
+      	  if (ReadLastKey("InnerOrderNr",SVOr,1,true)) then begin
+      	    CreateActFromSVOToEnginer(SVOr,InternMovr.ToLocation);
+      	  end;
+      	end;
+      end;
     end;
     
   return;

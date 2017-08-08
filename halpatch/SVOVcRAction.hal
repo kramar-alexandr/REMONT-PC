@@ -2215,7 +2215,7 @@ record SalesGroupVc SGr;
 						RepSpec.f2 = SGr.FastPMCard;
 						RepSpec.f3 = SGr.FastPMBN;
 						RepSpec.long1 = SVOr.SerNr;
-						OpenWindow("ConfirmFastPaySVOWClass",0,0,"","",RepSpec);
+						OpenWindow("ConfirmFastPaySVOWClass",0,wn,"","",RepSpec);
 					end else begin
 						messagebox(0,"Условия оплаты не определенны");
 					end;
@@ -2245,7 +2245,7 @@ end;
 
 global updating procedure DblConfirmPaymentDsm()
 begin
-	integer wn;
+	integer wn,mwn;
 	record RcVc RepSpec;
 	val ivsum,ivpaysum;
 	record SVOVc SVOr;
@@ -2258,8 +2258,20 @@ begin
 		if(readfirstmain(SVOr,1,true))then begin
 			CheckSVOIV(SVOr,ivsum,ivpaysum);
 			if((ivsum>0 and ivpaysum<ivsum) or ivsum==0)then begin
+					mwn = MotherWindow(wn);
 					closewindow(wn);
 					FastPayInvoicesSVO(RepSpec);
+					if (mwn>0 and GetWindowFileName(mwn)=="SVOVc" and WindowState(mwn)==Rs_normal) then begin
+					  SVOr.SerNr = RepSpec.long1;
+					  if (readfirstmain(SVOr,1,true)) then begin
+					    deselectwindow(mwn,true);
+					    SETWINDOWSTATE(mwn,Rs_update);
+					    PutWindowRecord(mwn,SVOr);
+					    SETWINDOWSTATE(mwn,Rs_normal);
+					  end;
+					end else begin
+					  MessageBox(31502,"");
+					end;
 			end else begin
 				messagebox(0,"Задолженость по сч/ф заказа отсутствует");
 			end;

@@ -118,23 +118,27 @@ BEGIN
 				end;
 			end;
 			if(cufound==false)then begin
-				recordnew(CUr);
-				CUr.Code = Actr.Phone;
-				CUr.Phone = Actr.Phone;
-				if(nonblank(BCEr.customerDataName))then begin
-					CUr.Name = BCEr.customerDataName;
-				end else begin
-					CUr.Name = "Новый контакт";
-				end;
-				CUr.CustCat = "РОЗН";
-				CUr.CUType = 1;
-				CUr.CurncyCode = "UAH";
-				CUr.VATCode = "0%";
-				CUr.PayDeal = "ОФ";
-				logtext(0,"Новый контакт");
-				Actr.CUCode = CUr.Code;
-				Actr.CUName = CUr.Name;
-				recordinsert(CUr,true);
+			  if (NonBlank(Actr.Phone)) then begin
+  			  recordnew(CUr);
+  				CUr.Code = Actr.Phone;
+  				CUr.Phone = Actr.Phone;
+  				if(nonblank(BCEr.customerDataName))then begin
+  					CUr.Name = BCEr.customerDataName;
+  				end else begin
+  					CUr.Name = "Новый контакт";
+  				end;
+  				CUr.CustCat = "РОЗН";
+  				CUr.CUType = 1;
+  				CUr.CurncyCode = "UAH";
+  				CUr.VATCode = "0%";
+  				CUr.PayDeal = "ОФ";
+  				logtext(0,"Новый контакт");
+  				Actr.CUCode = CUr.Code;
+  				Actr.CUName = CUr.Name;
+  				recordinsert(CUr,true);
+			  end else begin //Edit***************************Sasha2,16:17 10.08.2017
+			    LogText(0,"Try to create CUVc with empty Code. BCEr.SerNr:" & BCEr.SerNr & ". Actr.SerNr:" & Actr.SerNr);
+			  end;
 			end;
 			Actr.MainPersons = users;
 			SVOr.CustCode = Actr.CUCode;

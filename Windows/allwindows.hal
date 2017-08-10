@@ -622,13 +622,13 @@ begin
   RlColKey(79,79,"Дата зак.",TransDate,false,UnServTransDate);
   RlColKey(160,160,"Товар",ItemName,false,UnServItemName);
   RlCol(400,400,"Проблема",Comment1,false);
-  RlColKey(-300,-300,"Тел1.",Kontinfo1,false,UnServServiceKontinfo1);
+  RlColKey(-300,-300,"Тел1.",Kontinfo1,false,UnServKontinfo1);
   //RlColKey(-270,-270,"Тел2.",Phone2,false,UnServServicePhone2);
   RlColKey(-210,-210,"Сер.Мен.",ServiceManager,false,UnServServiceManager);
   RlColKey(-160,-160,"#",InnerOrderNr,false,UnServInnerOrderNr);
   //RlColKey(-140,-140,"Гарантия",Garanty,false,UnServGaranty);
   //CalculatedColumn(-90,-90,"Статус","SVOServStatus",true);
-  RlColKey(-90,-90,"Статус",StatusText,false,UnServServiceStatusText);
+  RlColKey(-90,-90,"Статус",StatusText,false,UnServStatusText);
   SearchField("Поиск");
   if (HasLimitedAccess) then begin 
     BrowseSubsetButton(-40,-15);

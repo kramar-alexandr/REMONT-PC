@@ -414,14 +414,14 @@ begin
 	end;
   Black_Divider(0,1);
   OutString(pos[1],0,sumIV,false);
-  OutString(pos[2],0,paidIV,false);
+  OutString(pos[2],0,sumPaidIV,false);
   
   
   EndFormat;
   EndFormat;
   EndFormat;    	
   OutString(pos[2]-30,0,USetStr(31053),false);
-  OutString(pos[2],0,sumWS - paidIV,false);
+  OutString(pos[2],0,sumWS - sumPaidIV,false);
   
 	EndJob;
   

@@ -105,7 +105,7 @@ external updating procedure AddTTrans_IVVc(record TRVc,record IVVc); //Edit*****
 external function string 255 CheckTrans(var record TRVc,Integer,Boolean); //Edit***************************Sasha2,14:06 31.08.2015
 external updating procedure UpdateTrans_Stock(record TRVc); //Edit***************************Sasha2,14:14 31.08.2015
 external function Integer MakeTransFromIVAfterFIFO(var record TRVc,var record SMVc,record IVVc,Boolean,Boolean); //Edit***************************Sasha2,14:10 31.08.2015
-external updating procedure ChangeCostOfIVsInSVO(Longint);//Edit-------------------Vitalii 10:20 25.11.2016
+external updating function val ChangeCostOfIVsInSVO(Longint);//Edit-------------------Vitalii 10:20 25.11.2016
 remote function string 50 GetPhone1SerNrByPhone(string); //Edit***************************Sasha2,13:52 10.03.2017
 
 updating procedure AddToCustomerAccount(record IVVc IVr)

@@ -21,7 +21,7 @@ external function Boolean FindStringInString(string,string);// Edit ************
 remote procedure CountNumberRepeatPhone(string,var array longint,var integer );
 external updating procedure CreateActFromSVOToEnginer(record SVOVc,string);
 external updating procedure CreateActFromSVOForInspectorIfItemIssued(record SVOVc);
-external updating procedure ChangeCostOfIVsInSVO(longint);//Edit-------------------Vitalii 10:13 25.11.2016
+external updating function val ChangeCostOfIVsInSVO(longint);//Edit-------------------Vitalii 10:13 25.11.2016
 external updating procedure PhonesFromSVO(longint);//Edit-------------------Vitalii 17:10 03.11.2016
 //remote procedure SENDSECONDSMS(longint);// Edit ************************** Friday, 18 November 2016 14:48:29
 remote updating procedure FastPayInvoicesSVO(record RcVc);// Edit ************************** Friday, 25 November 2016 13:09:52
@@ -879,7 +879,7 @@ BEGIN
     SVOInspection(SVOr);
   end;
   
-  ChangeCostOfIVsInSVO(SVOr.SerNr);//Edit-------------------Vitalii 10:13 25.11.2016
+  SVOr.WSCost = ChangeCostOfIVsInSVO(SVOr.SerNr);//Edit-------------------Vitalii 10:13 25.11.2016
   // Edit Start ---------------------------------------------- Edit Start
 	//Thursday, 14 July 2011 12:30:47
 	mtrw = matrowcnt(SVOr);

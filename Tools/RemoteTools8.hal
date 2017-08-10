@@ -2159,7 +2159,7 @@ begin
 end;
 
 global //Edit***************************Sasha2,14:24 22.05.2017 {
-updating procedure ChangeCostOfIVsInSVO(longint SVONr)
+updating function val ChangeCostOfIVsInSVO(longint SVONr)
 begin
   record IVVc IVr,findIVr;
   record ARVc ARr;
@@ -2208,6 +2208,7 @@ begin
     RecordStore(SVOr,true);
   end;
   
+  ChangeCostOfIVsInSVO = sum; //Edit***************************Sasha2,14:49 10.08.2017
   return;
 end;  //Edit***************************Sasha2,14:24 22.05.2017 }
 

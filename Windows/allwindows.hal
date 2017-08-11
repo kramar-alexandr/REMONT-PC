@@ -8005,10 +8005,10 @@ begin
   CheckBox(h,v+=16,0,"Отказ",flags[12]);//6 //Edit***************************Sasha2,14:55 15.05.2017 }
   
   
-  ButtonFrame(h+=148,v = vm,123,3,"Заказ на работу");
-  CheckBox(h,v,0,"Не выполнен",flags[4]);
+  ButtonFrame(h+=148,v = vm,123,3,"Завершено");
+  CheckBox(h,v,0,"Нет",flags[4]);
   //CheckBox(h,v+=16,0,"Част. выполнен",flags[5]);  //origin field
-  CheckBox(h,v+=16,0,"Выполнен",flags[6]);
+  CheckBox(h,v+=16,0,"Да",flags[6]);
   /*ButtonFrame(h=12,vm=(v+=41),123,2,"Функция"); //Edit***************************Sasha2,14:54 15.05.2017 {
   CheckBox(h,v,0,"Не завершен",flags[7]);
   CheckBox(h,v+=16,0,"Завершен",flags[8]);*/  //Edit***************************Sasha2,14:54 15.05.2017 }

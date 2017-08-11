@@ -2209,7 +2209,10 @@ record SalesGroupVc SGr;
 				if(readfirstmain(SVOr,1,true))then begin
 					SGr.SGroupCode = SVOr.SalesGroup;
 					if(SVOr.WSCost>0)then begin
-						RepSpec.vals0 = SVOr.WSCost - SVOr.FastCash - SVOr.FastTerm;
+						RepSpec.vals0 = SVOr.WSCost - SVOr.FastCash - SVOr.FastTerm - SVOr.FastPMBN;
+						if (RepSpec.vals0<0) then begin
+						  RepSpec.vals0 = 0;
+						end;
 					end;
 					if(readfirstmain(SGr,1,true))then begin
 						RepSpec.f1 = SGr.FastPMCash;

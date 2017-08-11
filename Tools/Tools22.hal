@@ -20,6 +20,7 @@ external function Boolean GetPD(var record PDVc);
 external procedure PUCalcPerc(val,string,var val);
 external procedure InputObjectsAccInWS(var record WSVc); //Edit***************************Sasha2,10:24 17.07.2015
 remote function string 50 GetPhone1SerNrByPhone(string); //Edit***************************Sasha2,16:02 28.02.2017
+external function Boolean PasteCUInWS(var record WSVc,var string); //Edit***************************Sasha2,14:32 11.08.2017
 
 global
 procedure CalcCashDiscount(var record VIVc VIp)
@@ -343,6 +344,7 @@ BEGIN
   record WOVc WOr;
   string 50 phoneNum; //Edit***************************Sasha2,16:06 28.02.2017
   record Phone1Vc Phoner; //Edit***************************Sasha2,16:07 28.02.2017
+  string 255 warning; //Edit***************************Sasha2,14:31 11.08.2017
   
   RecordCopy(oldSVOr,SVOp);
   BlockLoad(MSb);
@@ -359,6 +361,8 @@ BEGIN
         WSp.Location = MSb.MainStock;
       end;
       WSp.CustCode = SVOp.CustCode;
+      if (PasteCUInWS(WSp,warning)) then begin //Edit***************************Sasha2,14:34 11.08.2017
+      end;
       WSp.Addr0 = SVOp.Addr0;
       WSp.CustContact = SVOp.CustContact;
       WSp.Objects = SVOp.Objects;
@@ -387,7 +391,9 @@ BEGIN
       WSp.SVONr = SVOp.SerNr;
       WSp.WONr = -1;
       WSp.ExportFlag = SVOp.ExportFlag;
-      WSp.RebCode = SVOp.RebCode;
+      if (NonBlank(SVOp.RebCode)) then begin
+        WSp.RebCode = SVOp.RebCode;
+      end;
       if (NonBlank(SVOp.Kontinfo1)) then begin //Edit***************************Sasha2,15:51 28.02.2017 {
         phoneNum = GetPhone1SerNrByPhone(SVOp.Kontinfo1);
         if (NonBlank(phoneNum)) then begin

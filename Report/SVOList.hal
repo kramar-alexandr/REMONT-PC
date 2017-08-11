@@ -193,7 +193,7 @@ begin
   date afr;
   date ato;
   string 255 tstr;
-  Integer rw,i,mtrw,j,mtrw1;// Edit ************************** Wednesday, 18 May 2011 15:22:32
+  Integer rw,i,mtrw,j,mtrw1,loops;// Edit ************************** Wednesday, 18 May 2011 15:22:32
   Boolean womade;
   Boolean wonotmade,TrHs1;// Edit ************************** Tuesday, 11 October 2011 16:11:25
   record WSVc WSr;
@@ -288,6 +288,7 @@ begin
       SVOr.TransDate = afr;
   end;
   
+  loops = 0;
   TrHs = true;
   SVOr.TransDate = afr;
   While(loopkey(key,SVOr,1,TrHs)) begin
@@ -404,7 +405,7 @@ begin
 						ISBr.Serial = SVOrw.SerialNr;
 						TrHs1 = true;
 						
-						while(loopkey("ItemSerial",ISBr,2,TrHs1))begin
+						while(loopkey("ItemSerial",ISBr,2,TrHs1)) begin
 							if(ISBr.Item!=SVOrw.ArtCode)then begin TrHs1 = false; end;
 							if(ISBr.Serial!=SVOrw.SerialNr)then begin TrHs1 = false; end;
 					
@@ -507,8 +508,17 @@ begin
           OutString(19,0,SVOr.SalesGroup,false); //Edit***************************Sasha2,14:20 14.02.2017
           OutString(19,0,SVOr.StatusText,false);
         EndFormat;*/
+        loops = loops + 1;
       end;
     end;    
+  end;
+  
+  if (loops<>0) then begin
+    Gray_Divider(0,1);
+    StartFormat(15);
+    OutString(20,0,USetStr(8707),false);
+    OutString(70,0,loops,false);
+    EndFormat;
   end;
   
   

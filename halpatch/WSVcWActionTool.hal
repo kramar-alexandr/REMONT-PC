@@ -515,6 +515,7 @@ BEGIN
   val limit;
   Boolean res,limitdaysf;
   record PLDefVc PLDefr;
+  record CCatVc CCatr; //Edit***************************Sasha2,14:35 11.08.2017
   
   CUr.Code = WSp.CustCode;
   if (GetCustAndBal(CUr,limit,bal,0,0,0,0,0,0,limitdaysf))   then begin
@@ -529,11 +530,19 @@ BEGIN
     if (ReadFirstMain(PLDefr,1,true)) then begin
       WSp.InclVAT = PLDefr.InclVAT;
     end;
-    WSp.RebCode = CUr.RebCode;
+    //WSp.RebCode = CUr.RebCode;
     WSp.CustVATCode = CUr.VATCode;
     warning = CUr.WarnText1;
     res = true;
   end;
+  WSp.RebCode = CUr.RebCode;
+  if (Blank(WSp.RebCode) and NonBlank(CUr.CustCat)) then begin //Edit***************************Sasha2,14:32 11.08.2017 {
+    CCatr.Code = CUr.CustCat;
+    if (ReadFirstMain(CCatr,1,true) and NonBlank(CCatr.RebCode)) then begin
+      WSp.RebCode = CCatr.RebCode;
+    end;
+  end; //Edit***************************Sasha2,14:33 11.08.2017 }
+  
   PasteCUInWS = res;
   RETURN;
 END;

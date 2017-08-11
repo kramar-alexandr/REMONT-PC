@@ -1584,26 +1584,27 @@ BEGIN
   //CUr.Code = SVOr.CustCode;
   if(FindCustByPhone(CUr,SVOr,tstr)==false)then begin
   //if (ReadFirstMain(CUr,1,true)==false) then begin
-
-		recordnew(CUr);
-		CUr.Code = SVOr.Kontinfo1;
-		CUr.Phone = SVOr.Kontinfo1;
-		if(nonblank(SVOr.Vlastnik))then begin
-			CUr.Name = SVOr.Vlastnik;
-		end else begin
-			CUr.Name = "Новый контакт";
+		if (NonBlank(SVOr.Kontinfo1) and len(SVOr.Kontinfo1)==10) then begin
+  		recordnew(CUr);
+  		CUr.Code = SVOr.Kontinfo1;
+  		CUr.Phone = SVOr.Kontinfo1;
+  		if(nonblank(SVOr.Vlastnik))then begin
+  			CUr.Name = SVOr.Vlastnik;
+  		end else begin
+  			CUr.Name = "Новый контакт";
+  		end;
+  		CUr.CustCat = "РОЗН";
+  		CUr.CUType = 1;
+  		CUr.CurncyCode = "UAH";
+  		CUr.VATCode = "0%";
+  		CUr.PayDeal = "ОФ";
+  		SVOr.PayDeal = "ОФ";
+  		recordinsert(CUr,true);
+  		SVOr.CustCode = CUr.Code;
+  		if (PasteCUInSVO(SVOr,"",tstr)) then begin
+  
+  		end;
 		end;
-		CUr.CustCat = "РОЗН";
-		CUr.CUType = 1;
-		CUr.CurncyCode = "UAH";
-		CUr.VATCode = "0%";
-		CUr.PayDeal = "ОФ";
-		SVOr.PayDeal = "ОФ";
-		recordinsert(CUr,true);
-		SVOr.CustCode = CUr.Code;
-		if (PasteCUInSVO(SVOr,"",tstr)) then begin
-
-		end;			
   end;
   
   if((SVOr.Addr0=="Новый контакт" or SVOr.Addr0=="Новый клиент") and SVOr.Addr0!=SVOr.Vlastnik)then begin

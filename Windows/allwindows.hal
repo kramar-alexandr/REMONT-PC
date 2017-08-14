@@ -7968,7 +7968,7 @@ begin
   PeriodField(150,v+=vs,"Период");
   EditFieldTL(150,v+=vs ,150,"Клиент",M4UStr,Normal,20,f2,false,CUSClass);
   if (HasMultiLocations) then begin 
-    EditFieldTL(150,v+=20, 50, "Склад",M4Code,Normal,10,FirstAcc,false,LocationSClass);  
+    //EditFieldTL(150,v+=20, 50, "Склад",M4Code,Normal,10,FirstAcc,false,LocationSClass);  
   end;  
   if (HasOrderClasses) then begin
     EditFieldTL(150,v+=vs ,50,"Вид заказа",M4UStr,Normal,5,AccStr,false,OrderClassSClass);

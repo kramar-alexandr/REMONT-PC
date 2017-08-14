@@ -809,10 +809,11 @@ begin
     MatCol(t,-130,"Сумма",0,Sum,true,0);
     MatCol(1,-60,"Налог",0,TaxTemplateCode,false,TaxTemplateSClass);
   end else begin
-    MatCol(t,-225,"Цена",0,Price,true,0);
-    MatCol(t,-135,"%",0,vRebate,true,0);
-    MatCol(t,-100,"Сумма",0,Sum,true,0);
-    MatCol(1,-30,"НДС",0,VATCode,false,VATCodeSClass);
+  	MatCol(t,-225,"Гарантия",0,ItemType,false,SetSClass);
+    MatCol(t,-150,"Цена",0,Price,true,0);
+    MatCol(t,-90,"%",0,vRebate,true,0);
+    MatCol(t,-60,"Сумма",0,Sum,true,0);
+    //MatCol(1,-30,"НДС",0,VATCode,false,VATCodeSClass);
   end;
   Flip(flipnr); flipnr = flipnr + 1;
   MatCol(t=1,144,"Наимен.",0,Spec,false,0);

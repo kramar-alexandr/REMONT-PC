@@ -1467,6 +1467,11 @@ BEGIN
 				res = -1;
 				goto LSVOVcRecordCheck;
 			end;
+			if(SVOrw.ItemType!=1 and SVOrw.ItemType!=2 and (SVOr.OrderStatus==7 or SVOr.OrderStatus==1 or SVOr.OrderStatus==3 or SVOr.OrderStatus==8  or SVOr.OrderStatus==4))then begin
+				RecordCheckError(31503,"",0,"ItemType");// Edit ************************** Wednesday, 7 June 2017 14:53:49
+				res = -1;
+				goto LSVOVcRecordCheck;
+			end;
 		end;
  	end;
  	

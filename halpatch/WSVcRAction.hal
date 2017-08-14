@@ -694,6 +694,21 @@ begin
         goto LWSVcRecordCheck;
       end;
     end;*/ // Edit ************************** Tuesday, 25 October 2011 14:02:50
+    if (nonblank(WSrw.ArtCode) and WSp.OKFlag>0 and stat==insertmode) then begin
+			if(WSrw.ItemType!=1 and WSrw.ItemType!=2)then begin
+				RecordCheckError(31503,"",i,"ItemType");// Edit ************************** Wednesday, 7 June 2017 14:53:49
+				res = -1;
+				goto LWSVcRecordCheck;
+			end;
+		end;
+		if (nonblank(WSrw.ArtCode) and WSp.OKFlag>0 and WS2p.OKFlag==0 and stat==updatemode) then begin
+			if(WSrw.ItemType!=1 and WSrw.ItemType!=2)then begin
+				RecordCheckError(31503,"",i,"ItemType");// Edit ************************** Wednesday, 7 June 2017 14:53:49
+				res = -1;
+				goto LWSVcRecordCheck;
+			end;
+		end;
+    
     if (nonblank(WSrw.ArtCode)) then begin
       if (GetItemType(WSp.SVONr,WSp.WONr,WSrw.MotherNr,WSrw.ItemType)==0) then begin
         RecordCheckError(2279,"",i,"ItemType");      

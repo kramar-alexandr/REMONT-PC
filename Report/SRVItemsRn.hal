@@ -1,31 +1,27 @@
 SetLangMode(LangRussian,"RUS",0);
 
-procedure CreateSortArray(var array integer country_participants,
-                           var integer counter,
-                           var array integer sort_array)
+procedure MySortStringArray(var array string astr,integer cnt)
 begin
-  integer i,j;
-  boolean foundf;
-  integer position;
-  
-  foundf = false;
-  for(i=0;i<counter;i=i+1) begin
-     position = 0;
-    for(j=0;j<counter;j=j+1) begin
-      if(j<>i) then begin
-        if(country_participants[i] < country_participants[j]) then begin
-          position = position + 1;
-        end;
-      end;
-    end;
-    while(sort_array[position] > 0) begin
-      position = position + 1;
-    end;
-    sort_array[position] = i;
-  end;
+	integer i,j;
+	string 100 tmp1,tmp2;
+	
+	if(cnt>1)then begin
+		for(j=0;j<cnt;j=j+1)begin
+			for(i=0;i<cnt-1;i=i+1)begin
+				if(uppercase(astr[i])>uppercase(astr[i+1]))then begin
+					tmp1 = astr[i];
+					tmp2 = astr[i+1];
+					astr[i] = tmp2;
+					astr[i+1] = tmp1;
+				end;
+			end;
+		end;
+	end;
+		
 
-  return;
+return;
 end;
+
 
 procedure PrintHeader(record RcVc RepSpec)
 begin
@@ -82,7 +78,7 @@ begin
 			end;
 		end;
 		
-		SortArray(aSerials,M4Str);
+		SortStringArray(aSerials);
 		//CreateSortArray(aSerials1,k,aSerials);
 		
 		while(loopmain(SGr,1,true))begin

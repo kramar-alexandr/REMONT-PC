@@ -1564,7 +1564,11 @@ BEGIN
 		end; 
   end;
   
-  
+  if(blank(SVOr.Kontinfo1))then begin
+  	RecordCheckError(31088,"",-1,"Kontinfo1");
+		res = -1;
+		goto LSVOVcRecordCheck;
+  end;
   if(blank(SVOr.Kontinfo1) and nonblank(SVOr.Phone2))then begin
   	RecordCheckError(31088,"",-1,"Kontinfo1");
 		res = -1;

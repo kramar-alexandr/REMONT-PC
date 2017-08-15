@@ -2229,9 +2229,9 @@ begin
 				recordcopy(oldIPr,IPr);
 				IPr.OKFlag = 1;
 				if (recordupdate(oldIPr,IPr,true)==0) then begin
-  				SVOr.FastCash = SVOr.FastCash + RepSpec.vals0;
+  				/*SVOr.FastCash = SVOr.FastCash + RepSpec.vals0;
   				SVOr.PrepaySum = SVOr.PrepaySum + RepSpec.vals0;
-  				saveOrderF = true;
+  				saveOrderF = true;*/
 				end;
 			end;
 			if(RepSpec.vals1!=0)then begin
@@ -2239,9 +2239,9 @@ begin
 				recordcopy(oldIPr,IPr);
 				IPr.OKFlag = 1;
 				if (recordupdate(oldIPr,IPr,true)==0) then begin
-  				SVOr.FastTerm = SVOr.FastTerm + RepSpec.vals1;
+  				/*SVOr.FastTerm = SVOr.FastTerm + RepSpec.vals1;
   				SVOr.PrepaySum = SVOr.PrepaySum + RepSpec.vals1;
-  				saveOrderF = true;
+  				saveOrderF = true;*/
 				end;
 			end;
 			if(RepSpec.vals2!=0)then begin
@@ -2249,9 +2249,9 @@ begin
 				recordcopy(oldIPr,IPr);
 				IPr.OKFlag = 1;
 				if (recordupdate(oldIPr,IPr,true)==0) then begin
-  				SVOr.FastPMBN = SVOr.FastPMBN + RepSpec.vals2;
+  				/*SVOr.FastPMBN = SVOr.FastPMBN + RepSpec.vals2;
   				SVOr.PrepaySum = SVOr.PrepaySum + RepSpec.vals2;
-  				saveOrderF = true;
+  				saveOrderF = true;*/
 				end;
 			end;
 			
@@ -2272,8 +2272,8 @@ begin
 							recordcopy(oldIPr,IPr);
 							IPr.OKFlag = 1;
 							if (recordupdate(oldIPr,IPr,true)==0) then begin
-								SVOr.FastCash = SVOr.FastCash + paidSum;
-								saveOrderF = true;
+								/*SVOr.FastCash = SVOr.FastCash + paidSum;
+								saveOrderF = true;*/
 							end;
 						end;
 					end;
@@ -2283,9 +2283,9 @@ begin
   				recordcopy(oldIPr,IPr);
   				IPr.OKFlag = 1;
   				if (recordupdate(oldIPr,IPr,true)==0) then begin
-  					SVOr.FastCash = SVOr.FastCash + restSum;
+  					/*SVOr.FastCash = SVOr.FastCash + restSum;
   					SVOr.PrepaySum = SVOr.PrepaySum + restSum;
-  					saveOrderF = true;
+  					saveOrderF = true;*/
   				end;
 				end;
 		  end;
@@ -2305,8 +2305,8 @@ begin
 							recordcopy(oldIPr,IPr);
 							IPr.OKFlag = 1;
 							if (recordupdate(oldIPr,IPr,true)==0) then begin
-								SVOr.FastTerm = SVOr.FastTerm + paidSum;
-								saveOrderF = true;
+								/*SVOr.FastTerm = SVOr.FastTerm + paidSum;
+								saveOrderF = true;*/
 							end;
 						end;
 					end;
@@ -2316,9 +2316,9 @@ begin
   				recordcopy(oldIPr,IPr);
   				IPr.OKFlag = 1;
   				if (recordupdate(oldIPr,IPr,true)==0) then begin
-  					SVOr.FastTerm = SVOr.FastTerm + restSum;
+  					/*SVOr.FastTerm = SVOr.FastTerm + restSum;
   					SVOr.PrepaySum = SVOr.PrepaySum + restSum;
-  					saveOrderF = true;
+  					saveOrderF = true;*/
   				end;
 				end;
 		  end;
@@ -2338,8 +2338,8 @@ begin
 							recordcopy(oldIPr,IPr);
 							IPr.OKFlag = 1;
 							if (recordupdate(oldIPr,IPr,true)==0) then begin
-								SVOr.FastPMBN = SVOr.FastPMBN + paidSum;
-								saveOrderF = true;
+								/*SVOr.FastPMBN = SVOr.FastPMBN + paidSum;
+								saveOrderF = true;*/
 							end;
 						end;
 					end;
@@ -2349,9 +2349,9 @@ begin
   				recordcopy(oldIPr,IPr);
   				IPr.OKFlag = 1;
   				if (recordupdate(oldIPr,IPr,true)==0) then begin
-  					SVOr.FastPMBN = SVOr.FastPMBN + restSum;
+  					/*SVOr.FastPMBN = SVOr.FastPMBN + restSum;
   					SVOr.PrepaySum = SVOr.PrepaySum + restSum;
-  					saveOrderF = true;
+  					saveOrderF = true;*/
   				end;
 				end;
 			end;

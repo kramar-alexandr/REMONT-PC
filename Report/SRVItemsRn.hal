@@ -48,6 +48,7 @@ begin
 	record LocationVc Locr;
 	array integer tabs;
 	boolean testfsg,testfloc,testfsvo;
+	val dolg,totdolg,supertotdolg;
 	
 	tabs[0] = 0;
 	tabs[1] = 40;
@@ -128,13 +129,43 @@ begin
 											outstring(tabs[5],0,SVOr.PlanShipDate,false);
 											outstring(tabs[6],0,SVOr.CallStatus,false);
 										endformat;
+										StartFormat(15);
+											outstring(tabs[4],0,"К оплате",false);
+											//outstring(tabs[5],0,SVOr.PlanShipDate,false);
+											outstring(tabs[6],0,SVOr.WSCost,false);
+										endformat;
+										StartFormat(15);
+											outstring(tabs[4],0,"Оплачено",false);
+											//outstring(tabs[5],0,SVOr.PlanShipDate,false);
+											outstring(tabs[6],0,SVOr.FastCash + SVOr.PrepaySum + SVOr.FastPMBN + SVOr.FastTerm,false);
+										endformat;
+										dolg = blankval;
+										dolg = SVOr.WSCost - (SVOr.FastCash + SVOr.PrepaySum + SVOr.FastPMBN + SVOr.FastTerm);
+										totdolg = totdolg + dolg;
+										StartFormat(15);
+											outstring(tabs[4],0,"Долг",false);
+											//outstring(tabs[5],0,SVOr.PlanShipDate,false);
+											outstring(tabs[6],0,dolg,false);
+										endformat;
 										gray_divider(0,1);
 									end;
 								end;
 							end;
 						end;
+						StartFormat(15);
+							outstring(tabs[4],0,"Долг всего",false);
+							//outstring(tabs[5],0,SVOr.PlanShipDate,false);
+							outstring(tabs[6],0,totdolg,false);
+						endformat;
+						supertotdolg = supertotdolg + totdolg;
+						totdolg = blankval;
+						
 						black_Divider(0,1);
 					end;
+					
+					
+					
+					
 				end;
 			end;
 		end;
@@ -161,6 +192,13 @@ begin
 				end;
 			end;
 		end;
+		black_Divider(0,1);
+		StartFormat(15);
+			outstring(tabs[4],0,"Долг по всем точкам",false);
+			//outstring(tabs[5],0,SVOr.PlanShipDate,false);
+			outstring(tabs[6],0,supertotdolg,false);
+		endformat;
+		supertotdolg = blankval;
 		
 	endjob;
 

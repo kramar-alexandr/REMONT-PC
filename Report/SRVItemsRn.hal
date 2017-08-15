@@ -47,7 +47,7 @@ begin
 	record SalesGroupVc SGr;
 	record LocationVc Locr;
 	array integer tabs;
-	boolean testfsg,testfloc;
+	boolean testfsg,testfloc,testfsvo;
 	
 	tabs[0] = 0;
 	tabs[1] = 40;
@@ -109,17 +109,22 @@ begin
 							if(vSerLoc[aSerials[i]]==Locr.Code and vSerInServ[aSerials[i]]==SGr.SGroupCode)then begin
 								SVOr.InnerOrderNr = aSerials[i];
 								if(readfirstkey("InnerOrderNr",SVOr,1,true))then begin
-									if(matrowcnt(SVOr)>0)then begin
-										matrowget(SVOr,0,SVOrw);
+									testfsvo = true;
+									if(RepSpec.flags[0]==1 and SVOr.OrderStatus!=2 and SVOr.OrderStatus!=6)then begin testfsvo = false; end;
+									
+									if(testfsvo)then begin
+										if(matrowcnt(SVOr)>0)then begin
+											matrowget(SVOr,0,SVOrw);
+										end;
+										StartFormat(15);
+											outstring(tabs[0],"DblSVOVcSer",aSerials[i],false);
+											outstring(tabs[1],0,SVOrw.Spec,false);
+											outstring(tabs[2],0,vSerLoc[aSerials[i]],false);
+											outstring(tabs[3],0,SVOr.StatusText,false);
+											outstring(tabs[4],0,SVOr.GetItemDate,false);
+											outstring(tabs[5],0,SVOr.PlanShipDate,false);
+										endformat;
 									end;
-									StartFormat(15);
-										outstring(tabs[0],"DblSVOVcSer",aSerials[i],false);
-										outstring(tabs[1],0,SVOrw.Spec,false);
-										outstring(tabs[2],0,vSerLoc[aSerials[i]],false);
-										outstring(tabs[3],0,SVOr.StatusText,false);
-										outstring(tabs[4],0,SVOr.GetItemDate,false);
-										outstring(tabs[5],0,SVOr.PlanShipDate,false);
-									endformat;
 								end;
 							end;
 						end;

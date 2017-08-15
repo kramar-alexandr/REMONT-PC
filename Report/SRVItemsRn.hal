@@ -54,7 +54,8 @@ begin
 	tabs[2] = 250;
 	tabs[3] = 320;
 	tabs[4] = 380;
-	tabs[5] = 420;
+	tabs[5] = 410;
+	tabs[6] = 440;
 	
 	StartReportJob("Устройства на сервисе");
 		PrintHeader(RepSpec);
@@ -103,6 +104,7 @@ begin
 							outstring(tabs[3],0,"Статус ремонта",false);
 							outstring(tabs[4],0,"Принят",false);
 							outstring(tabs[5],0,"Готов",false);
+							outstring(tabs[6],0,"Оповещение",false);
 						endformat;
 						for(i=0;i<k;i=i+1)begin
 							
@@ -123,6 +125,7 @@ begin
 											outstring(tabs[3],0,SVOr.StatusText,false);
 											outstring(tabs[4],0,SVOr.GetItemDate,false);
 											outstring(tabs[5],0,SVOr.PlanShipDate,false);
+											outstring(tabs[6],0,SVOr.CallStatus,false);
 										endformat;
 									end;
 								end;

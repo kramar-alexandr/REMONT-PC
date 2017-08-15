@@ -106,6 +106,7 @@ begin
 							outstring(tabs[5],0,"Готов",false);
 							outstring(tabs[6],0,"Оповещение",false);
 						endformat;
+						gray_divider(0,1);
 						for(i=0;i<k;i=i+1)begin
 							
 							if(vSerLoc[aSerials[i]]==Locr.Code and vSerInServ[aSerials[i]]==SGr.SGroupCode)then begin

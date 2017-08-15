@@ -1,5 +1,32 @@
 SetLangMode(LangRussian,"RUS",0);
 
+procedure CreateSortArray(var array integer country_participants,
+                           var integer counter,
+                           var array integer sort_array)
+begin
+  integer i,j;
+  boolean foundf;
+  integer position;
+  
+  foundf = false;
+  for(i=0;i<counter;i=i+1) begin
+     position = 0;
+    for(j=0;j<counter;j=j+1) begin
+      if(j<>i) then begin
+        if(country_participants[i] < country_participants[j]) then begin
+          position = position + 1;
+        end;
+      end;
+    end;
+    while(sort_array[position] > 0) begin
+      position = position + 1;
+    end;
+    sort_array[position] = i;
+  end;
+
+  return;
+end;
+
 procedure PrintHeader(record RcVc RepSpec)
 begin
 	
@@ -19,7 +46,7 @@ begin
 	vector string 50 vSerLoc,vSerInServ;
 	vector boolean vSGExist,vLocExist,vSGLocExist;
 	vector longint vSerSVONr;
-	array string 50 aSerials;
+	array string 50 aSerials,aSerials1;
 	integer k,i;
 	record SalesGroupVc SGr;
 	record LocationVc Locr;
@@ -54,6 +81,9 @@ begin
 				end;
 			end;
 		end;
+		
+		SortArray(aSerials,M4Str);
+		//CreateSortArray(aSerials1,k,aSerials);
 		
 		while(loopmain(SGr,1,true))begin
 			testfsg = true;

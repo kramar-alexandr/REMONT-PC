@@ -2236,3 +2236,18 @@ begin
 
 return;
 end;
+
+global
+procedure DblSVOVcSer(string dblstr,string l,Integer currepwn)
+begin
+  Integer wn;
+  record SVOVc SVOr;
+
+  if (nonblank(dblstr)) then begin
+    SVOr.InnerOrderNr = dblstr;
+    if (ReadFirstKey("InnerOrderNr",SVOr,1,true)) then begin  
+      wn = OpenWindow("SVODClass",1,0,"","",SVOr);
+    end; 
+  end;
+  return;
+end;

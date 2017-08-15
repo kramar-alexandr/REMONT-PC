@@ -81,7 +81,7 @@ begin
 						for(i=0;i<k;i=i+1)begin
 							
 							if(vSerLoc[aSerials[i]]==Locr.Code and vSerInServ[aSerials[i]]==SGr.SGroupCode)then begin
-								SVOr.InnerOrderNr = SBr.Serial;
+								SVOr.InnerOrderNr = aSerials[i];
 								if(readfirstkey("InnerOrderNr",SVOr,1,true))then begin
 									if(matrowcnt(SVOr)>0)then begin
 										matrowget(SVOr,0,SVOrw);

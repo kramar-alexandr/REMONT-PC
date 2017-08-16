@@ -1785,11 +1785,11 @@ end;
 
 
 
-global procedure SVOLClassOpenSVO1LClass()
+global procedure SVOLClassOpenAllSVOLClass()
 begin
 	record SVOVc SVOr;
 	
-	OpenWindow("SVO1LClass",0,0,"","",SVOr);
+	OpenWindow("AllSVOLClass",0,0,"","",SVOr);
 	
 return;
 end;

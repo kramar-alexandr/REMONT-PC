@@ -377,12 +377,18 @@ begin
     StoreInBaseKey;
     AppendFieldToKeyName(SalesGroup);
     AppendFieldToKeyName(SalesMan);
+    AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
     KeySegment(SerNr);
     
     SubsetKeyBegin2(UnServTransDate);
     StoreInBaseKey;
     AppendFieldToKeyName(SalesGroup);
     AppendFieldToKeyName(SalesMan);
+    AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
     KeySegment(TransDate);
     KeySegment(SerNr);
     
@@ -390,6 +396,9 @@ begin
     StoreInBaseKey;
     AppendFieldToKeyName(SalesGroup);
     AppendFieldToKeyName(SalesMan);
+    AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
     KeySegment(ItemName);
     KeySegment(SerNr);
     
@@ -397,6 +406,9 @@ begin
     StoreInBaseKey;
     AppendFieldToKeyName(SalesGroup);
     AppendFieldToKeyName(SalesMan);
+    AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
     KeySegment(Garanty);
     KeySegment(SerNr);
     
@@ -404,6 +416,9 @@ begin
     StoreInBaseKey;
     AppendFieldToKeyName(SalesGroup);
     AppendFieldToKeyName(SalesMan);
+    AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
     KeySegment(VIPStatus);
     KeySegment(SerNr);
     
@@ -411,6 +426,9 @@ begin
     StoreInBaseKey;
     AppendFieldToKeyName(SalesGroup);
     AppendFieldToKeyName(SalesMan);
+    AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
     KeySegment(OrderStatus);
     KeySegment(SerNr);
     
@@ -418,13 +436,19 @@ begin
     StoreInBaseKey;
     AppendFieldToKeyName(SalesGroup);
     AppendFieldToKeyName(SalesMan);
+    AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
     KeySegment(ServiceManager);
     KeySegment(SerNr);
-    
+        
     SubsetKeyBegin2(UnServPhone2);// Edit ************************** Monday, 6 February 2017 14:20:13
     StoreInBaseKey;
     AppendFieldToKeyName(SalesGroup);
     AppendFieldToKeyName(SalesMan);
+    AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
     KeySegment(Phone2);
     KeySegment(SerNr);
     
@@ -432,6 +456,9 @@ begin
     StoreInBaseKey;
     AppendFieldToKeyName(SalesGroup);
     AppendFieldToKeyName(SalesMan);
+    AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
     KeySegment(Kontinfo1);
     KeySegment(SerNr);
     
@@ -439,6 +466,9 @@ begin
     StoreInBaseKey;
     AppendFieldToKeyName(SalesGroup);
     AppendFieldToKeyName(SalesMan);
+    AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
     KeySegment(SerialNrTextSearch);
     KeySegment(SerNr);
     
@@ -446,6 +476,9 @@ begin
     StoreInBaseKey;
     AppendFieldToKeyName(SalesGroup);
     AppendFieldToKeyName(SalesMan);
+    AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
     KeySegment(InnerOrderNr);
     KeySegment(SerNr);
     
@@ -453,163 +486,280 @@ begin
     StoreInBaseKey;
     AppendFieldToKeyName(SalesGroup);
     AppendFieldToKeyName(SalesMan);
+    AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
     KeySegment(StatusText);
     KeySegment(SerNr); 
     
-    //Ключи для ВСех не закрытых заказов на обслуживание для распределяющего ***************************************************************************************************
-    SubsetKeyBegin2(AllUnServSerNr);
+    SubsetKeyBegin2(UnServPlanShipDate);
     StoreInBaseKey;
     AppendFieldToKeyName(SalesGroup);
     AppendFieldToKeyName(SalesMan);
-    KeySegment(SerNr);
-    
-    SubsetKeyBegin2(AllUnServTransDate);
-    StoreInBaseKey;
-    AppendFieldToKeyName(SalesGroup);
-    AppendFieldToKeyName(SalesMan);
-    KeySegment(TransDate);
-    KeySegment(SerNr);
-    
-    SubsetKeyBegin2(AllUnServItemName);
-    StoreInBaseKey;
-    AppendFieldToKeyName(SalesGroup);
-    AppendFieldToKeyName(SalesMan);
-    KeySegment(ItemName);
-    KeySegment(SerNr);
-    
-    SubsetKeyBegin2(AllUnServGaranty);
-    StoreInBaseKey;
-    AppendFieldToKeyName(SalesGroup);
-    AppendFieldToKeyName(SalesMan);
-    KeySegment(Garanty);
-    KeySegment(SerNr);
-    
-    SubsetKeyBegin2(AllUnServVIPStatus);
-    StoreInBaseKey;
-    AppendFieldToKeyName(SalesGroup);
-    AppendFieldToKeyName(SalesMan);
-    KeySegment(VIPStatus);
-    KeySegment(SerNr);
-    
-    SubsetKeyBegin2(AllUnServOrderStatus);
-    StoreInBaseKey;
-    AppendFieldToKeyName(SalesGroup);
-    AppendFieldToKeyName(SalesMan);
-    KeySegment(OrderStatus);
-    KeySegment(SerNr);
-    
-    SubsetKeyBegin2(AllUnServServiceManager);
-    StoreInBaseKey;
-    AppendFieldToKeyName(SalesGroup);
-    AppendFieldToKeyName(SalesMan);
-    KeySegment(ServiceManager);
-    KeySegment(SerNr);
-    
-    SubsetKeyBegin2(AllUnServKontinfo1);// Edit ************************** Monday, 6 February 2017 14:19:18
-    StoreInBaseKey;
-    AppendFieldToKeyName(SalesGroup);
-    AppendFieldToKeyName(SalesMan);
-    KeySegment(Kontinfo1);
-    KeySegment(SerNr);
-    
-    SubsetKeyBegin2(AllUnServPhone2);// Edit ************************** Monday, 6 February 2017 14:19:19
-    StoreInBaseKey;
-    AppendFieldToKeyName(SalesGroup);
-    AppendFieldToKeyName(SalesMan);
-    KeySegment(Phone2);
-    KeySegment(SerNr);
-    
-    SubsetKeyBegin2(AllUnServSerialNrTextSearch);// Edit ************************** Monday, 6 February 2017 14:19:19
-    StoreInBaseKey;
-    AppendFieldToKeyName(SalesGroup);
-    AppendFieldToKeyName(SalesMan);
-    KeySegment(SerialNrTextSearch);
-    KeySegment(SerNr);
-    
-    SubsetKeyBegin2(AllUnServInnerOrderNr);// Edit ************************** Wednesday, 31 May 2017 09:55:27
-    StoreInBaseKey;
-    AppendFieldToKeyName(SalesGroup);
-    AppendFieldToKeyName(SalesMan);
-    KeySegment(InnerOrderNr);
-    KeySegment(SerNr);
-    
-    SubsetKeyBegin2(AllUnServStatusText);// Edit ************************** Wednesday, 14 June 2017 10:53:41
-    StoreInBaseKey;
-    AppendFieldToKeyName(SalesGroup);
-    AppendFieldToKeyName(SalesMan);
-    KeySegment(StatusText);
+    AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
+    KeySegment(PlanShipDate);
     KeySegment(SerNr);
     
     //Ключи для ВСех не закрытых заказов на обслуживание для сервисного менеджера  ****************************************************************************************
     SubsetKeyBegin2(AllServSerNr);
     StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
     AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
     KeySegment(SerNr);
     
     SubsetKeyBegin2(AllServTransDate);
     StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
     AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
     KeySegment(TransDate);
     KeySegment(SerNr);
     
     SubsetKeyBegin2(AllServItemName);
     StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
     AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
     KeySegment(ItemName);
     KeySegment(SerNr);
     
     SubsetKeyBegin2(AllServGaranty);
     StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
     AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
     KeySegment(Garanty);
     KeySegment(SerNr);
     
     SubsetKeyBegin2(AllServVIPStatus);
     StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
     AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
     KeySegment(VIPStatus);
     KeySegment(SerNr);
     
     SubsetKeyBegin2(AllServOrderStatus);
     StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
     AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
     KeySegment(OrderStatus);
     KeySegment(SerNr);
     
     SubsetKeyBegin2(AllServServiceManager);
     StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
     AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
     KeySegment(ServiceManager);
     KeySegment(SerNr);
     
     SubsetKeyBegin2(AllServPhone2);// Edit ************************** Monday, 6 February 2017 14:16:52
     StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
     AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
     KeySegment(Phone2);
     KeySegment(SerNr);
         
     SubsetKeyBegin2(AllServKontinfo1);// Edit ************************** Monday, 6 February 2017 14:16:52
     StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
     AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
     KeySegment(Kontinfo1);
     KeySegment(SerNr);
     
     SubsetKeyBegin2(AllServSerialNrTextSearch);// Edit ************************** Monday, 6 February 2017 14:16:52
     StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
     AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
     KeySegment(SerialNrTextSearch);
     KeySegment(SerNr);
     
     SubsetKeyBegin2(AllServInnerOrderNr);// Edit ************************** Wednesday, 31 May 2017 09:53:50
     StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
     AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
     KeySegment(InnerOrderNr);
     KeySegment(SerNr);
     
     SubsetKeyBegin2(AllServStatusText);// Edit ************************** Wednesday, 14 June 2017 10:53:41
     StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
     AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
     KeySegment(StatusText);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(AllServPlanShipDate);
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
+    KeySegment(PlanShipDate);
+    KeySegment(SerNr);
+    
+    //Ключи для ВСех записей с доп фильтрами  ****************************************************************************************
+    SubsetKeyBegin2(AllSerNr);
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(AllTransDate);
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
+    KeySegment(TransDate);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(AllItemName);
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
+    KeySegment(ItemName);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(AllGaranty);
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
+    KeySegment(Garanty);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(AllVIPStatus);
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
+    KeySegment(VIPStatus);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(AllOrderStatus);
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
+    KeySegment(OrderStatus);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(AllServiceManager);
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
+    KeySegment(ServiceManager);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(AllPhone2);
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
+    KeySegment(Phone2);
+    KeySegment(SerNr);
+        
+    SubsetKeyBegin2(AllKontinfo1);
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
+    KeySegment(Kontinfo1);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(AllSerialNrTextSearch);
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
+    KeySegment(SerialNrTextSearch);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(AllInnerOrderNr);
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
+    KeySegment(InnerOrderNr);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(AllStatusText);
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
+    KeySegment(StatusText);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(AllPlanShipDate);
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
+    KeySegment(PlanShipDate);
     KeySegment(SerNr);
     
   EndRecordAdd; 

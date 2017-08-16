@@ -657,7 +657,7 @@ begin
 			outstring(390,0,"Наименование",false);
 		endformat;
 		
-		while(loopkey("AllUnServTransDate",SVOr,1,true))begin
+		while(loopkey("AllServTransDate",SVOr,1,true))begin
 			testf = true;	
 			/*if(USr.SalesGroup!=SVOr.SalesGroup)then begin testf = false; end;
 			if(SVOr.DoneMark>0)then begin testf = false; end;
@@ -732,7 +732,7 @@ begin
 			outstring(390,0,"Наименование",false);
 		endformat;
 		
-		while(loopkey("AllUnServTransDate",SVOr,1,true))begin
+		while(loopkey("AllServTransDate",SVOr,1,true))begin
 			testf = true;	
 			if(USr.SalesGroup!=SVOr.SalesGroup)then begin testf = false; end;
 			if(SVOr.DoneMark>0)then begin testf = false; end;

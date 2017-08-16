@@ -2055,8 +2055,9 @@ BEGIN
     if (indexname=="UnServSerialNrTextSearch")  then begin res = 0; end;
     if (indexname=="UnServInnerOrderNr")  then begin res = 0; end;
     if (indexname=="UnServStatusText")  then begin res = 0; end;
+    if (indexname=="UnServPlanShipDate")  then begin res = 0; end;
     
-    if (indexname=="AllUnServSerNr")  then begin res = 0; end;
+    /*if (indexname=="AllUnServSerNr")  then begin res = 0; end;
     if (indexname=="AllUnServTransDate")  then begin res = 0; end;
     if (indexname=="AllUnServItemName")  then begin res = 0; end;
     if (indexname=="AllUnServGaranty")  then begin res = 0; end;
@@ -2067,7 +2068,7 @@ BEGIN
     if (indexname=="AllUnServKontinfo1")  then begin res = 0; end;
     if (indexname=="AllUnServSerialNrTextSearch")  then begin res = 0; end;
     if (indexname=="AllUnServInnerOrderNr")  then begin res = 0; end;
-    if (indexname=="AllUnServStatusText")  then begin res = 0; end;
+    if (indexname=="AllUnServStatusText")  then begin res = 0; end;*/
     
     if (indexname=="AllServSerNr")  then begin res = 0; end;
     if (indexname=="AllServTransDate")  then begin res = 0; end;
@@ -2081,46 +2082,7 @@ BEGIN
     if (indexname=="AllServSerialNrTextSearch")  then begin res = 0; end;
     if (indexname=="AllServInnerOrderNr")  then begin res = 0; end;
     if (indexname=="AllServStatusText")  then begin res = 0; end;
-  end;
-  
-  if (nonblankdate(SVOr.PlanShip) or nonblank(SVOr.PlanShip) or nonblankdate(SVOr.PlanShipDate)) then begin //Edit***************************Sasha2,14:52 16.02.2017
-    if (indexname=="UnServSerNr")  then begin res = 0; end;
-    if (indexname=="UnServTransDate")  then begin res = 0; end;
-    if (indexname=="UnServItemName")  then begin res = 0; end;
-    if (indexname=="UnServGaranty")  then begin res = 0; end;
-    if (indexname=="UnServVIPStatus")  then begin res = 0; end;
-    if (indexname=="UnServServiceManager")  then begin res = 0; end;
-    if (indexname=="UnServPhone2")  then begin res = 0; end;
-    if (indexname=="UnServKontinfo1")  then begin res = 0; end;
-    if (indexname=="UnServSerialNrTextSearch")  then begin res = 0; end;
-    if (indexname=="UnServInnerOrderNr")  then begin res = 0; end;
-    if (indexname=="UnServStatusText")  then begin res = 0; end;
-    
-    if (indexname=="AllUnServSerNr")  then begin res = 0; end;
-    if (indexname=="AllUnServTransDate")  then begin res = 0; end;
-    if (indexname=="AllUnServItemName")  then begin res = 0; end;
-    if (indexname=="AllUnServGaranty")  then begin res = 0; end;
-    if (indexname=="AllUnServVIPStatus")  then begin res = 0; end;
-    if (indexname=="AllUnServOrderStatus")  then begin res = 0; end;
-    if (indexname=="AllUnServServiceManager")  then begin res = 0; end;
-    if (indexname=="AllUnServPhone2")  then begin res = 0; end;
-    if (indexname=="AllUnServKontinfo1")  then begin res = 0; end;
-    if (indexname=="AllUnServSerialNrTextSearch")  then begin res = 0; end;
-    if (indexname=="AllUnServInnerOrderNr")  then begin res = 0; end;
-    if (indexname=="AllUnServStatusText")  then begin res = 0; end;
-    
-    if (indexname=="AllServSerNr")  then begin res = 0; end;
-    if (indexname=="AllServTransDate")  then begin res = 0; end;
-    if (indexname=="AllServItemName")  then begin res = 0; end;
-    if (indexname=="AllServGaranty")  then begin res = 0; end;
-    if (indexname=="AllServVIPStatus")  then begin res = 0; end;
-    if (indexname=="AllServOrderStatus")  then begin res = 0; end;
-    if (indexname=="AllServServiceManager")  then begin res = 0; end;
-    if (indexname=="AllServPhone2")  then begin res = 0; end;
-    if (indexname=="AllServKontinfo1")  then begin res = 0; end;
-    if (indexname=="AllServSerialNrTextSearch")  then begin res = 0; end;
-    if (indexname=="AllServInnerOrderNr")  then begin res = 0; end;
-    if (indexname=="AllServStatusText")  then begin res = 0; end;
+    if (indexname=="AllServPlanShipDate")  then begin res = 0; end;
   end;
   
   if (nonblank(SVOr.ServiceManager)) then begin 
@@ -2135,6 +2097,7 @@ BEGIN
     if (indexname=="UnServSerialNrTextSearch")  then begin res = 0; end;
     if (indexname=="UnServInnerOrderNr")  then begin res = 0; end;
     if (indexname=="UnServStatusText")  then begin res = 0; end;
+    if (indexname=="UnServPlanShipDate")  then begin res = 0; end;
   end;
     
   SVOVcRecordInIndex = res;

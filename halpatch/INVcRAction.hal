@@ -27,6 +27,49 @@ external procedure ExtractElemFromSet(string,integer,var string);
 SetLangMode(LangRussian,"RUS",0);
 
 global
+function string 255 StripWrongCharacter(string ostr)
+begin
+  LongInt i,c;
+  string 255 res;
+  
+  res = "";
+  for (i=0;i<=len(ostr);i=i+1) begin
+  	c = asc(Mid(ostr,i,1));
+    if ((c>=asc("0") and c<asc("9")) or (c>=asc("a") and c<asc("z")) or (c>=asc("A") and c<asc("Z")) or (c>=asc("А") and c<asc("Я")) or (c>=asc("а") and c<asc("я"))) then begin
+      res = res &  Mid(ostr,i,1);
+    end;
+  end;
+  StripWrongCharacter = res;
+  return;
+end;
+
+global
+procedure FindPref(string code,var string prefix)
+BEGIN
+  string 255 pre;
+  string 255 suff,osuff;
+  Integer i,j;
+  val t;
+  string 1 c;
+  string 255 zerostr,tstr;
+  
+  for (i=len(code);i>0;i=i-1) begin
+    c = Mid(code,i-1,1);
+    if ((asc(c)<asc("0")) or (asc(c)>asc("9"))) then begin//if it is 0, next number for 0123 will be 124
+      goto L10FindPref;
+    end;
+  end;
+L10FindPref:;
+  for (j=0;j<i;j=j+1) begin
+    pre = pre & Mid(code,j,1);
+  end;
+  prefix = pre;
+  
+  RETURN;
+END;
+
+
+global
 function Boolean GetNextItemNr(var string itemnr)
 begin
   Boolean res;
@@ -932,8 +975,95 @@ LValidateItemDescriptionRows_Polish:;
   return;
 end;
 
+updating procedure CheckAndCreateClass(var string chdir, var string mdir,var string name)
+begin
+	record DIVc DIr,DI2r;
+	boolean foundf,testf,TrHs;
+	string 50 itemnr;
+	
+	foundf = false;
+	
+	DIr.Code = chdir;
+	if(readfirstmain(DIr,1,true))then begin
+		if(DIr.DispGroups==mdir)then begin
+			foundf = true;
+		end;
+	end else begin
+		
+		resetloop(DIr);
+		DIr.Name = chdir;
+		TrHs = true;
+		while(loopkey("Name",DIr,1,TrHs))begin
+			testf = true;
+			if(DIr.Name!=chdir)then begin TrHs = false; testf = false; end;
+			if(DIr.DispGroups!=mdir)then begin testf = false; end;
+			
+			if(testf)then begin
+				TrHs = false;
+				chdir = DIr.Code;
+				foundf = true;
+			end;
+		end;
+	end;
+	
+	if(foundf==false)then begin
+		recordnew(DI2r);
+		if(nonblank(name))then begin
+			DI2r.Name = name;
+		end else begin
+			DI2r.Name = chdir;
+			name = chdir;
+		end;
+		chdir = StripWrongCharacter(chdir);
+		
+		
+		
+		DI2r.DispGroups = mdir;
+		if(len(chdir)<11)then begin
+			DI2r.Code = chdir;
+			DIr.Code = DI2r.Code;
+			if(readfirstmain(DIr,1,true)==false)then begin
+				//DI2r.Code = left(chdir,7) & "001";
+			end else begin
+				
+				FindPref(DI2r.Code,DIr.Code);
+				DIr.Code = left(DIr.Code,7) & "999";
+				if(readlastmain(DIr,1,false))then begin
+					NextM4Number(DIr.Code,itemnr);
+					DI2r.Code = itemnr;
+				end;
+			end;
+		end else begin
+			FindPref(chdir,DIr.Code);
+			DIr.Code = left(DIr.Code,7) & "001";
+			if(readfirstmain(DIr,1,true)==false)then begin
+				FindPref(chdir,DI2r.Code);
+				DI2r.Code = left(DI2r.Code,7) & "001";
+			end else begin
+				FindPref(chdir,DIr.Code);
+				DIr.Code = left(DIr.Code,7) & "999";
+				if(readlastmain(DIr,1,false))then begin
+					NextM4Number(DIr.Code,itemnr);
+					DI2r.Code = itemnr;
+				end;
+			end;
+		end;
+		if(nonblank(DI2r.Code))then begin
+			DIr.Code = DI2r.Code;
+			if(readfirstmain(DIr,1,true)==false)then begin
+				recordstore(DI2r,true);
+				chdir = DI2r.Code;
+			end else begin
+				
+			end;
+		end;
+	end;
+	
+return;
+end;
+
 global
-function LongInt INVcRecordCheck(var record INVc INr,record INVc IN2r,LongInt stat,LongInt long4)
+updating function LongInt INVcRecordCheck(var record INVc INr,record INVc IN2r,LongInt stat,LongInt long4)
 begin
   LongInt res;
   record INVc lINr;
@@ -1173,6 +1303,85 @@ begin
 		res = -1; 
 		goto LINVcRecordCheck;
 	end;
+	
+	if(nonblank(INr.Disp2) and blank(INr.Disp1))then begin
+		RecordCheckError(1058,"USER или SERV",-1,"Disp1");//============================15/08/2017    
+		res = -1; 
+		goto LINVcRecordCheck;
+	end;
+	if(nonblank(INr.Disp3) and blank(INr.Disp2))then begin
+		RecordCheckError(1058,"",-1,"Disp2");//============================15/08/2017    
+		res = -1; 
+		goto LINVcRecordCheck;
+	end;
+	if(nonblank(INr.Disp4) and blank(INr.Disp3))then begin
+		RecordCheckError(1058,"",-1,"Disp3");//============================15/08/2017    
+		res = -1; 
+		goto LINVcRecordCheck;
+	end;
+	if(nonblank(INr.Disp5) and blank(INr.Disp4))then begin
+		RecordCheckError(1058,"",-1,"Disp4");//============================15/08/2017    
+		res = -1; 
+		goto LINVcRecordCheck;
+	end;
+	if(nonblank(INr.Disp6) and blank(INr.Disp5))then begin
+		RecordCheckError(1058,"",-1,"Disp5");//============================15/08/2017    
+		res = -1; 
+		goto LINVcRecordCheck;
+	end;
+	if(nonblank(INr.Disp7) and blank(INr.Disp6))then begin
+		RecordCheckError(1058,"",-1,"Disp6");//============================15/08/2017    
+		res = -1; 
+		goto LINVcRecordCheck;
+	end;
+	if(nonblank(INr.Disp8) and blank(INr.Disp7))then begin
+		RecordCheckError(1058,"",-1,"Disp7");//============================15/08/2017    
+		res = -1; 
+		goto LINVcRecordCheck;
+	end;
+	if(nonblank(INr.Disp9) and blank(INr.Disp8))then begin
+		RecordCheckError(1058,"",-1,"Disp8");//============================15/08/2017    
+		res = -1; 
+		goto LINVcRecordCheck;
+	end;
+	
+	CheckAndCreateClass(INr.Disp2,INr.Disp1,INr.Disp2Name);
+	CheckAndCreateClass(INr.Disp3,INr.Disp2,INr.Disp3Name);
+	CheckAndCreateClass(INr.Disp4,INr.Disp3,INr.Disp4Name);
+	CheckAndCreateClass(INr.Disp5,INr.Disp4,INr.Disp5Name);
+	CheckAndCreateClass(INr.Disp6,INr.Disp5,INr.Disp6Name);
+	CheckAndCreateClass(INr.Disp7,INr.Disp6,INr.Disp7Name);
+	CheckAndCreateClass(INr.Disp8,INr.Disp7,INr.Disp8Name);
+	CheckAndCreateClass(INr.Disp9,INr.Disp8,INr.Disp9Name);
+	
+	if(nonblank(INr.Disp1))then begin
+		INr.DispGroups = INr.Disp1;
+	end;
+	if(nonblank(INr.Disp2))then begin
+		INr.DispGroups = INr.DispGroups & "," & INr.Disp2;
+	end;
+	if(nonblank(INr.Disp3))then begin
+		INr.DispGroups = INr.DispGroups & "," & INr.Disp3;
+	end;
+	if(nonblank(INr.Disp4))then begin
+		INr.DispGroups = INr.DispGroups & "," & INr.Disp4;
+	end;
+	if(nonblank(INr.Disp5))then begin
+		INr.DispGroups = INr.DispGroups & "," & INr.Disp5;
+	end;
+	if(nonblank(INr.Disp6))then begin
+		INr.DispGroups = INr.DispGroups & "," & INr.Disp6;
+	end;
+	if(nonblank(INr.Disp7))then begin
+		INr.DispGroups = INr.DispGroups & "," & INr.Disp7;
+	end;
+	if(nonblank(INr.Disp8))then begin
+		INr.DispGroups = INr.DispGroups & "," & INr.Disp8;
+	end;
+	if(nonblank(INr.Disp9))then begin
+		INr.DispGroups = INr.DispGroups & "," & INr.Disp9;
+	end;
+	
   if (CheckMultipleIndexField(INr.DispGroups,10,10)==false) then begin
     RecordCheckError(2246,"",-1,"DispGroups");      
     res = -1; 

@@ -2065,6 +2065,15 @@ begin
     TileButton(tilenr,"Аналитика"); tilenr = tilenr + 1;
   end;
   tilenr = 1;*/
+  EditField(h,v+=vs,90,"Запчасть/Устройство",Normal,Disp1,false,MyDISClass);
+  EditField(h+110,v,-50,"",ViewOnly,Disp1Name,false,0);
+  EditField(h,v+=vs,90,"Тип устройства/детали",Normal,Disp2,false,MyDISClass);
+  EditField(h+110,v,-50,"",ViewOnly,Disp2Name,false,0);
+  EditField(h,v+=vs,90,"Категория",Normal,Disp3,false,MyDISClass);
+  EditField(h+110,v,-50,"",ViewOnly,Disp3Name,false,0);
+  EditField(h,v+=vs,90,"Бренд",Normal,Disp4,false,MyDISClass);
+  EditField(h+110,v,-50,"",ViewOnly,Disp4Name,false,0);
+  //EditField(h,v+=vs,70,"Тип устройства",Normal,Disp5,false,MyDISClass);
   
   EditField(h,v+=vs,-240,"Классификация",Normal,DispGroups,false,DISClass);
   v = v + 2*vs;

@@ -38,7 +38,7 @@ BEGIN
   if (typeofcur==0) begin// Foreign Curncy 
     if (curncy<>"") then begin curflag = true; end;
     if (blank(valv2)) then begin
-      base2val = MulRateToBase2(localcurncy,localcurval,frrate,torate1,torate2,baserate1,baserate2,DefaultCurRoundOff);
+      base2val = 0;//MulRateToBase2(localcurncy,localcurval,frrate,torate1,torate2,baserate1,baserate2,DefaultCurRoundOff);
       if (base2val==0) then begin
         B1ToB2Val(valv,baserate2,baserate1,base2val);
       end;
@@ -51,7 +51,7 @@ BEGIN
       base2val = localcurval;
     end else begin
       if (blank(valv2)) then begin
-        base2val = MulRateToBase2(localcurncy,valv,frrate,torate1,torate2,baserate1,baserate2,DefaultCurRoundOff);
+        base2val = 0;//MulRateToBase2(localcurncy,valv,frrate,torate1,torate2,baserate1,baserate2,DefaultCurRoundOff);
         if (base2val==0) then begin
           B1ToB2Val(valv,baserate2,baserate1,base2val);
         end;
@@ -566,14 +566,14 @@ BEGIN
   typeofcur = TypeOfCurncy(localcurncy,oldstyle);   
   if (typeofcur==0) begin// Foreign Curncy 
     if (nonblank(localcurncy)) then begin curflag = true; end;
-    base2val = MulRateToBase2(localcurncy,localcurval,frrate,torate1,torate2,baserate1,baserate2,DefaultCurRoundOff);
+    base2val = 0;//MulRateToBase2(localcurncy,localcurval,frrate,torate1,torate2,baserate1,baserate2,DefaultCurRoundOff);
   end;
   if (typeofcur==1) begin// Base Curncy 1 
-    base2val = MulRateToBase2(localcurncy,localcurval,frrate,torate1,torate2,baserate1,baserate2,DefaultCurRoundOff);
+    base2val = 0;//MulRateToBase2(localcurncy,localcurval,frrate,torate1,torate2,baserate1,baserate2,DefaultCurRoundOff);
   end;  
   if (typeofcur==2) begin// Base Curncy 2 
     if (nonblank(localcurncy)) then begin curflag = true; end;
-    base2val = MulRateToBase2(localcurncy,localcurval,frrate,torate1,torate2,baserate1,baserate2,DefaultCurRoundOff);
+    base2val = 0;//MulRateToBase2(localcurncy,localcurval,frrate,torate1,torate2,baserate1,baserate2,DefaultCurRoundOff);
   end;
 L22SM:
   if (dcflag) then begin

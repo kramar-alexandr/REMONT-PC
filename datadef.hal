@@ -651,6 +651,24 @@ begin
     RecordField(LCustInt3,M4Int,0,0);
     RecordField(LCustInt4,M4Int,0,0);
     RecordField(LCustInt5,M4Int,0,0); //Edit***************************Sasha2,13:15 22.10.2014 }
+    RecordField(Disp1,M4Str,200,0);
+    RecordField(Disp2,M4Str,200,0);
+    RecordField(Disp3,M4Str,200,0);
+    RecordField(Disp4,M4Str,200,0);
+    RecordField(Disp5,M4Str,200,0);
+    RecordField(Disp6,M4Str,200,0);
+    RecordField(Disp7,M4Str,200,0);
+    RecordField(Disp8,M4Str,200,0);
+		RecordField(Disp9,M4Str,200,0);
+		RecordField(Disp1Name,M4Str,200,0);
+    RecordField(Disp2Name,M4Str,200,0);
+    RecordField(Disp3Name,M4Str,200,0);
+    RecordField(Disp4Name,M4Str,200,0);
+    RecordField(Disp5Name,M4Str,200,0);
+    RecordField(Disp6Name,M4Str,200,0);
+    RecordField(Disp7Name,M4Str,200,0);
+    RecordField(Disp8Name,M4Str,200,0);
+		RecordField(Disp9Name,M4Str,200,0);
     ArrayField(LParam,M4Str,200,0); //Edit***************************Sasha2,13:19 22.10.2014 {
     ArrayField(LName,M4Str,200,0);
     ArrayField(LComment1,M4Str,200,0);

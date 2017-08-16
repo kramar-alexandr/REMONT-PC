@@ -11,6 +11,9 @@ external procedure INrsRClassReportDef(var record RcVc);
 external procedure SendArtStat(string,string,string,val,val,val,Date,Integer);
 external procedure PasteFromSysList(Integer,Integer); //Edit***************************Sasha2,14:52 14.12.2015
 
+SetLangMode(LangRussian,"RUS",0);
+
+
 procedure CalcVolume(val w,val h,val d,var val vol)
 begin
   vol = blankval;
@@ -181,6 +184,94 @@ begin
   return;
 end;
 
+function Boolean INDClassDisp1EFAfter(Integer wn,Boolean changedf)
+begin
+  Boolean res;
+  record DIVc Dir;
+  record INVc INr;
+  
+  if (changedf) then begin
+    res = true;
+    GetWindowRecord(wn,INr);
+    DIr.Code = INr.Disp1;
+    if(readfirstmain(DIr,1,true))then begin
+    	INr.Disp1Name = DIr.Name;
+    	putwindowrecord(wn,INr);
+    end else begin
+    	INr.Disp1Name = "";
+    	putwindowrecord(wn,INr);
+    end;
+  end;
+  INDClassDisp1EFAfter = res;
+  return;
+end;
+
+function Boolean INDClassDisp2EFAfter(Integer wn,Boolean changedf)
+begin
+  Boolean res;
+  record DIVc Dir;
+  record INVc INr;
+  
+  if (changedf) then begin
+    res = true;
+    GetWindowRecord(wn,INr);
+    DIr.Code = INr.Disp2;
+    if(readfirstmain(DIr,1,true))then begin
+    	INr.Disp2Name = DIr.Name;
+    	putwindowrecord(wn,INr);
+    end else begin
+    	INr.Disp2Name = "";
+    	putwindowrecord(wn,INr);
+    end;
+  end;
+  INDClassDisp2EFAfter = res;
+  return;
+end;
+
+function Boolean INDClassDisp3EFAfter(Integer wn,Boolean changedf)
+begin
+  Boolean res;
+  record DIVc Dir;
+  record INVc INr;
+  
+  if (changedf) then begin
+    res = true;
+    GetWindowRecord(wn,INr);
+    DIr.Code = INr.Disp3;
+    if(readfirstmain(DIr,1,true))then begin
+    	INr.Disp3Name = DIr.Name;
+    	putwindowrecord(wn,INr);
+    end else begin
+    	INr.Disp3Name = "";
+    	putwindowrecord(wn,INr);
+    end;
+  end;
+  INDClassDisp3EFAfter = res;
+  return;
+end;
+
+function Boolean INDClassDisp4EFAfter(Integer wn,Boolean changedf)
+begin
+  Boolean res;
+  record DIVc Dir;
+  record INVc INr;
+  
+  if (changedf) then begin
+    res = true;
+    GetWindowRecord(wn,INr);
+    DIr.Code = INr.Disp4;
+    if(readfirstmain(DIr,1,true))then begin
+    	INr.Disp4Name = DIr.Name;
+    	putwindowrecord(wn,INr);
+    end else begin
+    	INr.Disp4Name = "";
+    	putwindowrecord(wn,INr);
+    end;
+  end;
+  INDClassDisp4EFAfter = res;
+  return;
+end;
+
 global
 function Boolean INDClassAfterEditField(Integer wn,string fieldname,Integer fn, Integer rownr,Integer changed)
 begin
@@ -193,6 +284,10 @@ begin
     case "Density": res = INDClassDensityEFAfter(wn,changed);
     case "NetWeight": res = INDClassNetWeightEFAfter(wn,changed);
     case "VARMask": res = INDClassVARMaskEFAfter(wn,changed!=0);
+    case "Disp1": res = INDClassDisp1EFAfter(wn,changed!=0);
+    case "Disp2": res = INDClassDisp2EFAfter(wn,changed!=0);
+    case "Disp3": res = INDClassDisp3EFAfter(wn,changed!=0);
+    case "Disp4": res = INDClassDisp4EFAfter(wn,changed!=0);
   end;
   INDClassAfterEditField = res;
   return;
@@ -1289,3 +1384,32 @@ begin
   return;
 end;// Edit ************************** Wednesday, 19 July 2017 14:53:36
 
+global
+function Boolean MyDISClassOnOpenWindow(Integer wn)
+begin
+  LongInt l;
+  string 255 subset;
+  Array string 255 adi;
+  Integer i,acnt,mwn;
+  record INVc INr;
+  
+  mwn = motherwindow(wn);
+  getwindowrecord(mwn,INr);
+  switch (WindowActiveField(mwn)) begin
+    case "Disp1": subset = "Disp1";
+    case "Disp2": subset = INr.Disp1;
+    case "Disp3": subset = INr.Disp2;
+    case "Disp4": subset = INr.Disp3;
+    case "Disp5": subset = INr.Disp4;
+    case "Disp6": subset = INr.Disp5;
+    case "Disp7": subset = INr.Disp6;
+    case "Disp8": subset = INr.Disp7;
+  end;
+  if(blank(subset))then begin
+  	subset = "NO";
+  end;
+  setwindowsubset(wn,subset);
+  
+  MyDISClassOnOpenWindow = true;
+  return;
+end;

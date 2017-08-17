@@ -1860,7 +1860,7 @@ begin
 end;
 
 global
-function Integer SVO3LClassRowColor(record SVOVc SVOr)
+function Integer SVOLClassRowColor(record SVOVc SVOr)
 begin
   Integer res;
 
@@ -1877,7 +1877,7 @@ begin
 		case 5: res = kRowcolorYellow;
   end;
   
-  SVO3LClassRowColor = res;
+  SVOLClassRowColor = res;
   return;
 end;
 

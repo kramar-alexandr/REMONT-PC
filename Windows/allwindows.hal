@@ -599,9 +599,9 @@ begin
   RlCol(79,79,"Гот.",DoneMark,false);
   RlColKey(111,111,"Дата счета",TransDate,false,AllTransDate);
   RlColKey(180,180,"Наим.",Addr0,false,AllName);
-  RlCol(300,300,"Проблема",AllComment1,false);
+  RlCol(300,300,"Проблема",Comment1,false);
   RlColKey(400,400,"Код заказа",InnerOrderNr,false,AllInnerOrderNr);
-  RlCol(-370,-370,"Статус зв.",AllCallStatus,false);
+  RlCol(-370,-370,"Статус зв.",CallStatus,false);
   RlColKey(-290,-290,"Тел1.",Kontinfo1,false,AllKontinfo1);
   RlColKey(-180,-180,"Статус",StatusText,false,AllStatusText);
   RlColKey(-70,-70,"Рем.гот.",PlanShipDate,false,AllPlanShipDate);

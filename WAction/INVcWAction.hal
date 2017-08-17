@@ -272,6 +272,28 @@ begin
   return;
 end;
 
+function Boolean INDClassDisp5EFAfter(Integer wn,Boolean changedf)
+begin
+  Boolean res;
+  record DIVc Dir;
+  record INVc INr;
+  
+  if (changedf) then begin
+    res = true;
+    GetWindowRecord(wn,INr);
+    DIr.Code = INr.Disp5;
+    if(readfirstmain(DIr,1,true))then begin
+    	INr.Disp5Name = DIr.Name;
+    	putwindowrecord(wn,INr);
+    end else begin
+    	INr.Disp5Name = "";
+    	putwindowrecord(wn,INr);
+    end;
+  end;
+  INDClassDisp5EFAfter = res;
+  return;
+end;
+
 global
 function Boolean INDClassAfterEditField(Integer wn,string fieldname,Integer fn, Integer rownr,Integer changed)
 begin
@@ -287,6 +309,7 @@ begin
     case "Disp1": res = INDClassDisp1EFAfter(wn,changed!=0);
     case "Disp2": res = INDClassDisp2EFAfter(wn,changed!=0);
     case "Disp3": res = INDClassDisp3EFAfter(wn,changed!=0);
+    case "Disp4": res = INDClassDisp4EFAfter(wn,changed!=0);
     case "Disp4": res = INDClassDisp4EFAfter(wn,changed!=0);
   end;
   INDClassAfterEditField = res;

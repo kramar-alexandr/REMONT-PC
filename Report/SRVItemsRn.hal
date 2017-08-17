@@ -130,6 +130,8 @@ begin
 											outstring(tabs[6],0,SVOr.CallStatus,false);
 										endformat;
 										StartFormat(15);
+											outstring(tabs[0],0,"Клиент:",false);
+											outstring(tabs[1],0,SVOr.Addr0,false);
 											outstring(tabs[4],0,"К оплате",false);
 											//outstring(tabs[5],0,SVOr.PlanShipDate,false);
 											outstring(tabs[6],0,SVOr.WSCost,false);

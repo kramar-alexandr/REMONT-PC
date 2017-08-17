@@ -1297,12 +1297,6 @@ begin
       goto LINVcRecordCheck;
     end;
   end;
-
-	if (setinset("USER",INr.DispGroups)==false and setinset("SERV",INr.DispGroups)==false) then begin
-		RecordCheckError(1707,"USER или SERV",-1,"DispGroups");//change type     
-		res = -1; 
-		goto LINVcRecordCheck;
-	end;
 	
 	if(nonblank(INr.Disp2) and blank(INr.Disp1))then begin
 		RecordCheckError(1058,"USER или SERV",-1,"Disp1");//============================15/08/2017    
@@ -1380,6 +1374,12 @@ begin
 	end;
 	if(nonblank(INr.Disp9))then begin
 		INr.DispGroups = INr.DispGroups & "," & INr.Disp9;
+	end;
+	
+	if (setinset("USER",INr.DispGroups)==false and setinset("SERV",INr.DispGroups)==false) then begin
+		RecordCheckError(1707,"USER или SERV",-1,"DispGroups");//change type     
+		res = -1; 
+		goto LINVcRecordCheck;
 	end;
 	
   if (CheckMultipleIndexField(INr.DispGroups,10,10)==false) then begin

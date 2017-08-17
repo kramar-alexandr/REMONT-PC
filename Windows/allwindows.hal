@@ -568,7 +568,7 @@ begin
   RlColKey(4,4,"№",SerNr,false,AllServSerNr);
   //RlCol(79,79,"Гот.",DoneMark,false);
   RlColKey(79,79,"Дата счета",TransDate,false,AllServTransDate);
-  RlCol(150,150,"Наим.",Addr0,false);
+  RlColKey(150,150,"Наим.",ItemName,false,AllServItemName);
   RlCol(300,300,"Проблема",Comment1,false);
   RlColKey(-460,-460,"Код заказа",InnerOrderNr,false,AllServInnerOrderNr);
   RlCol(-370,-370,"Статус зв.",CallStatus,false);
@@ -598,7 +598,7 @@ begin
   RlColKey(4,4,"№",SerNr,false,AllSerNr);
   RlCol(79,79,"Гот.",DoneMark,false);
   RlColKey(111,111,"Дата счета",TransDate,false,AllTransDate);
-  RlColKey(180,180,"Наим.",Addr0,false,AllName);
+  RlColKey(180,180,"Наим.",ItemName,false,AllItemName);
   RlCol(300,300,"Проблема",Comment1,false);
   RlColKey(400,400,"Код заказа",InnerOrderNr,false,AllInnerOrderNr);
   RlCol(-370,-370,"Статус зв.",CallStatus,false);

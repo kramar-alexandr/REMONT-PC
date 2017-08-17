@@ -565,9 +565,10 @@ begin
   EndToolBar; //Edit***************************Sasha2,17:21 10.05.2017 }
   FormName(PrintSVOL);
   RecordList(4,17,-21,-39);
-  RlColKey(4,4,"№",SerNr,false,AllServSerNr);
+  RlColKey(4,4,"Дата счета",TransDate,false,AllServTransDate);
+  RlColKey(79,79,"№",SerNr,false,AllServSerNr);
   //RlCol(79,79,"Гот.",DoneMark,false);
-  RlColKey(79,79,"Дата счета",TransDate,false,AllServTransDate);
+  
   RlColKey(150,150,"Наим.",ItemName,false,AllServItemName);
   RlCol(300,300,"Проблема",Comment1,false);
   RlColKey(-460,-460,"Код заказа",InnerOrderNr,false,AllServInnerOrderNr);
@@ -625,8 +626,9 @@ begin
   UseView(SVOVc);
   FormName(PrintSVOL);
   RecordList(4,17,-21,-39);
-  RlColKey(4,4,"№",SerNr,false,UnServSerNr);
-  RlColKey(79,79,"Дата зак.",TransDate,false,UnServTransDate);
+  RlColKey(4,4,"Дата зак.",TransDate,false,UnServTransDate);
+  RlColKey(79,79,"№",SerNr,false,UnServSerNr);
+  
   RlColKey(160,160,"Товар",ItemName,false,UnServItemName);
   RlCol(400,400,"Проблема",Comment1,false);
   RlColKey(-300,-300,"Тел1.",Kontinfo1,false,UnServKontinfo1);

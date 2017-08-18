@@ -9112,6 +9112,9 @@ LMasterWClass7_SpecMenu:;
   SpecialMenu("Открыть фильтр импорта чата",' ',16,"OpenChatFilterWsm");  
   SpecialMenu("Показать фон",' ',9,"OpenBackgroundMasterWsm");
   SpecialMenu("Телефон Binotel",' ',9,"ChangeBinotelPhoneDsm"); 
+  if(left(currentuser,2)=="SA")then begin
+  	SpecialMenu("TEST",' ',9,"MyTESTDsm"); 
+  end;
 
   EndWindow;
 end;
@@ -9148,5 +9151,20 @@ begin
   DataListColumn(1,6,50,AdjLeft,"PayMode","Тип платежа",M4Str); 
   DataListColumn(1,56,-16,AdjLeft,"Comment","Комментарий",M4Str); 
   SearchField("Поиск");
+  EndWindow;
+end;
+
+
+window MyChartWClass:1
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v;
+  
+  WindowBegin("MyChartWClass",MyChartWClass,CGother,-);
+  SetWRect(10,80,1040,752);
+  UseView(RcVc);
+  Sizeable(-1,-1,0,0);
+  v = 10; h = 10;
+  ChartArea(h,v,-10,-10,"$MyChart");  
   EndWindow;
 end;

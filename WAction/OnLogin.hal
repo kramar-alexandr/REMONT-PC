@@ -47,6 +47,9 @@ external procedure LogoutHansaWorldID();
 external procedure SendHansaWorldIDUserTask2(string,string,Integer);
 external procedure GetUserAccessGroup(string,var string);// Edit ************************** Thursday, 30 March 2017 10:16:28
 
+SetLangMode(LangRussian,"RUS",0);
+
+
 global
 function Integer GetPOSOffLineCompNo()
 begin 
@@ -949,4 +952,53 @@ begin
 	recordupdate(oldUser,User,true);
 	closewindow(wn);
 return;
+end;
+
+global procedure MyTESTDsm()
+begin
+	record RcVc RepSpec;
+
+	OpenWindow("MyChartWClass",1,0,"","",RepSpec);
+	
+return
+end;
+
+global procedure mymessagebox(string arg)
+begin
+
+	messagebox(0,arg);
+
+return;
+end;
+
+global
+function Boolean MyChartWClassOnOpenWindow(Integer wn)	//Edit----------------------Dima--09.01.2015
+begin
+  record RcVc RepSpec;
+  string 255 html;
+	
+	
+	
+	html = "<!DOCTYPE html><html><head>";
+	html = html & "<script type='text/javascript'>";
+	html = html & "function Test(param){";
+	html = html & "HansaWorld.callHal('mymessagebox','dsfsdfsf');";
+	html = html & "}";
+	html = html & "</script>";
+	html = html & "</head>";
+	html = html & "<body><div class=\"content\"><div class=\"message\"> ";
+	html = html & "Улучшите совместную работу и обмен информации между коллегами";
+	html = html & "</div><div style=\"display:inline-flex\">";
+	html = html & "<button type='button' id=\"purchasefunctiontagbutton\" class='editbutton' onclick='Test(\"HansaWorld\")'> Subscribe</button>";
+	html = html & "</div></div><div class=\"terms\">Terms and conditions of the Subscription Agreement for HansaWorld Services <br> and End-User Licence Agreement for HansaWorld Software apply.</div>";
+	html = html & "</body></html>";
+
+	
+	
+	WriteStringToFile(html,"MyChartwindow.html",0);
+	
+	SetWebPageData(wn,"$MyChart",html);
+
+  MyChartWClassOnOpenWindow = false;
+  return;
 end;

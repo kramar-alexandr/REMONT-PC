@@ -60,36 +60,40 @@ BEGIN
   wn = CurWindow;
   if (WindowState(wn)==Rs_normal) then begin
     GetWindowRecord(wn,SVOr);
-    if ((SVOr.WSCost!=blankval) and (SVOr.WSCost!=0)) then begin
-      SetExportCodePage("CP1251");
-      HandleSVOReceiptPrinting(SVOr,aFile);
-      AddAreaToArea(aFile,aFile);
-      PrintBixolonReceipt(aFile);
-    end;
-    if (BlankDate(SVOr.RegDate)) then begin
-      testf = true;
-      if (BlankDate(SVOr.PlanShipDate)) then begin //Edit***************************Sasha2,14:47 16.02.2017
-        //testf = false;
-        //MessageBox(31089,"");
-      end;
-      if (testf) then begin //Edit***************************Sasha2,10:59 12.06.2017 {
-        BlockLoad(LMb); //Edit***************************Sasha2,14:35 09.06.2017
-        err = CreateAndOKDispatchFromSVO(SVOr,LMb,errMes);
-  			if (err!=0) then begin
-  			  MessageBox(err,". " & errMes);
-  			  testf = false;
-  			end;
-      end; //Edit***************************Sasha2,10:59 12.06.2017 }
-      if (testf) then begin
-        RecordCopy(oldSVOr,SVOr);
-        SVOr.RegDate = currentDate;
-    	  SVOr.OutTime = CurrentTime;
-    	  PutWindowRecord(wn,SVOr);
-    	  if (RecordUpdate(oldSVOr,SVOr,true)==0) then begin
-    	    SetWindowState(wn,Rs_normal);
-    	  end;
-    	  //WindowDoOK(wn,0);
-      end;
+    if(SVOr.OrderStatus==6 or SVOr.OrderStatus==2)then begin
+			if ((SVOr.WSCost!=blankval) and (SVOr.WSCost!=0)) then begin
+				SetExportCodePage("CP1251");
+				HandleSVOReceiptPrinting(SVOr,aFile);
+				AddAreaToArea(aFile,aFile);
+				PrintBixolonReceipt(aFile);
+			end;
+			if (BlankDate(SVOr.RegDate)) then begin
+				testf = true;
+				if (BlankDate(SVOr.PlanShipDate)) then begin //Edit***************************Sasha2,14:47 16.02.2017
+					//testf = false;
+					//MessageBox(31089,"");
+				end;
+				if (testf) then begin //Edit***************************Sasha2,10:59 12.06.2017 {
+					BlockLoad(LMb); //Edit***************************Sasha2,14:35 09.06.2017
+					err = CreateAndOKDispatchFromSVO(SVOr,LMb,errMes);
+					if (err!=0) then begin
+						MessageBox(err,". " & errMes);
+						testf = false;
+					end;
+				end; //Edit***************************Sasha2,10:59 12.06.2017 }
+				if (testf) then begin
+					RecordCopy(oldSVOr,SVOr);
+					SVOr.RegDate = currentDate;
+					SVOr.OutTime = CurrentTime;
+					PutWindowRecord(wn,SVOr);
+					if (RecordUpdate(oldSVOr,SVOr,true)==0) then begin
+						SetWindowState(wn,Rs_normal);
+					end;
+					//WindowDoOK(wn,0);
+				end;
+			end;
+    end else begin
+    	messagebox(0,"Заказ должен быть в статусе Готов или Отказ");
     end;
 	end else begin
 	  MessageBox(1356,"");

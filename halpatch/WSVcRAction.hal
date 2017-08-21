@@ -420,7 +420,12 @@ begin
   record LocationVc Locationr;
   record CUVc CUr;// Edit ************************** Thursday, 15 December 2011 09:33:37
   record UserVc User;// Edit ************************** Monday, 25 November 2013 10:01:27 
-    
+  record ObjectsAccBlock OAb;// Edit ************************** Monday, 21 August 2017 16:03:31 
+  row ObjectsAccBlock OArw;// Edit ************************** Monday, 21 August 2017 16:03:31 
+  integer mtrw,k;// Edit ************************** Monday, 21 August 2017 16:03:36
+  
+  blockload(OAb);// Edit ************************** Monday, 21 August 2017 16:04:42
+  
   res = 0;
   BlockLoad(MainStockRec);
   insertmode = 1;//Rs_insert
@@ -619,6 +624,24 @@ begin
   for (i=0;i<rwcnt;i=i+1) begin
     MatRowGet(WSp,i,WSrw);
     // Edit Start ---------------------------------------------- Edit Start
+	//Monday, 21 August 2017 16:07:30
+	
+   	mtrw = matrowcnt(OAb);
+    For(k=0;k<mtrw;k=k+1) begin
+    	matrowget(OAb,k,OArw);
+	  	if(nonblank(WSrw.ArtCode))then begin
+	  		if(nonblank(Locationr.Objects))then begin
+	  			if(Locationr.Objects==OArw.Objects)then begin
+	  				WSrw.CostAcc = OArw.AccCode;
+	  				matrowput(WSp,i,WSrw);
+	  			end;
+	  		end;
+	  	end;
+		end; 
+    
+	// Edit End ---------------------------------------------- Edit End
+	
+    // Edit Start ---------------------------------------------- Edit Start
 	//Friday, 14 January 2011 14:11:16
 	  if (blank(WSrw.ArtCode)) then begin
         RecordCheckError(1058,"",i,"ArtCode");      
@@ -770,6 +793,9 @@ begin
         end;
       end;
     end;
+    
+    
+    
     if (nonblank(WSrw.ArtCode)) then begin
     if (check!=0 and testf) then begin
       if (MainStockRec.dontAllowOvership==1) then begin

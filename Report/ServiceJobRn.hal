@@ -230,6 +230,7 @@ begin
 												endformat;
 												ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] + IVrw.Sum;
 												totserv = totserv + ivsumserv[asvonr[i]];
+												supertotdolg = supertotdolg + IVrw.Sum;
 	  									end;
 	  									
 	  								end;
@@ -252,7 +253,7 @@ begin
 						outstring(tabs[5],0,blankval,false);
 						//outstring(tabs[6],0,SVOr.WSCost,false);
 					endformat;
-					supertotdolg = supertotdolg + SVOr.WSCost;
+					
 					black_divider(tabs[6],tabs[7]);
 					startformat(15);
 						outstring(tabs[0],0,"Итого по заказу",false);
@@ -324,6 +325,7 @@ begin
 												endformat;
 												ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] + IVrw.Sum;
 												totserv = totserv + ivsumserv[asvonr[i]];
+												supertotdolg = supertotdolg + IVrw.Sum;
 	  									end;
 	  									
 	  								end;
@@ -346,7 +348,7 @@ begin
 						outstring(tabs[5],0,blankval,false);
 						//outstring(tabs[6],0,SVOr.WSCost,false);
 					endformat;
-					supertotdolg = supertotdolg + SVOr.WSCost;
+					
 					black_divider(tabs[6],tabs[7]);
 					startformat(15);
 						outstring(tabs[0],0,"Итого по заказу",false);
@@ -404,6 +406,7 @@ begin
 			end;
 		end;
 		
+		black_divider(0,1);
 		startformat(15);
 			outstring(tabs[0],0,"Всего ремонтов",false);
 			outstring(tabs[3],0,totrem,false);

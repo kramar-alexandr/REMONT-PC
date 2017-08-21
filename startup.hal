@@ -18,7 +18,7 @@ begin
   Setting("Настройки Binotel",BinotelSettingsTClass,modSY);
   Setting("Вспомог. рег. Внутренние Серийные номера",IntSerBalLClass,modDBMain); //Edit***************************Sasha2,14:59 08.08.2017
 	
-	
+	Report("Выполненые ремонты",ServiceJobsRClass,ServiceJobsRn,0,modSVO);
 	Report("Устройства на сервисе",SRVItemsRClass,SRVItemsRn,0,modSVO);
   Report("Отчет по истории товаров технический ",FindErrorInIHRClass,FindErrorInIHRn,0,modDBMain);
 	Report("Отчет по телефонам клиентов",ServClientOrderRClass,ServClientOrderRn,0,modSVO);// Edit ************************** Monday, 4 July 2016 17:52:38

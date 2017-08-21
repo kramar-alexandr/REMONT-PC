@@ -1,6 +1,30 @@
+external function LongInt DateDiff(Date,Date);
+
 SetLangMode(LangRussian,"RUS",0);
 
 procedure MySortStringArray(var array string astr,integer cnt)
+begin
+	integer i,j;
+	string 100 tmp1,tmp2;
+	
+	if(cnt>1)then begin
+		for(j=0;j<cnt;j=j+1)begin
+			for(i=0;i<cnt-1;i=i+1)begin
+				if(uppercase(astr[i])>uppercase(astr[i+1]))then begin
+					tmp1 = astr[i];
+					tmp2 = astr[i+1];
+					astr[i] = tmp2;
+					astr[i+1] = tmp1;
+				end;
+			end;
+		end;
+	end;
+		
+
+return;
+end;
+
+procedure MySortLngIntArray(var array longint astr,integer cnt)
 begin
 	integer i,j;
 	string 100 tmp1,tmp2;
@@ -43,164 +67,336 @@ begin
 	vector boolean vSGExist,vLocExist,vSGLocExist;
 	vector longint vSerSVONr;
 	array string 50 aSerials,aSerials1;
-	integer k,i;
+	integer k,i,mtrw,j,mtrw1;
 	record SalesGroupVc SGr;
 	record LocationVc Locr;
 	array integer tabs;
 	boolean testfsg,testfloc,testfsvo;
-	val dolg,totdolg,supertotdolg;
+	val dolg,totdolg,supertotdolg,totserv;
+	record IPRsVc IPRsr;
+	date sd,ed;
+	boolean TrHs,testf,filter,svoout;
+	record IVVc IVr,credIVr;
+	record IPVc IPr;
+	vector val ivsum,svodolg,ivsumserv;
+	vector boolean svoexist;
+	vector date paydate;
+	array longint asvonr;
+	row IVVc IVrw;
+	row IPVc IPrw;
+	string 100 enginer;
 	
 	tabs[0] = 0;
 	tabs[1] = 40;
-	tabs[2] = 250;
-	tabs[3] = 320;
-	tabs[4] = 380;
-	tabs[5] = 410;
-	tabs[6] = 440;
+	tabs[2] = 80;
+	tabs[3] = 100;
+	tabs[4] = 150;
+	tabs[5] = 180;
+	tabs[6] = 240;
+	tabs[7] = 280;
 	
 	StartReportJob("Выполненые ремонты");
 		PrintHeader(RepSpec);
 		
-		while(loopkey("MainKey",SBr,1,true))begin
-			if(SBr.Quant>0)then begin
-				vSerLoc[SBr.Serial] = SBr.Location;
-				vLocExist[SBr.Location] = true;
-				aSerials[k] = SBr.Serial;
-				k = k+1;
-				SVOr.InnerOrderNr = SBr.Serial;
-				if(readfirstkey("InnerOrderNr",SVOr,1,true))then begin
-					vSerInServ[SBr.Serial] = SVOr.SalesGroup;
-					vSGExist[SVOr.SalesGroup] = true;
-					vSGLocExist[SVOr.SalesGroup & ";" & SBr.Location] = true;
-					vSerSVONr[SBr.Serial] = SVOr.SerNr;
-				end else begin
-					vSerInServ[SBr.Serial] = "NO";
-					vSerSVONr[SBr.Serial] = -1;
-				end;
-			end;
-		end;
-		
-		SortStringArray(aSerials);
-		//CreateSortArray(aSerials1,k,aSerials);
-		
-		while(loopmain(SGr,1,true))begin
-			testfsg = true;
-			if(nonblank(RepSpec.f1) and RepSpec.f1!=SGr.SGroupCode)then begin testfsg = false; end;
-			
-			if(vSGExist[SGr.SGroupCode] and testfsg)then begin
-				resetloop(Locr);
-				Locr.Code = "";
-				while(loopmain(Locr,1,true))begin
-					testfloc = true;
-					if(nonblank(RepSpec.f2) and RepSpec.f2!=Locr.Code)then begin testfloc = false; end;
-					
-					if(vSGLocExist[SGr.SGroupCode & ";" & Locr.Code] and testfloc)then begin
-						StartFormat(15);
-							outstring(tabs[0],0,SGr.SGroupName,false);
-						endformat;
-						StartFormat(15);
-							outstring(tabs[0],0,"Ремонт",false);
-							outstring(tabs[1],0,"Устройство",false);
-							outstring(tabs[2],0,"На складе сейчас",false);
-							outstring(tabs[3],0,"Статус ремонта",false);
-							outstring(tabs[4],0,"Принят",false);
-							outstring(tabs[5],0,"Готов",false);
-							outstring(tabs[6],0,"Оповещение",false);
-						endformat;
-						gray_divider(0,1);
-						for(i=0;i<k;i=i+1)begin
-							
-							if(vSerLoc[aSerials[i]]==Locr.Code and vSerInServ[aSerials[i]]==SGr.SGroupCode)then begin
-								SVOr.InnerOrderNr = aSerials[i];
-								if(readfirstkey("InnerOrderNr",SVOr,1,true))then begin
-									testfsvo = true;
-									if(RepSpec.flags[0]==1 and SVOr.OrderStatus!=2 and SVOr.OrderStatus!=6)then begin testfsvo = false; end;
-									
-									if(testfsvo)then begin
-										if(matrowcnt(SVOr)>0)then begin
-											matrowget(SVOr,0,SVOrw);
+		sd = RepSpec.sStartDate;
+		ed = RepSpec.sEndDate;
+
+		IPRsr.TransDate = sd;
+		TrHs = true;
+		while(loopkey("TransDate",IPRsr,1,TrHs))begin
+			if(IPRsr.TransDate>ed)then begin TrHs = true; end;
+
+			if(TrHs)then begin
+				switch(IPRsr.TransType)begin
+					case 0:	IVr.SerNr = IPRsr.TransNr;
+									if(readfirstmain(IVr,1,true))then begin
+										if(svoexist[IVr.SVONr]==false)then begin
+											asvonr[k] = IVr.SVONr;
+											k = k+1;
+											svoexist[IVr.SVONr] = true;
 										end;
-										StartFormat(15);
-											outstring(tabs[0],"DblSVOVcSer",aSerials[i],false);
-											outstring(tabs[1],0,SVOrw.Spec,false);
-											outstring(tabs[2],0,vSerLoc[aSerials[i]],false);
-											outstring(tabs[3],0,SVOr.StatusText,false);
-											outstring(tabs[4],0,SVOr.GetItemDate,false);
-											outstring(tabs[5],0,SVOr.PlanShipDate,false);
-											outstring(tabs[6],0,SVOr.CallStatus,false);
-										endformat;
-										StartFormat(15);
-											outstring(tabs[0],0,"Клиент:",false);
-											outstring(tabs[1],0,SVOr.Addr0,false);
-											outstring(tabs[4],0,"К оплате",false);
-											//outstring(tabs[5],0,SVOr.PlanShipDate,false);
-											outstring(tabs[6],0,SVOr.WSCost,false);
-										endformat;
-										StartFormat(15);
-											outstring(tabs[4],0,"Оплачено",false);
-											//outstring(tabs[5],0,SVOr.PlanShipDate,false);
-											outstring(tabs[6],0,SVOr.FastCash + SVOr.PrepaySum + SVOr.FastPMBN + SVOr.FastTerm,false);
-										endformat;
-										dolg = blankval;
-										dolg = SVOr.WSCost - (SVOr.FastCash + SVOr.PrepaySum + SVOr.FastPMBN + SVOr.FastTerm);
-										totdolg = totdolg + dolg;
-										StartFormat(15);
-											outstring(tabs[4],0,"Долг",false);
-											//outstring(tabs[5],0,SVOr.PlanShipDate,false);
-											outstring(tabs[6],0,dolg,false);
-										endformat;
-										gray_divider(0,1);
+										if(IVr.InvType!=kInvoiceTypeCredit)then begin
+											if(paydate[IVr.SVONr]<IVr.InvDate)then begin
+												paydate[IVr.SVONr] = IVr.InvDate;
+											end;
+											ivsum[IVr.SVONr] = ivsum[IVr.SVONr] + IVr.Sum4;
+											mtrw = matrowcnt(IVr);
+											For(i=0;i<mtrw;i=i+1) begin
+												matrowget(IVr,i,IVrw);
+												if(IVrw.stp==kInvoiceRowTypePrepayment)then begin
+													ivsum[IVr.SVONr] = ivsum[IVr.SVONr] - IVrw.Sum;
+												end;
+											end; 
+										end else begin
+											ivsum[IVr.SVONr] = ivsum[IVr.SVONr] - IVr.Sum4;
+										end;
 									end;
-								end;
-							end;
-						end;
-						StartFormat(15);
-							outstring(tabs[4],0,"Долг всего",false);
-							//outstring(tabs[5],0,SVOr.PlanShipDate,false);
-							outstring(tabs[6],0,totdolg,false);
-						endformat;
-						supertotdolg = supertotdolg + totdolg;
-						totdolg = blankval;
-						
-						black_Divider(0,1);
-					end;
-					
-					
-					
-					
+					case 1:	IPr.SerNr = IPRsr.TransNr;
+									if(readfirstmain(IPr,1,true))then begin
+										mtrw = matrowcnt(IPr);
+										For(i=0;i<mtrw;i=i+1) begin
+	  									matrowget(IPr,i,IPrw);
+	  									if(IPrw.InvoiceNr>0 and IPrw.InvoiceNr==IPRsr.IVNr)then begin
+	  										IVr.SerNr = IPrw.InvoiceNr;
+	  										if(readfirstmain(IVr,1,true))then begin
+	  											if(svoexist[IVr.SVONr]==false)then begin
+														asvonr[k] = IVr.SVONr;
+														k = k+1;
+														svoexist[IVr.SVONr] = true;
+													end;
+													
+													if(IVr.InvDate<sd)then begin
+														ivsum[IVr.SVONr] = ivsum[IVr.SVONr] + IVr.Sum4;
+														mtrw1 = matrowcnt(IVr);
+														For(j=0;j<mtrw;j=j+1) begin
+															matrowget(IVr,j,IVrw);
+															if(IVrw.stp==kInvoiceRowTypePrepayment)then begin
+																ivsum[IVr.SVONr] = ivsum[IVr.SVONr] - IVrw.Sum;
+															end;
+														end;
+													end;
+													
+	  											ivsum[IVr.SVONr] = ivsum[IVr.SVONr] - IPrw.InvVal;
+	  											if(paydate[IVr.SVONr]<IPr.TransDate)then begin
+														paydate[IVr.SVONr] = IPr.TransDate;
+													end;
+	  										end;
+	  									end;
+										end; 
+									end;
 				end;
 			end;
 		end;
-		SGr.SGroupCode = "NO";
-		SGr.SGroupName = "Без группы продаж";
-		if(vSGExist[SGr.SGroupCode])then begin
-			resetloop(Locr);
-			Locr.Code = "";
-			while(loopmain(Locr,1,true))begin
-				if(vSGLocExist[SGr.SGroupCode & ";" & Locr.Code])then begin
-					StartFormat(15);
-						outstring(tabs[0],0,SGr.SGroupName,false);
-					endformat;
-					for(i=0;i<k;i=i+1)begin
-						if(vSerLoc[aSerials[i]]==Locr.Code and vSerInServ[aSerials[i]]==SGr.SGroupCode)then begin
-							StartFormat(15);
-								//outstring(tabs[0],0,SGr.SGroupName,false);
-								outstring(tabs[1],0,Locr.Name,false);
-								outstring(tabs[2],0,aSerials[i],false);
-							endformat;
-						end;
-					end;
-					black_Divider(0,1);
-				end;
-			end;
-		end;
-		black_Divider(0,1);
-		StartFormat(15);
-			outstring(tabs[4],0,"Долг по всем точкам",false);
-			//outstring(tabs[5],0,SVOr.PlanShipDate,false);
-			outstring(tabs[6],0,supertotdolg,false);
+		
+		MySortLngIntArray(asvonr,k);
+		
+		startformat(15);
+			outstring(tabs[0],0,"Заказ",false);
+			outstring(tabs[1],0,"Дата",false);
+			outstring(tabs[2],0,"Кол-во",false);
+			outstring(tabs[3],0,"Выдано за деньги",false);
+			outstring(tabs[4],0,"Отказ",false);
+			outstring(tabs[5],0,"Отказ по нашей вине",false);
+			outstring(tabs[6],0,"Сумма по вып. рем.",false);
+			outstring(tabs[7],0,"Мастер",false);
+			//outstring(tabs[7],0,SVOr.StatusText,false);
 		endformat;
+		
+		For(i=0;i<k;i=i+1) begin
+			SVOr.SerNr = asvonr[i];
+			readfirstmain(SVOr,1,true);
+			if(SVOr.WSCost!=0 and ivsum[asvonr[i]]<=0)then begin
+					
+				svoout = false;
+				IVr.SVONr = SVOr.SerNr;
+				TrHs = true;
+				while(loopkey("SVONr",IVr,1,TrHs))begin	
+					testf = true;
+					if(IVr.SVONr!=SVOr.SerNr)then begin TrHs = false; testf = false; end;
+					if(IVr.OKFlag==0)then begin testf = false; end;
+					
+					if(testf)then begin
+						mtrw = matrowcnt(IVr);
+						For(j=0;j<mtrw;j=j+1) begin
+	  					matrowget(IVr,j,IVrw);
+	  					if(IVrw.stp==kInvoiceRowTypeNormal)then begin
+	  						if(nonblank(IVrw.ArtCode))then begin
+	  							INr.Code = IVrw.ArtCode;
+	  							if(readfirstmain(INr,1,true))then begin
+	  								if(INr.ItemType==3 or INr.ItemType==0)then begin
+	  									filter = true;
+	  									enginer = "";
+	  									if(IVr.SalesMan==SVOr.CustomField7)then begin
+												enginer = SVOr.ServiceManager;
+											end else begin
+												enginer = IVr.SalesMan;
+											end;
+	  									
+	  									if(nonblank(RepSpec.f1) and RepSpec.f1!=SVOr.SalesGroup)then begin filter = false; end;
+											if(nonblank(RepSpec.f3) and RepSpec.f3!=enginer)then begin filter = false; end;
+											if(nonblank(RepSpec.f4) and RepSpec.f4!=SVOr.CustomField7)then begin filter = false; end;
+	  									
+	  									if(filter)then begin
+	  										svoout = true;
+												startformat(15);
+													outstring(tabs[2],0,IVrw.Spec,false);
+													outstring(tabs[6],0,IVrw.Sum,false);
+													if(IVr.SalesMan==SVOr.CustomField7)then begin
+														outstring(tabs[7],0,SVOr.ServiceManager,false);
+													end else begin
+														outstring(tabs[7],0,IVr.SalesMan,false);
+													end;
+												endformat;
+												ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] + IVrw.Sum;
+												totserv = totserv + ivsumserv[asvonr[i]];
+	  									end;
+	  									
+	  								end;
+	  							end;
+	  						end;
+	  					end;
+						end; 
+					end;
+				end;
+				
+				if(svoout)then begin
+					startformat(15);
+						outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
+						outstring(tabs[1],0,SVOr.TransDate,false);
+						outstring(tabs[2],0,1,false);
+						outstring(tabs[3],0,1,false);
+						outstring(tabs[4],0,blankval,false);
+						outstring(tabs[5],0,blankval,false);
+						//outstring(tabs[6],0,SVOr.WSCost,false);
+					endformat;
+					supertotdolg = supertotdolg + SVOr.WSCost;
+					black_divider(tabs[6],tabs[7]);
+					startformat(15);
+						outstring(tabs[0],0,"Итого по заказу",false);
+						outstring(tabs[6],0,SVOr.WSCost,false);
+					endformat;
+					gray_divider(0,1);
+				end;			
+				resetloop(IVr);
+			end;
+		end; 
+		black_divider(0,1);
+		startformat(15);
+			outstring(0,0,"Итого по  завершенным ремонтам",false);
+
+			outstring(400,0,supertotdolg,false);
+		endformat;
+		
 		supertotdolg = blankval;
+		black_divider(0,1);
+		startformat(15);
+			outstring(0,0,"Неоплаченные заказы ",false);
+			outstring(400,0,supertotdolg,false);
+		endformat;
+		For(i=0;i<k;i=i+1) begin
+			SVOr.SerNr = asvonr[i];
+			readfirstmain(SVOr,1,true);
+			if(SVOr.WSCost!=0 and ivsum[asvonr[i]]>0)then begin
+				
+				
+				svoout = false;
+				IVr.SVONr = SVOr.SerNr;
+				TrHs = true;
+				while(loopkey("SVONr",IVr,1,TrHs))begin	
+					testf = true;
+					if(IVr.SVONr!=SVOr.SerNr)then begin TrHs = false; testf = false; end;
+					if(IVr.OKFlag==0)then begin testf = false; end;
+					
+					if(testf)then begin
+						mtrw = matrowcnt(IVr);
+						For(j=0;j<mtrw;j=j+1) begin
+	  					matrowget(IVr,j,IVrw);
+	  					if(IVrw.stp==kInvoiceRowTypeNormal)then begin
+	  						if(nonblank(IVrw.ArtCode))then begin
+	  							INr.Code = IVrw.ArtCode;
+	  							if(readfirstmain(INr,1,true))then begin
+	  								if(INr.ItemType==3 or INr.ItemType==0)then begin
+	  									filter = true;
+	  									enginer = "";
+	  									if(IVr.SalesMan==SVOr.CustomField7)then begin
+												enginer = SVOr.ServiceManager;
+											end else begin
+												enginer = IVr.SalesMan;
+											end;
+	  									
+	  									if(nonblank(RepSpec.f1) and RepSpec.f1!=SVOr.SalesGroup)then begin filter = false; end;
+											if(nonblank(RepSpec.f3) and RepSpec.f3!=enginer)then begin filter = false; end;
+											if(nonblank(RepSpec.f4) and RepSpec.f4!=SVOr.CustomField7)then begin filter = false; end;
+	  									
+	  									if(filter)then begin
+	  										svoout = true;
+												startformat(15);
+													outstring(tabs[2],0,IVrw.Spec,false);
+													outstring(tabs[6],0,IVrw.Sum,false);
+													if(IVr.SalesMan==SVOr.CustomField7)then begin
+														outstring(tabs[7],0,SVOr.ServiceManager,false);
+													end else begin
+														outstring(tabs[7],0,IVr.SalesMan,false);
+													end;
+												endformat;
+												ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] + IVrw.Sum;
+												totserv = totserv + ivsumserv[asvonr[i]];
+	  									end;
+	  									
+	  								end;
+	  							end;
+	  						end;
+	  					end;
+						end; 
+					end;
+				end;
+				
+				if(svoout)then begin
+					startformat(15);
+						outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
+						outstring(tabs[1],0,SVOr.TransDate,false);
+						outstring(tabs[2],0,1,false);
+						outstring(tabs[3],0,1,false);
+						outstring(tabs[4],0,blankval,false);
+						outstring(tabs[5],0,blankval,false);
+						//outstring(tabs[6],0,SVOr.WSCost,false);
+					endformat;
+					supertotdolg = supertotdolg + SVOr.WSCost;
+					black_divider(tabs[6],tabs[7]);
+					startformat(15);
+						outstring(tabs[0],0,"Итого по заказу",false);
+						outstring(tabs[6],0,SVOr.WSCost,false);
+					endformat;
+					gray_divider(0,1);
+				end;			
+				resetloop(IVr);
+			end;
+		end; 
+		black_divider(0,1);
+		startformat(15);
+			outstring(0,0,"Итого по НЕ завершенным ремонтам",false);
+
+			outstring(400,0,supertotdolg,false);
+		endformat;
+		
+		
+		
+		black_divider(0,1);
+		startformat(15);
+			outstring(3,0,"Отмененные ремонты",false);
+
+		endformat;
+		resetloop(SVOr);
+		SVOr.RegDate = sd;
+		TrHs = true;
+		while(loopkey("RegDate",SVOr,1,TrHs))begin
+			testf = true;
+			if(SVOr.RegDate<sd or SVOr.RegDate>ed)then begin TrHs = false; testf = false; end;
+			
+			if(nonblank(RepSpec.f1) and RepSpec.f1!=SVOr.SalesGroup)then begin testf = false; end;
+			if(nonblank(RepSpec.f3) and RepSpec.f3!=SVOr.ServiceManager)then begin testf = false; end;
+			if(nonblank(RepSpec.f4) and RepSpec.f4!=SVOr.CustomField7)then begin testf = false; end;
+			
+			if(testf)then begin
+				if(SVOr.OrderStatus==6)then begin
+					startformat(15);
+					outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
+					outstring(tabs[1],0,SVOr.TransDate,false);
+					outstring(tabs[2],0,1,false);
+					outstring(tabs[3],0,blankval,false);
+					outstring(tabs[4],0,1,false);
+					if(SVOr.RejectReason=="Не смог сделать")then begin
+						outstring(tabs[5],0,1,false);
+					end else begin
+						outstring(tabs[5],0,blankval,false);
+					end;
+					outstring(tabs[6],0,ivsum[asvonr[i]],false);
+					outstring(tabs[7],0,SVOr.RejectReason,false);
+				endformat;
+				end;
+			end;
+		end;
+		
 		
 	endjob;
 

@@ -85,6 +85,7 @@ begin
 	row IVVc IVrw;
 	row IPVc IPrw;
 	string 100 enginer;
+	val totrem, totpayrem, totnopayrem, totcan, totourcan, totnopayremqty,totpayremqty;
 	
 	tabs[0] = 0;
 	tabs[1] = 40;
@@ -240,6 +241,8 @@ begin
 				end;
 				
 				if(svoout)then begin
+					totpayremqty = totpayremqty + 1;
+					totrem = totrem + 1;
 					startformat(15);
 						outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
 						outstring(tabs[1],0,SVOr.TransDate,false);
@@ -263,9 +266,9 @@ begin
 		black_divider(0,1);
 		startformat(15);
 			outstring(0,0,"Итого по  завершенным ремонтам",false);
-
 			outstring(400,0,supertotdolg,false);
 		endformat;
+		totpayrem = supertotdolg;
 		
 		supertotdolg = blankval;
 		black_divider(0,1);
@@ -332,6 +335,8 @@ begin
 				end;
 				
 				if(svoout)then begin
+					totnopayremqty = totnopayremqty + 1;
+					totrem = totrem + 1;
 					startformat(15);
 						outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
 						outstring(tabs[1],0,SVOr.TransDate,false);
@@ -379,6 +384,7 @@ begin
 			
 			if(testf)then begin
 				if(SVOr.OrderStatus==6)then begin
+					totcan = totcan + 1;
 					startformat(15);
 					outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
 					outstring(tabs[1],0,SVOr.TransDate,false);
@@ -386,6 +392,7 @@ begin
 					outstring(tabs[3],0,blankval,false);
 					outstring(tabs[4],0,1,false);
 					if(SVOr.RejectReason=="Не смог сделать")then begin
+						totourcan = totourcan + 1;
 						outstring(tabs[5],0,1,false);
 					end else begin
 						outstring(tabs[5],0,blankval,false);
@@ -397,6 +404,34 @@ begin
 			end;
 		end;
 		
+		startformat(15);
+			outstring(tabs[0],0,"Всего ремонтов",false);
+			outstring(tabs[3],0,totrem,false);
+		endformat;
+		startformat(15);
+			outstring(tabs[0],0,"Всего оплаченных ремонтов",false);
+			outstring(tabs[3],0,totpayremqty,false);
+		endformat;
+		startformat(15);
+			outstring(tabs[0],0,"На сумму",false);
+			outstring(tabs[3],0,totpayrem,false);
+		endformat;
+		startformat(15);
+			outstring(tabs[0],0,"Неоплаченных ремонтов",false);
+			outstring(tabs[3],0,totnopayremqty,false);
+		endformat;
+		startformat(15);
+			outstring(tabs[0],0,"На сумму",false);
+			outstring(tabs[3],0,supertotdolg,false);
+		endformat;
+		startformat(15);
+			outstring(tabs[0],0,"Отмен",false);
+			outstring(tabs[3],0,totcan,false);
+		endformat;
+		startformat(15);
+			outstring(tabs[0],0,"Отмен по нашей вине",false);
+			outstring(tabs[3],0,totourcan,false);
+		endformat;	
 		
 	endjob;
 

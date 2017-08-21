@@ -222,7 +222,11 @@ begin
 	  										svoout = true;
 												startformat(15);
 													outstring(tabs[2],0,IVrw.Spec,false);
-													outstring(tabs[6],0,IVrw.Sum,false);
+													if(IVr.InvType!=kInvoiceTypeCredit)then begin
+														outstring(tabs[6],0,IVrw.Sum,false);
+													end else begin
+														outstring(tabs[6],0,-IVrw.Sum,false);
+													end;
 													if(IVr.SalesMan==SVOr.CustomField7)then begin
 														outstring(tabs[7],0,SVOr.ServiceManager,false);
 													end else begin
@@ -230,9 +234,15 @@ begin
 													end;
 												endformat;
 												outstring(tabs[8],0,SVOr.StatusText,false);
-												ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] + IVrw.Sum;
-												totserv = totserv + ivsumserv[asvonr[i]];
-												supertotdolg = supertotdolg + IVrw.Sum;
+												if(IVr.InvType!=kInvoiceTypeCredit)then begin
+													ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] + IVrw.Sum;
+													totserv = totserv + ivsumserv[asvonr[i]];
+													supertotdolg = supertotdolg + IVrw.Sum;
+												end else begin
+													ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] - IVrw.Sum;
+													totserv = totserv - ivsumserv[asvonr[i]];
+													supertotdolg = supertotdolg - IVrw.Sum;
+												end;
 	  									end;
 	  									
 	  								end;
@@ -318,7 +328,11 @@ begin
 	  										svoout = true;
 												startformat(15);
 													outstring(tabs[2],0,IVrw.Spec,false);
-													outstring(tabs[6],0,IVrw.Sum,false);
+													if(IVr.InvType!=kInvoiceTypeCredit)then begin
+														outstring(tabs[6],0,IVrw.Sum,false);
+													end else begin
+														outstring(tabs[6],0,-IVrw.Sum,false);
+													end;
 													if(IVr.SalesMan==SVOr.CustomField7)then begin
 														outstring(tabs[7],0,SVOr.ServiceManager,false);
 													end else begin
@@ -326,9 +340,17 @@ begin
 													end;
 													outstring(tabs[8],0,SVOr.StatusText,false);
 												endformat;
-												ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] + IVrw.Sum;
-												totserv = totserv + ivsumserv[asvonr[i]];
-												supertotdolg = supertotdolg + IVrw.Sum;
+												
+												if(IVr.InvType!=kInvoiceTypeCredit)then begin
+													ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] + IVrw.Sum;
+													totserv = totserv + ivsumserv[asvonr[i]];
+													supertotdolg = supertotdolg + IVrw.Sum;
+												end else begin
+													ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] - IVrw.Sum;
+													totserv = totserv - ivsumserv[asvonr[i]];
+													supertotdolg = supertotdolg - IVrw.Sum;
+												end;
+												
 	  									end;
 	  									
 	  								end;

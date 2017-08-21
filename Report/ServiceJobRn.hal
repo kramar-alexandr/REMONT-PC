@@ -350,7 +350,6 @@ begin
 						outstring(tabs[4],0,blankval,false);
 						outstring(tabs[5],0,blankval,false);
 						//outstring(tabs[6],0,SVOr.WSCost,false);
-						outstring(tabs[8],0,SVOr.StatusText,false);
 					endformat;
 					
 					black_divider(tabs[6],tabs[7]);
@@ -405,6 +404,7 @@ begin
 					end;
 					outstring(tabs[6],0,ivsum[asvonr[i]],false);
 					outstring(tabs[7],0,SVOr.RejectReason,false);
+					outstring(tabs[8],0,SVOr.StatusText,false);
 				endformat;
 				end;
 			end;

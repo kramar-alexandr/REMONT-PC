@@ -95,7 +95,7 @@ begin
 	tabs[5] = 180;
 	tabs[6] = 240;
 	tabs[7] = 280;
-	
+	tabs[8] = 340;
 	StartReportJob("Выполненые ремонты");
 		PrintHeader(RepSpec);
 		
@@ -180,6 +180,7 @@ begin
 			outstring(tabs[5],0,"Отказ по нашей вине",false);
 			outstring(tabs[6],0,"Сумма по вып. рем.",false);
 			outstring(tabs[7],0,"Мастер",false);
+			outstring(tabs[8],0,"Статус",false);
 			//outstring(tabs[7],0,SVOr.StatusText,false);
 		endformat;
 		
@@ -228,6 +229,7 @@ begin
 														outstring(tabs[7],0,IVr.SalesMan,false);
 													end;
 												endformat;
+												outstring(tabs[8],0,SVOr.StatusText,false);
 												ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] + IVrw.Sum;
 												totserv = totserv + ivsumserv[asvonr[i]];
 												supertotdolg = supertotdolg + IVrw.Sum;
@@ -266,7 +268,7 @@ begin
 		end; 
 		black_divider(0,1);
 		startformat(15);
-			outstring(0,0,"Итого по  завершенным ремонтам",false);
+			outstring(0,0,"Итого по оплаченным ремонтам",false);
 			outstring(400,0,supertotdolg,false);
 		endformat;
 		totpayrem = supertotdolg;
@@ -322,6 +324,7 @@ begin
 													end else begin
 														outstring(tabs[7],0,IVr.SalesMan,false);
 													end;
+													outstring(tabs[8],0,SVOr.StatusText,false);
 												endformat;
 												ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] + IVrw.Sum;
 												totserv = totserv + ivsumserv[asvonr[i]];
@@ -347,6 +350,7 @@ begin
 						outstring(tabs[4],0,blankval,false);
 						outstring(tabs[5],0,blankval,false);
 						//outstring(tabs[6],0,SVOr.WSCost,false);
+						outstring(tabs[8],0,SVOr.StatusText,false);
 					endformat;
 					
 					black_divider(tabs[6],tabs[7]);

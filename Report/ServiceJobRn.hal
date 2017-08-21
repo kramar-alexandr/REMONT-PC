@@ -269,7 +269,7 @@ begin
 					black_divider(tabs[6],tabs[7]);
 					startformat(15);
 						outstring(tabs[0],0,"€того по заказу",false);
-						outstring(tabs[6],0,SVOr.WSCost,false);
+						outstring(tabs[6],0,ivsumserv[asvonr[i]],false);
 					endformat;
 					gray_divider(0,1);
 				end;			
@@ -377,7 +377,7 @@ begin
 					black_divider(tabs[6],tabs[7]);
 					startformat(15);
 						outstring(tabs[0],0,"€того по заказу",false);
-						outstring(tabs[6],0,SVOr.WSCost,false);
+						outstring(tabs[6],0,ivsumserv[asvonr[i]],false);
 					endformat;
 					gray_divider(0,1);
 				end;			

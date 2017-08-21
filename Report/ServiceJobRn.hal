@@ -248,7 +248,7 @@ begin
 						outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
 						outstring(tabs[1],0,SVOr.TransDate,false);
 						outstring(tabs[2],0,1,false);
-						outstring(tabs[3],0,blankval,false);
+						outstring(tabs[3],0,1,false);
 						outstring(tabs[4],0,blankval,false);
 						outstring(tabs[5],0,blankval,false);
 						//outstring(tabs[6],0,SVOr.WSCost,false);
@@ -343,7 +343,7 @@ begin
 						outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
 						outstring(tabs[1],0,SVOr.TransDate,false);
 						outstring(tabs[2],0,1,false);
-						outstring(tabs[3],0,1,false);
+						outstring(tabs[3],0,blankval,false);
 						outstring(tabs[4],0,blankval,false);
 						outstring(tabs[5],0,blankval,false);
 						//outstring(tabs[6],0,SVOr.WSCost,false);

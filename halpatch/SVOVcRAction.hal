@@ -370,7 +370,7 @@ BEGIN
     MatRowPut(SVOr,i,SVOrw);*/
     matrowget(SVOr,i,SVOrw);
   	SVOrw.ItemType = 0;
-  	SVOrw.SerialNr = "";
+  	//SVOrw.SerialNr = "";// Edit ************************** Tuesday, 22 August 2017 12:36:04
   	SVOrw.NewSerialNr = "";
   	matrowput(SVOr,i,SVOrw); //Edit----------------------Dima  28.09.2015 }
   end;  
@@ -440,6 +440,8 @@ BEGIN
  	SVOr.RejectReason = "";
  	SVOr.StatusText = USetStr(31501);;
  	SVOr.GarantyToDate = blankd; //Edit***************************Sasha2,10:39 09.08.2017
+ 	SVOr.FastPMBN = blankval;
+ 	SVOr.PrepaySum = blankval;
  	
   SVOVcRecordDuplicate = res; 
   RETURN;

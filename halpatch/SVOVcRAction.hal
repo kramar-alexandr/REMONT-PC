@@ -370,8 +370,8 @@ BEGIN
     MatRowPut(SVOr,i,SVOrw);*/
     matrowget(SVOr,i,SVOrw);
   	SVOrw.ItemType = 0;
-  	//SVOrw.SerialNr = "";// Edit ************************** Tuesday, 22 August 2017 12:36:04
-  	SVOrw.NewSerialNr = "";
+  	SVOrw.SerialNr = "";// Edit ************************** Tuesday, 22 August 2017 12:36:04
+  	//SVOrw.NewSerialNr = "";
   	matrowput(SVOr,i,SVOrw); //Edit----------------------Dima  28.09.2015 }
   end;  
   SVOr.DoneMark = 0;

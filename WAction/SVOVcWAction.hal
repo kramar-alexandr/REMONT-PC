@@ -41,6 +41,7 @@ external procedure WindowFieldGotoForTouchScreen(Integer,Integer,string,Boolean)
 remote updating procedure CreateSVOFromAcrtRem(var record ActVc, var record SVOVc);
 external procedure UpdateMasterWClassOnKPIs(string);
 remote function boolean FindCustByPhone(var record CUVc,var record SVOVc,var string);
+remote function LongInt SVOVcRecordDuplicate(var record SVOVc,record SVOVc,LongInt,LongInt); //Edit***************************Sasha2,16:16 22.08.2017
 
 // Edit Start ---------------------------------------------- Edit Start
 	//Wednesday, 3 June 2015 16:58:34
@@ -2255,3 +2256,52 @@ begin
   end;
   return;
 end;
+
+global //Edit***************************Sasha2,16:48 22.08.2017 {
+procedure SVOLClassButtonFlags(Integer wn,var Boolean duplOK,var Boolean newOK,var Boolean saveOK,var Boolean restOK)
+begin
+  duplOK = false;
+  return;
+end; //Edit***************************Sasha2,16:48 22.08.2017 }
+
+global //Edit***************************Sasha2,16:48 22.08.2017 {
+procedure AllSVOLClassButtonFlags(Integer wn,var Boolean duplOK,var Boolean newOK,var Boolean saveOK,var Boolean restOK)
+begin
+  duplOK = false;
+  return;
+end; //Edit***************************Sasha2,16:48 22.08.2017 }
+
+global //Edit***************************Sasha2,16:48 22.08.2017 {
+procedure SVO2LClassButtonFlags(Integer wn,var Boolean duplOK,var Boolean newOK,var Boolean saveOK,var Boolean restOK)
+begin
+  duplOK = false;
+  return;
+end; //Edit***************************Sasha2,16:48 22.08.2017 }
+
+global //Edit***************************Sasha2,16:48 22.08.2017 {
+procedure SVODClassButtonFlags(Integer wn,var Boolean duplOK,var Boolean newOK,var Boolean saveOK,var Boolean restOK)
+begin
+  duplOK = false;
+  return;
+end; //Edit***************************Sasha2,16:48 22.08.2017 }
+
+global //Edit***************************Sasha2,16:30 22.08.2017 { For Windows machine Math2 field stays filled after SVOVcRecordDuplicate
+updating procedure MakeSVORecordCopyDsm()
+BEGIN
+  record SVOVc SVOr,SVO2r;
+  LongInt r;
+  Integer wn,nwn;
+  
+  wn = CurWindow;
+  if (WindowState(wn)==Rs_normal) then begin //Rs_normal
+    if (GetWindowFileName(wn)=="SVOVc") then begin
+      GetWindowRecord(wn,SVOr);
+      SVOVcRecordDuplicate(SVOr,SVO2r,Rs_normal,1);
+      CloseWindow(CurWindow);
+      OpenWindow("SVODClass",1,0,"","",SVOr);
+    end;
+  end else begin
+    MessageBox(1356,"");
+  end;
+  RETURN;
+END; //Edit***************************Sasha2,16:30 22.08.2017 }

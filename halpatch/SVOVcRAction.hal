@@ -30,7 +30,7 @@ remote updating function Integer CreateAndOKOffHireFromSVO(record SVOVc,record L
 external updating procedure CreateActFromSVOForInspectorIfItemRejected(record SVOVc);
 remote procedure CheckSVOIV(record SVOVc,var val,var val);
 external procedure RemoteUserFunction(string,string,string,string);// Edit ************************** Thursday, 20 July 2017 16:34:18
-
+external procedure CutAreaLeft(var area,integer);
 
 
 SetLangMode(LangRussian,"RUS",0);
@@ -321,7 +321,7 @@ BEGIN
   longint ii,lenth;
   string 5 cr;
   
-  	cr = chr(9) & chr(13) & chr(13);
+  	/*cr = chr(9) & chr(13) & chr(13);
 		addrecordtoarea(SVOr,"SVOVc",atmp);
 		lenth = getarealength(atmp);
 		For(ii=0;ii<lenth-1;ii=ii+1) begin
@@ -330,7 +330,8 @@ BEGIN
 				ii=lenth;
 			end;
 		end; 
-		GetRecordFromArea	(SVOr,"SVOVc",0,atmp1);
+		GetRecordFromArea	(SVOr,"SVOVc",0,atmp1);*/
+
   	
   SVOVcRecordDuplicateClient = res; 
   RETURN;
@@ -350,19 +351,50 @@ BEGIN
   area atmp,atmp1;
   longint ii,lenth;
   string 5 cr;
-  
+  Boolean foundf; //Edit***************************Sasha2,16:37 22.08.2017
   
   cr = chr(9) & chr(13) & chr(13);
-  addrecordtoarea(SVOr,"SVOVc",atmp);
+  if (WindowsMode) then begin
+    cr = chr(9) & chr(13) & chr(10);
+  end;
+  addrecordtoarea(SVOr,"SVOVc",atmp); 
+  if (WindowsMode) then begin
+    if (GETSTRINGFROMAREA(atmp,0,2)==(chr(13) & chr(10)) and GETSTRINGFROMAREA(atmp,2,2)==(chr(13) & chr(10))) then begin
+      CutAreaLeft(atmp,4);
+    end; 
+  end;
+  //MessageBox(0,"atmp " & GetAreaLength(atmp)); WRITEAREATOFILE(atmp,"ar1.txt",0);
   lenth = getarealength(atmp);
   For(ii=0;ii<lenth-1;ii=ii+1) begin
+    foundf = false;
 	  if(getstringfromarea(atmp,ii,3)==cr) then begin
-	  	getareafromarea(atmp,0,ii,atmp1);
-	  	ii=lenth;
+	  	foundf = true;
+	  end;
+	  if (WindowsMode) then begin
+	    if (foundf) then begin
+	      ii = ii + 3;
+	    end;
+	    foundf = false;
+	    if(getstringfromarea(atmp,ii,2)==(chr(13) & chr(10))) then begin
+  	  	foundf = true;
+  	  end;
+	  end;
+	  if (foundf) then begin
+	    getareafromarea(atmp,0,ii,atmp1);
+	    if (WindowsMode) then begin
+  	    ADDTEXTTOAREA(chr(13) & chr(10),atmp1);
+  	    ADDTEXTTOAREA(chr(13) & chr(10),atmp1);
+  	    ADDTEXTTOAREA(chr(13) & chr(10),atmp1);
+  	    SETAREAZEROSIZE(atmp);
+  	    ADDTEXTTOAREA(chr(13) & chr(10),atmp);
+  	    ADDTEXTTOAREA(chr(13) & chr(10),atmp);
+  	    InsertAreaBeforeArea(atmp,atmp1);
+	    end;
+	    ii=lenth;
 	  end;
 	end; 
-  GetRecordFromArea	(SVOr,"SVOVc",0,atmp1);
-  
+  GetRecordFromArea	(SVOr,"SVOVc",0,atmp1); //MessageBox(0,GetAreaLength(atmp1)); WRITEAREATOFILE(atmp1,"ar2.txt",0);
+
   matrowget(SVOr,0,SVOrw);
   
   SVOr.SerNr = -1;

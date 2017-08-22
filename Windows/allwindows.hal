@@ -535,6 +535,7 @@ begin
   SpecialMenu("Статус оплат по заказу",' ',0,"SVOPaymentRnDsm");
   SpecialMenu("Печатать чек",' ',0,"PrintSVOReceiptDsm"); //Edit***************************Sasha2,13:47 13.10.2016
   SpecMenuGroup("",kSpecMenuGroupTypeExtendedPlusMenu,0);
+  SpecialMenu("Копировать",'c',3,"MakeSVORecordCopyDsm");
   SpecialMenu("Создать деятельность",'c',3,"ActFromSVODsm");
   SpecialMenu("Создать заказ на работу",' ',4,"WorkOrderSVODsm");
   SpecialMenu("Создать запл. опер. по заказу",' ',5,"SVGMFromSVODsm");
@@ -582,7 +583,7 @@ begin
   end;
   SpecialMenu("Статус заказа на обслуживание",'r',3,"SVOStaLsm");         
   SpecialMenu("Справка по клиенту",'e',4,"SVOCustStatLsm");         
-  SpecMenuGroup("",kSpecMenuGroupTypeExtendedPlusMenu,0);         
+  SpecMenuGroup("",kSpecMenuGroupTypeExtendedPlusMenu,0);        
   EndWindow;
 end;
 
@@ -612,7 +613,7 @@ begin
   end;
   SpecialMenu("Статус заказа на обслуживание",'r',3,"SVOStaLsm");         
   SpecialMenu("Справка по клиенту",'e',4,"SVOCustStatLsm");         
-  SpecMenuGroup("",kSpecMenuGroupTypeExtendedPlusMenu,0);         
+  SpecMenuGroup("",kSpecMenuGroupTypeExtendedPlusMenu,0);        
   EndWindow;
 end;
 
@@ -643,7 +644,7 @@ begin
   if (HasCustomerStatusReport) then begin 
     SpecialMenu("Справка по клиенту",'e',4,"SVOCustStatLsm");         
   end;
-  SpecMenuGroup("",kSpecMenuGroupTypeExtendedPlusMenu,0);         
+  SpecMenuGroup("",kSpecMenuGroupTypeExtendedPlusMenu,0);    
   if (HasWorkOrders) then begin
     SpecialMenu("Сделать заказы на работу",' ',0,"WorkOrderSVOLsm");
     SpecialMenu("Создать запись опер. по складу обслуживания",' ',1,"SVGMFromSVOLsm");

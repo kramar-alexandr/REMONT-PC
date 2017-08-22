@@ -313,16 +313,28 @@ BEGIN
 END;
 
 
-/*global
+global
 function LongInt SVOVcRecordDuplicateClient(var record SVOVc SVOr,record SVOVc SVO2r,LongInt stat,LongInt long4)
 BEGIN
   LongInt res;
+  area atmp,atmp1;
+  longint ii,lenth;
+  string 5 cr;
   
-  	SVOr.Math2 = blankval;
+  	cr = chr(9) & chr(13) & chr(13);
+		addrecordtoarea(SVOr,"SVOVc",atmp);
+		lenth = getarealength(atmp);
+		For(ii=0;ii<lenth-1;ii=ii+1) begin
+			if(getstringfromarea(atmp,ii,3)==cr) then begin
+				getareafromarea(atmp,0,ii,atmp1);
+				ii=lenth;
+			end;
+		end; 
+		GetRecordFromArea	(SVOr,"SVOVc",0,atmp1);
   	
   SVOVcRecordDuplicateClient = res; 
   RETURN;
-END;*/
+END;
 
 global
 function LongInt SVOVcRecordDuplicate(var record SVOVc SVOr,record SVOVc SVO2r,LongInt stat,LongInt long4)

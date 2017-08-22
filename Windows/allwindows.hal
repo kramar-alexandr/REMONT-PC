@@ -535,7 +535,7 @@ begin
   SpecialMenu("Статус оплат по заказу",' ',0,"SVOPaymentRnDsm");
   SpecialMenu("Печатать чек",' ',0,"PrintSVOReceiptDsm"); //Edit***************************Sasha2,13:47 13.10.2016
   SpecMenuGroup("",kSpecMenuGroupTypeExtendedPlusMenu,0);
-  SpecialMenu("Копировать",'c',3,"MakeSVORecordCopyDsm");
+  SpecialMenu("Копировать",'',3,"MakeSVORecordCopyDsm");
   SpecialMenu("Создать деятельность",'c',3,"ActFromSVODsm");
   SpecialMenu("Создать заказ на работу",' ',4,"WorkOrderSVODsm");
   SpecialMenu("Создать запл. опер. по заказу",' ',5,"SVGMFromSVODsm");

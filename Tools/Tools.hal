@@ -932,7 +932,7 @@ begin
     		recordnew(Actr);
     		Actr.MainPersons = "";
     		Actr.TransDate = addday(currentdate,3);
-    		Actr.StatrTime = stringtotime("08:00");
+    		Actr.StartTime = stringtotime("08:00");
     		Actr.Comment = SVOr.Comment2 & " " & SVOr.Comment1;
     		Actr.CUCode = SVOr.CustCode;
     		Actr.CUName = SVOr.Addr0;

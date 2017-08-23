@@ -85,7 +85,7 @@ begin
 	row IVVc IVrw;
 	row IPVc IPrw;
 	string 100 enginer;
-	val totrem, totpayrem, totnopayrem, totcan, totourcan, totnopayremqty,totpayremqty;
+	val totrem, totpayrem, totnopayrem, totcan, totourcan, totnopayremqty,totpayremqty,totcanceled;
 	
 	tabs[0] = 0;
 	tabs[1] = 40;
@@ -423,6 +423,9 @@ begin
 						outstring(tabs[5],0,1,false);
 					end else begin
 						outstring(tabs[5],0,blankval,false);
+						if(SVOr.RejectReason=="КЛИЕНТ НЕ ПРИШЕЛ")then begin
+							totcanceled = totcanceled + 1;
+						end;
 					end;
 					outstring(tabs[6],0,ivsum[asvonr[i]],false);
 					outstring(tabs[7],0,SVOr.RejectReason,false);
@@ -461,6 +464,10 @@ begin
 			outstring(tabs[0],0,"Отмен по нашей вине",false);
 			outstring(tabs[3],0,totourcan,false);
 		endformat;	
+		startformat(15);
+			outstring(tabs[0],0,"Клиент не пришел",false);
+			outstring(tabs[3],0,totcanceled,false);
+		endformat;
 		
 	endjob;
 

@@ -36,6 +36,46 @@ external procedure CutAreaLeft(var area,integer);
 SetLangMode(LangRussian,"RUS",0);
 
 
+
+updating
+procedure CreateCustomActivityFromSVO(record SVOVc SVOr,string acttype,string mainpersons,date transdate,string comment)
+begin
+  record ActVc Actr;
+  date blankd;
+  string 50 curPhone;
+        
+    if (SVOr.SerNr>-1) then begin
+      curPhone = SVOr.Kontinfo1;
+  	  if (Blank(curPhone)) then begin
+  	    curPhone = SVOr.Phone2;
+  	  end;
+      
+      recordnew(Actr);
+  		Actr.Comment = SVOr.SerNr & " " & comment;
+  		Actr.CUCode = SVOr.CustCode;
+  		Actr.CUName = SVOr.Addr0;
+      Actr.AlarmType = kAlarmTypeNone;
+  		Actr.SVOSerNr = SVOr.SerNr;
+  		Actr.TodoFlag = kTodoFlagTodo;
+  		Actr.SymbNr = 3;
+  		Actr.ActType = acttype;
+  	  Actr.StartTime = currenttime;//StringToTime("00:00:00");
+  	  Actr.TransDate = transdate;
+  	  Actr.EndDate = blankd;
+  		Actr.Phone = curPhone;
+			Actr.MainPersons = mainpersons;
+  		Actr.SerNr = NextSerNr("ActVc",Actr.TransDate,-1,false,"");
+  		
+  		logtext(0,"CreateCustomActivityFromSVO " & SVOr.SerNr & " " & Actr.SerNr);
+  		if(recordstore(Actr,true))then begin
+  			CreateRecordLink(SVOr,CurrentCompany,Actr,CurrentCompany);  
+  			CreateRecordLink(Actr,CurrentCompany,SVOr,CurrentCompany); 
+  		end;
+    end;
+
+  return;
+end;
+
 updating
 procedure CreateNaSoglasActivity(record SVOVc SVOr)
 begin
@@ -827,6 +867,19 @@ BEGIN
 				recordupdate(lActr,Actr,true);
 			end;		
 		end;	
+		
+		if(SVO2r.OrderStatus==10 and SVOr.OrderStatus!=10)then begin//закрыть запрос на заказ деталей
+			testf1 = true;
+			if(Actr.ActType!="ZAKAZ")then begin testf1 = false; end;
+			testf1 = (testf1 and testf);
+			if(testf1)then begin
+				recordcopy(lActr,Actr);
+				Actr.ActResult = "ОК";
+				Actr.OKFlag = 1;
+				recordupdate(lActr,Actr,true);
+			end;		
+		end;	
+		
 	end;
 	
 	resetloop(Actr);
@@ -1056,6 +1109,11 @@ BEGIN
 	end;
 	if (SVO2r.OrderStatus!=4 and SVOr.OrderStatus==4) then begin
     CreateNaSoglasActivity(SVOr); //Edit***************************Sasha2,17:02 27.06.2017
+	end;
+	
+	if (SVOr.OrderStatus==10 and SVO2r.OrderStatus!=10) then begin// ZAKAZ DETALEY
+    CreateCustomActivityFromSVO(SVOr,"ZAKAZ","КУМКО",currentdate,"Заказать детали!");
+    CreateCustomActivityFromSVO(SVOr,"ZAKAZ",SVOr.Inspector & "," & SVOr.ServiceManager ,addday(currentdate,1),"Напомнить заказать детали!");
 	end;
 	
   PhonesFromSVO(SVOr.SerNr);//Edit-------------------Vitalii 17:09 03.11.2016

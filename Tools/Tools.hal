@@ -914,7 +914,8 @@ begin
       			if(readfirstmain(INr,1,true))then begin
       				Actr.Comment = INr.Code & " " & Actr.Comment;
       				Actr.Phone = curPhone; //left(SVOrw.Spec,20);
-      				Actr.MainPersons = FindUsersWithActiveTasksQueue(SVOr,curLocation);
+      				//Actr.MainPersons = FindUsersWithActiveTasksQueue(SVOr,curLocation);// Edit ************************** Wednesday, 23 August 2017 09:51:11
+      				Actr.MainPersons = SVOr.Inspector;
       				if (NonBlank(SVOr.Inspector) and SetInSet(SVOr.Inspector,Actr.MainPersons)==false) then begin
       				  Actr.MainPersons = SVOr.Inspector & "," & Actr.MainPersons;
       				end;
@@ -930,6 +931,8 @@ begin
   	    createf = true;
     		recordnew(Actr);
     		Actr.MainPersons = "";
+    		Actr.TransDate = addday(currentdate,3);
+    		Actr.StatrTime = stringtotime("08:00");
     		Actr.Comment = SVOr.Comment2 & " " & SVOr.Comment1;
     		Actr.CUCode = SVOr.CustCode;
     		Actr.CUName = SVOr.Addr0;
@@ -945,7 +948,8 @@ begin
     			if(readfirstmain(INr,1,true))then begin
     				Actr.Comment = SVOrw.Spec & " " & Actr.Comment;
     				Actr.Phone = curPhone; //left(SVOrw.Spec,20);
-    				Actr.MainPersons = FindUsersWithActiveTasksQueue(SVOr,curLocation);
+    				//Actr.MainPersons = FindUsersWithActiveTasksQueue(SVOr,curLocation);// Edit ************************** Wednesday, 23 August 2017 09:52:04
+    				Actr.MainPersons = SVOr.Inspector;
     				if (NonBlank(SVOr.Inspector)) then begin
     				  Actr.MainPersons = SVOr.Inspector & "," & Actr.MainPersons;
     				end;
@@ -965,9 +969,9 @@ begin
   	    if (testf) then begin
   	      if(Actr.OKFlag==0)then begin
     				RecordCopy(oldActr,Actr);
-    				if (Blank(Actr.MainPersons)) then begin
+    				/*if (Blank(Actr.MainPersons)) then begin
   	          Actr.MainPersons = ",";
-  	        end;
+  	        end;*/
     				Actr.OKFlag = 1;
     				RecordUpdate(oldActr,Actr,true);
     			end;

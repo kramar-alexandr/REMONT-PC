@@ -366,6 +366,11 @@ begin
           testf = true;
         end;
       end;
+      if (RepSpec.flags[16]==1) then begin /* Заказать запч.*/
+        if (SVOr.OrderStatus==10) then begin
+          testf = true;
+        end;
+      end;
       if (RepSpec.flags[11]==1) then begin /* Готов.*/
         if (SVOr.OrderStatus==2) then begin
           testf = true;
@@ -669,6 +674,8 @@ begin
 			if(nonblank(RepSpec.f1) and SVOr.ServiceManager!=RepSpec.f1)then begin testf = false; end;
 				
 			*/
+			
+			if(SVOr.OrderStatus==10)then begin testf = false; end;
 			if(SVOr.OrderStatus==9)then begin testf = false; end;
 			if(SVOr.OrderStatus==7)then begin testf = false; end;
 			if(SVOr.OrderStatus==1)then begin testf = false; end;

@@ -1857,6 +1857,7 @@ begin
 		case 7: res = USetStr(31096);// Edit ************************** Wednesday, 7 June 2017 14:24:32
 		case 8: res = USetStr(31097);// Edit ************************** Wednesday, 7 June 2017 14:24:32
 		case 9: res = USetStr(31501);
+		case 10: res = USetStr(31506);
 
   end;
   

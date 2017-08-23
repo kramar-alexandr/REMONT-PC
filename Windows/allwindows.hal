@@ -396,7 +396,7 @@ begin
   EditField(260,vm+=20,100,"Ответственный менеджер",Normal,Inspector,false,UserSClass); //Edit***************************Sasha2,16:52 09.06.2017
 
   vm = 30;
-  ButtonFrame(h+490,vm+16,220,5,"Статус");
+  ButtonFrame(h+490,vm+16,220,6,"Статус");
   RadioButton(h+490,vm+=16,9,0,"Предварит.",OrderStatus);
 	RadioButton(h+490,vm+=16,0,0,"В ожидании",OrderStatus);
 	tvm = vm;
@@ -407,6 +407,7 @@ begin
 	vm = 30+16;
 	RadioButton(h+600,vm,1,0,"В ремонте",OrderStatus);
 	RadioButton(h+600,vm+=16,8,0,"В удал. сервисе",OrderStatus);
+	RadioButton(h+600,vm+=16,10,0,"Заказать запч.",OrderStatus);// Edit ************************** Wednesday, 23 August 2017 17:16:01
 	RadioButton(h+600,vm+=16,3,0,"Ожидает запч.",OrderStatus);
   RadioButton(h+600,vm+=16,2,0,"Готов",OrderStatus);
   RadioButton(h+600,vm+=16,6,0,"Отказ",OrderStatus);
@@ -7928,6 +7929,7 @@ begin
   CheckBox(h,v+=16,0,"Согласовано",flags[14]);//7
   CheckBox(h,v+=16,0,"В ремонте",flags[9]);//1
   CheckBox(h,v+=16,0,"В удал. сервисе",flags[10]);//8
+  CheckBox(h,v+=16,0,"Заказать запч.",flags[16]);//10// Edit ************************** Wednesday, 23 August 2017 17:17:05
   CheckBox(h,v+=16,0,"Ожидает запч.",flags[15]);//3
   CheckBox(h,v+=16,0,"Готов",flags[11]);//2 //Edit***************************Sasha2,14:55 15.05.2017 }
   CheckBox(h,v+=16,0,"Отказ",flags[12]);//6 //Edit***************************Sasha2,14:55 15.05.2017 }

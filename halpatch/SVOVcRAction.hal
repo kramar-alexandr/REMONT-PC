@@ -1021,6 +1021,7 @@ BEGIN
 			case 7: tstr = tstr & USetStr(31096);
 			case 8: tstr = tstr & USetStr(31097);
 			case 9: tstr = tstr & USetStr(31501);
+			case 10: tstr = tstr & USetStr(31506);
 		end;
 		tstr = tstr & "' " & USetStr(31058) & " '";
 		switch (SVOr.OrderStatus) begin
@@ -1034,6 +1035,7 @@ BEGIN
 			case 7: tstr = tstr & USetStr(31096);
 			case 8: tstr = tstr & USetStr(31097);
 			case 9: tstr = tstr & USetStr(31501);
+			case 10: tstr = tstr & USetStr(31506);
 		end;
 		tstr = tstr & "'";
 		comment = USetStr(31059);
@@ -1853,6 +1855,7 @@ BEGIN
 		case 7: SVOr.StatusText = USetStr(31096);
 		case 8: SVOr.StatusText = USetStr(31097);
 		case 9: SVOr.StatusText = USetStr(31501);
+		case 10: SVOr.StatusText = USetStr(31506);
   end;
   
   LogText(0,"SVOVc " & SVOr.SerNr & "  was changed. Company: " & CurrentCompany & " User: " & CurrentUser & "  ServiceMan:" & SVOr.ServiceManager);	//Edit----------------------Dima  30.10.2015

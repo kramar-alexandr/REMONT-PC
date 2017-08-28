@@ -1113,7 +1113,7 @@ BEGIN
 	
 	if (SVOr.OrderStatus==10 and SVO2r.OrderStatus!=10) then begin// ZAKAZ DETALEY
     CreateCustomActivityFromSVO(SVOr,"ZAKAZ","КУМКО",currentdate,"Заказать детали!");
-    CreateCustomActivityFromSVO(SVOr,"ZAKAZ",SVOr.Inspector & "," & SVOr.ServiceManager ,addday(currentdate,1),"Напомнить заказать детали!");
+    CreateCustomActivityFromSVO(SVOr,"ZAKAZ",SVOr.Inspector & "," & "КУМКО",addday(currentdate,1),"Напомнить заказать детали!");
 	end;
 	
   PhonesFromSVO(SVOr.SerNr);//Edit-------------------Vitalii 17:09 03.11.2016

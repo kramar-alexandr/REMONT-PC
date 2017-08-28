@@ -21,9 +21,9 @@ BEGIN
   record UserVc User;
   record SVOVc SVOr;
  	
- 	if(BCEr.disposition=="NOANSWER" or BCEr.disposition=="CANCEL" or BCEr.disposition=="BUSY" or BCEr.disposition=="ANSWER" or BCEr.disposition=="TRANSFER")then begin
+ 	if(BCEr.disposition=="NOANSWER" or BCEr.disposition=="CANCEL" or BCEr.disposition=="BUSY" or BCEr.disposition=="ANSWER" or BCEr.disposition=="TRANSFER" or BCEr.disposition=="CHANUNAVAIL" or BCEr.disposition=="CONGESTION" or BCEr.disposition=="VM")then begin
 		
-		if(BCEr.disposition=="NOANSWER" or BCEr.disposition=="CANCEL" or BCEr.disposition=="BUSY")then begin
+		if(BCEr.disposition=="NOANSWER" or BCEr.disposition=="CANCEL" or BCEr.disposition=="BUSY" or BCEr.disposition=="CHANUNAVAIL" or BCEr.disposition=="CONGESTION" or BCEr.disposition=="VM")then begin
 			blockload(BUb);
 			mtrw = matrowcnt(BUb);
 			if(mtrw>0)then begin

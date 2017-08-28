@@ -457,7 +457,7 @@ begin
   		SVOr.SerNr = WSr.SVONr;
   		ReadFirstMain(SVOr,1,true); 
   		DoGetCurUser(USr);
-  		WSr.Objects = Locationr.Objects;  
+  		WSr.Objects = "";//Locationr.Objects;  
   		if (NonBlank(USr.PersObjx)) then begin
         WSr.Objects = AddObjectToObjectList(WSr.Objects,USr.PersObjx);
   		end; 		

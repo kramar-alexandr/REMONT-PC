@@ -1305,11 +1305,11 @@ BEGIN
     case "ServiceManager": res = UsercanAction("AllowChangeServiceManager",false);// Edit ************************** Friday, 25 November 2016 12:57:36
     case "Comment2": 
     if (NonBlank(SVOr.Comment2)) then begin
-      res = UsercanAction("AllowEditCommentsAndTextFieldSVO",false);// Edit ************************** Friday, 25 November 2016 12:57:36
+      //res = UsercanAction("AllowEditCommentsAndTextFieldSVO",false);// Edit ************************** Friday, 25 November 2016 12:57:36
     end;
     case "Comment4": 
     if (NonBlank(SVOr.Comment4)) then begin
-      res = UsercanAction("AllowEditCommentsAndTextFieldSVO",false);// Edit ************************** Friday, 25 November 2016 12:57:36
+      //res = UsercanAction("AllowEditCommentsAndTextFieldSVO",false);// Edit ************************** Friday, 25 November 2016 12:57:36
     end;
     case "Math2": 
     //if (NonBlank(StringFromText(SVOr,0,255))) then begin

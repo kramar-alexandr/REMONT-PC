@@ -716,7 +716,7 @@ begin
   RlCol(400,400,"Проблема",Comment1,false);
   RlColKey(-300,-300,"Тел1.",Kontinfo1,false,PredKontinfo1);
   RlColKey(-210,-210,"Ожид. клиента",PlanVisitDate,false,PredPlanVisitDate);
-  //RlColKey(-160,-160,"#",InnerOrderNr,false,DolgInnerOrderNr);
+  RlCol(-120,-120,"Имя",Vlastnik,false);
   SearchField("Поиск");
   if (HasLimitedAccess) then begin 
     BrowseSubsetButton(-40,-15);

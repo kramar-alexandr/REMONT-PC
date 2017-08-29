@@ -563,9 +563,10 @@ begin
   ToolBar; //Edit***************************Sasha2,17:21 10.05.2017 {
 		HalPushButton(250,16,350,16+10,"SVOLClassOpenAllSVOLClass","Все");
 		HalPushButton(360,16,460,16+10,"SVOLClassOpenSVO2LClass","Без мастера");
-		//HalPushButton(470,16,570,16+10,"SVOLClassOpenSVO3LClass","Свои");
-		HalPushButton(580,16,630,16+10,"RunSVODateOff3RepRn","3 Дня!");
-		HalPushButton(640,16,700,16+10,"RunSVODateOff14RepRn","5 Дней!");
+		HalPushButton(470,16,530,16+10,"SVOLClassOpenSVO3LClass","Долг");
+		HalPushButton(580,16,680,16+10,"SVOLClassOpenSVO4LClass","Предвар.");
+		HalPushButton(660,16,720,16+10,"RunSVODateOff3RepRn","3 Дня!");
+		HalPushButton(730,16,790,16+10,"RunSVODateOff14RepRn","5 Дней!");
   EndToolBar; //Edit***************************Sasha2,17:21 10.05.2017 }
   FormName(PrintSVOL);
   RecordList(4,17,-21,-39);
@@ -639,6 +640,83 @@ begin
   RlColKey(-210,-210,"Сер.Мен.",ServiceManager,false,UnServServiceManager);
   RlColKey(-160,-160,"#",InnerOrderNr,false,UnServInnerOrderNr);
   RlColKey(-90,-90,"Статус",StatusText,false,UnServStatusText);
+  SearchField("Поиск");
+  if (HasLimitedAccess) then begin 
+    BrowseSubsetButton(-40,-15);
+  end;
+  SpecialMenu("Статус заказа на обслуживание",'r',3,"SVOStaLsm");         
+  if (HasCustomerStatusReport) then begin 
+    SpecialMenu("Справка по клиенту",'e',4,"SVOCustStatLsm");         
+  end;
+  SpecMenuGroup("",kSpecMenuGroupTypeExtendedPlusMenu,0);    
+  if (HasWorkOrders) then begin
+    SpecialMenu("Сделать заказы на работу",' ',0,"WorkOrderSVOLsm");
+    SpecialMenu("Создать запись опер. по складу обслуживания",' ',1,"SVGMFromSVOLsm");
+  end;
+  SpecialMenu("Выписать счет-фактуру клиенту",'F',2,"IVFromSVOLsm");
+  if (HasModCRM) then begin
+    SpecialMenu("Создать деятельность",'c',5,"ActFromSVOLsm");
+  end;
+  EndWindow;
+end;
+
+window SVO3LClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  WindowBegin("Заказы на обслуживание - в ожидании оплаты",SVO3LClass,CGmlist,SVOView);
+  SpawnClass(SVODClass);
+  SetWRect(20,80,960,298);
+  Sizeable(-1,-1,0,0);
+  UseView(SVOVc);
+  FormName(PrintSVOL);
+  RecordList(4,17,-21,-39);
+  RlColKey(4,4,"Дата выдач.",RegDate,false,DolgRegDate);
+  RlColKey(79,79,"№",InnerOrderNr,false,DolgInnerOrderNr);
+  
+  RlColKey(160,160,"Товар",ItemName,false,DolgItemName);
+  RlCol(400,400,"Проблема",Comment1,false);
+  RlColKey(-300,-300,"Тел1.",Kontinfo1,false,DolgKontinfo1);
+  RlColKey(-210,-210,"Сер.Мен.",ServiceManager,false,DolgServiceManager);
+  //RlColKey(-160,-160,"#",InnerOrderNr,false,DolgInnerOrderNr);
+  RlColKey(-90,-90,"Статус",StatusText,false,DolgStatusText);
+  SearchField("Поиск");
+  if (HasLimitedAccess) then begin 
+    BrowseSubsetButton(-40,-15);
+  end;
+  SpecialMenu("Статус заказа на обслуживание",'r',3,"SVOStaLsm");         
+  if (HasCustomerStatusReport) then begin 
+    SpecialMenu("Справка по клиенту",'e',4,"SVOCustStatLsm");         
+  end;
+  SpecMenuGroup("",kSpecMenuGroupTypeExtendedPlusMenu,0);    
+  if (HasWorkOrders) then begin
+    SpecialMenu("Сделать заказы на работу",' ',0,"WorkOrderSVOLsm");
+    SpecialMenu("Создать запись опер. по складу обслуживания",' ',1,"SVGMFromSVOLsm");
+  end;
+  SpecialMenu("Выписать счет-фактуру клиенту",'F',2,"IVFromSVOLsm");
+  if (HasModCRM) then begin
+    SpecialMenu("Создать деятельность",'c',5,"ActFromSVOLsm");
+  end;
+  EndWindow;
+end;
+
+window SVO4LClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  WindowBegin("Заказы на обслуживание - предварительные",SVO4LClass,CGmlist,SVOView);
+  SpawnClass(SVODClass);
+  SetWRect(20,80,960,298);
+  Sizeable(-1,-1,0,0);
+  UseView(SVOVc);
+  FormName(PrintSVOL);
+  RecordList(4,17,-21,-39);
+  RlColKey(4,4,"Дата",TransDate,false,PredTransDate);
+  RlColKey(79,79,"№",SerNr,false,PredSerNr);
+  
+  RlColKey(160,160,"Товар",ItemName,false,PredItemName);
+  RlCol(400,400,"Проблема",Comment1,false);
+  RlColKey(-300,-300,"Тел1.",Kontinfo1,false,PredKontinfo1);
+  RlColKey(-210,-210,"Ожид. клиента",PlanVisitDate,false,PredPlanVisitDate);
+  //RlColKey(-160,-160,"#",InnerOrderNr,false,DolgInnerOrderNr);
   SearchField("Поиск");
   if (HasLimitedAccess) then begin 
     BrowseSubsetButton(-40,-15);

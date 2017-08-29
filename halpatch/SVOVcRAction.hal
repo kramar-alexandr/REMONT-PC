@@ -2187,7 +2187,7 @@ BEGIN
   LongInt res;
   
   res = 1;
-  if (SVOr.DoneMark>0) then begin 
+  if (SVOr.DoneMark>0 or blankdate(SVOr.RegDate)==false or SVOr.OrderStatus==9) then begin 
   
     if (indexname=="UnServSerNr")  then begin res = 0; end;
     if (indexname=="UnServTransDate")  then begin res = 0; end;
@@ -2201,19 +2201,7 @@ BEGIN
     if (indexname=="UnServInnerOrderNr")  then begin res = 0; end;
     if (indexname=="UnServStatusText")  then begin res = 0; end;
     if (indexname=="UnServPlanShipDate")  then begin res = 0; end;
-    
-    /*if (indexname=="AllUnServSerNr")  then begin res = 0; end;
-    if (indexname=="AllUnServTransDate")  then begin res = 0; end;
-    if (indexname=="AllUnServItemName")  then begin res = 0; end;
-    if (indexname=="AllUnServGaranty")  then begin res = 0; end;
-    if (indexname=="AllUnServVIPStatus")  then begin res = 0; end;
-    if (indexname=="AllUnServOrderStatus")  then begin res = 0; end;
-    if (indexname=="AllUnServServiceManager")  then begin res = 0; end;
-    if (indexname=="AllUnServPhone2")  then begin res = 0; end;
-    if (indexname=="AllUnServKontinfo1")  then begin res = 0; end;
-    if (indexname=="AllUnServSerialNrTextSearch")  then begin res = 0; end;
-    if (indexname=="AllUnServInnerOrderNr")  then begin res = 0; end;
-    if (indexname=="AllUnServStatusText")  then begin res = 0; end;*/
+
     
     if (indexname=="AllServSerNr")  then begin res = 0; end;
     if (indexname=="AllServTransDate")  then begin res = 0; end;
@@ -2230,7 +2218,7 @@ BEGIN
     if (indexname=="AllServPlanShipDate")  then begin res = 0; end;
   end;
   
-  if (nonblank(SVOr.ServiceManager)) then begin 
+  if (nonblank(SVOr.ServiceManager) or SVOr.OrderStatus==9) then begin 
     if (indexname=="UnServSerNr")  then begin res = 0; end;
     if (indexname=="UnServTransDate")  then begin res = 0; end;
     if (indexname=="UnServItemName")  then begin res = 0; end;
@@ -2243,6 +2231,28 @@ BEGIN
     if (indexname=="UnServInnerOrderNr")  then begin res = 0; end;
     if (indexname=="UnServStatusText")  then begin res = 0; end;
     if (indexname=="UnServPlanShipDate")  then begin res = 0; end;
+  end;
+  
+  if (SVOr.DoneMark>0 or blankdate(SVOr.RegDate)) then begin 
+    if (indexname=="DolgSerNr")  then begin res = 0; end;
+    if (indexname=="DolgTransDate")  then begin res = 0; end;
+    if (indexname=="DolgItemName")  then begin res = 0; end;
+    if (indexname=="DolgServiceManager")  then begin res = 0; end;
+    if (indexname=="DolgKontinfo1")  then begin res = 0; end;
+    if (indexname=="DolgInnerOrderNr")  then begin res = 0; end;
+    if (indexname=="DolgStatusText")  then begin res = 0; end;
+    if (indexname=="DolgRegDate")  then begin res = 0; end;
+  end;
+  
+  if (SVOr.OrderStatus!=9) then begin 
+    if (indexname=="PredSerNr")  then begin res = 0; end;
+    if (indexname=="PredTransDate")  then begin res = 0; end;
+    if (indexname=="PredItemName")  then begin res = 0; end;
+    if (indexname=="PredServiceManager")  then begin res = 0; end;
+    if (indexname=="PredKontinfo1")  then begin res = 0; end;
+    if (indexname=="PredStatusText")  then begin res = 0; end;
+    if (indexname=="PredTransDate")  then begin res = 0; end;
+    if (indexname=="PredPlanVisitDate")  then begin res = 0; end;
   end;
     
   SVOVcRecordInIndex = res;

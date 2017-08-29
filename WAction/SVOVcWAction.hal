@@ -1823,7 +1823,16 @@ begin
 return;
 end;
 
-Global 
+global procedure SVOLClassOpenSVO4LClass()
+begin
+	record SVOVc SVOr;
+	
+	OpenWindow("SVO4LClass",0,0,"","",SVOr);
+	
+return;
+end;
+
+/*Global 
 function Boolean SVO3LClassOnOpenWindow(integer wn)
 begin
 	
@@ -1834,7 +1843,7 @@ begin
 	end;
 	
 return;
-end;
+end;*/
 
 Global 
 function Boolean SVOLClassOnOpenWindow(integer wn)

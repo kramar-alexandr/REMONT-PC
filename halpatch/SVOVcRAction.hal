@@ -350,6 +350,8 @@ BEGIN
   if (SingleUserMode) then begin
     SVOr.SerNr = NextSerNr("SVOVc",SVOr.TransDate,-1,false,"");
   end;  
+  SVOr.PlanVisitDate = addday(currentdate,1);
+  
   //SVOr.CustomField7 = CurrentUser; //Edit***************************Sasha2,18:03 02.03.2017
   SVOVcRecordDefaults = res; 
   RETURN;
@@ -481,6 +483,7 @@ BEGIN
   SVOr.OutTime = blankt;
   SVOr.EndDiagnDate = blankd;
   SVOr.EndDiagnTime = blankt;
+  SVOr.PlanVisitDate = blankd;// Edit ************************** Tuesday, 29 August 2017 17:07:03
   SVOr.OrderStatus = 9;
   SVOr.DoneMark = 0;
   SVOr.CustomField7 = "";

@@ -1059,6 +1059,7 @@ BEGIN
   if (IsStandardProduct) then begin
     Actr.CalTimeFlag = kCalTimeFlagTime;
   end;
+  Actr.PlanVisitDate = addday(currentdate,1);
   ActVcRecordDefaults = res; 
   RETURN;
 END;

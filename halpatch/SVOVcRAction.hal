@@ -1570,6 +1570,22 @@ BEGIN
  	end;
  	
  	if(SVOr.GetItemFlag>0)then begin
+ 		
+ 		if(stat==Rs_insert)then begin
+			if(blank(SVOr.UserPass))then begin
+				RecordCheckError(31507,"",-1,"UserPass");
+				res = -1;
+				goto LSVOVcRecordCheck;
+			end;
+ 		end;
+ 		if(stat==Rs_update and SVOr.GetItemFlag==0)then begin
+			if(blank(SVOr.UserPass))then begin
+				RecordCheckError(31507,"",-1,"UserPass");
+				res = -1;
+				goto LSVOVcRecordCheck;
+			end;
+ 		end;
+ 		
 		if(blank(SVOr.InnerOrderNr))then begin// Edit ************************** Wednesday, 7 June 2017 14:53:49
 			GetNextInnerOrderNr(SVOr.InnerOrderNr,SVOr.SalesGroup);
 			if(blank(SVOr.InnerOrderNr))then begin

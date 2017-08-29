@@ -527,6 +527,7 @@ begin
   EditField(h,v+=vs,50,"Производитель",Normal,Region,false,ITSClass);
   
   EditField(h+120,v,50,"Гарантия",Normal,Garanty,false,0);
+  EditField(h+240,v,50,"Пароль утр.",Normal,UserPass,false,0);
   EditField(h,v+=vs,100,"Гарант. №",Normal,GarNo,false,0);
   EditField(h+200,v,100,"Гарант. от даты",Normal,GarDate,false,PasteCurDate);
   

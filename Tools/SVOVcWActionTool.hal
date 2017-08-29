@@ -35,6 +35,8 @@ BEGIN
   record PLDefVc PLDefR;
   integer pos,k,cnt;
   array string 100 fio;
+  record SVOVc SVOr;// Edit ************************** Tuesday, 29 August 2017 15:01:44
+  boolean TrHs;// Edit ************************** Tuesday, 29 August 2017 15:01:57
   
   if ((oldcustcode!=SVOp.CustCode) and (nonblank(oldcustcode))) then begin
     RemoveOldCustObjects(oldcustcode,SVOp.Objects);
@@ -165,6 +167,26 @@ BEGIN
     end;    
     SVOp.RebCode = CUr.RebCode;
     warntext = CUr.WarnText1;
+   
+    // Edit Start ---------------------------------------------- Edit Start
+	//Tuesday, 29 August 2017 15:00:53
+	
+    SVOr.CustCode = CUr.Code;
+    TrHs = true;
+    while(loopkey("CustCode",SVOr,1,TrHs))begin
+    	if(SVOr.CustCode!=CUr.Code)then begin TrHs = false; end;
+    	
+    	if(SVOr.OrderStatus==9)then begin
+    		if(blank(warntext))then begin
+					warntext = "Ќа клиента есть предварительный заказ " & SVOr.SerNr;
+    		end else begin
+    			warntext = warntext & ", " & SVOr.SerNr;
+    		end;
+    	end;
+    end;
+	// Edit End ---------------------------------------------- Edit End
+	
+    
     SVOGetRate(SVOp);
     res = true;
   end;

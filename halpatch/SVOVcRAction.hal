@@ -294,6 +294,9 @@ BEGIN
 	if (blank(SVOr.CustCode)) then begin
     SVOr.CustCode = LMb.DefCustCode;
     if (PasteCUInSVO(SVOr,"",warning)) then begin	////Edit----------------------Dima  14.05.2015 //oldcustCode = blank
+    if(nonblank(warning))then begin
+    	messagebox(0,warning);// Edit ************************** Tuesday, 29 August 2017 15:06:55
+    end;
     end;
   end;  
     
@@ -1347,6 +1350,7 @@ begin
 			res = true;
 			SVOr.CustCode = CUr.Code;
 			PasteCUInSVO(SVOr,"",tstr);
+			
 			goto lFindCustByPhone;
 		end;
 	end;
@@ -1568,6 +1572,15 @@ BEGIN
 			goto LSVOVcRecordCheck;
 		end;
  	end;
+ 	if(SVOr.GetItemFlag==0)then begin
+ 		if(stat==Rs_insert)then begin
+			if(blankdate(SVOr.PlanVisitDate))then begin
+				RecordCheckError(31508,"",-1,"PlanVisitDate");      
+				res = -1;
+				goto LSVOVcRecordCheck;
+			end;
+		end;
+	end;
  	
  	if(SVOr.GetItemFlag>0)then begin
  		
@@ -1749,9 +1762,15 @@ BEGIN
   		recordinsert(CUr,true);
   		SVOr.CustCode = CUr.Code;
   		if (PasteCUInSVO(SVOr,"",tstr)) then begin
-  
+  			if(nonblank(tstr))then begin
+					messagebox(0,tstr);// Edit ************************** Tuesday, 29 August 2017 15:06:55
+				end;
   		end;
 		end;
+  end else begin
+  	if(nonblank(tstr))then begin
+  		messagebox(0,tstr);// Edit ************************** Tuesday, 29 August 2017 15:13:23
+  	end;
   end;
   
   if((SVOr.Addr0=="Новый контакт" or SVOr.Addr0=="Новый клиент") and SVOr.Addr0!=SVOr.Vlastnik)then begin

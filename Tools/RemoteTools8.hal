@@ -227,7 +227,7 @@ L20MakeInvHeader:;
   IVp.ToRateB2 = SVOp.ToRateB2;
   IVp.BaseRate1 = SVOp.BaseRate1;
   IVp.BaseRate2 = SVOp.BaseRate2;
-  IVp.SalesMan = SVOp.SalesMan;
+  IVp.SalesMan = CurrentUser;// Edit ************************** Tuesday, 29 August 2017 15:30:53
   IVVc_PasteSalesMan(IVp,"");
   if (IVp.SerNr<=0) then begin
     BlockLoad(SRRec);
@@ -2691,7 +2691,11 @@ begin
 	
 	SVOr.Kontinfo1 = Actr.Phone;
 	SVOr.CustCode = Actr.CUCode;
+	SVOr.PlanVisitDate = Actr.PlanVisitDate;// Edit ************************** Tuesday, 29 August 2017 14:19:03
 	PasteCUInSVO(SVOr,"",warning);
+	if(nonblank(warning))then begin
+		messagebox(0,warning);// Edit ************************** Tuesday, 29 August 2017 15:06:55
+	end;
 	SVOr.SerNr = NextSerNr("SVOVc",SVOr.TransDate,GetUserSerNrSeries(-1),false,"");
 	if(recordinsert(SVOr,true))then begin
 		Actr.SVOSerNr = SVOr.SerNr;

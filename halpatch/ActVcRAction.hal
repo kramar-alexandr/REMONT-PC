@@ -39,6 +39,8 @@ external function Boolean DateLocked(Date,string);
 external function Boolean DateWarned(Date,string);
 external procedure RemoteUserFunction(string,string,string,string);// Edit ************************** Thursday, 20 July 2017 16:34:18
 
+SetLangMode(LangRussian,"RUS",0);
+
 procedure ActNLTSer(Date td,var LongInt tserstart,var LongInt tserend)
 begin
   LongInt res;
@@ -879,6 +881,27 @@ L44:;
         end;
       end;
     end;
+    
+    
+    if (stat==Rs_update) then begin// Edit ************************** Tuesday, 29 August 2017 14:28:18
+			if (Actr.OKFlag!=0 and Act2r.OKFlag==0) then begin
+				if(Actr.ActResult=="Ž†Š" and blankdate(Actr.PlanVisitDate))then begin
+					RecordCheckError(31508,"",-1,"PlanVisitDate");      
+					res = -1;
+					goto LActVcRecordCheck;
+				end;
+			end;
+		end;
+		if (stat==Rs_insert) then begin// Edit ************************** Tuesday, 29 August 2017 14:28:18
+			if (Actr.OKFlag!=0)then begin
+				if(Actr.ActResult=="Ž†Š" and blankdate(Actr.PlanVisitDate))then begin
+					RecordCheckError(31508,"",-1,"PlanVisitDate");      
+					res = -1;
+					goto LActVcRecordCheck;
+				end;
+			end;
+		end;
+    
     if ((Actr.CalTimeFlag!=0) and (Actr.TodoFlag==0)) then begin
       if (blanktime(Actr.CostTime)) then begin
         RecordCheckError(1058,"",-1,"CostTime");      

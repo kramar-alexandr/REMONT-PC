@@ -393,7 +393,8 @@ begin
 
   EditField(260,vm+=20,100,"Сер. мастер",Normal,ServiceManager,false,UserSClass);// Edit ************************** Monday, 31 May 2010 9:22:11 AM
   EditField(460,vm,100,"К оплате",ViewOnly,WSCost,false,0);
-  EditField(260,vm+=20,100,"Ответственный менеджер",Normal,Inspector,false,UserSClass); //Edit***************************Sasha2,16:52 09.06.2017
+  EditField(260,vm+=20,100,"Ответственный менеджер",Normal,Inspector,false,UserSClass);
+  EditField(500,vm,60,"Запланированый визит",Normal,PlanVisitDate,false,PasteCurDate); //Edit***************************Sasha2,16:52 09.06.2017
 
   vm = 30;
   ButtonFrame(h+490,vm+16,220,6,"Статус");
@@ -8303,20 +8304,21 @@ begin
     h = 100; h2 = 275;
     EditField(h,v=6,60,"Время начала",Normal,StartTime,false,PasteCurTime);
     EditField(h,v+=vs,60,"Время оконч.",Normal,EndTime,false,PasteCurTime);
-    EditField(h,v+=vs,60,"Заплан. время",ViewOnly,PlannedTime,false,0); 
+    EditField(h+100,v+=vs,60,"Планируемая дата визита",Normal,PlanVisitDate,false,PasteCurDate);// Edit ************************** Tuesday, 29 August 2017 14:16:57
+    //EditField(h,v+=vs,60,"Заплан. время",ViewOnly,PlannedTime,false,0); // Edit ************************** Tuesday, 29 August 2017 14:16:03
 //    EditField(h,v+=vs,60,"Счёт авансов дебиторов",ViewOnly,RecurringActSerNr,false,0);
     EditField(h,v+=vs,60,"Итого времени",Normal,CostTime,false,0);
-    if (StandardHansa==false) then begin
+    /*if (StandardHansa==false) then begin// Edit ************************** Tuesday, 29 August 2017 14:14:52
       EditField(h,v+=vs,60,"Валюта",Normal,CurncyCode,false,CurncyCodeSClass);
-    end;
+    end;*/
 //    EditField(h,v+=vs,60,"New Dur.",Normal,TestDuration,false,0);
     EditField(h2,v=6 ,80,"Дата начала",Normal,TransDate,false,PasteCurDate);
     EditField(h2,v+=vs,80,"Дата оконч.",Normal,EndDate,false,PasteCurDate);
-    EditField(h2,v+=vs,80,"Заплан. дата",ViewOnly,PlannedDate,false,0); 
-    if (StandardHansa==false) then begin
+    //EditField(h2,v+=vs,80,"Заплан. дата",ViewOnly,PlannedDate,false,0); // Edit ************************** Tuesday, 29 August 2017 14:15:58
+    /*if (StandardHansa==false) then begin// Edit ************************** Tuesday, 29 August 2017 14:15:00
       EditField(h2,v+=vs,80,"Класс времени",Normal,TimeClass,false,TimeClassSClass);
       EditField(h2,v+=vs,80,"Сумма",Normal,Value,true,0);   
-    end;
+    end;*/
     v = 18;
     ButtonFrame(h3=h2+120,vm=v,120,7,"Тип задач");
     RadioButton(h3,v,kTodoFlagCalendar,0,"Календарь",TodoFlag);

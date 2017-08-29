@@ -590,6 +590,9 @@ begin
   
   if(FindCustByPhone(CUr,SVOr,tstr))then begin
   	PutWindowRecord(wn,SVOr);
+  	if(nonblank(tstr))then begin
+  		messagebox(0,tstr);
+  	end;
   end else begin
 		if(changed>0 and Blank(SVOr.Vlastnik))then begin
 		
@@ -643,6 +646,9 @@ begin
   GetWindowRecord(wn,SVOr);
   if(FindCustByPhone(CUr,SVOr,tstr))then begin		
 		PutWindowRecord(wn,SVOr);
+		if(nonblank(tstr))then begin
+  		messagebox(0,tstr);
+  	end;
   end else begin
 		if(changed>0 and Blank(SVOr.Vlastnik))then begin
 			FindPhonePerson(Phoner,SVOr.Phone2);
@@ -2119,6 +2125,7 @@ end;
 global procedure UpdateToDoWclass()
 	begin
     UpdateMasterWClassOnKPIs("");
+    beep;
 end;
 
 global procedure AsyncUpdateToDo()
@@ -2192,7 +2199,10 @@ begin
 	
 		recordnew(SVOr);
 		SVOr.CustCode = CUr.Code;
-		PasteCUInSVO(SVOr,"",warning)
+		PasteCUInSVO(SVOr,"",warning);
+		if(nonblank(warning))then begin
+    	messagebox(0,warning);// Edit ************************** Tuesday, 29 August 2017 15:06:55
+    end;
 		openwindow("SVODclass",1,0,"","",SVOr);
 	
 	END;

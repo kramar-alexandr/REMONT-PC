@@ -86,6 +86,9 @@ begin
 	row IPVc IPrw;
 	string 100 enginer;
 	val totrem, totpayrem, totnopayrem, totcan, totourcan, totnopayremqty,totpayremqty,totcanceled;
+	record WSVc WSr;
+	record RLinkVc RLr;
+	integer cnt;
 	
 	tabs[0] = 0;
 	tabs[1] = 40;
@@ -208,6 +211,17 @@ begin
 	  								if(INr.ItemType==3 or INr.ItemType==0)then begin
 	  									filter = true;
 	  									enginer = "";
+	  									
+	  									cnt=1;
+											while(ReadRecordLink(IVr,cnt,WSr,RLr)) begin
+												if(nonblank(WSr.EMCode))then begin
+													If(WSr.EMCode!=IVr.SalesMan) then begin
+														IVr.SalesMan = WSr.EMCode;
+													end; 
+												end;
+												cnt = cnt+1;
+											end;
+	  									
 	  									if(IVr.SalesMan==SVOr.CustomField7)then begin
 												enginer = SVOr.ServiceManager;
 											end else begin

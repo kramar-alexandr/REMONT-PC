@@ -4242,3 +4242,38 @@ begin
   end;
   return;
 end; //Edit***************************Sasha2,14:33 15.08.2017 }
+
+
+function string 100 WSGetEMCode(record WSVc WSr)
+begin
+	record SVOVc SVOr;
+	string 100 res;
+	
+	res = WSr.EMCode;
+	
+	SVOr.SerNr = WSr.SVONr;
+	if(readfirstmain(SVOr,1,true))then begin
+		if(nonblank(SVOr.ServiceManager))then begin
+			res = SVOr.ServiceManager;
+		end;
+	end;
+	WSGetEMCode = res;
+return;
+end;
+
+global updating procedure FixWSManagerMn(record RcVc RepSpec)
+begin
+	record WSVc WSr;
+	
+	WSr.SerNr = -1;
+	while(loopmain(WSr,1,true))begin
+		switch(WSr.EMCode)begin
+			case "ÑéÇÜÖçäé": WSr.EMCode = WSGetEMCode(WSr); recordstore(WSr,true); logtext(0,WSr.SerNr & " " & WSr.EMCode);
+			case "äàäÇàÑáÖ": WSr.EMCode = WSGetEMCode(WSr); recordstore(WSr,true); logtext(0,WSr.SerNr & " " & WSr.EMCode);
+			case "äìåäé": WSr.EMCode = WSGetEMCode(WSr); recordstore(WSr,true); logtext(0,WSr.SerNr & " " & WSr.EMCode);
+			case "òéíÄ": WSr.EMCode = WSGetEMCode(WSr);	recordstore(WSr,true); logtext(0,WSr.SerNr & " " & WSr.EMCode);		
+		end;
+	end;
+  
+return;
+end;

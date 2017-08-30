@@ -929,6 +929,9 @@ begin
     SpecialMenu("Открыть налог. матрицу",' ',25,"OpenVatMatrixWSDsm");
   end;
   SpecialMenu("Печатать чек",' ',0,"PrintWSReceiptDsm");
+  if(usercanaction("ChangeWSServMast",false))then begin// Edit ************************** Wednesday, 30 August 2017 11:29:45
+  	SpecialMenu("Изменить сервисного мастера",' ',0,"ChangeWSSerMastDsm");
+  end;
   SpecMenuGroup("",kSpecMenuGroupTypeExtendedPlusMenu,0);         
   if (HasModCRM) then begin
 //    SpecialMenu("Activity",'c',4,"ActFromWSDsm");
@@ -941,6 +944,9 @@ begin
   end;
   
   SpecialMenu("Внутренний заказ",' ',0,"CreateIntOrdfromWSDsm");
+  
+  
+  
 //  SpecMenuItem("Work Sheet Status",'r',4);
   EndWindow;
 end;

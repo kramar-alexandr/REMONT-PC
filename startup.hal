@@ -327,6 +327,7 @@ StrSetText(AllowAddingINtoRet,"Добавлять товары в возвраты");
   StrSetText(ChangeReserved,"Изменение статуса Резервировать в счетах и перемещениях товара");
   StrSetText(IssueOwnChk,"Изменение статуса собственного чека");
   StrSetText(IssueChk,"Изменение статуса чека");
+  StrSetText(ChangeWSServMast,"Изменение мастера в таблице работ");// Edit ************************** Wednesday, 30 August 2017 11:36:42
   StrSetText(ChangingCostOnORRow,"Изменение стоимости на счёте клиенту"); 
   StrSetText(ChangePrices,"Изменение цен");
   StrSetText(ChangeUnitPrices,"Изменение цены товара");

@@ -572,8 +572,6 @@ begin
   RecordList(4,17,-21,-39);
   RlColKey(4,4,"Дата счета",TransDate,false,AllServTransDate);
   RlColKey(79,79,"№",SerNr,false,AllServSerNr);
-  //RlCol(79,79,"Гот.",DoneMark,false);
-  
   RlColKey(150,150,"Наим.",ItemName,false,AllServItemName);
   RlCol(300,300,"Проблема",Comment1,false);
   RlColKey(-460,-460,"Код заказа",InnerOrderNr,false,AllServInnerOrderNr);

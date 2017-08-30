@@ -57,6 +57,32 @@ begin
 return;
 end;
 
+procedure FindPhoneDomain(string tphone,string cucude, var vector boolean vPhoneExist,var vector string vCuDomain)
+begin
+	record BinotelCallEndVc BCEr;
+	boolean TrHsph;
+	
+	if(nonblank(tphone))then begin
+		if(vPhoneExist[tphone]==false)then begin
+			vPhoneExist[tphone] = true;
+			resetloop(BCEr);
+			BCEr.externalNumber = tphone;
+			TrHsph = true;
+			while(loopbackkey("externalNumber",BCEr,1,TrHsph))begin
+				if(BCEr.externalNumber!=tphone)then begin TrHsph=false; end;
+			
+				if(TrHsph)then begin
+					if(nonblank(BCEr.CTdomain))then begin
+						vCuDomain[cucude] = BCEr.CTdomain;
+					end;
+				end;
+			end;
+		end;
+	end;
+	
+return;
+end;
+
 global procedure ServiceJobsRn(record RcVc RepSpec)
 begin
 	record INVc INr;
@@ -75,21 +101,24 @@ begin
 	val dolg,totdolg,supertotdolg,totserv;
 	record IPRsVc IPRsr;
 	date sd,ed;
-	boolean TrHs,testf,filter,svoout;
+	boolean TrHs,testf,filter,svoout,TrHsph;
 	record IVVc IVr,credIVr;
 	record IPVc IPr;
 	vector val ivsum,svodolg,ivsumserv;
-	vector boolean svoexist;
+	vector boolean svoexist,vPhoneExist,vCuExist;
 	vector date paydate;
 	array longint asvonr;
 	row IVVc IVrw;
 	row IPVc IPrw;
-	string 100 enginer;
+	string 100 enginer,tphone;
 	val totrem, totpayrem, totnopayrem, totcan, totourcan, totnopayremqty,totpayremqty,totcanceled;
 	val totdolgqty,totdolgsum;
 	record WSVc WSr;
 	record RLinkVc RLr;
 	integer cnt;
+	record CUVc CUr;
+	record BinotelCallEndVc BCEr;
+	vector string 100 vCuDomain;
 	
 	tabs[0] = 0;
 	tabs[1] = 40;
@@ -247,6 +276,27 @@ begin
 													end else begin
 														outstring(tabs[7],0,IVr.SalesMan,false);
 													end;
+													
+													if(vCuExist[SVOr.CustCode]==false)then begin
+														vCuExist[SVOr.CustCode] = true;
+														CUr.Code = SVOr.CustCode;
+														
+														if(readfirstmain(CUr,1,true))then begin
+															tphone = CUr.Phone;
+															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain);
+															tphone = CUr.Mobile;
+															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain);
+															tphone = CUr.AltPhone;
+															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain);
+															if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+																outstring(1,0,vCuDomain[SVOr.CustCode],true);
+															end;
+														end;
+													end else begin
+														if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+															outstring(1,0,vCuDomain[SVOr.CustCode],true);
+														end;
+													end;
 												endformat;
 												outstring(tabs[8],0,SVOr.StatusText,false);
 												if(IVr.InvType!=kInvoiceTypeCredit)then begin
@@ -353,6 +403,28 @@ begin
 														outstring(tabs[7],0,IVr.SalesMan,false);
 													end;
 													outstring(tabs[8],0,SVOr.StatusText,false);
+													
+													if(vCuExist[SVOr.CustCode]==false)then begin
+														vCuExist[SVOr.CustCode] = true;
+														CUr.Code = SVOr.CustCode;
+														
+														if(readfirstmain(CUr,1,true))then begin
+															tphone = CUr.Phone;
+															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain);
+															tphone = CUr.Mobile;
+															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain);
+															tphone = CUr.AltPhone;
+															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain);
+															if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+																outstring(1,0,vCuDomain[SVOr.CustCode],true);
+															end;
+														end;
+													end else begin
+														if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+															outstring(1,0,vCuDomain[SVOr.CustCode],true);
+														end;
+													end;
+													
 												endformat;
 												
 												if(IVr.InvType!=kInvoiceTypeCredit)then begin
@@ -461,6 +533,28 @@ begin
 														outstring(tabs[7],0,IVr.SalesMan,false);
 													end;
 													outstring(tabs[8],0,SVOr.StatusText,false);
+													
+													if(vCuExist[SVOr.CustCode]==false)then begin
+														vCuExist[SVOr.CustCode] = true;
+														CUr.Code = SVOr.CustCode;
+														
+														if(readfirstmain(CUr,1,true))then begin
+															tphone = CUr.Phone;
+															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain);
+															tphone = CUr.Mobile;
+															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain);
+															tphone = CUr.AltPhone;
+															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain);
+															if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+																outstring(1,0,vCuDomain[SVOr.CustCode],true);
+															end;
+														end;
+													end else begin
+														if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+															outstring(1,0,vCuDomain[SVOr.CustCode],true);
+														end;
+													end;
+													
 												endformat;
 												
 												if(IVr.InvType!=kInvoiceTypeCredit)then begin
@@ -550,6 +644,25 @@ begin
 					outstring(tabs[6],0,ivsum[asvonr[i]],false);
 					outstring(tabs[7],0,SVOr.RejectReason,false);
 					outstring(tabs[8],0,SVOr.StatusText,false);
+					if(vCuExist[SVOr.CustCode]==false)then begin
+						vCuExist[SVOr.CustCode] = true;
+						CUr.Code = SVOr.CustCode;
+						if(readfirstmain(CUr,1,true))then begin
+							tphone = CUr.Phone;
+							FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain);
+							tphone = CUr.Mobile;
+							FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain);
+							tphone = CUr.AltPhone;
+							FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain);
+							if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+								outstring(1,0,vCuDomain[SVOr.CustCode],true);
+							end;
+						end;
+					end else begin
+						if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+							outstring(1,0,vCuDomain[SVOr.CustCode],true);
+						end;
+					end;
 				endformat;
 				end;
 			end;

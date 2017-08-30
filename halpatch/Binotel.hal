@@ -651,3 +651,73 @@ begin
 
 return;
 end;
+
+global updating procedure ImportBinotel()
+begin
+	record BinotelCallEndVc BCEr;
+	string 100 a1,a2,a3,a4,a5,a6,a7,a8,a9,a10;
+	string 100 a11,a12,a13,a14,a15,a16,a17,a18,a19,a20;
+	string 100 a21,a22,a23,a24,a25;
+	
+	while (TestEOF()==false) begin
+		a1 = ImportField;
+		a2 = ImportField;
+		a3 = ImportField;
+		a4 = ImportField;
+		a5 = ImportField;
+		a6 = ImportField;
+		a7 = ImportField;
+		a8 = ImportField;
+		a9 = ImportField;
+		a10 = ImportField;
+		a11 = ImportField;
+		a12= ImportField;
+		a13 = ImportField;
+		a14 = ImportField;
+		a15 = ImportField;
+		a16 = ImportField;
+		a17 = ImportField;
+		a18 = ImportField;
+		a19 = ImportField;
+		a20 = ImportField;
+		a21 = ImportField;
+		a22 = ImportField;
+		a23 = ImportField;
+		a24 = ImportField;
+		a25 = ImportField;
+		
+		if(nonblank(a1))then begin
+			BCEr.generalCallID = a1;
+			if(readfirstkey("generalCallID",BCEr,1,true))then begin
+				BCEr.gCDid = a2;
+				BCEr.gCDisNewNumber = a3;
+				BCEr.gCDcreatedAt = a4;
+				BCEr.gCDcallAt = a5;
+				BCEr.gCDprocessedAt = a6;
+				BCEr.gCDisProcessed = a7;
+				BCEr.gCDrequestsCounter = a8;
+				BCEr.gCDattemptsCounter = a9;
+				BCEr.gCDemployeesDontAnswerCounter = a10;
+				BCEr.gCDfullUrl = a11;
+				BCEr.gCDdescription = a12;
+				BCEr.gCDgaTrackingId = a13;
+				BCEr.gCDgaClientId = a14;
+				BCEr.gCDutm_source = a15;
+				BCEr.gCDutm_medium = a16;
+				BCEr.gCDutm_campaign = a17;
+				BCEr.gCDutm_content = a18;
+				BCEr.gCDutm_term = a19;
+				BCEr.gCDipAddress = a20;
+				BCEr.gCDgeoipCountry = a21;
+				BCEr.gCDgeoipRegion = a22;
+				BCEr.gCDgeoipCity = a23;
+				BCEr.gCDgeoipOrg = a24;
+				BCEr.gCDdomain = a25;
+				recordstore(BCEr,true);
+				logtext(0,BCEr.generalCallID);
+			end;
+		end;
+		if (NextImportLine(true)) then begin end;
+	end;
+return;
+end;

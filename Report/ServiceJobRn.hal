@@ -75,6 +75,9 @@ begin
 					if(nonblank(BCEr.CTdomain))then begin
 						vCuDomain[cucude] = BCEr.CTdomain;
 					end;
+					if(nonblank(BCEr.gCDdomain))then begin
+						vCuDomain[cucude] = BCEr.gCDdomain;
+					end;
 				end;
 			end;
 		end;

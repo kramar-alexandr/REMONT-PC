@@ -1620,6 +1620,32 @@ begin
     RecordField(CTdomain,M4Str,100,0);
     RecordField(CTgaTrackingId,M4Str,100,0);
     RecordField(CTtimeSpentOnSiteBeforeMakeCall,M4Str,100,0);
+    
+    RecordField(gCDid,M4Str,20,0);
+    RecordField(gCDisNewNumber,M4Str,5,0);
+    RecordField(gCDcreatedAt,M4Str,20,0);
+    RecordField(gCDcallAt,M4Str,20,0);
+    RecordField(gCDprocessedAt,M4Str,20,0);
+    RecordField(gCDisProcessed,M4Str,5,0);
+    RecordField(gCDrequestsCounter,M4Str,5,0);
+    RecordField(gCDattemptsCounter,M4Str,5,0);
+    RecordField(gCDemployeesDontAnswerCounter,M4Str,5,0);
+    RecordField(gCDfullUrl,M4Str,100,0);
+    RecordField(gCDdescription,M4Str,100,0);
+    RecordField(gCDgaTrackingId,M4Str,100,0);
+    RecordField(gCDgaClientId,M4Str,100,0);
+    RecordField(gCDutm_source,M4Str,100,0);
+    RecordField(gCDutm_medium,M4Str,100,0);
+    RecordField(gCDutm_campaign,M4Str,100,0);
+    RecordField(gCDutm_content,M4Str,100,0);
+    RecordField(gCDutm_term,M4Str,100,0);
+    RecordField(gCDipAddress,M4Str,20,0);
+    RecordField(gCDgeoipCountry,M4Str,100,0);
+    RecordField(gCDgeoipRegion,M4Str,100,0);
+    RecordField(gCDgeoipCity,M4Str,100,0);
+    RecordField(gCDgeoipOrg,M4Str,100,0);
+    RecordField(gCDdomain,M4Str,100,0);
+    
 		
 		
 		ArrayBegin(Math,-,1);

@@ -272,6 +272,103 @@ begin
 			BECr.CTtimeSpentOnSiteBeforeMakeCall = JSONGet(jobj,node);
 		end;
 		
+		node = "callDetails(getCallData)(id)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.gCDid = JSONGet(jobj,node);
+		end;
+		node = "callDetails(getCallData)(isNewNumber)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.gCDisNewNumber = JSONGet(jobj,node);
+		end;
+node = "callDetails(getCallData)(createdAt)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.gCDcreatedAt = JSONGet(jobj,node);
+		end;
+node = "callDetails(getCallData)(callAt)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.gCDcallAt = JSONGet(jobj,node);
+		end;
+node = "callDetails(getCallData)(processedAt)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.gCDprocessedAt = JSONGet(jobj,node);
+		end;
+node = "callDetails(getCallData)(isProcessed)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.gCDisProcessed = JSONGet(jobj,node);
+		end;
+node = "callDetails(getCallData)(requestsCounter)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.gCDrequestsCounter = JSONGet(jobj,node);
+		end;
+node = "callDetails(getCallData)(attemptsCounter)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.gCDattemptsCounter = JSONGet(jobj,node);
+		end;
+node = "callDetails(getCallData)(employeesDontAnswerCounter)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.gCDemployeesDontAnswerCounter = JSONGet(jobj,node);
+		end;
+node = "callDetails(getCallData)(fullUrl)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.gCDfullUrl = JSONGet(jobj,node);
+		end;
+node = "callDetails(getCallData)(description)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.gCDdescription = JSONGet(jobj,node);
+		end;
+node = "callDetails(getCallData)(gaTrackingId)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.gCDgaTrackingId = JSONGet(jobj,node);
+		end;
+node = "callDetails(getCallData)(gaClientId)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.gCDgaClientId = JSONGet(jobj,node);
+		end;
+node = "callDetails(getCallData)(utm_source)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.gCDutm_source = JSONGet(jobj,node);
+		end;
+node = "callDetails(getCallData)(utm_medium)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.gCDutm_medium = JSONGet(jobj,node);
+		end;
+node = "callDetails(getCallData)(utm_campaign)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.gCDutm_campaign = JSONGet(jobj,node);
+		end;
+node = "callDetails(getCallData)(utm_content)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.gCDutm_content = JSONGet(jobj,node);
+		end;
+node = "callDetails(getCallData)(utm_term)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.gCDutm_term = JSONGet(jobj,node);
+		end;
+node = "callDetails(getCallData)(ipAddress)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.gCDipAddress = JSONGet(jobj,node);
+		end;
+node = "callDetails(getCallData)(geoipCountry)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.gCDgeoipCountry = JSONGet(jobj,node);
+		end;
+node = "callDetails(getCallData)(geoipRegion)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.gCDgeoipRegion = JSONGet(jobj,node);
+		end;
+node = "callDetails(getCallData)(geoipCity)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.gCDgeoipCity = JSONGet(jobj,node);
+		end;
+node = "callDetails(getCallData)(geoipOrg)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.gCDgeoipOrg = JSONGet(jobj,node);
+		end;
+node = "callDetails(getCallData)(domain)";
+		if(JSONNodeExists(jobj,node))then begin
+			BECr.gCDdomain = JSONGet(jobj,node);
+		end;
+		
 		
 	recordstore(BECr,true);
 	

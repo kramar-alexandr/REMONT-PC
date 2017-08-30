@@ -721,3 +721,105 @@ begin
 	end;
 return;
 end;
+
+global updating procedure ImportBinotel1()
+begin
+	record BinotelCallEndVc BCEr;
+	string 100 a1,a2,a3,a4,a5,a6,a7,a8,a9,a10;
+	string 100 a11,a12,a13,a14,a15,a16,a17,a18,a19,a20;
+	string 100 a21,a22,a23,a24,a25,a26,a27,a28;
+	
+	while (TestEOF()==false) begin
+		a1 = ImportField;
+		a2 = ImportField;
+		a3 = ImportField;
+		a4 = ImportField;
+		a5 = ImportField;
+		a6 = ImportField;
+		a7 = ImportField;
+		a8 = ImportField;
+		a9 = ImportField;
+		a10 = ImportField;
+		a11 = ImportField;
+		a12= ImportField;
+		a13 = ImportField;
+		a14 = ImportField;
+		a15 = ImportField;
+		a16 = ImportField;
+		a17 = ImportField;
+		
+		a18 = ImportField;
+		a19 = ImportField;
+		a20 = ImportField;
+		a21 = ImportField;
+		a22 = ImportField;
+		a23 = ImportField;
+		a24 = ImportField;
+		a25 = ImportField;
+		a26 = ImportField;
+		
+		a27 = stringtodate(ImportField);
+		a28 = stringtotime(ImportField);
+		
+		if(nonblank(a1))then begin
+			BCEr.generalCallID = a1;
+			if(readfirstkey("generalCallID",BCEr,1,true))then begin
+				BCEr.CTid = a2;
+				BCEr.CTgaClientId = a3;
+				BCEr.CTfirstVisitAt = a4;
+				BCEr.CTutmsource = a5;
+				BCEr.CTutmmedium = a6;
+				BCEr.CTutmcampaign = a7;
+				BCEr.CTutmcontent = a8;
+				BCEr.CTutmterm = a9;
+				BCEr.CTipAddress = a10;
+				BCEr.CTgeoipCountry = a11;
+				BCEr.CTgeoipRegion = a12;
+				BCEr.CTgeoipCity = a13;
+				BCEr.CTgeoipOrg = a14;
+				BCEr.CTdomain = a15;
+				BCEr.CTgaTrackingId = a16;
+				BCEr.CTtimeSpentOnSiteBeforeMakeCall = a17;
+				recordstore(BCEr,true);
+				logtext(0,BCEr.generalCallID);
+			end else begin
+				recordnew(BCEr);
+				BCEr.SerNr = NextSerNr("BinotelCallEndVc",currentdate,-1,false,"");
+				BCEr.generalCallID = a1;
+				BCEr.CTid = a2;
+				BCEr.CTgaClientId = a3;
+				BCEr.CTfirstVisitAt = a4;
+				BCEr.CTutmsource = a5;
+				BCEr.CTutmmedium = a6;
+				BCEr.CTutmcampaign = a7;
+				BCEr.CTutmcontent = a8;
+				BCEr.CTutmterm = a9;
+				BCEr.CTipAddress = a10;
+				BCEr.CTgeoipCountry = a11;
+				BCEr.CTgeoipRegion = a12;
+				BCEr.CTgeoipCity = a13;
+				BCEr.CTgeoipOrg = a14;
+				BCEr.CTdomain = a15;
+				BCEr.CTgaTrackingId = a16;
+				BCEr.CTtimeSpentOnSiteBeforeMakeCall = a17;
+				
+				BCEr.callID = a18;//callID
+				BCEr.callType = a19;//callType
+				BCEr.internalNumber = a20;//internalNumber
+				BCEr.externalNumber = a21;//externalNumber
+				BCEr.srcNumber = a22;//srcNumber
+				BCEr.disposition = a23;//disposition
+				BCEr.did = a24;//did
+				BCEr.didNumber = a25;//didNumber
+				BCEr.didName = a26;//didName
+				
+				BCEr.TransDate = stringtodate(a27);
+				BCEr.TransTime = stringtotime(a28);
+				recordstore(BCEr,true);
+				logtext(0,BCEr.generalCallID);
+			end;
+		end;
+		if (NextImportLine(true)) then begin end;
+	end;
+return;
+end;

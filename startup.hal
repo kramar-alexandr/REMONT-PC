@@ -72,6 +72,7 @@ begin
    
   Import("€мпорт контактов и заказов, выгруженных из ServiceMY",CUAndSVOInitSystemImportIClass,CUAndSVOInitSystemImportIn,modDBMain); //Edit***************************Sasha2,13:21 26.05.2017
 	Import("€мпорт BINOTEL",CUAndSVOInitSystemImportIClass,ImportBinotel,modDBMain); //Edit***************************Sasha2,13:21 26.05.2017
+	Import("€мпорт BINOTEL1",CUAndSVOInitSystemImportIClass,ImportBinotel1,modDBMain); //Edit***************************Sasha2,13:21 26.05.2017
 
 
 	SString(964,"");

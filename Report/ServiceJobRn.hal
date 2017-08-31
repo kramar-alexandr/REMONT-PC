@@ -644,7 +644,7 @@ begin
 							totcanceled = totcanceled + 1;
 						end;
 					end;
-					outstring(tabs[6],0,ivsum[asvonr[i]],false);
+					outstring(tabs[6],0,blankval,false);
 					outstring(tabs[7],0,SVOr.RejectReason,false);
 					outstring(tabs[8],0,SVOr.StatusText,false);
 					if(vCuExist[SVOr.CustCode]==false)then begin

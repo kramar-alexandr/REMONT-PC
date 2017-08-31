@@ -555,7 +555,7 @@ end;
 window SVOLClass:1
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
-  WindowBegin("Заказы на обслуживание",SVOLClass,CGmlist,SVOView);
+  WindowBegin("Заказы на обслуживание",SVOLClass,CGmlist,-);
   SpawnClass(SVODClass);
   SetWRect(20,80,1100,298);
   Sizeable(-1,-1,0,0);
@@ -622,7 +622,7 @@ end;
 window SVO2LClass:1
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
-  WindowBegin("Заказы на обслуживание - без мастера",SVO2LClass,CGmlist,SVOView);
+  WindowBegin("Заказы на обслуживание - без мастера",SVO2LClass,CGmlist,-);
   SpawnClass(SVODClass);
   SetWRect(20,80,960,298);
   Sizeable(-1,-1,0,0);
@@ -661,7 +661,7 @@ end;
 window SVO3LClass:1
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
-  WindowBegin("Заказы на обслуживание - в ожидании оплаты",SVO3LClass,CGmlist,SVOView);
+  WindowBegin("Заказы на обслуживание - в ожидании оплаты",SVO3LClass,CGmlist,-);
   SpawnClass(SVODClass);
   SetWRect(20,80,960,298);
   Sizeable(-1,-1,0,0);
@@ -700,7 +700,7 @@ end;
 window SVO4LClass:1
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
-  WindowBegin("Заказы на обслуживание - предварительные",SVO4LClass,CGmlist,SVOView);
+  WindowBegin("Заказы на обслуживание - предварительные",SVO4LClass,CGmlist,-);
   SpawnClass(SVODClass);
   SetWRect(20,80,960,298);
   Sizeable(-1,-1,0,0);
@@ -9254,5 +9254,71 @@ begin
   Sizeable(-1,-1,0,0);
   v = 10; h = 10;
   ChartArea(h,v,-10,-10,"$MyChart");  
+  EndWindow;
+end;
+
+window DispatchDClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,h2,h3,v,vs;
+  WindowBegin("Выдача товара",DispatchDClass,CGview,-);
+  SetWRect(20,80,620,367);
+  Sizeable(-1,-1,0,0);
+  UseView(DispatchVc);
+  FormName(DispatchForm);
+  Tile(0,80,false,"",TransDate);
+  v = 6; vs = 20; h=110; h2=295; h3=600;
+  EditField(h,v,82, "Номер",St_i,SerNr,false,TSerSClass);
+  EnterSkip(CustCode);
+  EditField(h2,v,82,"Дата опер.",Normal,TransDate,false,PasteCurDate);
+  EditField(h,v+=20,82, "Клиент",Normal,CustCode,false,CUSClass);
+  EnterSkip(AgreementNr);
+  EditField(h2,v,-150,"Наимен.",Normal,Addr0,false,0);
+  EditField(h,v+=vs,82, "Адрес дост.",Normal,Site,false,DelAddr3SClass);
+  TileButton(1,"Идентификаторы");
+  TileButton(2,"Товары");
+  TileButton(3,"Адрес дост.");
+  Tile(1,130,false,"1",AgreementNr);
+  EditField(h,v=6,60, "№ соглашения",Normal,AgreementNr,false,AgreementSClass);
+  if(left(currentuser,2)=="SA")then begin
+		EditField(h,v+=vs,60,"№ заказа на обсл.",Normal,SVONr,false,0);
+  end else begin
+  	EditField(h,v+=vs,60,"№ заказа на обсл.",ViewOnly,SVONr,false,0);
+  end;
+  EditField(h,v+=vs,82,"Склад",Normal,Location,false,LocationSClass);
+  EditField(h3,v,-40,"Усл.отгр.",Normal,ShipDeal,false,ShipDealSClass);
+  EditField(h,v+=vs,60,"Язык",Normal,LangCode,false,LangSClass);
+  EditField(h3,v,-40,"Способ отгрузки",Normal,ShipMode,false,DMSClass);
+  EditField(h,v+=vs,60,"Сотрудник",Normal,SalesMan,false,UserSClass);
+  EditField(h2,v=6,-40, "Конт.лицо",Normal,ClientContact,false,ContactSClass);
+  EditField(h2,v+=vs,-40,"Комментарий",Normal,Comment,false,0);
+  ButtonFrame(h2,v+=40,123,3,"Статус");
+  RadioButton(h2,v,0,0,"Создан",OKFlag);
+  RadioButton(h2,v+=16,2,255,"Подготовлено",OKFlag);
+  RadioButton(h2,v+=16,1,255,"Отправлено",OKFlag);
+  EnterSkip(Math);
+  Tile(2,79,true,"2",Math);
+  EditField(150,-21,70,"Итог.кол.",ViewOnly,SumQuant,true,0);
+  v = 24;
+  MatrixBegin(4,v,-20,-22,DispatchRowType,199);
+  MatCol(1,28,"Товар",0,ArtCode,false,INSClass);
+  MatCol(1,94,"К-во",0,Quant,true,0);
+  MatCol(1,144,"Сер. №",0,SerialNr,false,SerialNrSClass);
+  MatCol(1,300,"Наимен.",0,Spec,false,0);
+  MatCol(1,-240,"Резервир..",0,RentResSerNo,false,0);
+  MatCol(1,-150,"Стр.",0,RentResRow,false,0);
+  MatCol(1,-100,"Цена покупки",0,Value,true,0);
+  DeleteRowTest;
+  EndMatrix;
+  vs = 20;
+  Tile(3,110,false,"3",Addr1);
+  vs = 20;
+  EditField(h,v=6,-40,"Адрес",Normal,Addr1,false,0);
+  EditField(h,v+=vs,-40,"",Normal,Addr2,false,0);
+  EditField(h,v+=vs,-40,"",Normal,Addr3,false,0);
+  EditField(h,v+=vs,-40,"",Normal,DelAddr3,false,0);
+  EditField(h,v+=vs,-40,"",Normal,DelAddr4,false,0);
+  SpecMenuGroup("",kSpecMenuGroupTypeExtendedPlusMenu,0);         
+  SpecialMenu("Добавить начисление",' ',0,"DispatchChargeDsm");
   EndWindow;
 end;

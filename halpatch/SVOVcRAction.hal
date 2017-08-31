@@ -1562,7 +1562,7 @@ BEGIN
  	
  	if(SVOr.GetItemFlag==0 and SVOr.OrderStatus!=9)then begin
  		if(stat==updatemode)then begin
-			if(SVO2r.OrderStatus==9 and SVOr.OrderStatus==6)then begin
+			if((SVO2r.OrderStatus==9 and SVOr.OrderStatus==6) or (SVOr.OrderStatus==6 and SVO2r.OrderStatus==6))then begin
 			 
 			end else begin
 				RecordCheckError(31505,"",0,"ArtCode");

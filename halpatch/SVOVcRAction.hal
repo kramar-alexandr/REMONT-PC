@@ -862,7 +862,7 @@ BEGIN
 			end;
 		end;
 		
-		if(SVO2r.OrderStatus==7 and SVOr.OrderStatus==1)then begin//ушло в ремонт
+		if(SVO2r.OrderStatus!=1 and SVOr.OrderStatus==1)then begin//ушло в ремонт
 			testf1 = true;
 			if(Actr.ActType!="‘ЋѓЋЉ")then begin testf1 = false; end;
 			testf1 = (testf1 and testf);
@@ -1110,7 +1110,7 @@ BEGIN
 	if ((SVO2r.OrderStatus!=6 and SVOr.OrderStatus==6) or (BlankDate(SVO2r.RegDate) and NonBlankDate(SVOr.RegDate))) then begin
     CreateActFromSVOForInspectorIfItemRejected(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
 	end;
-	if (SVO2r.OrderStatus==4 and SVOr.OrderStatus==7) then begin
+	if (SVO2r.OrderStatus!=7 and SVOr.OrderStatus==7) then begin
     CreateApprovedActivity(SVOr); //Edit***************************Sasha2,17:02 27.06.2017
 	end;
 	if (SVO2r.OrderStatus!=4 and SVOr.OrderStatus==4) then begin

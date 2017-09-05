@@ -107,7 +107,9 @@ begin
   		if(nonblank(SVOr.Inspector))then begin
 				Actr.MainPersons = SVOr.Inspector;
   		end else begin
-  			Actr.MainPersons = currentuser;
+  		  if (NonBlank(SVOr.CustomField7)) then begin
+  		    Actr.MainPersons = SVOr.CustomField7;
+  		  end;
   		end;
   		Actr.SerNr = NextSerNr("ActVc",Actr.TransDate,-1,false,"");
   		

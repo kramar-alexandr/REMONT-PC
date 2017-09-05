@@ -489,6 +489,9 @@ begin
   v = v + 25;
   checkbox(100,v-20,0,"VIP",VIPStatus);
   checkbox(200,v-20,0,"Товар от партнера с возвратом",ItemFrPartner); //Edit***************************Sasha2,14:19 08.12.2015
+  if (left(CurrentUser,2)=="SA") then begin //Edit***************************Sasha2,17:33 05.09.2017
+    EditField(550,v-20,120,"Фамилия (Видно SA)",Normal,Priynato,false,0)
+  end;
  	EditField(h=110,v,200,"ФИО",Normal,Vlastnik,false,0);
  	EditField(h+300,v,-20,"SN Зарегистр.",Normal,CustomField8,false,0);
  	/*EditField(h,v+=vs,120,"Фамилия",Normal,Priynato,false,0);	

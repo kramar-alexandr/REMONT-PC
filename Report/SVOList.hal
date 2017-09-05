@@ -686,6 +686,7 @@ begin
 			if(SVOr.DoneMark>0)then begin testf = false; end;
 			if(nonblank(RepSpec.f1) and SVOr.ServiceManager!=RepSpec.f1)then begin testf = false; end;
 			countwdays = CountWorkingDays(SVOr.TransDate,Currentdate,"","UA");		
+			LogText(0,"SVODateOff3RepRn CountWorkingDays=" & countwdays); //Edit***************************Sasha2,18:42 05.09.2017
 			if(countwdays<3)then begin testf = false; end;
 			
 			if(testf)then begin

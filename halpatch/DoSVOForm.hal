@@ -27,16 +27,21 @@ external function roundmode SetRoundModeD(Integer);
 external procedure GetFieldArgument(record DocVc,Integer,var string);
 
 //Edit***************************Sasha2,11:50 02.08.2017 {
-procedure PrintWorkRow(string item,Boolean isCodeF)
+procedure PrintWorkRow(string item, string name,Boolean isCodeF)
 begin
   record INVc INr;
+  string 255 itemName;
     
     if (FIELDINFORM("MYF_WSWORKNAME") or FIELDINFORM("MYF_WSWORKCODE")) then begin
       if(isCodeF)then begin
         INr.Code = item;
         if(readfirstmain(INr,1,true)) begin
           if(INr.ItemType==3 or INr.ItemType==0)then begin
-            OUTFORMFIELD("MYF_WSWORKNAME",INr.Name); 
+            itemName = INr.Name;
+            if (NonBlank(name)) then begin
+              itemName = name;
+            end;
+            OUTFORMFIELD("MYF_WSWORKNAME",itemName); 
             OUTFORMFIELD("MYF_WSWORKCODE",INr.Code); 
           end;
         end;
@@ -71,6 +76,7 @@ begin
   record INVc INr;
   val price,sum,rebate;
   vector val artCodeQty;
+  vector string 255 artCodeCode,artCodeName;
   vector val artSpecQty;
   val tQty,tSum;
   array string 255 atags;
@@ -137,7 +143,9 @@ begin
           price = price + IVrw.Price*tQty;
       	  sum = sum + tSum;
       	  if (nonblank(IVrw.ArtCode)) then begin
-      	    artCodeQty[IVrw.ArtCode] = artCodeQty[IVrw.ArtCode] + tQty;
+      	    artCodeQty[IVrw.ArtCode & IVrw.Spec] = artCodeQty[IVrw.ArtCode & IVrw.Spec] + tQty;
+      	    artCodeCode[IVrw.ArtCode & IVrw.Spec] = IVrw.ArtCode;
+      	    artCodeName[IVrw.ArtCode & IVrw.Spec] = IVrw.Spec;
       	  end else begin
       	    artSpecQty[IVrw.Spec] = artSpecQty[IVrw.Spec] + tQty;
       	  end;
@@ -149,14 +157,14 @@ begin
   GetVectorTags(artCodeQty,atags);
   for (i=0;i<atags.length;i=i+1) begin
     if (artCodeQty[atags[i]]<>0) then begin
-      PrintWorkRow(atags[i],true);
+      PrintWorkRow(artCodeCode[atags[i]],artCodeName[atags[i]],true);
     end;
   end;
   
   GetVectorTags(artSpecQty,atags);
   for (i=0;i<atags.length;i=i+1) begin
     if (artSpecQty[atags[i]]<>0) then begin
-      PrintWorkRow(atags[i],false);
+      PrintWorkRow(atags[i],"",false);
     end;
   end;
   

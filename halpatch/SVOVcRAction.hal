@@ -1596,7 +1596,7 @@ BEGIN
 				goto LSVOVcRecordCheck;
 			end;
  		end;
- 		if(stat==Rs_update and SVOr.GetItemFlag==0)then begin
+ 		if(stat==Rs_update and SVO2r.GetItemFlag==0)then begin
 			if(blank(SVOr.UserPass))then begin
 				RecordCheckError(31507,"",-1,"UserPass");
 				res = -1;

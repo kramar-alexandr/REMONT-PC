@@ -8603,7 +8603,11 @@ begin
   TileButton(2,"Товары");
   Tile(1,130,false,"1",AgreementNr);
   EditField(h,v=6,60, "№ соглашения",Normal,AgreementNr,false,AgreementSClass);
-  EditField(h,v+=vs,60,"№ заказа на обсл.",ViewOnly,SVONr,false,0);
+  if(left(currentuser,2)=="SA")then begin
+		EditField(h,v+=vs,60,"№ заказа на обсл.",Normal,SVONr,false,0);
+  end else begin
+  	EditField(h,v+=vs,60,"№ заказа на обсл.",ViewOnly,SVONr,false,0);
+  end;
   EditField(h,v+=vs,60,"Номер возврата",ViewOnly,CollectionNr,false,0);
   EditField(h,v+=vs,82,"Склад",Normal,Location,false,LocationSClass);
   EditField(h,v+=vs,60,"Язык",Normal,LangCode,false,LangSClass);

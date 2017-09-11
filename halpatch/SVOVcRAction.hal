@@ -579,7 +579,7 @@ BEGIN
   Actr.CUCode = SVOr.CustCode;
   Actr.TransDate = SVOr.TransDate;
   TrHs = true;
-  logtext(0,"SVOVcRecordSaveAfter 1");
+
   while(loopkey("CUCode",Actr,2,TrHs))begin
 		testf = true;
 		if(Actr.CUCode!=SVOr.CustCode)then begin TrHs=false; testf = false; end;
@@ -715,7 +715,9 @@ BEGIN
     CreateActFromSVOForInspectorIfItemIssued(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
 	end;
 	if (SVOr.OrderStatus==6 or NonBlankDate(SVOr.RegDate)) then begin
-    CreateActFromSVOForInspectorIfItemRejected(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
+    //CreateActFromSVOForInspectorIfItemRejected(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
+    CreateCustomActivityFromSVO(SVOr,"RJCTD",SVOr.Inspector,addday(currentdate,5),"Напомнить клиенту забрать технику без ремонта.");
+    CreateCustomActivityFromSVO(SVOr,"RJC",SVOr.ServiceManager,currentdate,"Заказ отменен. Собрать устройство на выдачу!");
 	end;
 	if (SVOr.OrderStatus==7) then begin
     CreateApprovedActivity(SVOr); //Edit***************************Sasha2,17:02 27.06.2017
@@ -887,6 +889,27 @@ BEGIN
 				recordupdate(lActr,Actr,true);
 			end;		
 		end;	
+		
+		if(nonblankdate(SVOr.RegDate))then begin//закрыть запрос напоминание о выдаче
+			testf1 = true;
+			if(Actr.ActType!="RJCTD")then begin testf1 = false; end;
+			testf1 = (testf1 and testf);
+			if(testf1)then begin
+				recordcopy(lActr,Actr);
+				Actr.ActResult = "ОК";
+				Actr.OKFlag = 1;
+				recordupdate(lActr,Actr,true);
+			end;
+			testf1 = true;
+			if(Actr.ActType!="RJC")then begin testf1 = false; end;
+			testf1 = (testf1 and testf);
+			if(testf1)then begin
+				recordcopy(lActr,Actr);
+				Actr.ActResult = "ОК";
+				Actr.OKFlag = 1;
+				recordupdate(lActr,Actr,true);
+			end;			
+		end;
 		
 	end;
 	
@@ -1110,7 +1133,11 @@ BEGIN
     CreateActFromSVOForInspectorIfItemIssued(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
 	end;
 	if ((SVO2r.OrderStatus!=6 and SVOr.OrderStatus==6) or (BlankDate(SVO2r.RegDate) and NonBlankDate(SVOr.RegDate))) then begin
-    CreateActFromSVOForInspectorIfItemRejected(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
+    //CreateActFromSVOForInspectorIfItemRejected(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
+        
+    CreateCustomActivityFromSVO(SVOr,"RJCTD",SVOr.Inspector,addday(currentdate,5),"Напомнить клиенту забрать технику без ремонта.");
+    CreateCustomActivityFromSVO(SVOr,"RJC",SVOr.ServiceManager,currentdate,"Заказ отменен. Собрать устройство на выдачу!");
+    
 	end;
 	if (SVO2r.OrderStatus!=7 and SVOr.OrderStatus==7) then begin
     CreateApprovedActivity(SVOr); //Edit***************************Sasha2,17:02 27.06.2017

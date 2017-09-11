@@ -3898,7 +3898,7 @@ begin
 return;
 end; //Edit***************************Sasha2,16:49 15.06.2017 }
 
-global //Edit***************************Sasha2,16:49 15.06.2017 { 
+global //Edit***************************Sasha2,16:49 15.06.2017 {   НЕ ИСПОЛЬЗОВАТЬ
 updating procedure CreateActFromSVOForInspectorIfItemRejected(record SVOVc SVOr)
 begin
 
@@ -3906,7 +3906,7 @@ begin
 	CreateActFromSVOForInspectorWithActType(SVOr,"RJC",0,"Заказ отменен. Собрать устройство на выдачу!","");
 
 return;
-end; //Edit***************************Sasha2,16:49 15.06.2017 }
+end; //Edit***************************Sasha2,16:49 15.06.2017 }*/
 
 global //Edit***************************Sasha2,11:47 03.07.2017 {
 updating procedure UpdateSVOOfServiceMYMn(record RcVc RepSpec)

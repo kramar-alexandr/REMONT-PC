@@ -2087,6 +2087,7 @@ begin
 	end;
   	
   //Edit----------------------Dima  04.05.2016
+	/* //Edit***************************Sasha2,12:04 12.09.2017
 	Userr.Code = CurrentUser;
 	if(ReadFirstMain(Userr,1,true))then begin
 		if ((SM2p.OKFlag==0) and (SMp.OKFlag!=0)) then begin
@@ -2126,7 +2127,9 @@ begin
 				end;
 			end;		
 		end;			
-	end; //Edit------------------------------------------------------------Dima  04.05.2016
+	end; 
+	*/ //Edit***************************Sasha2,12:05 12.09.2017
+	//Edit------------------------------------------------------------Dima  04.05.2016
 	if (res != -1) then begin //Edit***************************Sasha2,15:23 18.05.2017 {
   	oldnr = SMp.SerNr;
     oldOfficialSerNr = SMp.OfficialSerNr;

@@ -15,12 +15,13 @@ BEGIN
   string 60 keystr,tstr;
   string 20 frcu,tocu;
   string 30 acttype;
-  integer rw;
+  integer rw,i;//********************************************************* edited by dima-f 12.09.17
   frcu = FirstInRange(RepSpec.f1,20);
   tocu = LastInRange(RepSpec.f1,20);
   
   StartReportJob(USetStr(9821));
   rw = 1;
+  i=0;//********************************************************* edited by dima-f 12.09.17
   HT2Per(RepSpec.sStartDate,RepSpec.sEndDate,tstr);
   Header(rw,tstr,1);
   rw = rw + 1;
@@ -138,10 +139,18 @@ BEGIN
          end else begin
          	OutString(360,"","",false);
          end;
+         i = i+1;//********************************************************* edited by dima-f 12.09.17
         EndFormat;
       end;
     end;  
   end;
+  //*********************************************************************** start edited by dima-f 12.09.17
+  Gray_Divider(0,1);
+  StartFormat(15);
+  OutString(0,0,"Итого:",false);
+  OutString(30,0,i,false);
+  EndFormat;
+  //*********************************************************************** end
   EndJob;
   RETURN;
 END;

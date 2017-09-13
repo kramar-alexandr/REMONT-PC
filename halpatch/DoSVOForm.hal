@@ -564,8 +564,14 @@ LActPrintNote1:;
 		OUTFORMFIELD("F_DATEMONTHINWORDS",tstr);
 		tstr = GetJwl_CustomerName(SVOr.CustCode);
 		OUTFORMFIELD("F_KUNDNAMNJWL",tstr);  
-
-		OUTFORMFIELD("F_ORDDATUM",SVOr.TransDate);
+		
+		if(blankdate(SVOr.RegDate))then begin// Edit ************************** Wednesday, 13 September 2017 18:40:19
+			OUTFORMFIELD("F_ORDDATUM",SVOr.TransDate);
+		end else begin
+			OUTFORMFIELD("F_ORDDATUM",SVOr.RegDate);
+		end;
+		
+		
 		if (FIELDINFORM("F_VILLKOR")) then begin
 			GetPayDealText(SVOr.PayDeal,SVOr.LangCode,tstr);
 			OUTFORMFIELD("F_VILLKOR",tstr);

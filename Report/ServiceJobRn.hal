@@ -102,26 +102,27 @@ begin
 	array integer tabs;
 	boolean testfsg,testfloc,testfsvo;
 	val dolg,totdolg,supertotdolg,totserv;
-	record IPRsVc IPRsr;
+	record IPRsVc IPRsr,IPRs2r;
 	date sd,ed;
 	boolean TrHs,testf,filter,svoout,TrHsph;
-	record IVVc IVr,credIVr;
-	record IPVc IPr;
+	record IVVc IVr,credIVr,IV2r;
+	record IPVc IPr,IP2r;
 	vector val ivsum,svodolg,ivsumserv;
-	vector boolean svoexist,vPhoneExist,vCuExist;
+	vector boolean svoexist,vPhoneExist,vCuExist,ivexist;
 	vector date paydate;
 	array longint asvonr;
-	row IVVc IVrw;
-	row IPVc IPrw;
+	row IVVc IVrw,IV2rw;
+	row IPVc IPrw,IP2rw;
 	string 100 enginer,tphone;
 	val totrem, totpayrem, totnopayrem, totcan, totourcan, totnopayremqty,totpayremqty,totcanceled;
 	val totdolgqty,totdolgsum;
 	record WSVc WSr;
 	record RLinkVc RLr;
-	integer cnt;
+	integer cnt,mtrw2;
 	record CUVc CUr;
 	record BinotelCallEndVc BCEr;
 	vector string 100 vCuDomain;
+	boolean TrHs2,testf2;
 	
 	tabs[0] = 0;
 	tabs[1] = 40;
@@ -183,16 +184,64 @@ begin
 													end;
 													
 													if(IVr.InvDate<sd)then begin
-														ivsum[IVr.SVONr] = ivsum[IVr.SVONr] + IPrw.InvVal;
-														mtrw1 = matrowcnt(IVr);
-														For(j=0;j<mtrw;j=j+1) begin
-															matrowget(IVr,j,IVrw);
-															if(IVrw.stp==kInvoiceRowTypePrepayment)then begin
-																ivsum[IVr.SVONr] = ivsum[IVr.SVONr] - IVrw.Sum;
-															end;
+														if(ivexist[IVr.SerNr]==false)then begin
+															ivexist[IVr.SerNr] = true;
+															IPRs2r.IVNr = IVr.SerNr;
+															TrHs2 = true;
+															while(loopkey("IVKey",IPRs2r,1,TrHs2)) begin
+																testf2 = true;
+																if(IPRs2r.IVNr!=IVr.SerNr)then begin TrHs2 = false; testf2 = false; end;
+																if(IPRs2r.TransDate>=sd)then begin testf2 = false; end;
+																if(testf2)then begin
+																	switch(IPRs2r.TransType)begin
+																		case 0:	IV2r.SerNr = IPRs2r.TransNr;
+																						if(readfirstmain(IV2r,1,true))then begin
+																							if(IV2r.InvType!=kInvoiceTypeCredit)then begin
+																								if(paydate[IV2r.SVONr]<IV2r.InvDate)then begin
+																									paydate[IV2r.SVONr] = IV2r.InvDate;
+																								end;
+																								ivsum[IV2r.SVONr] = ivsum[IV2r.SVONr] + IV2r.Sum4;
+																								mtrw2 = matrowcnt(IV2r);
+																								For(j=0;j<mtrw2;j=j+1) begin
+																									matrowget(IV2r,j,IV2rw);
+																									if(IV2rw.stp==kInvoiceRowTypePrepayment)then begin
+																										ivsum[IV2r.SVONr] = ivsum[IV2r.SVONr] - IV2rw.Sum;
+																									end;
+																								end; 
+																							end else begin
+																								ivsum[IV2r.SVONr] = ivsum[IV2r.SVONr] - IV2r.Sum4;
+																							end;
+																						end;
+																		case 1:	IP2r.SerNr = IPRs2r.TransNr;
+																						if(readfirstmain(IP2r,1,true))then begin
+																							mtrw = matrowcnt(IP2r);
+																							For(j=0;j<mtrw2;j=j+1) begin
+																								matrowget(IP2r,j,IP2rw);
+																								if(IP2rw.InvoiceNr>0 and IP2rw.InvoiceNr==IPRs2r.IVNr)then begin
+																									IVr.SerNr = IPrw.InvoiceNr;
+																									if(readfirstmain(IVr,1,true))then begin
+																										ivsum[IVr.SVONr] = ivsum[IVr.SVONr] - IPrw.InvVal;
+																										if(paydate[IVr.SVONr]<IPr.TransDate)then begin
+																											paydate[IVr.SVONr] = IPr.TransDate;
+																										end;
+																									end;
+																								end;
+																							end;
+																						end;
+																	end;
+																end;
+															end; 
+															resetloop(IPRs2r);
+															/*ivsum[IVr.SVONr] = ivsum[IVr.SVONr] + IPrw.InvVal;
+															mtrw1 = matrowcnt(IVr);
+															For(j=0;j<mtrw;j=j+1) begin
+																matrowget(IVr,j,IVrw);
+																if(IVrw.stp==kInvoiceRowTypePrepayment)then begin
+																	ivsum[IVr.SVONr] = ivsum[IVr.SVONr] - IVrw.Sum;
+																end;
+															end;*/
 														end;
 													end;
-													
 	  											ivsum[IVr.SVONr] = ivsum[IVr.SVONr] - IPrw.InvVal;
 	  											if(paydate[IVr.SVONr]<IPr.TransDate)then begin
 														paydate[IVr.SVONr] = IPr.TransDate;

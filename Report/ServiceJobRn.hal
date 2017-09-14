@@ -183,7 +183,7 @@ begin
 													end;
 													
 													if(IVr.InvDate<sd)then begin
-														ivsum[IVr.SVONr] = ivsum[IVr.SVONr] + IVr.Sum4;
+														ivsum[IVr.SVONr] = ivsum[IVr.SVONr] + IPrw.InvVal;
 														mtrw1 = matrowcnt(IVr);
 														For(j=0;j<mtrw;j=j+1) begin
 															matrowget(IVr,j,IVrw);

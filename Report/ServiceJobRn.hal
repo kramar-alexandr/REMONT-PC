@@ -138,7 +138,7 @@ begin
 		sd = RepSpec.sStartDate;
 		ed = RepSpec.sEndDate;
 
-		IPRsr.TransDate = sd;
+		IPRsr.TransDate = stringtodate("1/6/2017");
 		TrHs = true;
 		while(loopkey("TransDate",IPRsr,1,TrHs))begin
 			if(IPRsr.TransDate>ed)then begin TrHs = false; end;
@@ -223,7 +223,7 @@ begin
 		For(i=0;i<k;i=i+1) begin
 			SVOr.SerNr = asvonr[i];
 			readfirstmain(SVOr,1,true);
-			if(SVOr.WSCost!=0 and ivsum[asvonr[i]]<=0)then begin
+			if(SVOr.WSCost!=0 and ivsum[asvonr[i]]<=0 and paydate[IVr.SVONr]>=sd and paydate[IVr.SVONr]<=ed)then begin
 					
 				svoout = false;
 				IVr.SVONr = SVOr.SerNr;

@@ -9364,3 +9364,137 @@ begin
   SpecMenuItem("Презентация",' ',mConfPresentation);
   EndWindow;
 end;
+
+window MailDClass:11
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,h1,h2,h3,h4,v,vm,vs;
+  record MailVc Mailr;
+  Boolean showacceptancef;
+  Integer wn;
+  
+  WindowBegin("Почта",MailDClass,CGview,MailView);
+  DynamicWindow;
+  UseView(MailVc);
+  if (GuiType==kGuiCocoa or GuiType==kGuiMetro or GuiType==kGuiWPF) then begin
+    SetWRect(10,80,720,500);
+  end else begin
+    SetWRect(10,80,620,400);
+  end;
+  BrowseButtons(false);
+  Sizeable(730,-1,0,0);
+  ActiveFieldOnNew("Math2");
+  //MailBackground;
+  vs = 20; h = 75; h2 = 210; h3 = h2+110; h4 = 500; v = 6;
+  Tile(0,175,false,"",Math2);
+  EditField(h,v,82,"Дата",ViewOnly,TransDate,false,PasteCurDate);
+  EditField(h2,v,62,"Время",ViewOnly,TransTime,false,0);
+  if (GuiType==kGuiCocoa) then begin
+    if (HasMailTags) then begin
+      DropDownMenu(h3,v,h3+100,"Tags",kSetActiveMailTags);
+      v = v + 2;
+      end;
+    end else begin
+      if (HasMailTags) then begin
+      EditField(h3,v,80,"Метки",Normal,Tags,false,MailTagSClass);
+      end;
+    end;
+  CheckBox(-260,v,0,"HTML",HtmlFlag); 
+  CheckBox(-180,v,0,"Приоритет",Priority); 
+  CheckBox(-100,v,0,"S_ent",SendFlag); 
+  EditField(h,v+=vs,82,"Срок хран.",Normal,Lifespan,false,SetSClass); 
+
+  if (IsEnterprise or IsBooks) then begin //##cc
+
+    wn = CurWindow;
+    if (wn>0) then begin
+      if (GetWindowClass(wn)=="") then begin
+        GetWindowRecord(wn,Mailr);
+        showacceptancef = Mailr.RequireAcceptance!=0;
+        if (showacceptancef) then begin
+          showacceptancef = MailAcceptanceStatus(Mailr.SerNr)<=kMailStatusPostponed;
+      end;
+    end;
+    end;
+    if (showacceptancef) then begin
+      HalPushButton(h2+100,v,h2+180,v+20,"MailDClassAccept","Утверждено");  
+      HalPushButton(h2+200,v,h2+280,v+20,"MailDClassReject","Отклонено");  
+      HalPushButton(h2+300,v,h2+380,v+20,"MailDClassLater","Позже");  
+    end;
+  end;
+
+  CheckBox(-100,v,0,"Закрыто",LockedFlag);
+
+  vm = v;
+  v = vm+20;
+  h1=24; h2=h1+60;
+  v=vm+40;
+    h = 15;
+    MatrixBegin(h,v,400,v+118,MailAddrRowType,5);
+    MatOverStrike(AddrStatus);
+    MatCol(1,h1,"",0,RowTyp,false,SetSClass);
+    MatCol(1,h2,"Адрес",0,AddrCode,false,ConfSClass);
+    InsertRowTest;
+    DeleteRowTest;
+    EndMatrix;
+  v=v+114;
+  EditField(h,v,-17,"",Normal,Header,false,0); // Subject 
+    TileButton(1,"Текст");
+    TileButton(2,"Веб");
+    v = (v+vs); // +6
+    v = 6; h2 = 378; h3 = 400;
+    Tile(1,110,true,"1",Math);
+  if (GuiType!=kGuiCocoa) then begin
+    StaticText(h-6,v+9,"Текст",true);
+  end;
+  TextField(0,v,-1,-1,Math,0);
+  Tile(2,70,false,"2",Identifier); 
+  EditField(h=80,v=6,220,"Идентификатор",Normal,Identifier,false,0); 
+    EditField(h3,v,50,"Версия",Normal,Version,false,0);
+    EditField(h,v+=vs,220,"Порядок сортир.",Normal,Sortorder,false,0);
+    EditField(h3,v,50,"Язык",Normal,LangCode,false,LangSClass);
+    EditField(h,v+=vs,72,"Дата отправки",Normal,SendDate,false,PasteCurDate);
+    EditField(h2,v,72,"Время отправки",Normal,SendTime,false,0);
+    EditField(h,v+=vs,-40,"Метки",Normal,Tags,false,MailTagSClass);         
+    CheckBox(-160,v=10,0,"Конвертировать текст в HTML",HtmlTranslation);
+
+  SpecialMenu("Добавить время",'I',0,"AddTimeMailDsm");
+  SpecialMenu("Отправить E-mail",'e',0,"EMailQueFromMailDsm");
+  SpecialMenu("Ответить",'r',1,"MailReplyWithQuotesm");
+  SpecMenuItem("Приложения к письмам и записи",'a',mOpenAttachWindow);
+  SpecialMenu("(-",' ',3,"");
+  SpecialMenu("Отметить как непрочитанное",'u',4,"MarknotReadMailDsm");
+  SpecialMenu("История",'h',5,"MailHistoryMailDsm");
+  SpecMenuItem("Чат",'t',mChatFromMail);
+  SpecialMenu("Презентация",' ',7,"PresentationMailDsm");
+  SpecialMenu("Сохранить текст как файл",' ',8,"SaveAsFileMailDsm");
+  SpecialMenu("Ответить без содержимого письма",' ',9,"MailReplyDsm");
+  SpecialMenu("Ответить отправителю",' ',11,"MailReplyToSendersm");
+  SpecialMenu("Переслать",'f',11,"ForwardMailDsm");
+  SpecialMenu("Переконвертировать",' ',12,"RTMsm");
+  if (UserCanAction("InstallHalcust",false)) then begin
+    SpecMenuItem("Установить Halcust",' ',mInstallHalcust);  
+  end;
+  if (UserCanAction("DiffHalcust",false)) then begin
+    SpecMenuItem("Сравнить Halcust",' ',mDiffHalcust);  
+  end;
+  if (UserCanAction("DownloadHalcust",false)) then begin
+    SpecMenuItem("Присоеденить текущуй halcust",' ',mDownloadHalcust);  
+  end;
+  if (IsEnterprise or IsBooks) then begin //##cc
+
+    if (UserCanAction("RequireAcceptanceMail",true)) then begin
+      if (Mailr.RequireAcceptance!=0) then begin
+        SpecialMenu("Cancel Acceptance Request",' ',13,"WithdrawAcceptanceMailDsm"); 
+      end else begin
+    SpecialMenu("Require Acceptance",' ',13,"RequireAcceptanceMailDsm");  
+      end;
+    end;
+  end;
+  SpecMenuGroup("",kSpecMenuGroupTypeExtendedPlusMenu,0);         
+//  SpecialMenu("Activity",'c',10,"MailMakeActsm");
+  SpecialMenu("Создать контакт",' ',12,"CreateContactFromMailsm");         
+  SpecialMenu("Ответить",'r',1,"MailReplyWithQuotesm"); 
+  SpecialMenu("Переадресовать",'f',11,"ForwardMailDsm"); 
+  EndWindow;
+end;

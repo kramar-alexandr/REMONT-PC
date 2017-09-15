@@ -965,9 +965,9 @@ begin
     				Actr.Phone = curPhone; //left(SVOrw.Spec,20);
     				//Actr.MainPersons = FindUsersWithActiveTasksQueue(SVOr,curLocation);// Edit ************************** Wednesday, 23 August 2017 09:52:04
     				Actr.MainPersons = SVOr.Inspector;
-    				if (NonBlank(SVOr.Inspector)) then begin
+    				/*if (NonBlank(SVOr.Inspector)) then begin
     				  Actr.MainPersons = SVOr.Inspector & "," & Actr.MainPersons;
-    				end;
+    				end;*/
     				//Actr.Comment = addhours(currenttime,2) & " " & Actr.Comment; //Edit***************************Sasha2,16:14 23.05.2017 }
     			end;	
     		end;			

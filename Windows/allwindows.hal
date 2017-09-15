@@ -9333,3 +9333,34 @@ begin
   SpecialMenu("Добавить начисление",' ',0,"DispatchChargeDsm");
   EndWindow;
 end;
+
+window ConfSClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","*")
+begin
+  real h,l,v,vs;
+  WindowBegin("Выберите! почт. ящик/Конференции",ConfSClass,CGslist,ConfView);
+//  SpawnClass(ConfDClass);
+  Sizeable(-1,-1,0,0);
+  //MailBackground;
+  UseView(ConfVc);
+  v = 5;  vs = 20; l = 80;
+  SetWRect(64,80,650,298);
+  if (GuiType==kGuiiPhone or GuiType==kGuiAndroid or GuiType==kGuiWindowsDesktop or GuiType==kGuiWPF) then begin
+    ToolBar;
+  end;
+  h = 50; HalPushButton(h,v,h+l,v+vs,"SwitchToConfS","Почтовые ящики"); 
+  h=h+l+8;  HalPushButton(h,v,h+l,v+vs,"SwitchToMailCUS","Клиенты"); 
+  if (HasModPL) then begin
+    h=h+l+8;  HalPushButton(h,v,h+l,v+vs,"SwitchToMailVES","Поставщики"); 
+  end;
+  h=h+l+8;  HalPushButton(h,v,h+l,v+vs,"SwitchToMailContactS","Контакты"); 
+  if (GuiType==kGuiiPhone or GuiType==kGuiAndroid or GuiType==kGuiWindowsDesktop or GuiType==kGuiWPF) then begin
+    EndToolBar;
+  end;
+  RecordList(4,17,-21,-39);
+//  RecordList(4,17,-21,-39);
+  RlColKey(6,6,"Наименование.",AddrName,false,ActAddrName);
+  SearchField("Поиск");
+  SpecMenuItem("Презентация",' ',mConfPresentation);
+  EndWindow;
+end;

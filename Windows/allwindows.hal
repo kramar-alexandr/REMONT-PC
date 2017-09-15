@@ -804,7 +804,11 @@ begin
   MatrixBegin(3,v,-50,-40,WSRowType,200);
   MatTypedRow(stp);
   Flip(0);
-  MatCol(t=1,32,"Услуга/Деталь",0,ArtCode,false,INEnginerSClass);
+  if(left(currentuser,2)!="SA")then begin
+		MatCol(t=1,32,"Услуга/Деталь",0,ArtCode,false,INEnginerSClass);
+  end else begin	
+  	MatCol(t=1,32,"Услуга/Деталь",0,ArtCode,false,INSClass);
+  end;
   //MatCol(t=1,32,"Услуга/Деталь",0,ArtCode,false,INSClass);
 //  MatCol(t,94,"Var",0,VARList,true,VARSClass);
   MatCol(t,134,"К-во",0,Quant,true,0);

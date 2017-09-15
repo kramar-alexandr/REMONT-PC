@@ -66,6 +66,7 @@ begin
   Maintenance("Заказы на обсл.: перенести суммы из матрицы в заголовок",MyVClass,MoveSumsFromMatrixToHeadSVOMn,modDBMain); //Edit***************************Sasha2,16:07 15.07.2017
   Maintenance("Удалить все активности",MyVClass,ClrarActVc,modDBMain);
   Maintenance("Dell Reject",MyVClass,RejectReasonVcDelMn,modDBMain);
+  Maintenance("TestJSON",MyVClass,TestJSON,modDBMain);
   
   
   Maintenance("Fix WS SalesMan",MyVClass,FixWSManagerMn,modDBMain);

@@ -823,3 +823,102 @@ begin
 	end;
 return;
 end;
+
+
+global procedure TestJSON()
+begin
+	area arequest,newarea,encodearea;
+	string 255 tstr;
+	longint lenth,i,lasti,j;
+	json jobj;
+	record BinotelCallEndVc BECr;
+	row BinotelCallEndVc BECrw;
+	string 255 node,c;
+	time timestamp;
+	date datestamp;
+	area delim;
+	boolean foundf;
+	array string 255 lev1,lev2p1,lev2p2;
+	integer lev1k,lev2k;
+	
+	
+	addfiletoarea("InputJSON.txt",encodearea,0);
+		
+	lenth = getarealength(encodearea);
+	For(i=0;i<lenth;i=i+1) begin
+		if(getstringfromarea(encodearea,i,1)=="&" or i==lenth-1)then begin
+			tstr = getstringfromarea(encodearea,lasti,i-lasti);
+			lasti = i+1;
+			lev1[lev1k] = tstr;
+			lev1k = lev1k + 1;
+		end;
+	end;
+	
+	
+	For(i=0;i<lev1k;i=i+1) begin
+	  //addtexttoarea(lev1[i] & chr(13) & chr(10),newarea);
+	  lenth = len(lev1[i]);
+	  For(j=0;j<lenth;j=j+1) begin
+	  	c = mid(lev1[i],j,1);
+	  	if(c=="=")then begin
+	  		lev2p1[lev2k] = urldecode(left(lev1[i],j));
+	  		lev2p2[lev2k] = urldecode(mid(lev1[i],j+1,lenth-j));
+	  		lev2k = lev2k + 1;
+	  	end;
+	  end;
+	end;
+	
+	For(i=0;i<lev2k;i=i+1) begin
+	  addtexttoarea(lev2p1[i] & "	" & lev2p2[i] & chr(13) & chr(10),newarea);
+	end; 
+	
+	/*logtext(0,"WebBinotelAPICallEnd1");
+	tstr = "";
+	lenth = getarealength(encodearea);
+	
+	For(i=0;i<lenth;i=i+1) begin
+		if(getstringfromarea(encodearea,i,1)=="=" or i==lenth-1)then begin
+			tstr = getstringfromarea(encodearea,lasti,i-lasti);
+			tstr = StrReplace(tstr,"%26", "$$$");
+			tstr = urldecode(tstr);
+			tstr = StrReplace(tstr,"+&gt;+", " > ");
+			tstr = StrReplace(tstr,"+", " ");
+			tstr = StrReplace(tstr,chr(0), "");
+			tstr = StrReplace(tstr,"&apos;", "'");
+			addtexttoarea(tstr,arequest);
+			lasti = i;
+		end;
+	end;
+	
+	tstr = "";
+	lasti = 0;
+	addtexttoarea("{\"",newarea);
+	For(i=0;i<lenth;i=i+1) begin
+	  if(getstringfromarea(arequest,i,1)=="&" or i==lenth-1)then begin
+	  	//logtext(0,"do " & getstringfromarea(arequest,lasti,i-lasti));
+	  	tstr = urldecode(getstringfromarea(arequest,lasti,i-lasti+1));
+	  	//logtext(0,"po " & tstr);
+	  	tstr = StrReplace(tstr,"=", "\":\"");
+	  	tstr = StrReplace(tstr,"[", "(");
+	  	tstr = StrReplace(tstr,"]", ")");
+	  	tstr = StrReplace(tstr,"&","");
+	  	tstr = StrReplace(tstr,"$$$","&");
+	  	if(getstringfromarea(arequest,i,1)=="&")then begin
+	  		tstr = tstr & "\"," & chr(13) & chr(10) & "\"";
+	  	end else begin
+	  		tstr = tstr & "\"" & chr(13) & chr(10);
+	  	end;
+	  	addtexttoarea(tstr,newarea);
+	  	lasti = i+1;
+	  	tstr = "";
+	  end;
+	end; 
+	addtexttoarea("}",newarea);*/
+	
+	writeareatofile(newarea,"OutputJSON1.txt",0);
+	jobj = parsejsonarea(newarea);
+	
+
+	
+return;
+end;

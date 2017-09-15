@@ -1815,6 +1815,11 @@ BEGIN
     res = -1;
     goto LSVOVcRecordCheck;
   end;
+  
+  if(blank(SVOr.PayDeal))then begin
+  	SVOr.PayDeal = "Ž”";
+  end;
+  
   if (CheckPDExists(SVOr.PayDeal)==false) then begin
     RecordCheckError(1256,"",-1,"PayDeal");      
     res = -1;

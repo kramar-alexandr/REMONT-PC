@@ -1817,7 +1817,7 @@ BEGIN
   end;
   
   if(blank(SVOr.PayDeal))then begin
-  	SVOr.PayDeal = "Ž”";
+  	SVOr.PayDeal = "5";
   end;
   
   if (CheckPDExists(SVOr.PayDeal)==false) then begin

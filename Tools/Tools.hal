@@ -1,5 +1,6 @@
 external updating procedure AddTextToNote(var record NotepadVc,string);
 external procedure UpdateMasterWClassOnKPIs(string);// Edit ************************** Monday, 17 October 2016 19:05:28
+external function LongInt CountWorkingDays(Date,Date,string,string);// Edit ************************** Monday, 18 September 2017 09:50:43
 
 global
 updating procedure CleaningMn()
@@ -891,6 +892,7 @@ begin
 	row SVOVc SVOrw;
 	record INVc INr;
 	boolean createf,TrHs,testf,foundf;
+	integer countwdays;
 	
 	if (SVOr.SerNr>-1) then begin
 	  curPhone = SVOr.Kontinfo1;
@@ -931,7 +933,20 @@ begin
   	    createf = true;
     		recordnew(Actr);
     		Actr.MainPersons = "";
-    		Actr.TransDate = addday(currentdate,3);
+    		
+    		countwdays = 0;
+    		Actr.TransDate = addday(currentdate,3);//******************************* 3 work day
+    		countwdays = CountWorkingDays(CurrentDate,Actr.TransDate,"","UA");	
+    		
+    		while(countwdays<3)begin
+    			if(countwdays<3)then begin
+    				Actr.TransDate = addday(Actr.TransDate,1);
+    			end;
+    			countwdays = CountWorkingDays(CurrentDate,Actr.TransDate,"","UA");	
+    		end;
+    		
+    		//Actr.TransDate = addday(currentdate,3);
+    		Actr.EndDate = Actr.TransDate;
     		Actr.StartTime = stringtotime("08:00");
     		Actr.Comment = SVOr.Comment2 & " " & SVOr.Comment1;
     		Actr.CUCode = SVOr.CustCode;

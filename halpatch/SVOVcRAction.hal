@@ -1871,12 +1871,14 @@ BEGIN
       INr.Code = SVOrw.ArtCode;
       found = ReadFirstMain(INr,1,true);
       
-      if(INr.SerNrf!=1)then begin
-      	ISr.Code = INr.Code;
-      	if(readfirstmain(ISr,1,true)==false)then begin
-					INr.SerNrf = 1;
-					recordstore(INr,true);
-      	end;
+      if(found)then begin
+				if(INr.SerNrf!=1)then begin
+					ISr.Code = INr.Code;
+					if(readfirstmain(ISr,1,true)==false)then begin
+						INr.SerNrf = 1;
+						recordstore(INr,true);
+					end;
+				end;
       end;
       
       if (found==false) then begin

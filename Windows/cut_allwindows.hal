@@ -2436,7 +2436,10 @@ begin
   end;
   SpecMenuGroup("",kSpecMenuGroupTypeExtendedPlusMenu,0);         
   SpecialMenu("Создать товар на закупку",' ',1,"PIFromINDsm");         
-  SpecialMenu("Создать приём товара",' ',2,"RecFromINDsm");         
+  SpecialMenu("Создать приём товара",' ',2,"RecFromINDsm");     
+  if(left(currentuser,2)=="SA")then begin
+  	SpecialMenu("Delete this Item",' ',2,"DeleteThisINDsm");  
+  end;    
   EndWindow;
 end;
 

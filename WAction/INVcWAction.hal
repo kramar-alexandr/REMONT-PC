@@ -1436,3 +1436,17 @@ begin
   MyDISClassOnOpenWindow = true;
   return;
 end;
+
+
+global updating procedure DeleteThisINDsm()
+begin
+	record INVc INr;
+	integer wn;
+	
+	wn = curwindow;
+	getwindowrecord(wn,INr);
+	CloseWindow(wn);
+	recorddelete(INr);
+
+return;
+end;

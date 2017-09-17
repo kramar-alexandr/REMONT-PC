@@ -57,7 +57,7 @@ begin
 return;
 end;
 
-procedure FindPhoneDomain(string tphone,string cucude, var vector boolean vPhoneExist,var vector string vCuDomain)
+procedure FindPhoneDomain(string tphone,string cucude, var vector boolean vPhoneExist,var vector string vCuDomain,var vector string vUTMSource,var vector string vUTMCampaign,var vector string vUTMTerm)
 begin
 	record BinotelCallEndVc BCEr;
 	boolean TrHsph;
@@ -78,6 +78,29 @@ begin
 					if(nonblank(BCEr.gCDdomain))then begin
 						vCuDomain[cucude] = BCEr.gCDdomain;
 					end;
+					if(nonblank(BCEr.CTutmsource))then begin
+						vUTMSource[cucude] = BCEr.CTutmsource;
+					end;
+					if(nonblank(BCEr.gCDutm_source))then begin
+						vUTMSource[cucude] = BCEr.gCDutm_source;
+					end;
+					
+					if(nonblank(BCEr.CTutmcampaign))then begin
+						vUTMCampaign[cucude] = BCEr.CTutmcampaign;
+					end;
+					if(nonblank(BCEr.gCDutm_campaign))then begin
+						vUTMCampaign[cucude] = BCEr.gCDutm_campaign;
+					end;
+					
+					if(nonblank(BCEr.CTutmterm))then begin
+						vUTMTerm[cucude] = BCEr.CTutmterm;
+					end;
+					if(nonblank(BCEr.CTutmterm))then begin
+						vUTMTerm[cucude] = BCEr.gCDutm_term;
+					end;
+					
+					
+					
 				end;
 			end;
 		end;
@@ -121,7 +144,7 @@ begin
 	integer cnt,mtrw2;
 	record CUVc CUr;
 	record BinotelCallEndVc BCEr;
-	vector string 100 vCuDomain;
+	vector string 100 vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm;
 	boolean TrHs2,testf2;
 	
 	tabs[0] = 0;
@@ -335,18 +358,11 @@ begin
 														
 														if(readfirstmain(CUr,1,true))then begin
 															tphone = CUr.Phone;
-															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain);
+															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
 															tphone = CUr.Mobile;
-															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain);
+															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
 															tphone = CUr.AltPhone;
-															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain);
-															if(nonblank(vCuDomain[SVOr.CustCode]))then begin
-																outstring(1,0,vCuDomain[SVOr.CustCode],true);
-															end;
-														end;
-													end else begin
-														if(nonblank(vCuDomain[SVOr.CustCode]))then begin
-															outstring(1,0,vCuDomain[SVOr.CustCode],true);
+															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
 														end;
 													end;
 												endformat;
@@ -382,6 +398,31 @@ begin
 						outstring(tabs[5],0,blankval,false);
 						//outstring(tabs[6],0,SVOr.WSCost,false);
 					endformat;
+					if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+						startformat(15);
+							outstring(tabs[0],0,"Звонок с домена",false);
+							outstring(tabs[6],0,vCuDomain[SVOr.CustCode],false);
+						endformat;
+					end;
+					if(nonblank(vUTMSource[SVOr.CustCode]))then begin
+						startformat(15);
+							outstring(tabs[0],0,"Переход с ресурса",false);
+							outstring(tabs[6],0,vUTMSource[SVOr.CustCode],false);
+						endformat;
+					end;
+					if(nonblank(vUTMCampaign[SVOr.CustCode]))then begin
+						startformat(15);
+							outstring(tabs[0],0,"Кампания",false);
+							outstring(tabs[6],0,vUTMCampaign[SVOr.CustCode],false);
+						endformat;
+					end;
+					if(nonblank(vUTMTerm[SVOr.CustCode]))then begin
+						startformat(15);
+							outstring(tabs[0],0,"Условия",false);
+							outstring(tabs[6],0,vUTMTerm[SVOr.CustCode],false);
+						endformat;
+					end;
+					
 					
 					black_divider(tabs[6],tabs[7]);
 					startformat(15);
@@ -462,18 +503,11 @@ begin
 														
 														if(readfirstmain(CUr,1,true))then begin
 															tphone = CUr.Phone;
-															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain);
+															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
 															tphone = CUr.Mobile;
-															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain);
+															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
 															tphone = CUr.AltPhone;
-															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain);
-															if(nonblank(vCuDomain[SVOr.CustCode]))then begin
-																outstring(1,0,vCuDomain[SVOr.CustCode],true);
-															end;
-														end;
-													end else begin
-														if(nonblank(vCuDomain[SVOr.CustCode]))then begin
-															outstring(1,0,vCuDomain[SVOr.CustCode],true);
+															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
 														end;
 													end;
 													
@@ -511,7 +545,30 @@ begin
 						outstring(tabs[5],0,blankval,false);
 						//outstring(tabs[6],0,SVOr.WSCost,false);
 					endformat;
-					
+					if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+						startformat(15);
+							outstring(tabs[0],0,"Звонок с домена",false);
+							outstring(tabs[6],0,vCuDomain[SVOr.CustCode],false);
+						endformat;
+					end;
+					if(nonblank(vUTMSource[SVOr.CustCode]))then begin
+						startformat(15);
+							outstring(tabs[0],0,"Переход с ресурса",false);
+							outstring(tabs[6],0,vUTMSource[SVOr.CustCode],false);
+						endformat;
+					end;
+					if(nonblank(vUTMCampaign[SVOr.CustCode]))then begin
+						startformat(15);
+							outstring(tabs[0],0,"Кампания",false);
+							outstring(tabs[6],0,vUTMCampaign[SVOr.CustCode],false);
+						endformat;
+					end;
+					if(nonblank(vUTMTerm[SVOr.CustCode]))then begin
+						startformat(15);
+							outstring(tabs[0],0,"Условия",false);
+							outstring(tabs[6],0,vUTMTerm[SVOr.CustCode],false);
+						endformat;
+					end;
 					black_divider(tabs[6],tabs[7]);
 					startformat(15);
 						outstring(tabs[0],0,"Итого по заказу",false);
@@ -592,18 +649,11 @@ begin
 														
 														if(readfirstmain(CUr,1,true))then begin
 															tphone = CUr.Phone;
-															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain);
+															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
 															tphone = CUr.Mobile;
-															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain);
+															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
 															tphone = CUr.AltPhone;
-															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain);
-															if(nonblank(vCuDomain[SVOr.CustCode]))then begin
-																outstring(1,0,vCuDomain[SVOr.CustCode],true);
-															end;
-														end;
-													end else begin
-														if(nonblank(vCuDomain[SVOr.CustCode]))then begin
-															outstring(1,0,vCuDomain[SVOr.CustCode],true);
+															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
 														end;
 													end;
 													
@@ -641,7 +691,30 @@ begin
 						outstring(tabs[5],0,blankval,false);
 						//outstring(tabs[6],0,SVOr.WSCost,false);
 					endformat;
-					
+					if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+						startformat(15);
+							outstring(tabs[0],0,"Звонок с домена",false);
+							outstring(tabs[6],0,vCuDomain[SVOr.CustCode],false);
+						endformat;
+					end;
+					if(nonblank(vUTMSource[SVOr.CustCode]))then begin
+						startformat(15);
+							outstring(tabs[0],0,"Переход с ресурса",false);
+							outstring(tabs[6],0,vUTMSource[SVOr.CustCode],false);
+						endformat;
+					end;
+					if(nonblank(vUTMCampaign[SVOr.CustCode]))then begin
+						startformat(15);
+							outstring(tabs[0],0,"Кампания",false);
+							outstring(tabs[6],0,vUTMCampaign[SVOr.CustCode],false);
+						endformat;
+					end;
+					if(nonblank(vUTMTerm[SVOr.CustCode]))then begin
+						startformat(15);
+							outstring(tabs[0],0,"Условия",false);
+							outstring(tabs[6],0,vUTMTerm[SVOr.CustCode],false);
+						endformat;
+					end;
 					black_divider(tabs[6],tabs[7]);
 					startformat(15);
 						outstring(tabs[0],0,"Итого по заказу",false);
@@ -701,24 +774,42 @@ begin
 						CUr.Code = SVOr.CustCode;
 						if(readfirstmain(CUr,1,true))then begin
 							tphone = CUr.Phone;
-							FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain);
+							FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
 							tphone = CUr.Mobile;
-							FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain);
+							FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
 							tphone = CUr.AltPhone;
-							FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain);
-							if(nonblank(vCuDomain[SVOr.CustCode]))then begin
-								outstring(1,0,vCuDomain[SVOr.CustCode],true);
-							end;
-						end;
-					end else begin
-						if(nonblank(vCuDomain[SVOr.CustCode]))then begin
-							outstring(1,0,vCuDomain[SVOr.CustCode],true);
+							FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
 						end;
 					end;
 				endformat;
 				end;
 			end;
+			if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+				startformat(15);
+					outstring(tabs[0],0,"Звонок с домена",false);
+					outstring(tabs[6],0,vCuDomain[SVOr.CustCode],false);
+				endformat;
+			end;
+			if(nonblank(vUTMSource[SVOr.CustCode]))then begin
+				startformat(15);
+					outstring(tabs[0],0,"Переход с ресурса",false);
+					outstring(tabs[6],0,vUTMSource[SVOr.CustCode],false);
+				endformat;
+			end;
+			if(nonblank(vUTMCampaign[SVOr.CustCode]))then begin
+				startformat(15);
+					outstring(tabs[0],0,"Кампания",false);
+					outstring(tabs[6],0,vUTMCampaign[SVOr.CustCode],false);
+				endformat;
+			end;
+			if(nonblank(vUTMTerm[SVOr.CustCode]))then begin
+				startformat(15);
+					outstring(tabs[0],0,"Условия",false);
+					outstring(tabs[6],0,vUTMTerm[SVOr.CustCode],false);
+				endformat;
+			end;
 		end;
+		
 		
 		black_divider(0,1);
 		startformat(15);

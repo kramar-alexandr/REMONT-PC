@@ -57,50 +57,52 @@ begin
 return;
 end;
 
-procedure FindPhoneDomain(string tphone,string cucude, var vector boolean vPhoneExist,var vector string vCuDomain,var vector string vUTMSource,var vector string vUTMCampaign,var vector string vUTMTerm)
+procedure FindPhoneDomain(record RcVc RepSpec,string tphone,string cucude, var vector boolean vPhoneExist,var vector string vCuDomain,var vector string vUTMSource,var vector string vUTMCampaign,var vector string vUTMTerm)
 begin
 	record BinotelCallEndVc BCEr;
 	boolean TrHsph;
 	
-	if(nonblank(tphone))then begin
-		if(vPhoneExist[tphone]==false)then begin
-			vPhoneExist[tphone] = true;
-			resetloop(BCEr);
-			BCEr.externalNumber = tphone;
-			TrHsph = true;
-			while(loopbackkey("externalNumber",BCEr,1,TrHsph))begin
-				if(BCEr.externalNumber!=tphone)then begin TrHsph=false; end;
+	if(RepSpec.flags[0]>0)then begin
+		if(nonblank(tphone))then begin
+			if(vPhoneExist[tphone]==false)then begin
+				vPhoneExist[tphone] = true;
+				resetloop(BCEr);
+				BCEr.externalNumber = tphone;
+				TrHsph = true;
+				while(loopbackkey("externalNumber",BCEr,1,TrHsph))begin
+					if(BCEr.externalNumber!=tphone)then begin TrHsph=false; end;
 			
-				if(TrHsph)then begin
-					if(nonblank(BCEr.CTdomain))then begin
-						vCuDomain[cucude] = BCEr.CTdomain;
-					end;
-					if(nonblank(BCEr.gCDdomain))then begin
-						vCuDomain[cucude] = BCEr.gCDdomain;
-					end;
-					if(nonblank(BCEr.CTutmsource))then begin
-						vUTMSource[cucude] = BCEr.CTutmsource;
-					end;
-					if(nonblank(BCEr.gCDutm_source))then begin
-						vUTMSource[cucude] = BCEr.gCDutm_source;
-					end;
+					if(TrHsph)then begin
+						if(nonblank(BCEr.CTdomain))then begin
+							vCuDomain[cucude] = BCEr.CTdomain;
+						end;
+						if(nonblank(BCEr.gCDdomain))then begin
+							vCuDomain[cucude] = BCEr.gCDdomain;
+						end;
+						if(nonblank(BCEr.CTutmsource))then begin
+							vUTMSource[cucude] = BCEr.CTutmsource;
+						end;
+						if(nonblank(BCEr.gCDutm_source))then begin
+							vUTMSource[cucude] = BCEr.gCDutm_source;
+						end;
 					
-					if(nonblank(BCEr.CTutmcampaign))then begin
-						vUTMCampaign[cucude] = BCEr.CTutmcampaign;
-					end;
-					if(nonblank(BCEr.gCDutm_campaign))then begin
-						vUTMCampaign[cucude] = BCEr.gCDutm_campaign;
-					end;
+						if(nonblank(BCEr.CTutmcampaign))then begin
+							vUTMCampaign[cucude] = BCEr.CTutmcampaign;
+						end;
+						if(nonblank(BCEr.gCDutm_campaign))then begin
+							vUTMCampaign[cucude] = BCEr.gCDutm_campaign;
+						end;
 					
-					if(nonblank(BCEr.CTutmterm))then begin
-						vUTMTerm[cucude] = BCEr.CTutmterm;
+						if(nonblank(BCEr.CTutmterm))then begin
+							vUTMTerm[cucude] = BCEr.CTutmterm;
+						end;
+						if(nonblank(BCEr.CTutmterm))then begin
+							vUTMTerm[cucude] = BCEr.gCDutm_term;
+						end;
+					
+					
+					
 					end;
-					if(nonblank(BCEr.CTutmterm))then begin
-						vUTMTerm[cucude] = BCEr.gCDutm_term;
-					end;
-					
-					
-					
 				end;
 			end;
 		end;
@@ -136,7 +138,7 @@ begin
 	array longint asvonr;
 	row IVVc IVrw,IV2rw;
 	row IPVc IPrw,IP2rw;
-	string 100 enginer,tphone;
+	string 100 enginer,tphone,tstr;
 	val totrem, totpayrem, totnopayrem, totcan, totourcan, totnopayremqty,totpayremqty,totcanceled;
 	val totdolgqty,totdolgsum;
 	record WSVc WSr;
@@ -146,6 +148,11 @@ begin
 	record BinotelCallEndVc BCEr;
 	vector string 100 vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm;
 	boolean TrHs2,testf2;
+	vector val vTrackSum;
+	vector boolean vTrackFlag;
+	array string 255 TrackSumKey;
+	integer TrackCnt;
+	
 	
 	tabs[0] = 0;
 	tabs[1] = 40;
@@ -358,11 +365,11 @@ begin
 														
 														if(readfirstmain(CUr,1,true))then begin
 															tphone = CUr.Phone;
-															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+															FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
 															tphone = CUr.Mobile;
-															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+															FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
 															tphone = CUr.AltPhone;
-															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+															FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
 														end;
 													end;
 												endformat;
@@ -399,28 +406,30 @@ begin
 						//outstring(tabs[6],0,SVOr.WSCost,false);
 					endformat;
 					if(nonblank(vCuDomain[SVOr.CustCode]))then begin
-						startformat(15);
-							outstring(tabs[0],0,"Звонок с домена",false);
-							outstring(tabs[6],0,vCuDomain[SVOr.CustCode],false);
-						endformat;
-					end;
-					if(nonblank(vUTMSource[SVOr.CustCode]))then begin
-						startformat(15);
-							outstring(tabs[0],0,"Переход с ресурса",false);
-							outstring(tabs[2],0,vUTMSource[SVOr.CustCode],false);
-						endformat;
-					end;
-					if(nonblank(vUTMCampaign[SVOr.CustCode]))then begin
-						startformat(15);
-							outstring(tabs[0],0,"Кампания",false);
-							outstring(tabs[2],0,vUTMCampaign[SVOr.CustCode],false);
-						endformat;
-					end;
-					if(nonblank(vUTMTerm[SVOr.CustCode]))then begin
-						startformat(15);
-							outstring(tabs[0],0,"Условия",false);
-							outstring(tabs[2],0,vUTMTerm[SVOr.CustCode],false);
-						endformat;
+						if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+							startformat(15);
+								outstring(tabs[0],0,"Звонок с домена",false);
+								outstring(tabs[2],0,vCuDomain[SVOr.CustCode],false);
+							endformat;
+						end;
+						if(nonblank(vUTMSource[SVOr.CustCode]))then begin
+							startformat(15);
+								outstring(tabs[0],0,"Переход с ресурса",false);
+								outstring(tabs[2],0,vUTMSource[SVOr.CustCode],false);
+							endformat;
+						end;
+						if(nonblank(vUTMCampaign[SVOr.CustCode]))then begin
+							startformat(15);
+								outstring(tabs[0],0,"Кампания",false);
+								outstring(tabs[2],0,vUTMCampaign[SVOr.CustCode],false);
+							endformat;
+						end;
+						if(nonblank(vUTMTerm[SVOr.CustCode]))then begin
+							startformat(15);
+								outstring(tabs[0],0,"Условия",false);
+								outstring(tabs[2],0,vUTMTerm[SVOr.CustCode],false);
+							endformat;
+						end;
 					end;
 					
 					
@@ -429,6 +438,18 @@ begin
 						outstring(tabs[0],0,"Итого по заказу",false);
 						outstring(tabs[6],0,ivsumserv[asvonr[i]],false);
 					endformat;
+					if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+						tstr = "Оплаченные:" & vUTMSource[SVOr.CustCode] & "->" & vCuDomain[SVOr.CustCode] & "("  & vUTMCampaign[SVOr.CustCode] & "|" & vUTMTerm[SVOr.CustCode] & ")";
+						if(vTrackFlag[tstr])then begin
+							vTrackSum[tstr] = vTrackSum[tstr] + ivsumserv[asvonr[i]];
+						end else begin
+							vTrackFlag[tstr] = true;
+							vTrackSum[tstr] = ivsumserv[asvonr[i]];
+							TrackSumKey[TrackCnt] = tstr;
+							TrackCnt = TrackCnt +1;
+						end;
+					end;
+					
 					gray_divider(0,1);
 				end;			
 				resetloop(IVr);
@@ -503,11 +524,11 @@ begin
 														
 														if(readfirstmain(CUr,1,true))then begin
 															tphone = CUr.Phone;
-															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+															FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
 															tphone = CUr.Mobile;
-															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+															FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
 															tphone = CUr.AltPhone;
-															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+															FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
 														end;
 													end;
 													
@@ -546,34 +567,47 @@ begin
 						//outstring(tabs[6],0,SVOr.WSCost,false);
 					endformat;
 					if(nonblank(vCuDomain[SVOr.CustCode]))then begin
-						startformat(15);
-							outstring(tabs[0],0,"Звонок с домена",false);
-							outstring(tabs[6],0,vCuDomain[SVOr.CustCode],false);
-						endformat;
-					end;
-					if(nonblank(vUTMSource[SVOr.CustCode]))then begin
-						startformat(15);
-							outstring(tabs[0],0,"Переход с ресурса",false);
-							outstring(tabs[2],0,vUTMSource[SVOr.CustCode],false);
-						endformat;
-					end;
-					if(nonblank(vUTMCampaign[SVOr.CustCode]))then begin
-						startformat(15);
-							outstring(tabs[0],0,"Кампания",false);
-							outstring(tabs[2],0,vUTMCampaign[SVOr.CustCode],false);
-						endformat;
-					end;
-					if(nonblank(vUTMTerm[SVOr.CustCode]))then begin
-						startformat(15);
-							outstring(tabs[0],0,"Условия",false);
-							outstring(tabs[2],0,vUTMTerm[SVOr.CustCode],false);
-						endformat;
+						if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+							startformat(15);
+								outstring(tabs[0],0,"Звонок с домена",false);
+								outstring(tabs[2],0,vCuDomain[SVOr.CustCode],false);
+							endformat;
+						end;
+						if(nonblank(vUTMSource[SVOr.CustCode]))then begin
+							startformat(15);
+								outstring(tabs[0],0,"Переход с ресурса",false);
+								outstring(tabs[2],0,vUTMSource[SVOr.CustCode],false);
+							endformat;
+						end;
+						if(nonblank(vUTMCampaign[SVOr.CustCode]))then begin
+							startformat(15);
+								outstring(tabs[0],0,"Кампания",false);
+								outstring(tabs[2],0,vUTMCampaign[SVOr.CustCode],false);
+							endformat;
+						end;
+						if(nonblank(vUTMTerm[SVOr.CustCode]))then begin
+							startformat(15);
+								outstring(tabs[0],0,"Условия",false);
+								outstring(tabs[2],0,vUTMTerm[SVOr.CustCode],false);
+							endformat;
+						end;
 					end;
 					black_divider(tabs[6],tabs[7]);
 					startformat(15);
 						outstring(tabs[0],0,"Итого по заказу",false);
 						outstring(tabs[6],0,ivsumserv[asvonr[i]],false);
 					endformat;
+					if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+						tstr = "Неоплаченные:" & vUTMSource[SVOr.CustCode] & "->" & vCuDomain[SVOr.CustCode] & "("  & vUTMCampaign[SVOr.CustCode] & "|" & vUTMTerm[SVOr.CustCode] & ")";
+						if(vTrackFlag[tstr])then begin
+							vTrackSum[tstr] = vTrackSum[tstr] + ivsumserv[asvonr[i]];
+						end else begin
+							vTrackFlag[tstr] = true;
+							vTrackSum[tstr] = ivsumserv[asvonr[i]];
+							TrackSumKey[TrackCnt] = tstr;
+							TrackCnt = TrackCnt +1;
+						end;
+					end;
 					gray_divider(0,1);
 				end;			
 				resetloop(IVr);
@@ -649,11 +683,11 @@ begin
 														
 														if(readfirstmain(CUr,1,true))then begin
 															tphone = CUr.Phone;
-															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+															FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
 															tphone = CUr.Mobile;
-															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+															FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
 															tphone = CUr.AltPhone;
-															FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+															FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
 														end;
 													end;
 													
@@ -692,34 +726,47 @@ begin
 						//outstring(tabs[6],0,SVOr.WSCost,false);
 					endformat;
 					if(nonblank(vCuDomain[SVOr.CustCode]))then begin
-						startformat(15);
-							outstring(tabs[0],0,"Звонок с домена",false);
-							outstring(tabs[6],0,vCuDomain[SVOr.CustCode],false);
-						endformat;
-					end;
-					if(nonblank(vUTMSource[SVOr.CustCode]))then begin
-						startformat(15);
-							outstring(tabs[0],0,"Переход с ресурса",false);
-							outstring(tabs[2],0,vUTMSource[SVOr.CustCode],false);
-						endformat;
-					end;
-					if(nonblank(vUTMCampaign[SVOr.CustCode]))then begin
-						startformat(15);
-							outstring(tabs[0],0,"Кампания",false);
-							outstring(tabs[2],0,vUTMCampaign[SVOr.CustCode],false);
-						endformat;
-					end;
-					if(nonblank(vUTMTerm[SVOr.CustCode]))then begin
-						startformat(15);
-							outstring(tabs[0],0,"Условия",false);
-							outstring(tabs[2],0,vUTMTerm[SVOr.CustCode],false);
-						endformat;
+						if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+							startformat(15);
+								outstring(tabs[0],0,"Звонок с домена",false);
+								outstring(tabs[2],0,vCuDomain[SVOr.CustCode],false);
+							endformat;
+						end;
+						if(nonblank(vUTMSource[SVOr.CustCode]))then begin
+							startformat(15);
+								outstring(tabs[0],0,"Переход с ресурса",false);
+								outstring(tabs[2],0,vUTMSource[SVOr.CustCode],false);
+							endformat;
+						end;
+						if(nonblank(vUTMCampaign[SVOr.CustCode]))then begin
+							startformat(15);
+								outstring(tabs[0],0,"Кампания",false);
+								outstring(tabs[2],0,vUTMCampaign[SVOr.CustCode],false);
+							endformat;
+						end;
+						if(nonblank(vUTMTerm[SVOr.CustCode]))then begin
+							startformat(15);
+								outstring(tabs[0],0,"Условия",false);
+								outstring(tabs[2],0,vUTMTerm[SVOr.CustCode],false);
+							endformat;
+						end;
 					end;
 					black_divider(tabs[6],tabs[7]);
 					startformat(15);
 						outstring(tabs[0],0,"Итого по заказу",false);
 						outstring(tabs[6],0,ivsumserv[asvonr[i]],false);
 					endformat;
+					if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+						tstr = "Вдолг:" & vUTMSource[SVOr.CustCode] & "->" & vCuDomain[SVOr.CustCode] & "("  & vUTMCampaign[SVOr.CustCode] & "|" & vUTMTerm[SVOr.CustCode] & ")";
+						if(vTrackFlag[tstr])then begin
+							vTrackSum[tstr] = vTrackSum[tstr] + ivsumserv[asvonr[i]];
+						end else begin
+							vTrackFlag[tstr] = true;
+							vTrackSum[tstr] = ivsumserv[asvonr[i]];
+							TrackSumKey[TrackCnt] = tstr;
+							TrackCnt = TrackCnt +1;
+						end;
+					end;
 					gray_divider(0,1);
 				end;			
 				resetloop(IVr);
@@ -774,39 +821,50 @@ begin
 						CUr.Code = SVOr.CustCode;
 						if(readfirstmain(CUr,1,true))then begin
 							tphone = CUr.Phone;
-							FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+							FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
 							tphone = CUr.Mobile;
-							FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+							FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
 							tphone = CUr.AltPhone;
-							FindPhoneDomain(tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+							FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
 						end;
 					end;
 				endformat;
+				if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+					if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+						startformat(15);
+							outstring(tabs[0],0,"Звонок с домена",false);
+							outstring(tabs[2],0,vCuDomain[SVOr.CustCode],false);
+						endformat;
+					end;
+					if(nonblank(vUTMSource[SVOr.CustCode]))then begin
+						startformat(15);
+							outstring(tabs[0],0,"Переход с ресурса",false);
+							outstring(tabs[2],0,vUTMSource[SVOr.CustCode],false);
+						endformat;
+					end;
+					if(nonblank(vUTMCampaign[SVOr.CustCode]))then begin
+						startformat(15);
+							outstring(tabs[0],0,"Кампания",false);
+							outstring(tabs[2],0,vUTMCampaign[SVOr.CustCode],false);
+						endformat;
+					end;
+					if(nonblank(vUTMTerm[SVOr.CustCode]))then begin
+						startformat(15);
+							outstring(tabs[0],0,"Условия",false);
+							outstring(tabs[2],0,vUTMTerm[SVOr.CustCode],false);
+						endformat;
+					end;
+					tstr = "Отмененные:" & vUTMSource[SVOr.CustCode] & "->" & vCuDomain[SVOr.CustCode] & "("  & vUTMCampaign[SVOr.CustCode] & "|" & vUTMTerm[SVOr.CustCode] & ")";
+					if(vTrackFlag[tstr])then begin
+						vTrackSum[tstr] = vTrackSum[tstr] + 1;
+					end else begin
+						vTrackFlag[tstr] = true;
+						vTrackSum[tstr] = 1;
+						TrackSumKey[TrackCnt] = tstr;
+						TrackCnt = TrackCnt +1;
+					end;
 				end;
-			end;
-			if(nonblank(vCuDomain[SVOr.CustCode]))then begin
-				startformat(15);
-					outstring(tabs[0],0,"Звонок с домена",false);
-					outstring(tabs[6],0,vCuDomain[SVOr.CustCode],false);
-				endformat;
-			end;
-			if(nonblank(vUTMSource[SVOr.CustCode]))then begin
-				startformat(15);
-					outstring(tabs[0],0,"Переход с ресурса",false);
-					outstring(tabs[2],0,vUTMSource[SVOr.CustCode],false);
-				endformat;
-			end;
-			if(nonblank(vUTMCampaign[SVOr.CustCode]))then begin
-				startformat(15);
-					outstring(tabs[0],0,"Кампания",false);
-					outstring(tabs[2],0,vUTMCampaign[SVOr.CustCode],false);
-				endformat;
-			end;
-			if(nonblank(vUTMTerm[SVOr.CustCode]))then begin
-				startformat(15);
-					outstring(tabs[0],0,"Условия",false);
-					outstring(tabs[2],0,vUTMTerm[SVOr.CustCode],false);
-				endformat;
+				end;
 			end;
 		end;
 		
@@ -856,7 +914,19 @@ begin
 			outstring(tabs[0],0,"Клиент не пришел",false);
 			outstring(tabs[3],0,totcanceled,false);
 		endformat;
-		
+		gray_divider(0,1);
+		startformat(15);
+			outstring(tabs[0],0,"Статистика Binotel:",false);
+			outstring(tabs[6],0,"Сумма",false);
+		endformat;
+		MySortStringArray(TrackSumKey,TrackCnt);
+
+		for(i=0;i<TrackCnt;i=i+1)begin
+			startformat(15);
+				outstring(tabs[0],0,TrackSumKey[i],false);
+				outstring(tabs[6],0,vTrackSum[TrackSumKey[i]],false);
+			endformat;
+		end;
 	endjob;
 
 return;

@@ -407,19 +407,19 @@ begin
 					if(nonblank(vUTMSource[SVOr.CustCode]))then begin
 						startformat(15);
 							outstring(tabs[0],0,"Переход с ресурса",false);
-							outstring(tabs[6],0,vUTMSource[SVOr.CustCode],false);
+							outstring(tabs[2],0,vUTMSource[SVOr.CustCode],false);
 						endformat;
 					end;
 					if(nonblank(vUTMCampaign[SVOr.CustCode]))then begin
 						startformat(15);
 							outstring(tabs[0],0,"Кампания",false);
-							outstring(tabs[6],0,vUTMCampaign[SVOr.CustCode],false);
+							outstring(tabs[2],0,vUTMCampaign[SVOr.CustCode],false);
 						endformat;
 					end;
 					if(nonblank(vUTMTerm[SVOr.CustCode]))then begin
 						startformat(15);
 							outstring(tabs[0],0,"Условия",false);
-							outstring(tabs[6],0,vUTMTerm[SVOr.CustCode],false);
+							outstring(tabs[2],0,vUTMTerm[SVOr.CustCode],false);
 						endformat;
 					end;
 					
@@ -554,19 +554,19 @@ begin
 					if(nonblank(vUTMSource[SVOr.CustCode]))then begin
 						startformat(15);
 							outstring(tabs[0],0,"Переход с ресурса",false);
-							outstring(tabs[6],0,vUTMSource[SVOr.CustCode],false);
+							outstring(tabs[2],0,vUTMSource[SVOr.CustCode],false);
 						endformat;
 					end;
 					if(nonblank(vUTMCampaign[SVOr.CustCode]))then begin
 						startformat(15);
 							outstring(tabs[0],0,"Кампания",false);
-							outstring(tabs[6],0,vUTMCampaign[SVOr.CustCode],false);
+							outstring(tabs[2],0,vUTMCampaign[SVOr.CustCode],false);
 						endformat;
 					end;
 					if(nonblank(vUTMTerm[SVOr.CustCode]))then begin
 						startformat(15);
 							outstring(tabs[0],0,"Условия",false);
-							outstring(tabs[6],0,vUTMTerm[SVOr.CustCode],false);
+							outstring(tabs[2],0,vUTMTerm[SVOr.CustCode],false);
 						endformat;
 					end;
 					black_divider(tabs[6],tabs[7]);
@@ -700,19 +700,19 @@ begin
 					if(nonblank(vUTMSource[SVOr.CustCode]))then begin
 						startformat(15);
 							outstring(tabs[0],0,"Переход с ресурса",false);
-							outstring(tabs[6],0,vUTMSource[SVOr.CustCode],false);
+							outstring(tabs[2],0,vUTMSource[SVOr.CustCode],false);
 						endformat;
 					end;
 					if(nonblank(vUTMCampaign[SVOr.CustCode]))then begin
 						startformat(15);
 							outstring(tabs[0],0,"Кампания",false);
-							outstring(tabs[6],0,vUTMCampaign[SVOr.CustCode],false);
+							outstring(tabs[2],0,vUTMCampaign[SVOr.CustCode],false);
 						endformat;
 					end;
 					if(nonblank(vUTMTerm[SVOr.CustCode]))then begin
 						startformat(15);
 							outstring(tabs[0],0,"Условия",false);
-							outstring(tabs[6],0,vUTMTerm[SVOr.CustCode],false);
+							outstring(tabs[2],0,vUTMTerm[SVOr.CustCode],false);
 						endformat;
 					end;
 					black_divider(tabs[6],tabs[7]);
@@ -793,19 +793,19 @@ begin
 			if(nonblank(vUTMSource[SVOr.CustCode]))then begin
 				startformat(15);
 					outstring(tabs[0],0,"Переход с ресурса",false);
-					outstring(tabs[6],0,vUTMSource[SVOr.CustCode],false);
+					outstring(tabs[2],0,vUTMSource[SVOr.CustCode],false);
 				endformat;
 			end;
 			if(nonblank(vUTMCampaign[SVOr.CustCode]))then begin
 				startformat(15);
 					outstring(tabs[0],0,"Кампания",false);
-					outstring(tabs[6],0,vUTMCampaign[SVOr.CustCode],false);
+					outstring(tabs[2],0,vUTMCampaign[SVOr.CustCode],false);
 				endformat;
 			end;
 			if(nonblank(vUTMTerm[SVOr.CustCode]))then begin
 				startformat(15);
 					outstring(tabs[0],0,"Условия",false);
-					outstring(tabs[6],0,vUTMTerm[SVOr.CustCode],false);
+					outstring(tabs[2],0,vUTMTerm[SVOr.CustCode],false);
 				endformat;
 			end;
 		end;

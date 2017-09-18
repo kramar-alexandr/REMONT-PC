@@ -931,3 +931,99 @@ begin
 
 return;
 end;
+
+
+global procedure BinotelSimpleRepRn(record RcVc RepSpec)
+begin
+	record BinotelCallEndVc BCEr;
+	record CUVc CUr;
+	record SVOVc SVOr;
+	array string 20 phones;
+	vector string 50 vcustcode;
+	vector boolean vphone,vdublicate;
+	longint phi,svi;
+	boolean TrHs;
+	
+	
+	StartReportnoheaderJob("BinotelSimpleRepRn");
+	
+	while(loopmain(BCEr,1,true))begin
+		if(nonblank(BCEr.gCDdomain) or nonblank(BCEr.CTdomain))then begin
+			if(vphone[BCEr.externalNumber]==false)then begin
+				vphone[BCEr.externalNumber] = true;
+				CUr.Code = BCEr.externalNumber;
+				if(blank(vcustcode[BCEr.externalNumber]))then begin
+					if(readfirstmain(CUr,1,true))then begin
+						vcustcode[BCEr.externalNumber] = CUr.Code;
+					end else begin
+						CUr.Phone = BCEr.externalNumber;
+						if(readfirstkey("Phone",CUr,1,true))then begin
+							vcustcode[BCEr.externalNumber] = CUr.Code;
+						end else begin
+							CUr.Mobile = BCEr.externalNumber;
+							if(readfirstkey("Mobile",CUr,1,true))then begin
+								vcustcode[BCEr.externalNumber] = CUr.Code;
+							end else begin
+								CUr.AltPhone = BCEr.externalNumber;
+								if(readfirstkey("AltPhone",CUr,1,true))then begin
+									vcustcode[BCEr.externalNumber] = CUr.Code;
+								end;
+							end;
+						end;
+					end;
+				end;
+				
+			end;
+			
+			
+			startformat(15);
+				outstring(0,0,BCEr.externalNumber,false);
+				outstring(100,0,vcustcode[BCEr.externalNumber],false);
+				
+				if(vdublicate[BCEr.externalNumber]==true)then begin
+					outstring(150,0,"dublicate",false);
+				end;
+			endformat;
+			
+			if(vdublicate[BCEr.externalNumber]==false)then begin
+				vdublicate[BCEr.externalNumber] = true;
+				phi = phi + 1;
+				vdublicate[BCEr.externalNumber]=true;
+				if(nonblank(vcustcode[BCEr.externalNumber]))then begin
+					SVOr.CustCode = vcustcode[BCEr.externalNumber];
+					TrHs = true;
+					while(loopkey("CustCode",SVOr,1,TrHs))begin
+						if(SVOr.CustCode==vcustcode[BCEr.externalNumber])then begin
+							if(SVOr.SerNr>90000)then begin
+								startformat(15);
+								outstring(200,"DblSVOVcSer",SVOr.InnerOrderNr,false);
+								outstring(300,"DblSVOVc",SVOr.SerNr,false);
+								endformat;
+								svi = svi + 1;
+							end;
+						end else begin
+							TrHs = false;
+						end;
+					end;
+					resetloop(SVOr);
+				end;
+			end;
+			
+			
+			
+			
+			
+		end;
+	end;
+	startformat(15);
+		outstring(0,0,"phi",false);
+		outstring(100,0,phi,false);
+	endformat;
+	startformat(15);
+		outstring(0,0,"svi",false);
+		outstring(100,0,svi,false);
+	endformat;
+	
+	endjob;
+return;
+end;

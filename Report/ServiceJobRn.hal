@@ -941,7 +941,7 @@ begin
 	array string 20 phones;
 	vector string 50 vcustcode;
 	vector boolean vphone,vdublicate;
-	longint phi,svi;
+	longint phi,svi,phial;
 	boolean TrHs;
 	
 	
@@ -975,6 +975,7 @@ begin
 				
 			end;
 			
+			phial = phial + 1;
 			
 			startformat(15);
 				outstring(0,0,BCEr.externalNumber,false);
@@ -1023,7 +1024,11 @@ begin
 		outstring(0,0,"svi",false);
 		outstring(100,0,svi,false);
 	endformat;
-	
+	startformat(15);
+		outstring(0,0,"phial",false);
+		outstring(100,0,phial,false);
+	endformat;
+		
 	endjob;
 return;
 end;

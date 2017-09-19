@@ -20,6 +20,7 @@ begin
 	
 	Report("Выполненые ремонты",ServiceJobsRClass,ServiceJobsRn,0,modSVO);
 	Report("Binotel Short Report",ServiceJobsRClass,BinotelSimpleRepRn,0,modSVO);
+	Report("Binotel List Report",SimpleRClass,BinotelTrackListRn,0,modSVO);
 	Report("Устройства на сервисе",SRVItemsRClass,SRVItemsRn,0,modSVO);
   Report("Отчет по истории товаров технический ",FindErrorInIHRClass,FindErrorInIHRn,0,modDBMain);
 	Report("Отчет по телефонам клиентов",ServClientOrderRClass,ServClientOrderRn,0,modSVO);// Edit ************************** Monday, 4 July 2016 17:52:38

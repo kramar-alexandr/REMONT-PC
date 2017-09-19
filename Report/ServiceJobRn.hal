@@ -1032,3 +1032,51 @@ begin
 	endjob;
 return;
 end;
+
+global procedure BinotelTrackListRn(record RcVc RepSpec)
+begin
+	record BinotelCallEndVc BCEr;
+	record CUVc CUr;
+	record SVOVc SVOr;
+	array string 20 phones;
+	vector string 50 vcustcode;
+	vector boolean vphone,vdublicate;
+	longint phi,svi,phial;
+	boolean TrHs;
+	
+	
+	StartReportnoheaderJob("BinotelTrackListRn");
+	
+	while(loopmain(BCEr,1,true))begin
+		if(nonblank(BCEr.CTdomain))then begin
+			startformat(15);
+				outstring(0,"DblBCEr",BCEr.SerNr,false);
+				outstring(50,0,"CallTracking",false);
+				outstring(100,0,BCEr.CTdomain,false);
+				outstring(1,0,BCEr.TransDate,true);
+			endformat;
+			phi = phi +1;
+		end;
+		if(nonblank(BCEr.gCDdomain))then begin
+			startformat(15);
+				outstring(0,"DblBCEr",BCEr.SerNr,false);
+				outstring(150,0,"Get Call Detail",false);
+				outstring(200,0,BCEr.gCDdomain,false);
+				outstring(1,0,BCEr.TransDate,true);
+				svi = svi +1;
+			endformat;
+		end;
+	end;
+	startformat(15);
+		outstring(0,0,"CallTracking Total",false);
+		outstring(100,0,phi,false);
+	endformat;
+	startformat(15);
+		outstring(0,0,"Get Call Detail total",false);
+		outstring(100,0,svi,false);
+	endformat;
+
+		
+	endjob;
+return;
+end;

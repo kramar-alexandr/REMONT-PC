@@ -2277,6 +2277,21 @@ begin
   return;
 end;
 
+global
+procedure DblBCEr(string dblstr,string l,Integer currepwn)
+begin
+  Integer wn;
+	record BinotelCallEndVc BCEr;
+
+  if (nonblank(dblstr)) then begin
+    BCEr.SerNr = dblstr;
+    if (ReadFirstMain(BCEr,1,true)) then begin  
+      wn = OpenWindow("BinotelCallEndDClass",1,0,"","",BCEr);
+    end; 
+  end;
+  return;
+end;
+
 global //Edit***************************Sasha2,16:48 22.08.2017 {
 procedure SVOLClassButtonFlags(Integer wn,var Boolean duplOK,var Boolean newOK,var Boolean saveOK,var Boolean restOK)
 begin

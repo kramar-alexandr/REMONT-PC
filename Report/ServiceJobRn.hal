@@ -76,29 +76,29 @@ begin
 						if(nonblank(BCEr.CTdomain))then begin
 							vCuDomain[cucude] = BCEr.CTdomain;
 						end;
-						if(nonblank(BCEr.gCDdomain))then begin
+						/*if(nonblank(BCEr.gCDdomain))then begin
 							vCuDomain[cucude] = BCEr.gCDdomain;
-						end;
+						end;*/
 						if(nonblank(BCEr.CTutmsource))then begin
 							vUTMSource[cucude] = BCEr.CTutmsource;
 						end;
-						if(nonblank(BCEr.gCDutm_source))then begin
+						/*if(nonblank(BCEr.gCDutm_source))then begin
 							vUTMSource[cucude] = BCEr.gCDutm_source;
-						end;
+						end;*/
 					
 						if(nonblank(BCEr.CTutmcampaign))then begin
 							vUTMCampaign[cucude] = BCEr.CTutmcampaign;
 						end;
-						if(nonblank(BCEr.gCDutm_campaign))then begin
+						/*if(nonblank(BCEr.gCDutm_campaign))then begin
 							vUTMCampaign[cucude] = BCEr.gCDutm_campaign;
-						end;
+						end;*/
 					
 						if(nonblank(BCEr.CTutmterm))then begin
 							vUTMTerm[cucude] = BCEr.CTutmterm;
 						end;
-						if(nonblank(BCEr.CTutmterm))then begin
+						/*if(nonblank(BCEr.CTutmterm))then begin
 							vUTMTerm[cucude] = BCEr.gCDutm_term;
-						end;
+						end;*/
 					
 					
 					

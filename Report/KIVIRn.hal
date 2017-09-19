@@ -1,0 +1,73 @@
+SetLangMode(LangRussian,"RUS",0);
+
+
+global procedure KIVIRn(record RcVc RepSpec)
+begin
+	record SVOVc SVOr;
+	row SVOVc SVOrw;
+	date sd,ed;
+	boolean testf,TrHs,kivifound;
+	record LetVc Letr;
+	
+	sd = RepSpec.sStartDate;
+	ed = RepSpec.sEndDate;
+	
+	startreportnoheaderjob("Отчет по KIVI");
+	
+	startformat(15);
+		outstring(0,0,"Дата приемки ",false);	
+		outstring(0,0,"Дата запроса детали",false);
+		outstring(0,0,"Дата выдачи",false);
+		outstring(0,0,"Модель аппарата",false);
+		outstring(0,0,"Диагональ",false);
+		outstring(0,0,"Серийный номер",false);
+		outstring(0,0,"Неисправность ",false);
+		outstring(0,0,"Выполненная работа ",false);
+		outstring(0,0,"Наименование деталей",false);
+		outstring(0,0,"Выезд/Доставка",false);
+		outstring(0,0,"Город",false);
+		outstring(0,0,"ФИО,Адрес,тел.",false);
+		outstring(0,0,"Подменный аппарат  (модель и S/N, если выдавали)",false);
+		outstring(0,0,"Компенсация клиенту (замена на аналогичный)",false);
+		outstring(0,0,"Примечание",false);
+	endformat;
+	
+	TrHs = true;
+	SVOr.TransDate = sd;
+	while(loopkey("TransDate",SVOr,1,TrHs))begin
+		testf = true;
+		if(SVOr.TransDate>ed)then begin TrHs = false; testf = false; end;
+		if(SVOr.TransDate<sd)then begin testf = false; end;
+		
+		kivifound = false;
+		if(SVOr.Region=="ТЕЛKI")then begin kivifound = true; end;
+		
+		if(matrowcnt(SVOr)>0)then begin
+			matrowget(SVOr,0,SVOrw);
+			recordnew(Letr);
+			AddToText(SVOrw.ArtCode,Letr);
+			AddToText(SVOrw.Spec,Letr);
+			
+			if(StringInText("KIVI",Letr))then begin
+				kivifound = true;
+			end;
+			if(StringInText("Kivi",Letr))then begin
+				kivifound = true;
+			end;
+			
+		end;
+		
+		testf = kivifound;
+		
+		if(testf)then begin
+			startformat(15);
+			 outstring(0,0,SVOr.SerNr,false);
+			 outstring(100,0,SVOrw.ArtCode,false);
+			 outstring(150,0,SVOrw.Spec,false);
+			endformat;
+		end;
+	end;
+	endjob;
+
+return;
+end;

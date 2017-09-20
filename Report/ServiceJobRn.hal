@@ -2,6 +2,7 @@ external function LongInt DateDiff(Date,Date);
 
 SetLangMode(LangRussian,"RUS",0);
 
+global
 procedure MySortStringArray(var array string astr,integer cnt)
 begin
 	integer i,j;

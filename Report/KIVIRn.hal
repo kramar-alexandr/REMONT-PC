@@ -1,3 +1,5 @@
+external procedure MySortStringArray(var array string,integer);
+
 SetLangMode(LangRussian,"RUS",0);
 
 
@@ -8,6 +10,28 @@ begin
 	date sd,ed;
 	boolean testf,TrHs,kivifound;
 	record LetVc Letr;
+	string 20 diagstr;
+	boolean diagfound;
+	record WSVc WSr;
+	record IVVc IVr;
+	row IVVc IVrw;
+	integer i,mtrw,vi,ivmtrw,artcnt,wokcnt;
+	boolean TrHs1,testf1;
+	array string 255 worklist,workname;
+	vector boolean worktag;
+	vector integer workqty;
+	string 255 vkey,work;
+	
+	array string 255 artklist,artkname;
+	vector boolean artktag;
+	vector integer artkqty;
+	string 255 artk,newdiagstr;
+	
+	vector integer vsumworks;
+	array string 255 asumworks;
+	integer sumworkscnt;
+	vector boolean vbsumworks;
+	record INVc INr;
 	
 	sd = RepSpec.sStartDate;
 	ed = RepSpec.sEndDate;
@@ -61,12 +85,168 @@ begin
 		
 		if(testf)then begin
 			startformat(15);
-			 outstring(0,0,SVOr.SerNr,false);
-			 outstring(100,0,SVOrw.ArtCode,false);
-			 outstring(150,0,SVOrw.Spec,false);
+				outstring(0,0,SVOr.GetItemDate,false);
+				outstring(50,0,"???",false);
+				outstring(80,0,SVOr.RegDate,false);
+				outstring(130,0,SVOrw.ArtCode,false);
+				diagstr = left(SVOrw.ArtCode,2);
+				
+				if(left(SVOrw.ArtCode,5)=="KIVI_")then begin
+					diagstr = mid(SVOrw.ArtCode,5,2);
+				end;
+				
+				diagfound = false;
+				if(asc(left(diagstr,1))>47 and asc(left(diagstr,1))<58)then begin
+					if(asc(mid(diagstr,1,1))>47 and asc(mid(diagstr,1,1))<58)then begin
+						diagfound = true;
+					end;
+				end;
+				if(diagfound)then begin
+					outstring(200,0,diagstr & "\"",false);
+				end else begin
+					outstring(200,0,"",false);
+					diagstr = "";
+				end;
+				outstring(220,0,SVOrw.NewSerialNr,false);
+				outstring(260,0,SVOr.Comment1,false);
+				
+				resetloop(IVr);
+				IVr.SVONr = SVOr.SerNr;
+				TrHs1 = true;
+				artcnt = 0;
+				wokcnt = 0;
+				while(loopkey("SVONr",IVr,1,TrHs1))begin
+					testf1 = true;
+					if(IVr.SVONr!=SVOr.SerNr)then begin testf1 = false; TrHs1 = false;  end;
+					if(IVr.OKFlag==0)then begin testf1 = false; end;
+					
+					if(testf1)then begin
+						ivmtrw = matrowcnt(IVr);
+						For(vi=0;vi<ivmtrw;vi=vi+1) begin
+	  					matrowget(IVr,vi,IVrw);
+	  					if(IVrw.stp==kInvoiceRowTypeNormal)then begin
+	  						if(nonblank(IVrw.ArtCode))then begin
+	  							INr.Code = IVrw.ArtCode;
+	  							if(readfirstmain(INr,1,true))then begin
+	  								if(INr.ItemType==0 or INr.ItemType==3)then begin
+	  									vkey = SVOr.SerNr & ":" & IVrw.ArtCode;
+	  									if(worktag[vkey])then begin
+	  										if(IVr.InvType==kInvoiceTypeCredit)then begin
+													workqty[vkey] = workqty[vkey] - IVrw.Quant;
+	  										end else begin
+	  											workqty[vkey] = workqty[vkey] + IVrw.Quant;
+	  										end;
+	  									end else begin
+	  										if(IVr.InvType==kInvoiceTypeCredit)then begin
+													workqty[vkey] = -IVrw.Quant;
+	  										end else begin
+	  											workqty[vkey] = IVrw.Quant;
+	  										end;
+	  										worktag[vkey] = true;
+	  										worklist[wokcnt] = vkey;
+	  										workname[wokcnt] = IVrw.Spec;
+	  										wokcnt = wokcnt + 1;
+	  									end;
+	  								end;
+	  								
+	  								
+	  								if(INr.ItemType==1)then begin
+	  									vkey = SVOr.SerNr & ":" & IVrw.ArtCode;
+	  									if(artktag[vkey])then begin
+	  										if(IVr.InvType==kInvoiceTypeCredit)then begin
+													artkqty[vkey] = artkqty[vkey] - IVrw.Quant;
+	  										end else begin
+	  											artkqty[vkey] = artkqty[vkey] + IVrw.Quant;
+	  										end;
+	  									end else begin
+	  										if(IVr.InvType==kInvoiceTypeCredit)then begin
+													artkqty[vkey] = -IVrw.Quant;
+	  										end else begin
+	  											artkqty[vkey] = IVrw.Quant;
+	  										end;
+	  										artktag[vkey] = true;
+	  										artklist[artcnt] = vkey;
+	  										artkname[artcnt] = INr.Name;
+	  										artcnt = artcnt + 1;
+	  									end;
+	  								end;
+	  								
+	  							end;
+	  						end;
+	  					end;
+						end; 
+					end;					
+				end;
+				
+				if(wokcnt>0)then begin
+					work = "";
+					For(vi=0;vi<wokcnt;vi=vi+1) begin
+						if(workqty[worklist[vi]]>0)then begin
+							if(stringtolongint(firstinrange(worklist[vi],20))==SVOr.SerNr)then begin
+								//outstring(350,0,workname[vi],false);
+								work = work & workname[vi] & ",";
+								
+								newdiagstr = "";
+								if(nonblank(diagstr))then begin
+									if(stringtoint(diagstr)<40)then begin
+										newdiagstr = "<40\"";
+									end;
+									if(stringtoint(diagstr)>39 and stringtoint(diagstr)<47)then begin
+										newdiagstr = "40\"-46\"";
+									end;
+									if(stringtoint(diagstr)>46)then begin
+										newdiagstr = ">46\"";
+									end;
+								end;
+								
+								vkey = workname[vi] & " " & newdiagstr;
+								if(vbsumworks[vkey])then begin
+									vsumworks[vkey] = vsumworks[vkey] + workqty[worklist[vi]];
+								end else begin
+									vsumworks[vkey] = vsumworks[vkey] + workqty[worklist[vi]];
+									vbsumworks[vkey] = true;
+									asumworks[sumworkscnt] = vkey;
+									sumworkscnt = sumworkscnt + 1;
+								end;
+								
+							end;
+						end;
+					end; 
+					outstring(350,0,work,false);
+				end else begin
+					outstring(350,0,"",false);
+				end;
+				
+				if(artcnt>0)then begin
+					artk = "";
+					For(vi=0;vi<artcnt;vi=vi+1) begin
+						if(artkqty[artklist[vi]]>0)then begin
+							if(stringtolongint(firstinrange(artklist[vi],20))==SVOr.SerNr)then begin
+								//outstring(350,0,workname[vi],false);
+								artk = artk & artkname[vi] & ",";
+							end;
+						end;
+					end; 
+					outstring(350,0,artk,false);
+				end else begin
+					outstring(350,0,"",false);
+				end;
+				
 			endformat;
+			
 		end;
 	end;
+	startformat(15);
+	endformat;
+	
+	MySortStringArray(asumworks,sumworkscnt);
+	For(i=0;i<sumworkscnt;i=i+1) begin	  
+		startformat(15);
+			outstring(0,0,asumworks[i],false);
+			outstring(150,0,vsumworks[asumworks[i]],false);
+		endformat;
+	end;
+	
 	endjob;
 
 return;

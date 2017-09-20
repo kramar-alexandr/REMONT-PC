@@ -387,9 +387,9 @@ begin
   EditField(260,vm,80, "Принял",Normal,CustomField7,false,UserSClass);// Edit ************************** Monday, 31 May 2010 9:22:11 AM
   CheckBox(360,vm,0,"Устройство принял",GetItemFlag);
   EditField(260,vm+=20,80,"Гр.Пр.",Normal,SalesGroup,false,SalesGroupSClass);
-  EditField(460,vm,60,"Дата приемки",ViewOnly,GetItemTime,false,0);
+  EditField(460,vm,60,"Время приемки",ViewOnly,GetItemTime,false,0);
   EditField(260,vm+=20,80,"Вн.номер ремонта",Normal,InnerOrderNr,false,0);
-  EditField(460,vm,60,"Время приемки",ViewOnly,GetItemDate,false,0);
+  EditField(460,vm,60,"Дата приемки",ViewOnly,GetItemDate,false,0);
 
   EditField(260,vm+=20,100,"Сер. мастер",Normal,ServiceManager,false,UserSClass);// Edit ************************** Monday, 31 May 2010 9:22:11 AM
   EditField(460,vm,100,"К оплате",ViewOnly,WSCost,false,0);

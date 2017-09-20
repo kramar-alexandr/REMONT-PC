@@ -921,6 +921,9 @@ begin
       				if (NonBlank(SVOr.Inspector) and SetInSet(SVOr.Inspector,Actr.MainPersons)==false) then begin
       				  Actr.MainPersons = SVOr.Inspector & "," & Actr.MainPersons;
       				end;
+      				if(blank(Actr.MainPersons))then begin
+      					Actr.MainPersons = currentuser;// Edit ************************** Wednesday, 20 September 2017 13:07:25
+      				end;
       				Actr.Comment = addhours(currenttime,2) & " " & Actr.Comment; //Edit***************************Sasha2,16:14 23.05.2017 }
       			end;	
       		end;

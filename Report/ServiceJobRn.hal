@@ -140,9 +140,9 @@ begin
 	array longint asvonr;
 	row IVVc IVrw,IV2rw;
 	row IPVc IPrw,IP2rw;
-	string 100 enginer,tphone,tstr;
+	string 100 enginer,tphone,tstr,akey;
 	val totrem, totpayrem, totnopayrem, totcan, totourcan, totnopayremqty,totpayremqty,totcanceled,totpayremdet;
-	val totdolgqty,totdolgsum,povtorsum,povtorsumdolg,povtorsumotkaz,povtorsumneoplat,totdolgsumdet;
+	val totdolgqty,totdolgsum,povtorsum,povtorsumdolg,povtorsumotkaz,povtorsumneoplat,totdolgsumdet,tot1,tot2,tot3,tot4;
 	record WSVc WSr;
 	record RLinkVc RLr;
 	integer cnt,mtrw2;
@@ -154,6 +154,13 @@ begin
 	vector boolean vTrackFlag,vPovtor;
 	array string 255 TrackSumKey;
 	integer TrackCnt,povtorqty,povtorqtydolg,povtorqtyotkaz,povtorqtyneoplat;
+	vector val vIngSum;
+	vector val vManSum;
+	vector integer vIngCanQty,vManCanQty;
+	array string 50 aing,aman;
+	integer ingcnt,mancnt;
+	vector boolean vIngExst,vManExst; 
+	
 	
 	
 	tabs[0] = 0;
@@ -264,14 +271,7 @@ begin
 																end;
 															end; 
 															resetloop(IPRs2r);
-															/*ivsum[IVr.SVONr] = ivsum[IVr.SVONr] + IPrw.InvVal;
-															mtrw1 = matrowcnt(IVr);
-															For(j=0;j<mtrw;j=j+1) begin
-																matrowget(IVr,j,IVrw);
-																if(IVrw.stp==kInvoiceRowTypePrepayment)then begin
-																	ivsum[IVr.SVONr] = ivsum[IVr.SVONr] - IVrw.Sum;
-																end;
-															end;*/
+
 														end;
 													end;
 	  											ivsum[IVr.SVONr] = ivsum[IVr.SVONr] - IPrw.InvVal;
@@ -374,8 +374,10 @@ begin
 											end;
 											if(IVr.SalesMan==SVOr.CustomField7)then begin
 												outstring(tabs[7],0,SVOr.ServiceManager,false);
+												enginer = SVOr.ServiceManager;
 											end else begin
 												outstring(tabs[7],0,IVr.SalesMan,false);
+												enginer = IVr.SalesMan;
 											end;													
 										endformat;
 	  								if(INr.ItemType==3 or INr.ItemType==0)then begin  									
@@ -385,10 +387,39 @@ begin
 													ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] + IVrw.Sum;
 													totserv = totserv + ivsumserv[asvonr[i]];
 													supertotdolg = supertotdolg + IVrw.Sum;
+													akey = enginer & ":GOTOV:SERV";
+													vIngSum[akey] = vIngSum[akey] + IVrw.Sum;
+													if(vIngExst[enginer]==false)then begin
+														vIngExst[enginer] = true;
+														aing[ingcnt] = enginer;
+														ingcnt = ingcnt + 1;														
+													end;
+													akey = SVOr.Inspector & ":GOTOV:SERV";
+													vManSum[akey] = vManSum[akey] + IVrw.Sum;
+													if(vManExst[SVOr.Inspector]==false)then begin
+														vManExst[SVOr.Inspector] = true;
+														aman[mancnt] = SVOr.Inspector;
+														mancnt = mancnt + 1;														
+													end;
+													
 												end else begin
 													ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] - IVrw.Sum;
 													totserv = totserv - ivsumserv[asvonr[i]];
 													supertotdolg = supertotdolg - IVrw.Sum;
+													akey = enginer & ":GOTOV:SERV";
+													vIngSum[akey] = vIngSum[akey] - IVrw.Sum;
+													if(vIngExst[enginer]==false)then begin
+														vIngExst[enginer] = true;
+														aing[ingcnt] = enginer;
+														ingcnt = ingcnt + 1;														
+													end;
+													akey = SVOr.Inspector & ":GOTOV:SERV";
+													vManSum[akey] = vManSum[akey] - IVrw.Sum;
+													if(vManExst[SVOr.Inspector]==false)then begin
+														vManExst[SVOr.Inspector] = true;
+														aman[mancnt] = SVOr.Inspector;
+														mancnt = mancnt + 1;														
+													end;
 												end;
 	  									end;
 	  								end;
@@ -398,10 +429,38 @@ begin
 													ivsumservdet[asvonr[i]] = ivsumservdet[asvonr[i]] + IVrw.Sum;
 													totservdet = totservdet + ivsumservdet[asvonr[i]];
 													supertotdolgdet = supertotdolgdet + IVrw.Sum;
+													akey = enginer & ":GOTOV:DET";
+													vIngSum[akey] = vIngSum[akey] + IVrw.Sum;
+													if(vIngExst[enginer]==false)then begin
+														vIngExst[enginer] = true;
+														aing[ingcnt] = enginer;
+														ingcnt = ingcnt + 1;														
+													end;
+													akey = SVOr.Inspector & ":GOTOV:DET";
+													vManSum[akey] = vManSum[akey] + IVrw.Sum;
+													if(vManExst[SVOr.Inspector]==false)then begin
+														vManExst[SVOr.Inspector] = true;
+														aman[mancnt] = SVOr.Inspector;
+														mancnt = mancnt + 1;														
+													end;
 												end else begin
 													ivsumservdet[asvonr[i]] = ivsumservdet[asvonr[i]] - IVrw.Sum;
 													totservdet = totservdet - ivsumservdet[asvonr[i]];
 													supertotdolgdet = supertotdolgdet - IVrw.Sum;
+													akey = enginer & ":GOTOV:DET";
+													vIngSum[akey] = vIngSum[akey] - IVrw.Sum;
+													if(vIngExst[enginer]==false)then begin
+														vIngExst[enginer] = true;
+														aing[ingcnt] = enginer;
+														ingcnt = ingcnt + 1;														
+													end;
+													akey = SVOr.Inspector & ":GOTOV:DET";
+													vManSum[akey] = vManSum[akey] - IVrw.Sum;
+													if(vManExst[SVOr.Inspector]==false)then begin
+														vManExst[SVOr.Inspector] = true;
+														aman[mancnt] = SVOr.Inspector;
+														mancnt = mancnt + 1;														
+													end;
 												end;
 	  									end;
 	  								end;
@@ -581,10 +640,38 @@ begin
 													ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] + IVrw.Sum;
 													totserv = totserv + ivsumserv[asvonr[i]];
 													supertotdolg = supertotdolg + IVrw.Sum;
+													akey = enginer & ":NOPAY:SERV";
+													vIngSum[akey] = vIngSum[akey] + IVrw.Sum;
+													if(vIngExst[enginer]==false)then begin
+														vIngExst[enginer] = true;
+														aing[ingcnt] = enginer;
+														ingcnt = ingcnt + 1;														
+													end;
+													akey = SVOr.Inspector & ":NOPAY:SERV";
+													vManSum[akey] = vManSum[akey] + IVrw.Sum;
+													if(vManExst[SVOr.Inspector]==false)then begin
+														vManExst[SVOr.Inspector] = true;
+														aman[mancnt] = SVOr.Inspector;
+														mancnt = mancnt + 1;														
+													end;
 												end else begin
 													ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] - IVrw.Sum;
 													totserv = totserv - ivsumserv[asvonr[i]];
 													supertotdolg = supertotdolg - IVrw.Sum;
+													akey = enginer & ":NOPAY:SERV";
+													vIngSum[akey] = vIngSum[akey] - IVrw.Sum;
+													if(vIngExst[enginer]==false)then begin
+														vIngExst[enginer] = true;
+														aing[ingcnt] = enginer;
+														ingcnt = ingcnt + 1;														
+													end;
+													akey = SVOr.Inspector & ":NOPAY:SERV";
+													vManSum[akey] = vManSum[akey] - IVrw.Sum;
+													if(vManExst[SVOr.Inspector]==false)then begin
+														vManExst[SVOr.Inspector] = true;
+														aman[mancnt] = SVOr.Inspector;
+														mancnt = mancnt + 1;														
+													end;
 												end;
 	  									end;
 	  								end;
@@ -594,10 +681,38 @@ begin
 													ivsumservdet[asvonr[i]] = ivsumservdet[asvonr[i]] + IVrw.Sum;
 													totservdet = totservdet + ivsumservdet[asvonr[i]];
 													supertotdolgdet = supertotdolgdet + IVrw.Sum;
+													akey = enginer & ":NOPAY:DET";
+													vIngSum[akey] = vIngSum[akey] + IVrw.Sum;
+													if(vIngExst[enginer]==false)then begin
+														vIngExst[enginer] = true;
+														aing[ingcnt] = enginer;
+														ingcnt = ingcnt + 1;														
+													end;
+													akey = SVOr.Inspector & ":NOPAY:DET";
+													vManSum[akey] = vManSum[akey] + IVrw.Sum;
+													if(vManExst[SVOr.Inspector]==false)then begin
+														vManExst[SVOr.Inspector] = true;
+														aman[mancnt] = SVOr.Inspector;
+														mancnt = mancnt + 1;														
+													end;
 												end else begin
 													ivsumservdet[asvonr[i]] = ivsumservdet[asvonr[i]] - IVrw.Sum;
 													totservdet = totservdet - ivsumservdet[asvonr[i]];
 													supertotdolgdet = supertotdolgdet - IVrw.Sum;
+													akey = enginer & ":NOPAY:DET";
+													vIngSum[akey] = vIngSum[akey] - IVrw.Sum;
+													if(vIngExst[enginer]==false)then begin
+														vIngExst[enginer] = true;
+														aing[ingcnt] = enginer;
+														ingcnt = ingcnt + 1;														
+													end;
+													akey = SVOr.Inspector & ":NOPAY:DET";
+													vManSum[akey] = vManSum[akey] - IVrw.Sum;
+													if(vManExst[SVOr.Inspector]==false)then begin
+														vManExst[SVOr.Inspector] = true;
+														aman[mancnt] = SVOr.Inspector;
+														mancnt = mancnt + 1;														
+													end;
 												end;
 	  									end;
 	  								end;
@@ -774,10 +889,38 @@ begin
 												ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] + IVrw.Sum;
 												totserv = totserv + ivsumserv[asvonr[i]];
 												totdolgsum = totdolgsum + IVrw.Sum;
+												akey = enginer & ":DOLG:SERV";
+												vIngSum[akey] = vIngSum[akey] + IVrw.Sum;
+												if(vIngExst[enginer]==false)then begin
+													vIngExst[enginer] = true;
+													aing[ingcnt] = enginer;
+													ingcnt = ingcnt + 1;														
+												end;
+												akey = SVOr.Inspector & ":DOLG:SERV";
+												vManSum[akey] = vManSum[akey] + IVrw.Sum;
+												if(vManExst[SVOr.Inspector]==false)then begin
+													vManExst[SVOr.Inspector] = true;
+													aman[mancnt] = SVOr.Inspector;
+													mancnt = mancnt + 1;														
+												end;
 											end else begin
 												ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] - IVrw.Sum;
 												totserv = totserv - ivsumserv[asvonr[i]];
 												totdolgsum = totdolgsum - IVrw.Sum;
+												akey = enginer & ":DOLG:SERV";
+												vIngSum[akey] = vIngSum[akey] - IVrw.Sum;
+												if(vIngExst[enginer]==false)then begin
+													vIngExst[enginer] = true;
+													aing[ingcnt] = enginer;
+													ingcnt = ingcnt + 1;														
+												end;
+												akey = SVOr.Inspector & ":DOLG:SERV";
+												vManSum[akey] = vManSum[akey] - IVrw.Sum;
+												if(vManExst[SVOr.Inspector]==false)then begin
+													vManExst[SVOr.Inspector] = true;
+													aman[mancnt] = SVOr.Inspector;
+													mancnt = mancnt + 1;														
+												end;
 											end;
 	  								end;
 	  								if(INr.ItemType==1)then begin
@@ -785,10 +928,38 @@ begin
 												ivsumservdet[asvonr[i]] = ivsumservdet[asvonr[i]] + IVrw.Sum;
 												totservdet = totservdet + ivsumservdet[asvonr[i]];
 												totdolgsumdet = totdolgsumdet + IVrw.Sum;
+												akey = enginer & ":DOLG:DET";
+												vIngSum[akey] = vIngSum[akey] + IVrw.Sum;
+												if(vIngExst[enginer]==false)then begin
+													vIngExst[enginer] = true;
+													aing[ingcnt] = enginer;
+													ingcnt = ingcnt + 1;														
+												end;
+												akey = SVOr.Inspector & ":DOLG:DET";
+												vManSum[akey] = vManSum[akey] + IVrw.Sum;
+												if(vManExst[SVOr.Inspector]==false)then begin
+													vManExst[SVOr.Inspector] = true;
+													aman[mancnt] = SVOr.Inspector;
+													mancnt = mancnt + 1;														
+												end;
 											end else begin
 												ivsumservdet[asvonr[i]] = ivsumservdet[asvonr[i]] - IVrw.Sum;
 												totservdet = totservdet - ivsumservdet[asvonr[i]];
 												totdolgsumdet = totdolgsumdet - IVrw.Sum;
+												akey = enginer & ":DOLG:DET";
+												vIngSum[akey] = vIngSum[akey] - IVrw.Sum;
+												if(vIngExst[enginer]==false)then begin
+													vIngExst[enginer] = true;
+													aing[ingcnt] = enginer;
+													ingcnt = ingcnt + 1;														
+												end;
+												akey = SVOr.Inspector & ":DOLG:DET";
+												vManSum[akey] = vManSum[akey] - IVrw.Sum;
+												if(vManExst[SVOr.Inspector]==false)then begin
+													vManExst[SVOr.Inspector] = true;
+													aman[mancnt] = SVOr.Inspector;
+													mancnt = mancnt + 1;														
+												end;
 											end;
 	  								end;
 	  							end;
@@ -933,6 +1104,21 @@ begin
 						end;
 					end;
 				endformat;
+				vManCanQty[SVOr.Inspector] = vManCanQty[SVOr.Inspector] + 1;
+				vIngCanQty[SVOr.ServiceManager] = vIngCanQty[SVOr.ServiceManager] + 1;
+				if(nonblank(SVOr.GarNo))then begin
+					oldSVOr.InnerOrderNr = SVOr.GarNo;
+					if(readfirstkey("InnerOrderNr",oldSVOr,1,true))then begin
+						povtorsumotkaz = povtorsumotkaz + ivsumserv[asvonr[i]];
+						povtorqtyotkaz = povtorqtyotkaz + 1;
+						startformat(15);
+							outstring(tabs[0],0,"Повторный ремонт",false);
+							outstring(tabs[6],"DblSVOVcSer",SVOr.GarNo,false);
+						endformat;
+						vPovtor[SVOr.SerNr] = true;
+					end;
+				end;
+				
 				if(nonblank(vCuDomain[SVOr.CustCode]))then begin
 					if(nonblank(vCuDomain[SVOr.CustCode]))then begin
 						startformat(15);
@@ -958,21 +1144,6 @@ begin
 							outstring(tabs[2],0,vUTMTerm[SVOr.CustCode],false);
 						endformat;
 					end;
-					
-					if(nonblank(SVOr.GarNo))then begin
-						oldSVOr.InnerOrderNr = SVOr.GarNo;
-						if(readfirstkey("InnerOrderNr",oldSVOr,1,true))then begin
-							povtorsumotkaz = povtorsumotkaz + ivsumserv[asvonr[i]];
-							povtorqtyotkaz = povtorqtyotkaz + 1;
-							startformat(15);
-								outstring(tabs[0],0,"Повторный ремонт",false);
-								outstring(tabs[6],"DblSVOVcSer",SVOr.GarNo,false);
-							endformat;
-							vPovtor[SVOr.SerNr] = true;
-						end;
-					end;
-					
-					
 					tstr = "Отмененные:" & vUTMSource[SVOr.CustCode] & "->" & vCuDomain[SVOr.CustCode] & "("  & vUTMCampaign[SVOr.CustCode] & "|" & vUTMTerm[SVOr.CustCode] & ")";
 					if(vTrackFlag[tstr])then begin
 						vTrackSum[tstr] = vTrackSum[tstr] + 1;
@@ -1069,6 +1240,138 @@ begin
 			outstring(tabs[0],0,"Клиент не пришел",false);
 			outstring(tabs[3],0,totcanceled,false);
 		endformat;
+		gray_divider(0,1);
+		if(blank(RepSpec.f2))then begin
+			startformat(15);
+				outstring(tabs[0],0,"-==Статистика по инженерам==-",false);
+			endformat;
+			startformat(15);
+				outstring(tabs[0],0,"Услуги",false);
+			endformat;
+			startformat(15);
+				outstring(tabs[0],0,"Инженер",false);
+				outstring(tabs[2],0,"Оплачено",false);
+				outstring(tabs[4],0,"Неоплаченно",false);
+				outstring(tabs[6],0,"Долг",false);
+				outstring(tabs[7],0,"Отмена",false);
+			endformat;
+			tot1 = blankval;
+			tot2 = blankval;
+			tot3 = blankval;
+			tot4 = blankval;
+			For(i=0;i<ingcnt;i=i+1) begin
+				
+	  		startformat(15);
+	  			outstring(tabs[0],0,aing[i],false);
+					outstring(tabs[2],0,vIngSum[aing[i] & ":GOTOV:SERV"],false);
+					outstring(tabs[4],0,vIngSum[aing[i] & ":NOPAY:SERV"],false);
+					outstring(tabs[6],0,vIngSum[aing[i] & ":DOLG:SERV"],false);
+					outstring(tabs[7],0,vIngCanQty[aing[i]],false);
+				endformat;
+				tot1 = tot1 + vIngSum[aing[i] & ":GOTOV:SERV"];
+				tot2 = tot2 + vIngSum[aing[i] & ":NOPAY:SERV"];
+				tot3 = tot3 + vIngSum[aing[i] & ":DOLG:SERV"];
+				tot4 = tot4 + vIngCanQty[aing[i]];
+				gray_divider(0,1);
+			end; 
+			startformat(15);
+				outstring(tabs[0],0,"Всего",false);
+				outstring(tabs[2],0,tot1,false);
+				outstring(tabs[4],0,tot2,false);
+				outstring(tabs[6],0,tot3,false);
+				outstring(tabs[7],0,tot4,false);
+			endformat;
+			startformat(15);
+				outstring(tabs[0],0,"Детали",false);
+			endformat;
+			tot1 = blankval;
+			tot2 = blankval;
+			tot3 = blankval;
+			tot4 = blankval;
+			For(i=0;i<ingcnt;i=i+1) begin
+	  		startformat(15);
+	  			outstring(tabs[0],0,aing[i],false);
+					outstring(tabs[2],0,vIngSum[aing[i] & ":GOTOV:DET"],false);
+					outstring(tabs[4],0,vIngSum[aing[i] & ":NOPAY:DET"],false);
+					outstring(tabs[6],0,vIngSum[aing[i] & ":DOLG:DET"],false);
+				endformat;
+				tot1 = tot1 + vIngSum[aing[i] & ":GOTOV:DET"];
+				tot2 = tot2 + vIngSum[aing[i] & ":NOPAY:DET"];
+				tot3 = tot3 + vIngSum[aing[i] & ":DOLG:DET"];
+				gray_divider(0,1);
+			end; 
+			startformat(15);
+				outstring(tabs[0],0,"Всего",false);
+				outstring(tabs[2],0,tot1,false);
+				outstring(tabs[4],0,tot2,false);
+				outstring(tabs[6],0,tot3,false);
+			endformat;
+		end;
+		if(blank(RepSpec.f3))then begin
+			startformat(15);
+				outstring(tabs[0],0,"-==Статистика по менеджерам==-",false);
+			endformat;
+			gray_divider(0,1);
+			startformat(15);
+				outstring(tabs[0],0,"Услуги",false);
+			endformat;
+			startformat(15);
+				outstring(tabs[0],0,"Инженер",false);
+				outstring(tabs[2],0,"Оплачено",false);
+				outstring(tabs[4],0,"Неоплаченно",false);
+				outstring(tabs[6],0,"Долг",false);
+				outstring(tabs[7],0,"Отмена",false);
+			endformat;
+			tot1 = blankval;
+			tot2 = blankval;
+			tot3 = blankval;
+			tot4 = blankval;
+			For(i=0;i<mancnt;i=i+1) begin
+	  		startformat(15);
+	  			outstring(tabs[0],0,aman[i],false);
+					outstring(tabs[2],0,vManSum[aman[i] & ":GOTOV:SERV"],false);
+					outstring(tabs[4],0,vManSum[aman[i] & ":NOPAY:SERV"],false);
+					outstring(tabs[6],0,vManSum[aman[i] & ":DOLG:SERV"],false);
+					outstring(tabs[7],0,vManCanQty[aman[i]],false);
+				endformat;
+				tot1 = tot1 + vManSum[aman[i] & ":GOTOV:SERV"];
+				tot2 = tot2 + vManSum[aman[i] & ":NOPAY:SERV"];
+				tot3 = tot3 + vManSum[aman[i] & ":DOLG:SERV"];
+				tot4 = tot4 + vManCanQty[aman[i]];
+				gray_divider(0,1);
+			end; 
+			startformat(15);
+				outstring(tabs[0],0,"Всего",false);
+				outstring(tabs[2],0,tot1,false);
+				outstring(tabs[4],0,tot2,false);
+				outstring(tabs[6],0,tot3,false);
+				outstring(tabs[7],0,tot4,false);
+			endformat;
+			startformat(15);
+				outstring(tabs[0],0,"Детали",false);
+			endformat;
+			tot1 = blankval;
+			tot2 = blankval;
+			tot3 = blankval;
+			For(i=0;i<mancnt;i=i+1) begin
+	  		startformat(15);
+	  			outstring(tabs[0],0,aman[i],false);
+					outstring(tabs[2],0,vManSum[aman[i] & ":GOTOV:DET"],false);
+					outstring(tabs[4],0,vManSum[aman[i] & ":NOPAY:DET"],false);
+					outstring(tabs[6],0,vManSum[aman[i] & ":DOLG:DET"],false);
+				endformat;
+				tot1 = tot1 + vManSum[aman[i] & ":GOTOV:DET"];
+				tot2 = tot2 + vManSum[aman[i] & ":NOPAY:DET"];
+				tot3 = tot3 + vManSum[aman[i] & ":DOLG:DET"];
+				gray_divider(0,1);
+			end; 
+			startformat(15);
+				outstring(tabs[0],0,"Всего",false);
+				outstring(tabs[2],0,tot1,false);
+				outstring(tabs[4],0,tot2,false);
+				outstring(tabs[6],0,tot3,false);
+			endformat;
+		end;
 		gray_divider(0,1);
 		startformat(15);
 			outstring(tabs[0],0,"Статистика Binotel:",false);

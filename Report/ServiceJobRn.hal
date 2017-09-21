@@ -157,9 +157,9 @@ begin
 	vector val vIngSum;
 	vector val vManSum;
 	vector integer vIngCanQty,vManCanQty;
-	array string 50 aing,aman;
-	integer ingcnt,mancnt;
-	vector boolean vIngExst,vManExst; 
+	array string 50 aing,aman,arjct;
+	integer ingcnt,mancnt,irjct;
+	vector boolean vIngExst,vManExst,vrjct; 
 	
 	
 	
@@ -1082,6 +1082,8 @@ begin
 					if(SVOr.RejectReason=="Не смог сделать")then begin
 						totourcan = totourcan + 1;
 						outstring(tabs[5],0,1,false);
+						vManCanQty[SVOr.Inspector] = vManCanQty[SVOr.Inspector] + 1;
+						vIngCanQty[SVOr.ServiceManager] = vIngCanQty[SVOr.ServiceManager] + 1;
 					end else begin
 						outstring(tabs[5],0,blankval,false);
 						if(SVOr.RejectReason=="КЛИЕНТ НЕ ПРИШЕЛ")then begin
@@ -1104,8 +1106,14 @@ begin
 						end;
 					end;
 				endformat;
-				vManCanQty[SVOr.Inspector] = vManCanQty[SVOr.Inspector] + 1;
-				vIngCanQty[SVOr.ServiceManager] = vIngCanQty[SVOr.ServiceManager] + 1;
+				
+				if(vrjct[SVOr.RejectReason]==false)then begin
+					vrjct[SVOr.RejectReason]=true;
+					arjct[irjct] = SVOr.RejectReason;
+					irjct = irjct + 1;
+				end;
+				vIngCanQty[SVOr.RejectReason] = vIngCanQty[SVOr.RejectReason] + 1;
+				
 				if(nonblank(SVOr.GarNo))then begin
 					oldSVOr.InnerOrderNr = SVOr.GarNo;
 					if(readfirstkey("InnerOrderNr",oldSVOr,1,true))then begin
@@ -1232,14 +1240,22 @@ begin
 			outstring(tabs[0],0,"Отмен",false);
 			outstring(tabs[3],0,totcan,false);
 		endformat;
-		startformat(15);
+		
+		For(i=0;i<irjct;i=i+1) begin
+	  	startformat(15);
+				outstring(tabs[0],0,arjct[i],false);
+				outstring(tabs[3],0,vIngCanQty[arjct[i]],false);
+			endformat;	
+		end; 
+		
+		/*startformat(15);
 			outstring(tabs[0],0,"Отмен по нашей вине",false);
 			outstring(tabs[3],0,totourcan,false);
 		endformat;	
 		startformat(15);
 			outstring(tabs[0],0,"Клиент не пришел",false);
 			outstring(tabs[3],0,totcanceled,false);
-		endformat;
+		endformat;*/
 		gray_divider(0,1);
 		if(blank(RepSpec.f2))then begin
 			startformat(15);

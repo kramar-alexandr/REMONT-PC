@@ -141,7 +141,7 @@ begin
 	row IVVc IVrw,IV2rw;
 	row IPVc IPrw,IP2rw;
 	string 100 enginer,tphone,tstr,akey;
-	val totrem, totpayrem, totnopayrem, totcan, totourcan, totnopayremqty,totpayremqty,totcanceled,totpayremdet;
+	val totrem, totpayrem, totnopayrem, totcan, totourcan, totnopayremqty,totpayremqty,totcanceled,totpayremdet,totalcanceled;
 	val totdolgqty,totdolgsum,povtorsum,povtorsumdolg,povtorsumotkaz,povtorsumneoplat,totdolgsumdet,tot1,tot2,tot3,tot4;
 	record WSVc WSr;
 	record RLinkVc RLr;
@@ -156,7 +156,7 @@ begin
 	integer TrackCnt,povtorqty,povtorqtydolg,povtorqtyotkaz,povtorqtyneoplat;
 	vector val vIngSum;
 	vector val vManSum;
-	vector integer vIngCanQty,vManCanQty;
+	vector integer vIngCanQty,vManCanQty,vSVOQty;
 	array string 50 aing,aman,arjct;
 	integer ingcnt,mancnt,irjct;
 	vector boolean vIngExst,vManExst,vrjct; 
@@ -549,6 +549,8 @@ begin
 		black_divider(0,1);
 		startformat(15);
 			outstring(0,0,"Итого по оплаченным ремонтам",false);
+			outstring(50,0,"Количество:",false);
+			outstring(100,0,totpayremqty,false);
 			outstring(150,0,"Услуги:",false);
 			outstring(200,0,supertotdolg,false);
 			outstring(250,0,"Детали:",false);
@@ -799,6 +801,8 @@ begin
 		black_divider(0,1);
 		startformat(15);
 			outstring(0,0,"Итого по НЕ завершенным ремонтам",false);
+			outstring(50,0,"Количество:",false);
+			outstring(100,0,totnopayremqty,false);
 			outstring(150,0,"Услуги:",false);
 			outstring(200,0,supertotdolg,false);
 			outstring(250,0,"Детали:",false);
@@ -1046,6 +1050,8 @@ begin
 		black_divider(0,1);		
 		startformat(15);
 			outstring(0,0,"Итого по ремонтам в долг",false);
+			outstring(50,0,"Количество:",false);
+			outstring(100,0,totdolgqty,false);
 			outstring(150,0,"Услуги:",false);
 			outstring(200,0,totdolgsum,false);
 			outstring(250,0,"Детали:",false);
@@ -1090,6 +1096,7 @@ begin
 							totcanceled = totcanceled + 1;
 						end;
 					end;
+					totcanceled = totcanceled + 1;
 					outstring(tabs[6],0,blankval,false);
 					outstring(tabs[7],0,SVOr.RejectReason,false);
 					outstring(tabs[8],0,SVOr.StatusText,false);
@@ -1167,7 +1174,12 @@ begin
 		end;
 		
 		
-		
+		black_divider(0,1);		
+		startformat(15);
+			outstring(0,0,"Итого отмененных",false);
+			outstring(50,0,"Количество:",false);
+			outstring(100,0,totcanceled,false);
+		endformat;
 		
 		
 		black_divider(0,1);

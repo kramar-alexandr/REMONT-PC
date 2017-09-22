@@ -363,7 +363,7 @@ begin
   end;
   
 	WindowBegin("Заказ на обслуживание",SVODClass,CGview,-);
-  SetWRect(20,80,850,750);
+  SetWRect(20,80,850,770);
   Sizeable(-1,-1,0,0);
   AutoSizeWindow(false);
   DynamicWindow;
@@ -375,7 +375,7 @@ begin
   ActiveFieldOnNew("CustCode");  
   //FormName(SVOForm);
   vs = 20; h3 = 550;
-  Tile(0,140,false,"",CustCode);
+  Tile(0,160,false,"",CustCode);
   EditField(h=90,v=6, 82,"Номер",Normal,SerNr,false,TSerSClass);
   EnterSkip(CustCode);
   EditField(h2=240,v,250,"ФИО",Normal,Addr0,false,0);
@@ -404,14 +404,15 @@ begin
 	RadioButton(h+490,vm+=16,5,0,"На диагностике",OrderStatus);
 	RadioButton(h+490,vm+=16,4,0,"На согласовании",OrderStatus);
 	RadioButton(h+490,vm+=16,7,0,"Согласовано",OrderStatus);
+	RadioButton(h+490,vm+=16,1,0,"В ремонте",OrderStatus);
 	
 	vm = 30+16;
-	RadioButton(h+600,vm,1,0,"В ремонте",OrderStatus);
-	RadioButton(h+600,vm+=16,8,0,"В удал. сервисе",OrderStatus);
-	RadioButton(h+600,vm+=16,10,0,"Заказать запч.",OrderStatus);// Edit ************************** Wednesday, 23 August 2017 17:16:01
-	RadioButton(h+600,vm+=16,3,0,"Ожидает запч.",OrderStatus);
-  RadioButton(h+600,vm+=16,2,0,"Готов",OrderStatus);
-  RadioButton(h+600,vm+=16,6,0,"Отказ",OrderStatus);
+	RadioButton(h+595,vm,8,0,"В удал. сервисе",OrderStatus);
+	RadioButton(h+595,vm+=16,10,0,"Заказать запч.",OrderStatus);// Edit ************************** Wednesday, 23 August 2017 17:16:01
+	RadioButton(h+595,vm+=16,3,0,"Ожидает запч.",OrderStatus);
+  RadioButton(h+595,vm+=16,2,0,"Готов",OrderStatus);
+  RadioButton(h+595,vm+=16,11,0,"Вернули на доработку",OrderStatus);//Edit-------------------Vitalii 15:56 21.09.2017
+  RadioButton(h+595,vm+=16,6,0,"Отказ",OrderStatus);
     
   vm = 36;//vm + 32;
   
@@ -487,11 +488,14 @@ begin
   v=v+vs;  VTab(-35,v,-16,v+vs,ToolFlip,3,"C");
 
   v = v + 25;
+  
   checkbox(100,v-20,0,"VIP",VIPStatus);
   checkbox(200,v-20,0,"Товар от партнера с возвратом",ItemFrPartner); //Edit***************************Sasha2,14:19 08.12.2015
+  EditField(580,v-20,30,"Кол. возвратов на доработку",ViewOnly,StatusReturnCnt,false,0);
   if (left(CurrentUser,2)=="SA") then begin //Edit***************************Sasha2,17:33 05.09.2017
-    EditField(550,v-20,120,"Фамилия (Видно SA)",Normal,Priynato,false,0)
+    EditField(725,v-20,120,"Фамилия (Видно SA)",Normal,Priynato,false,0);
   end;
+  
  	EditField(h=110,v,200,"ФИО",Normal,Vlastnik,false,0);
  	EditField(h+300,v,-20,"SN Зарегистр.",Normal,CustomField8,false,0);
  	/*EditField(h,v+=vs,120,"Фамилия",Normal,Priynato,false,0);	
@@ -8010,7 +8014,7 @@ begin
   RadioButton(h,v+=16,1,0,"Дата оконч.диагн.",ArtMode);
   RadioButton(h,v+=16,2,0,"Дата оконч. рем.",ArtMode);
   RadioButton(h,v+=16,3,0,"Дата выдачи",ArtMode);
-  ButtonFrame(h+=148,v = vm,123,10,"Статус");
+  ButtonFrame(h+=148,v = vm,123,12,"Статус");
   
   
   CheckBox(h,v,0,"Предварит.",flags[13]);//9
@@ -8023,8 +8027,10 @@ begin
   CheckBox(h,v+=16,0,"Заказать запч.",flags[16]);//10// Edit ************************** Wednesday, 23 August 2017 17:17:05
   CheckBox(h,v+=16,0,"Ожидает запч.",flags[15]);//3
   CheckBox(h,v+=16,0,"Готов",flags[11]);//2 //Edit***************************Sasha2,14:55 15.05.2017 }
+  CheckBox(h,v+=16,0,"Вернули на доработку",flags[17]); // 11 //Edit-------------------Vitalii 16:21 21.09.2017
   CheckBox(h,v+=16,0,"Отказ",flags[12]);//6 //Edit***************************Sasha2,14:55 15.05.2017 }
   
+  //**************** NOT USED FLAGS : 5 7 8 18-.. ****************
   
   ButtonFrame(h+=148,v = vm,123,3,"Завершено");
   CheckBox(h,v,0,"Нет",flags[4]);
@@ -9496,5 +9502,67 @@ begin
   SpecialMenu("Создать контакт",' ',12,"CreateContactFromMailsm");         
   SpecialMenu("Ответить",'r',1,"MailReplyWithQuotesm"); 
   SpecialMenu("Переадресовать",'f',11,"ForwardMailDsm"); 
+  EndWindow;
+end;
+
+window IntINRClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vm,vs;
+  WindowBegin("Определите отчет по внутреннему складу",IntINRClass,CGRcW,RcType);
+  SetWRect(20,80,515,500);
+  v = 6; vs = 20; h = 165;
+  EditFieldTL(h,v, 150,"Товар",M4UStr,Normal,50,f1,false,INSClass);
+  EditFieldTL(h,v+=vs, 150,"Группа",M4UStr,Normal,11,f3,false,ITSClass);
+  EditFieldTL(h,v+=vs, 150,"Склад",M4UStr,Normal,10,f2,false,LocationSClass);
+  EditFieldTL(h,v+=vs, 150,"Отдел",M4UStr,Normal,10,AccStr,false,DepSClass);
+  EditFieldTL(h,v+=vs, 150,"Поставщик",M4UStr,Normal,10,LastAcc,false,VESClass);
+  if (HasCategories) then begin
+    EditFieldTL(h,v+=vs,50,"Категория поставщиков",M4UStr,Normal,5,f4,false,VGSClass);
+  end;
+  if (HasContactClassification) then begin
+    EditFieldTL(h,v+=vs,150,"Классиф. поставщиков",M4UStr,Normal,30,f5,false,CClassSClass);
+  end;
+  EditFieldTL(h,v+=vs, 100,"Дата",M4Date,Normal,0,d1,false,PasteCurDate);
+  ButtonFrame(h=30,vm=(v+=41),123,4,"Функция");
+  RadioButton(h,v,0,0,"Сводный",ArtMode);
+  RadioButton(h,v+=16,1,0,"Подробно",ArtMode);
+  RadioButton(h,v+=16,2,0,"По складам",ArtMode);
+  CheckBox(h+30,v+=16,0,"Вкл. суммы",flags[14]);
+  CheckBox(h,v+=30,0,"Только с остатком",UsedOnly);
+  CheckBox(h,v+=16,0,"Показывать сер. номера",flags[10]);
+//  CheckBox(h,v+=16,0,"Show Quantity 2",flags[15]);
+  CheckBox(h,v+=16,0,"Суммы - два знака",flags[16]);
+  ButtonFrame(h,v+=40,123,4,"Сортировка");
+  RadioButton(h,v,0,0,"Номер",flags[2]);
+  RadioButton(h,v+=16,1,0,"Группа",flags[2]);
+  RadioButton(h,v+=16,2,0,"Наименование",flags[2]);
+  RadioButton(h,v+=16,3,0,"Штрих-код",flags[2]);
+  
+  ButtonFrame(h+=148,v=vm,123,2,"Курс обмена");
+  RadioButton(h,v,0,0,"При поступлении",flags[1]);
+  RadioButton(h,v+=16,1,0,"Текущий",flags[1]);
+  ButtonFrame(h,v+=40,140,6,"Метод оценки");
+  RadioButton(h,v,0,0,"FIFO",flags[11]);
+  RadioButton(h,v+=16,1,0,"Отпускной цене",flags[11]);
+  RadioButton(h,v+=16,2,0,"Цене покупки",flags[11]);
+  RadioButton(h,v+=16,3,0,"FIFO и отпус. цене",flags[11]);
+  RadioButton(h,v+=16,4,0,"Средневзвешенной",flags[11]);
+  RadioButton(h,v+=16,5,0,"Средневзвешенной по складам",flags[11]);
+  
+  
+  ButtonFrame(h+=175,v = vm,123,12,"Статус");
+  CheckBox(h,v,0,"Предварит.",flags[3]);//9
+  CheckBox(h,v+=16,0,"В ожидании",flags[4]);//0
+  CheckBox(h,v+=16,0,"На диагностике",flags[5]);//5
+  CheckBox(h,v+=16,0,"На согласовании",flags[6]);//4
+  CheckBox(h,v+=16,0,"Согласовано",flags[7]);//7
+  CheckBox(h,v+=16,0,"В ремонте",flags[8]);//1
+  CheckBox(h,v+=16,0,"В удал. сервисе",flags[9]);//8
+  CheckBox(h,v+=16,0,"Заказать запч.",flags[12]);//10// Edit ************************** Wednesday, 23 August 2017 17:17:05
+  CheckBox(h,v+=16,0,"Ожидает запч.",flags[13]);//3
+  CheckBox(h,v+=16,0,"Готов",flags[15]);//2 //Edit***************************Sasha2,14:55 15.05.2017 }
+  CheckBox(h,v+=16,0,"Вернули на доработку",flags[17]); // 11 //Edit-------------------Vitalii 16:21 21.09.2017
+  CheckBox(h,v+=16,0,"Отказ",flags[18]);//6 //Edit***************************Sasha2,14:55 15.05.2017 }
   EndWindow;
 end;

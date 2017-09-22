@@ -322,6 +322,7 @@ begin
     RecordField(FastPMBN,M4Val,0,0);// Edit ************************** Friday, 28 July 2017 18:01:17
     RecordField(UserPass,M4Str,50,0);// Edit ************************** Tuesday, 29 August 2017 11:26:03
     RecordField(PlanVisitDate,M4Date,0,0);// Edit ************************** Tuesday, 29 August 2017 13:54:40
+    RecordField(StatusReturnCnt,M4Val,0,0);// Edit ************************** Tuesday, 8 September 2015 10:47:24
     
     ArrayField(NewSerialNr,M4Str,60,0);// Edit ************************** Friday, 9 June 2017 09:29:41
     

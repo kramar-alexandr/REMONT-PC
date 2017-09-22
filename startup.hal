@@ -192,6 +192,7 @@ begin
   SString(31506,"Заказать детали");
   SString(31507,"Укажите пароль от устройства или проставьте прочерк");
   SString(31508,"Укажите дату запланированого визита клиента");
+  SString(31509,"Вернули на доработку");
   
   StrSetBegin(3); /* Try to keep them in alphabetical order */
   StrSetText(AllowNPTSReprint," Перепечатать строки сч/ф (сенсорный экран)");

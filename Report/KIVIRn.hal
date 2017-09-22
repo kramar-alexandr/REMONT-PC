@@ -65,6 +65,7 @@ begin
 		
 		kivifound = false;
 		if(SVOr.Region=="’…‹KI")then begin kivifound = true; end;
+		if(SVOr.Region=="KIVI")then begin kivifound = true; end;
 		
 		if(matrowcnt(SVOr)>0)then begin
 			matrowget(SVOr,0,SVOrw);
@@ -77,6 +78,12 @@ begin
 			end;
 			if(StringInText("Kivi",Letr))then begin
 				kivifound = true;
+			end;
+			INr.Code = SVOrw.ArtCode;
+			if(readfirstmain(INr,1,true))then begin
+				if(INr.Group=="’…‹KI")then begin
+					kivifound = true;
+				end;
 			end;
 			
 		end;

@@ -9498,3 +9498,32 @@ begin
   SpecialMenu("Переадресовать",'f',11,"ForwardMailDsm"); 
   EndWindow;
 end;
+
+window WorkflowWClass:4
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer,iPhone,iPad,android,android_tab")
+begin
+  WindowBegin("Управление рабочими процессами",WorkflowWClass,CGother,RcType); //SP
+  UseView(RcVc);
+  CloseOnCancel;
+  DynamicWindow;
+  SetWRect(130,80,470,320);
+  Sizeable(100,100,0,0);
+  // AttachSubsetButton(-40,-15);
+  if (GuiType==kGuiAndroid) then begin
+    ToolBar;
+    PushButton(-70,5,-10,22,ToolNewActivity,"Новая задача");
+    EndToolBar;
+  end;
+  if (GuiType==kGuiCocoa or GuiType==kGuiiPhone or GuiType==kGuiAndroid) then begin
+    WorkflowManager(1,16,-16,-23,"links");
+  end else begin
+    DataList(0,0,-1,-1,"WorkflowManager");
+    DataListCell(1,3,21,18,AdjLeft,"TagImage","",M4Image);
+    DataListCell(1,3,21,18,AdjLeft,"TagImage","",M4Image);
+    DataListCell(1,23,-100,1,AdjLeft,"Person","Сотрудник",M4Str);
+    DataListCell(1,-95,-1,1,AdjLeft,"Timestamp","Метка времени",M4Str);
+    DataListCell(1,23,-1,11,AdjLeft,"Task","Задача",M4Str);
+
+  end;
+  EndWindow;
+end;

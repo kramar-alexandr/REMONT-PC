@@ -36,7 +36,6 @@ external procedure CutAreaLeft(var area,integer);
 SetLangMode(LangRussian,"RUS",0);
 
 
-
 updating
 procedure CreateCustomActivityFromSVO(record SVOVc SVOr,string acttype,string mainpersons,date transdate,string comment)
 begin
@@ -77,7 +76,7 @@ begin
 end;
 //------------------------------------------------------- proc added by dima-f 22.09.17
 updating
-procedure CopyUpdateActVc(var record ActVc Actr, string actResult)
+procedure CloseActivity(var record ActVc Actr, string actResult)
 begin
     record ActVc lActr;
     recordcopy(lActr,Actr);
@@ -103,7 +102,7 @@ begin
             if(Actr.ActType!="‘Žƒ‹")then begin testf1 = false; end;
             testf1 = (testf1 and testf);
             if(testf1)then begin
-                CopyUpdateActVc(Actr,"Ž’Š€‡");
+                CloseActivity(Actr,"Ž’Š€‡");
             end;
         end;
 
@@ -112,7 +111,7 @@ begin
             if(Actr.ActType!="‘Žƒ‹")then begin testf1 = false; end;
             testf1 = (testf1 and testf);
             if(testf1)then begin
-                CopyUpdateActVc(Actr,"ŽŠ");
+                CloseActivity(Actr,"ŽŠ");
             end;
         end;
         if(SVO2r.OrderStatus!=2 and SVOr.OrderStatus==2)then begin//ñîãëàñîâàíî
@@ -120,7 +119,7 @@ begin
             if(Actr.ActType!="‘Žƒ‹")then begin testf1 = false; end;
             testf1 = (testf1 and testf);
             if(testf1)then begin
-                CopyUpdateActVc(Actr,"ŽŠ");
+                CloseActivity(Actr,"ŽŠ");
             end;
         end;
         if(SVO2r.OrderStatus!=6 and SVOr.OrderStatus==6)then begin//ñîãëàñîâàíî
@@ -128,7 +127,7 @@ begin
             if(Actr.ActType!="‘Žƒ‹")then begin testf1 = false; end;
             testf1 = (testf1 and testf);
             if(testf1)then begin
-                CopyUpdateActVc(Actr,"ŽŠ");
+                CloseActivity(Actr,"ŽŠ");
             end;
         end;
 
@@ -137,7 +136,7 @@ begin
             if(Actr.ActType!="‘ŽƒŽŠ")then begin testf1 = false; end;
             testf1 = (testf1 and testf);
             if(testf1)then begin
-                CopyUpdateActVc(Actr,"ŽŠ");
+                CloseActivity(Actr,"ŽŠ");
             end;
         end;
 
@@ -146,7 +145,7 @@ begin
             if(Actr.ActType!="ZAKAZ")then begin testf1 = false; end;
             testf1 = (testf1 and testf);
             if(testf1)then begin
-                CopyUpdateActVc(Actr,"ŽŠ");
+                CloseActivity(Actr,"ŽŠ");
             end;
         end;
 
@@ -155,13 +154,13 @@ begin
             if(Actr.ActType!="RJCTD")then begin testf1 = false; end;
             testf1 = (testf1 and testf);
             if(testf1)then begin
-                CopyUpdateActVc(Actr,"ŽŠ");
+                CloseActivity(Actr,"ŽŠ");
             end;
             testf1 = true;
             if(Actr.ActType!="RJC")then begin testf1 = false; end;
             testf1 = (testf1 and testf);
             if(testf1)then begin
-                CopyUpdateActVc(Actr,"ŽŠ");
+                CloseActivity(Actr,"ŽŠ");
             end;
         end;
 
@@ -1058,11 +1057,11 @@ BEGIN
       if(SVHistr.SerialNr!=SVOrw.NewSerialNr) then begin testf=false; end;
       if(testf and SVHistr.Qty>-1)then begin
       	if(SVHistr.TransNr!=SVOr.SerNr)then begin
-					if(nonblank(tstr))then begin
-						tstr = tstr & "," & SVHistr.TransNr;
-					end else begin
-						tstr = SVHistr.TransNr;
-					end;
+            if(nonblank(tstr))then begin
+                tstr = tstr & "," & SVHistr.TransNr;
+            end else begin
+                tstr = SVHistr.TransNr;
+            end;
         end;
       end;
     end;

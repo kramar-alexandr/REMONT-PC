@@ -75,10 +75,97 @@ begin
 
   return;
 end;
+//------------------------------------------------------- proc added by dima-f 22.09.17
 updating
-procedure CloseActivityFromSVO()
+procedure CopyUpdateActVc(var record ActVc Actr, string actResult)
 begin
-    
+    record ActVc lActr;
+    recordcopy(lActr,Actr);
+    Actr.ActResult = actResult;
+    Actr.OKFlag = 1;
+    recordupdate(lActr,Actr,true);
+end;
+//------------------------------------------------------- proc added by dima-f 22.09.17
+updating
+procedure CloseActivitiesFromSVO(var record SVOVc SVOr,var record SVOVc SVO2r, var record ActVc Actr)
+begin
+    boolean TrHs,testf,testf1;
+    resetloop(Actr);
+    Actr.SVOSerNr = SVOr.SerNr;
+    TrHs = true;
+    while(loopkey("SVOSerNr",Actr,1,TrHs)) begin
+        testf = true;
+        if(Actr.SVOSerNr!=SVOr.SerNr)then begin TrHs=false; testf = false; end;
+        if(Actr.OKFlag>0)then begin testf = false; end;
+
+        if(SVO2r.OrderStatus!=4 and SVOr.OrderStatus==6)then begin//отказ
+            testf1 = true;
+            if(Actr.ActType!="СОГЛ")then begin testf1 = false; end;
+            testf1 = (testf1 and testf);
+            if(testf1)then begin
+                CopyUpdateActVc(Actr,"ОТКАЗ");
+            end;
+        end;
+
+        if(SVO2r.OrderStatus!=7 and SVOr.OrderStatus==7)then begin//согласовано
+            testf1 = true;
+            if(Actr.ActType!="СОГЛ")then begin testf1 = false; end;
+            testf1 = (testf1 and testf);
+            if(testf1)then begin
+                CopyUpdateActVc(Actr,"ОК");
+            end;
+        end;
+        if(SVO2r.OrderStatus!=2 and SVOr.OrderStatus==2)then begin//согласовано
+            testf1 = true;
+            if(Actr.ActType!="СОГЛ")then begin testf1 = false; end;
+            testf1 = (testf1 and testf);
+            if(testf1)then begin
+                CopyUpdateActVc(Actr,"ОК");
+            end;
+        end;
+        if(SVO2r.OrderStatus!=6 and SVOr.OrderStatus==6)then begin//согласовано
+            testf1 = true;
+            if(Actr.ActType!="СОГЛ")then begin testf1 = false; end;
+            testf1 = (testf1 and testf);
+            if(testf1)then begin
+                CopyUpdateActVc(Actr,"ОК");
+            end;
+        end;
+
+        if(SVO2r.OrderStatus!=1 and SVOr.OrderStatus==1)then begin//ушло в ремонт
+            testf1 = true;
+            if(Actr.ActType!="СОГОК")then begin testf1 = false; end;
+            testf1 = (testf1 and testf);
+            if(testf1)then begin
+                CopyUpdateActVc(Actr,"ОК");
+            end;
+        end;
+
+        if(SVO2r.OrderStatus==10 and SVOr.OrderStatus!=10)then begin//закрыть запрос на заказ деталей
+            testf1 = true;
+            if(Actr.ActType!="ZAKAZ")then begin testf1 = false; end;
+            testf1 = (testf1 and testf);
+            if(testf1)then begin
+                CopyUpdateActVc(Actr,"ОК");
+            end;
+        end;
+
+        if(nonblankdate(SVOr.RegDate))then begin//закрыть запрос напоминание о выдаче
+            testf1 = true;
+            if(Actr.ActType!="RJCTD")then begin testf1 = false; end;
+            testf1 = (testf1 and testf);
+            if(testf1)then begin
+                CopyUpdateActVc(Actr,"ОК");
+            end;
+            testf1 = true;
+            if(Actr.ActType!="RJC")then begin testf1 = false; end;
+            testf1 = (testf1 and testf);
+            if(testf1)then begin
+                CopyUpdateActVc(Actr,"ОК");
+            end;
+        end;
+
+    end;
 end;
 //--------------------------------------------------------- whole proc added by dima-f 22.09.17
 updating
@@ -856,109 +943,11 @@ BEGIN
 		end;
 	end;
 	resetloop(Actr);
-	
-	
 	logtext(0,"SVOVcRecordSaveAfter 2");
-  resetloop(Actr);
-  Actr.SVOSerNr = SVOr.SerNr;
-  TrHs = true;
-	while(loopkey("SVOSerNr",Actr,1,TrHs)) begin
-		testf = true;
-		if(Actr.SVOSerNr!=SVOr.SerNr)then begin TrHs=false; testf = false; end;
-		if(Actr.OKFlag>0)then begin testf = false; end;
-		
-		if(SVO2r.OrderStatus!=4 and SVOr.OrderStatus==6)then begin//отказ
-			testf1 = true;
-			if(Actr.ActType!="СОГЛ")then begin testf1 = false; end;
-			testf1 = (testf1 and testf);
-			if(testf1)then begin
-				recordcopy(lActr,Actr);
-				Actr.ActResult = "ОТКАЗ";
-				Actr.OKFlag = 1;
-				recordupdate(lActr,Actr,true);
-			end;
-		end;
-		
-		if(SVO2r.OrderStatus!=7 and SVOr.OrderStatus==7)then begin//согласовано
-			testf1 = true;
-			if(Actr.ActType!="СОГЛ")then begin testf1 = false; end;
-			testf1 = (testf1 and testf);
-			if(testf1)then begin
-				recordcopy(lActr,Actr);
-				Actr.ActResult = "ОК";
-				Actr.OKFlag = 1;
-				recordupdate(lActr,Actr,true);
-			end;
-		end;
-		if(SVO2r.OrderStatus!=2 and SVOr.OrderStatus==2)then begin//согласовано
-			testf1 = true;
-			if(Actr.ActType!="СОГЛ")then begin testf1 = false; end;
-			testf1 = (testf1 and testf);
-			if(testf1)then begin
-				recordcopy(lActr,Actr);
-				Actr.ActResult = "ОК";
-				Actr.OKFlag = 1;
-				recordupdate(lActr,Actr,true);
-			end;
-		end;
-		if(SVO2r.OrderStatus!=6 and SVOr.OrderStatus==6)then begin//согласовано
-			testf1 = true;
-			if(Actr.ActType!="СОГЛ")then begin testf1 = false; end;
-			testf1 = (testf1 and testf);
-			if(testf1)then begin
-				recordcopy(lActr,Actr);
-				Actr.ActResult = "ОТКАЗ";
-				Actr.OKFlag = 1;
-				recordupdate(lActr,Actr,true);
-			end;
-		end;
-		
-		if(SVO2r.OrderStatus!=1 and SVOr.OrderStatus==1)then begin//ушло в ремонт
-			testf1 = true;
-			if(Actr.ActType!="СОГОК")then begin testf1 = false; end;
-			testf1 = (testf1 and testf);
-			if(testf1)then begin
-				recordcopy(lActr,Actr);
-				Actr.ActResult = "ОК";
-				Actr.OKFlag = 1;
-				recordupdate(lActr,Actr,true);
-			end;		
-		end;	
-		
-		if(SVO2r.OrderStatus==10 and SVOr.OrderStatus!=10)then begin//закрыть запрос на заказ деталей
-			testf1 = true;
-			if(Actr.ActType!="ZAKAZ")then begin testf1 = false; end;
-			testf1 = (testf1 and testf);
-			if(testf1)then begin
-				recordcopy(lActr,Actr);
-				Actr.ActResult = "ОК";
-				Actr.OKFlag = 1;
-				recordupdate(lActr,Actr,true);
-			end;		
-		end;	
-		
-		if(nonblankdate(SVOr.RegDate))then begin//закрыть запрос напоминание о выдаче
-			testf1 = true;
-			if(Actr.ActType!="RJCTD")then begin testf1 = false; end;
-			testf1 = (testf1 and testf);
-			if(testf1)then begin
-				recordcopy(lActr,Actr);
-				Actr.ActResult = "ОК";
-				Actr.OKFlag = 1;
-				recordupdate(lActr,Actr,true);
-			end;
-			testf1 = true;
-			if(Actr.ActType!="RJC")then begin testf1 = false; end;
-			testf1 = (testf1 and testf);
-			if(testf1)then begin
-				recordcopy(lActr,Actr);
-				Actr.ActResult = "ОК";
-				Actr.OKFlag = 1;
-				recordupdate(lActr,Actr,true);
-			end;			
-		end;
-		
-	end;
+
+
+	CloseActivitiesFromSVO(SVOr,SVO2r,Actr);//--------------------------------- dima-f 22.09.17
+
 	
 	resetloop(Actr);
 	counter = 0;

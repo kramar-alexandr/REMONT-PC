@@ -20,7 +20,7 @@ begin
 	array string 255 worklist,workname;
 	vector boolean worktag;
 	vector integer workqty;
-	string 255 vkey,work;
+	string 255 vkey,work,partnum;
 	
 	array string 255 artklist,artkname;
 	vector boolean artktag;
@@ -85,10 +85,20 @@ begin
 		
 		if(testf)then begin
 			startformat(15);
+				outstring(0,"DblSVOVcSer",SVOr.InnerOrderNr,false);
 				outstring(0,0,SVOr.GetItemDate,false);
 				outstring(50,0,"???",false);
 				outstring(80,0,SVOr.RegDate,false);
-				outstring(130,0,SVOrw.ArtCode,false);
+				
+				partnum = SVOrw.ArtCode;
+				if(left(partnum,5)=="KIVI_")then begin
+					partnum = mid(partnum,5,len(partnum)-5);
+				end;
+				if(right(partnum,1)=="_")then begin
+					partnum = left(partnum,len(partnum)-1);
+				end;
+				
+				outstring(130,0,partnum,false);
 				diagstr = left(SVOrw.ArtCode,2);
 				
 				if(left(SVOrw.ArtCode,5)=="KIVI_")then begin

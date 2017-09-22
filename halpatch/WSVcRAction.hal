@@ -476,11 +476,13 @@ begin
     res = -1;
     goto LWSVcRecordCheck;
   end;
-
-  if (blank(WSp.EMCode)) then begin
-    RecordCheckError(1058,"",-1,"EMCode");      
-    res = -1;
-    goto LWSVcRecordCheck;
+	
+	if(WSp.OKFlag>0)then begin
+		if (blank(WSp.EMCode)) then begin
+			RecordCheckError(1058,"",-1,"EMCode");      
+			res = -1;
+			goto LWSVcRecordCheck;
+		end;
   end;
   // Edit Start ---------------------------------------------- Edit Start
 	//Monday, 25 November 2013 10:10:41

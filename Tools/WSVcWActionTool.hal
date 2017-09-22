@@ -574,7 +574,7 @@ begin
     WSp.Objects = SVOr.Objects;
     WSp.Phone = SVOr.Phone;
     WSp.Fax = SVOr.Fax;
-    WSp.EMCode = USr.Code;
+    //WSp.EMCode = USr.Code;// Edit ************************** Friday, 22 September 2017 13:56:16
     WSp.EMName = USr.Name;
     WSp.CurncyCode = SVOr.CurncyCode;
     WSp.FrRate = SVOr.FrRate;

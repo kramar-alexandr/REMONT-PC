@@ -59,7 +59,7 @@ begin
   		Actr.TodoFlag = kTodoFlagTodo;
   		Actr.SymbNr = 3;
   		Actr.ActType = acttype;
-  	  Actr.StartTime = currenttime;//StringToTime("00:00:00");
+  	  Actr.StartTime = StringToTime("00:00:00");//--------------------------------- dima-f 22.09.17
   	  Actr.TransDate = transdate;
   	  Actr.EndDate = blankd;
   		Actr.Phone = curPhone;
@@ -75,7 +75,67 @@ begin
 
   return;
 end;
+updating
+procedure CloseActivityFromSVO()
+begin
+    
+end;
+//--------------------------------------------------------- whole proc added by dima-f 22.09.17
+updating
+procedure CreateActivitiesFromSVO(record SVOVc SVOr, record SVOVc SVO2r, boolean saveAfter)
+begin
+    if(saveAfter) begin //SVOVcRecordSaveAfter
+        if(SVOr.GetItemFlag>0)then begin
+            CreateActFromSVOToEnginer(SVOr,"");
+        end;
+        if (SVOr.OrderStatus==2 or NonBlankDate(SVOr.RegDate)) then begin
+            CreateActFromSVOForInspectorIfItemIssued(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
+        end;
+        if (SVOr.OrderStatus==6 or NonBlankDate(SVOr.RegDate)) then begin
+            //CreateActFromSVOForInspectorIfItemRejected(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
+            CreateCustomActivityFromSVO(SVOr,"RJCTD",SVOr.Inspector,addday(currentdate,5),"Напомнить клиенту забрать технику без ремонта.");
+            CreateCustomActivityFromSVO(SVOr,"RJC",SVOr.ServiceManager,currentdate,"Заказ отменен. Собрать устройство на выдачу!");
+        end;
+        if (SVOr.OrderStatus==7) then begin
+            CreateCustomActivityFromSVO(SVOr,"СОГОК",SVOr.ServiceManager,currentdate,"Ремонт согласован!");//----------------- dima-f 22.09.17
+        end;
+    end else begin //SVOVcRecordUpdateAfter
+        if(SVOr.GetItemFlag>0)then begin
+            CreateActFromSVOToEnginer(SVOr,"");
+        end;
+        if ((SVOr.OrderStatus==2 and SVO2r.OrderStatus!=2) or (BlankDate(SVO2r.RegDate) and NonBlankDate(SVOr.RegDate))) then begin
+            CreateActFromSVOForInspectorIfItemIssued(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
+        end;
+        if ((SVOr.OrderStatus==6 and SVO2r.OrderStatus!=6) or (BlankDate(SVO2r.RegDate) and NonBlankDate(SVOr.RegDate))) then begin
+            //CreateActFromSVOForInspectorIfItemRejected(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
 
+            CreateCustomActivityFromSVO(SVOr,"RJCTD",SVOr.Inspector,addday(currentdate,5),"Напомнить клиенту забрать технику без ремонта.");
+            CreateCustomActivityFromSVO(SVOr,"RJC",SVOr.ServiceManager,currentdate,"Заказ отменен. Собрать устройство на выдачу!");
+
+        end;
+        if (SVOr.OrderStatus==7 and SVO2r.OrderStatus!=7) then begin
+            CreateCustomActivityFromSVO(SVOr,"СОГОК",SVOr.ServiceManager,currentdate,"Ремонт согласован!");//----------------- dima-f 22.09.17
+        end;
+
+        if (SVOr.OrderStatus==4 and SVO2r.OrderStatus!=4) then begin
+            if(nonblank(SVOr.Inspector))begin
+                CreateCustomActivityFromSVO(SVOr,"СОГЛ",SVOr.Inspector,currentdate,"Согласовать ремонт!");//----------------- dima-f 22.09.17
+            end else begin
+                if (NonBlank(SVOr.CustomField7)) then begin
+                    CreateCustomActivityFromSVO(SVOr,"СОГЛ",SVOr.Inspector,currentdate,"Согласовать ремонт!");//----------------- dima-f 22.09.17
+                end;
+            end;
+        end;
+
+        if (SVOr.OrderStatus==10 and SVO2r.OrderStatus!=10) then begin// ZAKAZ DETALEY
+            CreateCustomActivityFromSVO(SVOr,"ZAKAZ","КУМКО",currentdate,"Заказать детали!");
+            CreateCustomActivityFromSVO(SVOr,"ZAKAZ",SVOr.Inspector & "," & "КУМКО",addday(currentdate,1),"Напомнить заказать детали!");
+        end;
+    end;
+end;
+
+/* ------------------------------------------------------------------ outdated procs, should be removed
+--------------------------------------------------------------------- after testing dima-f 22.09.17
 updating
 procedure CreateNaSoglasActivity(record SVOVc SVOr)
 begin
@@ -123,7 +183,6 @@ begin
   return;
 end;
 
-//Edit***************************Sasha2,16:48 27.06.2017 {
 updating
 procedure CreateApprovedActivity(record SVOVc SVOr)
 begin
@@ -159,7 +218,8 @@ begin
     end;
 
   return;
-end; //Edit***************************Sasha2,16:48 27.06.2017 }
+end;
+*/
 
 global
 function Boolean GetNextInnerOrderNr(var string InnerOrderNr, string SalesGroup)
@@ -559,7 +619,7 @@ END;
 
 // Edit Start ---------------------------------------------- Edit Start
 	//Thursday, 14 July 2011 12:26:15
-	global
+global
 updating function LongInt SVOVcRecordSaveAfter(var record SVOVc SVOr,record SVOVc SVO2r,LongInt stat,LongInt long4)
 BEGIN
   LongInt res;
@@ -708,20 +768,7 @@ BEGIN
     end;
   end;
 	
-	if(SVOr.GetItemFlag>0)then begin
-		CreateActFromSVOToEnginer(SVOr,"");
-	end;
-	if (SVOr.OrderStatus==2 or NonBlankDate(SVOr.RegDate)) then begin
-    CreateActFromSVOForInspectorIfItemIssued(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
-	end;
-	if (SVOr.OrderStatus==6 or NonBlankDate(SVOr.RegDate)) then begin
-    //CreateActFromSVOForInspectorIfItemRejected(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
-    CreateCustomActivityFromSVO(SVOr,"RJCTD",SVOr.Inspector,addday(currentdate,5),"Напомнить клиенту забрать технику без ремонта.");
-    CreateCustomActivityFromSVO(SVOr,"RJC",SVOr.ServiceManager,currentdate,"Заказ отменен. Собрать устройство на выдачу!");
-	end;
-	if (SVOr.OrderStatus==7) then begin
-    CreateApprovedActivity(SVOr); //Edit***************************Sasha2,17:02 27.06.2017
-	end;
+  CreateActivitiesFromSVO(SVOr,SVO2r,true);//---------------------------- dima-f 22.09.17
   	
   //SENDFIRSTSMS(SVOr);
   PhonesFromSVO(SVOr.SerNr);//Edit-------------------Vitalii 17:10 03.11.2016
@@ -769,7 +816,7 @@ updating function LongInt SVOVcRecordUpdateAfter(var record SVOVc SVOr,record SV
 BEGIN
   LongInt res;
   record SVOHistSerialVc SVHistr;// Edit ************************** Thursday, 14 July 2011 12:31:04
-  row SVOVc SVOrw;// Edit ************************** Thursday, 14 July 2011 12:31:04
+  row SVOVc SVOrw;// Edit ********************************* Thursday, 14 July 2011 12:31:04
   string 200 tstr,comment;// Edit ************************** Thursday, 14 July 2011 12:31:03
   boolean testf,TrHs;// Edit ************************** Thursday, 14 July 2011 12:31:02
   integer mtrw,i,cnt;// Edit ************************** Thursday, 14 July 2011 12:31:01
@@ -929,7 +976,7 @@ BEGIN
   				Actr.ActResult = "КП";
   				Actr.OKFlag = 1;
   			end;
-  			
+
   			logtext(0,"Try Close OJK Act from SVO update " & SVOr.SerNr);
   			recordstore(Actr,true);
   			logtext(0,"ActVcRecordUpdateAfter " & Actr.MainPersons & " UpdateToDoWclass");
@@ -1125,32 +1172,8 @@ BEGIN
 		comment = USetStr(31059);
 		CreateNoterChangeInSVO(SVOr,tstr,comment);
 	end;
-	
-	if(SVOr.GetItemFlag>0)then begin
-		CreateActFromSVOToEnginer(SVOr,"");
-	end;
-	if ((SVO2r.OrderStatus!=2 and SVOr.OrderStatus==2) or (BlankDate(SVO2r.RegDate) and NonBlankDate(SVOr.RegDate))) then begin
-    CreateActFromSVOForInspectorIfItemIssued(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
-	end;
-	if ((SVO2r.OrderStatus!=6 and SVOr.OrderStatus==6) or (BlankDate(SVO2r.RegDate) and NonBlankDate(SVOr.RegDate))) then begin
-    //CreateActFromSVOForInspectorIfItemRejected(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
-        
-    CreateCustomActivityFromSVO(SVOr,"RJCTD",SVOr.Inspector,addday(currentdate,5),"Напомнить клиенту забрать технику без ремонта.");
-    CreateCustomActivityFromSVO(SVOr,"RJC",SVOr.ServiceManager,currentdate,"Заказ отменен. Собрать устройство на выдачу!");
-    
-	end;
-	if (SVO2r.OrderStatus!=7 and SVOr.OrderStatus==7) then begin
-    CreateApprovedActivity(SVOr); //Edit***************************Sasha2,17:02 27.06.2017
-	end;
-	if (SVO2r.OrderStatus!=4 and SVOr.OrderStatus==4) then begin
-    CreateNaSoglasActivity(SVOr); //Edit***************************Sasha2,17:02 27.06.2017
-	end;
-	
-	if (SVOr.OrderStatus==10 and SVO2r.OrderStatus!=10) then begin// ZAKAZ DETALEY
-    CreateCustomActivityFromSVO(SVOr,"ZAKAZ","КУМКО",currentdate,"Заказать детали!");
-    CreateCustomActivityFromSVO(SVOr,"ZAKAZ",SVOr.Inspector & "," & "КУМКО",addday(currentdate,1),"Напомнить заказать детали!");
-	end;
-	
+
+  CreateActivitiesFromSVO(SVOr,SVO2r,false);//---------------------------- dima-f 22.09.17
   PhonesFromSVO(SVOr.SerNr);//Edit-------------------Vitalii 17:09 03.11.2016
   
   SVOVcRecordUpdateAfter = res;

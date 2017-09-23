@@ -513,7 +513,7 @@ begin
   EditField(h,v+=vs,300,"Другое:",Normal,Inshe,false,0);
   
   if(windowsmode==1)then begin
-  	TextField(h+310,105,-10,180,Math2,0);
+  	TextField(h+310,105,-10,160,Math2,0);
   end else begin
   	TextField(h+310,105,-10,265,Math2,0);
   end;
@@ -523,7 +523,7 @@ begin
   EditField(h+120,v,20,"Гарантия",Normal,Garanty,false,0);
   EditField(h+230,v,60,"Пароль устр.",Normal,UserPass,false,0);
   EditField(h,v+=vs,100,"Гарант. №",Normal,GarNo,false,0);
-  EditField(h+200,v,100,"Гарант. от даты",Normal,GarDate,false,PasteCurDate);
+  EditField(h+200,v,90,"Гарант. от даты",Normal,GarDate,false,PasteCurDate);
   EditField(h+380,v	,-20,"Сообщение",Normal,SVOChatSend,false,0);
 	EnterSkip(SVOChatSend);
   

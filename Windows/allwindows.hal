@@ -363,7 +363,7 @@ begin
   end;
   
 	WindowBegin("Заказ на обслуживание",SVODClass,CGview,-);
-  SetWRect(20,80,850,770);
+  SetWRect(20,80,850,750);
   Sizeable(-1,-1,0,0);
   AutoSizeWindow(false);
   DynamicWindow;
@@ -396,7 +396,7 @@ begin
   EditField(260,vm+=20,100,"Ответственный менеджер",Normal,Inspector,false,UserSClass);
   EditField(500,vm,60,"Запланированый визит",Normal,PlanVisitDate,false,PasteCurDate); //Edit***************************Sasha2,16:52 09.06.2017
 
-  vm = 30;
+  vm = 28;
   ButtonFrame(h+490,vm+16,220,6,"Статус");
   RadioButton(h+490,vm+=16,9,0,"Предварит.",OrderStatus);
 	RadioButton(h+490,vm+=16,0,0,"В ожидании",OrderStatus);
@@ -406,12 +406,12 @@ begin
 	RadioButton(h+490,vm+=16,7,0,"Согласовано",OrderStatus);
 	RadioButton(h+490,vm+=16,1,0,"В ремонте",OrderStatus);
 	
-	vm = 30+16;
+	vm = 28+16;
 	RadioButton(h+595,vm,8,0,"В удал. сервисе",OrderStatus);
 	RadioButton(h+595,vm+=16,10,0,"Заказать запч.",OrderStatus);// Edit ************************** Wednesday, 23 August 2017 17:16:01
 	RadioButton(h+595,vm+=16,3,0,"Ожидает запч.",OrderStatus);
   RadioButton(h+595,vm+=16,2,0,"Готов",OrderStatus);
-  RadioButton(h+595,vm+=16,11,0,"Вернули на доработку",OrderStatus);//Edit-------------------Vitalii 15:56 21.09.2017
+  RadioButton(h+595,vm+=16,11,0,"Вернули на дораб.",OrderStatus);//Edit-------------------Vitalii 15:56 21.09.2017
   RadioButton(h+595,vm+=16,6,0,"Отказ",OrderStatus);
     
   vm = 36;//vm + 32;
@@ -480,12 +480,12 @@ begin
   vs = 20;
   v = 18; VTab(-35,v,-16,v+vs,ToolFlip,1,"A");
   v=v+vs;  VTab(-35,v,-16,v+vs,ToolFlip,2,"B");
-  v = v + 25;
+  v = v + 40;
   checkbox(100,v-20,0,"VIP",VIPStatus);
-  checkbox(200,v-20,0,"Товар от партнера с возвратом",ItemFrPartner); //Edit***************************Sasha2,14:19 08.12.2015
-  EditField(580,v-20,30,"Кол. возвратов на доработку",ViewOnly,StatusReturnCnt,false,0);
+  checkbox(170,v-20,0,"Товар от партнера с возвратом",ItemFrPartner); //Edit***************************Sasha2,14:19 08.12.2015
+  EditField(560,v-20,30,"Кол. возвратов на доработку",ViewOnly,StatusReturnCnt,false,0);
   if (left(CurrentUser,2)=="SA") then begin //Edit***************************Sasha2,17:33 05.09.2017
-    EditField(725,v-20,120,"Фамилия (Видно SA)",Normal,Priynato,false,0);
+    EditField(725,v-20,70,"Фамилия (Видно SA)",Normal,Priynato,false,0);
   end;
   
  	EditField(h=110,v,200,"ФИО",Normal,Vlastnik,false,0);
@@ -521,7 +521,7 @@ begin
   EditField(h,v+=vs,300,"Другое:",Normal,Inshe,false,0);
   
   TextField(h+310,125,-10,-40,Math2,0);
-  EditField(h+380,-25,-20,"Сообщение",Normal,SVOChatSend,false,0);
+  EditField(h+380,-20,-20,"Сообщение",Normal,SVOChatSend,false,0);
 	EnterSkip(SVOChatSend);
   //v=v+10;
   EditField(h,v+=vs,50,"Производитель",Normal,Region,false,ITSClass);

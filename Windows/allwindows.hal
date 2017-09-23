@@ -363,7 +363,7 @@ begin
   end;
   
 	WindowBegin("Заказ на обслуживание",SVODClass,CGview,-);
-  SetWRect(20,80,850,750);
+  SetWRect(20,80,850,700);
   Sizeable(-1,-1,0,0);
   AutoSizeWindow(false);
   DynamicWindow;
@@ -515,13 +515,12 @@ begin
   EditField(h,v+=vs,300,"Комментарий",Normal,Comment2,false,0);
   EditField(h,v+=vs,300,"",Normal,Comment4,false,0);
   v=v+10;
-  EditField(h,v+=vs-10,300,"Батарея:",Normal,Batary,false,0);
-  EditField(h,v+=vs,300,"Зар. устройство:",Normal,Zaryadka,false,0);
+  EditField(h,v+=vs-10,70,"Батарея:",Normal,Batary,false,0);
+  EditField(h+180,v,70,"Зар. устройство:",Normal,Zaryadka,false,0);
   EditField(h,v+=vs,300,"Другое:",Normal,Inshe,false,0);
   
-  TextField(h+310,125,-10,-40,Math2,0);
-  EditField(h+380,-20,-20,"Сообщение",Normal,SVOChatSend,false,0);
-	EnterSkip(SVOChatSend);
+  TextField(h+310,125,-10,280,Math2,0);
+  
   //v=v+10;
   EditField(h,v+=vs,50,"Производитель",Normal,Region,false,ITSClass);
   
@@ -529,6 +528,8 @@ begin
   EditField(h+230,v,60,"Пароль устр.",Normal,UserPass,false,0);
   EditField(h,v+=vs,100,"Гарант. №",Normal,GarNo,false,0);
   EditField(h+200,v,100,"Гарант. от даты",Normal,GarDate,false,PasteCurDate);
+  EditField(h+380,v	,-20,"Сообщение",Normal,SVOChatSend,false,0);
+	EnterSkip(SVOChatSend);
   
   SpecialMenu("Статус заказа на обсл.",'r',0,"SVOStaDsm");
   SpecialMenu("Статус клиента",'e',1,"SVOCustStatDsm");

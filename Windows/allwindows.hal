@@ -363,7 +363,7 @@ begin
   end;
   
 	WindowBegin("Заказ на обслуживание",SVODClass,CGview,-);
-  SetWRect(20,80,850,650);
+  SetWRect(20,80,860,650);
   Sizeable(-1,-1,0,0);
   AutoSizeWindow(false);
   DynamicWindow;

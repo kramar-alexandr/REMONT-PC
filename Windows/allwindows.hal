@@ -363,7 +363,7 @@ begin
   end;
   
 	WindowBegin("Заказ на обслуживание",SVODClass,CGview,-);
-  SetWRect(20,80,850,700);
+  SetWRect(20,80,850,650);
   Sizeable(-1,-1,0,0);
   AutoSizeWindow(false);
   DynamicWindow;
@@ -481,37 +481,34 @@ begin
   v = 18; VTab(-35,v,-16,v+vs,ToolFlip,1,"A");
   v=v+vs;  VTab(-35,v,-16,v+vs,ToolFlip,2,"B");
   v = v + 40;
-  checkbox(100,v-20,0,"VIP",VIPStatus);
-  checkbox(170,v-20,0,"Товар от партнера с возвратом",ItemFrPartner); //Edit***************************Sasha2,14:19 08.12.2015
-  EditField(560,v-20,30,"Кол. возвратов на доработку",ViewOnly,StatusReturnCnt,false,0);
+  checkbox(20,v-20,0,"VIP",VIPStatus);
+  checkbox(70,v-20,0,"Товар от партнера с возвр.",ItemFrPartner); //Edit***************************Sasha2,14:19 08.12.2015
+  EditField(310,v-20,30,"Доработок",ViewOnly,StatusReturnCnt,false,0);
+  CheckBox(350,v-20,0,"Без СМС",NoSMS);
+ 	EditField(480,v-20,20,"Пост.Кл.",Normal,CustomField9,false,0);	// Edit ************************** Thursday, 30 June 2016 10:21:49
+  HalPushButton(520,v-20,570,v+15,"ServClientOrderDsm","Отчет");
   if (left(CurrentUser,2)=="SA") then begin //Edit***************************Sasha2,17:33 05.09.2017
     EditField(725,v-20,70,"Фамилия (Видно SA)",Normal,Priynato,false,0);
   end;
   
  	EditField(h=110,v,200,"ФИО",Normal,Vlastnik,false,0);
  	EditField(h+300,v,-20,"SN Зарегистр.",Normal,CustomField8,false,0);
- 	/*EditField(h,v+=vs,120,"Фамилия",Normal,Priynato,false,0);	
- 	EditField(h+160,v,120,"Имя",Normal,Name,false,0);	
- 	EditField(h+360,v,120,"Отчество",Normal,MiddleName,false,0);	*/
  	
 	EditField(h,v+=vs,100,"Тел.1",Normal,Kontinfo1,false,0);	
 	HalPushButton(h+110,v-3,h+180,v+15,"CallToClientDsm","Звонок");
 	EditField(h+220,v,100,"Тел.2",Normal,Phone2,false,0);	
 	HalPushButton(h+330,v-3,h+410,v+15,"CallToClient2Dsm","Звонок");
 	
-	CheckBox(-270,v,0,"Без СМС",NoSMS);
 	
-	EditField(-130,v,-105,"Пост.Кл.",Normal,CustomField9,false,0);	// Edit ************************** Thursday, 30 June 2016 10:21:49
-	HalPushButton(-90,v-3,-40,v+15,"ServClientOrderDsm","Отчет");
+	
+	
 	
 	EditField(h,v+=vs,300,"e-mail",Normal,Kontinfo2,false,0);	
 	EditField(h,v+=vs,300,"Адрес клиента",Normal,Kontinfo3,false,0);
   v=v+10;
-  //EditField(h,v+=vs,300,"Жалобы собств-ка",Normal,Comment1,false,IssueSClass);
-  //EditField(h,v+=vs,300,"Внешний вид",Normal,Comment3,false,DefectSClass);// Edit ************************** Friday, 29 May 2015 17:19:51
   EditField(h,v+=vs,300,"Жалобы собств-ка",Normal,Comment1,false,0);
   EditField(h,v+=vs,300,"Внешний вид",Normal,Comment3,false,0);
-  v=v+10;
+  //v=v+10;
   EditField(h,v+=vs,300,"Комментарий",Normal,Comment2,false,0);
   EditField(h,v+=vs,300,"",Normal,Comment4,false,0);
   v=v+10;
@@ -520,7 +517,7 @@ begin
   EditField(h,v+=vs,300,"Другое:",Normal,Inshe,false,0);
   
   if(windowsmode==1)then begin
-  	TextField(h+310,125,-10,200,Math2,0);
+  	TextField(h+310,125,-10,180,Math2,0);
   end else begin
   	TextField(h+310,125,-10,280,Math2,0);
   end;

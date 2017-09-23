@@ -364,7 +364,7 @@ begin
   
 	WindowBegin("Заказ на обслуживание",SVODClass,CGview,-);
   if(windowsmode==1)then begin
-  	SetWRect(20,80,860,680);
+  	SetWRect(20,80,860,630);
   end else begin
   	SetWRect(20,80,880,680);
   end;
@@ -459,7 +459,7 @@ begin
   //EditField(h2+125,v+=20,60, "PlanShip",Normal,PlanShip,false,0);/////////
   EnterSkip(Math);
   if(windowsmode==1)then begin
-  	Tile(2,380,false,"2",Math);
+  	Tile(2,260,false,"2",Math);
   end else begin
   	Tile(2,340,false,"2",Math);
   end;

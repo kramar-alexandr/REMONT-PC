@@ -513,7 +513,7 @@ begin
   EditField(h,v+=vs,300,"Другое:",Normal,Inshe,false,0);
   
   if(windowsmode==1)then begin
-  	TextField(h+310,125,-10,180,Math2,0);
+  	TextField(h+310,105,-10,180,Math2,0);
   end else begin
   	TextField(h+310,105,-10,265,Math2,0);
   end;

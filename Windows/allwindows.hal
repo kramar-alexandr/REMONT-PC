@@ -363,7 +363,11 @@ begin
   end;
   
 	WindowBegin("Заказ на обслуживание",SVODClass,CGview,-);
-  SetWRect(20,80,860,650);
+  if(windowsmode==1)then begin
+  	SetWRect(20,80,860,680);
+  end else begin
+  	SetWRect(20,80,880,680);
+  end;
   Sizeable(-1,-1,0,0);
   AutoSizeWindow(false);
   DynamicWindow;
@@ -454,7 +458,11 @@ begin
   EditField(h2+145,v+=20,60, "Терминал",adminMode,FastTerm,false,0);
   //EditField(h2+125,v+=20,60, "PlanShip",Normal,PlanShip,false,0);/////////
   EnterSkip(Math);
-  Tile(2,380,false,"2",Math);
+  if(windowsmode==1)then begin
+  	Tile(2,380,false,"2",Math);
+  end else begin
+  	Tile(2,340,false,"2",Math);
+  end;
 
   v = 24;
   MatrixBegin(3,v,-50,v+45,-,1);

@@ -470,11 +470,6 @@ begin
   MatCol(t,-124,"Тип",0,ItemType,false,SetSClass);
   //MatCol(t,-24,"Номер",0,WOEnum,true,0);
   Flip(2);
-  MatCol(t=1,144,"Станд.пробл.",0,StandProblem,false,StandProblemsSClass);
-  //MatCol(t,-300,"Заказ на работу",0,WOSerNr,false,0);
-  //MatCol(t,-130,"Сч/факт.",0,Invd,true,0);
-  //MatCol(t,-70,"Дата отгруз.",0,PlanShiprw,true,0);
-  Flip(3);
   MatCol(t=1,144,"Наимен.",0,Spec,false,0);
   //MatCol(t,-180,"Стоим-ть ремонта",0,Cost,true,0);
   //MatCol(t,-90,"Макс.стоим-сть",0,MaxCost,true,0);// Edit ************************** Friday, 9 June 2017 09:41:58
@@ -485,10 +480,7 @@ begin
   vs = 20;
   v = 18; VTab(-35,v,-16,v+vs,ToolFlip,1,"A");
   v=v+vs;  VTab(-35,v,-16,v+vs,ToolFlip,2,"B");
-  v=v+vs;  VTab(-35,v,-16,v+vs,ToolFlip,3,"C");
-
   v = v + 25;
-  
   checkbox(100,v-20,0,"VIP",VIPStatus);
   checkbox(200,v-20,0,"Товар от партнера с возвратом",ItemFrPartner); //Edit***************************Sasha2,14:19 08.12.2015
   EditField(580,v-20,30,"Кол. возвратов на доработку",ViewOnly,StatusReturnCnt,false,0);

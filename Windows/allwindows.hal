@@ -435,7 +435,7 @@ begin
   EditField(h2,v,60,"Время",mode,DoneTime,false,0);// Edit ************************** Monday, 24 October 2016 17:56:04
   EditField(h1,v+=vs,60,"Дата выдачи",mode,RegDate,false,PasteCurDate);
   EditField(h2,v,60,"Время",mode,OutTime,false,0);// Edit ************************** Monday, 24 October 2016 17:56:02
-  EditField(h2+145,v,60,"Гарантия (мес.)",Normal,GarantyMes,false,0);
+  EditField(h2+145,v,60,"Гаран. (мес.)",Normal,GarantyMes,false,0);
   EditField(h2+345,v,60,"Оконч гарантии",ViewOnly,GarantyToDate,false,0);
   /*if(currentuser=="SA")then begin
 		EditField(-200,v,-20,"OldPhone",ViewOnly,OldPhone,false,0);
@@ -515,7 +515,6 @@ begin
   EditField(h,v+=vs,300,"Комментарий",Normal,Comment2,false,0);
   EditField(h,v+=vs,300,"",Normal,Comment4,false,0);
   v=v+10;
-  StaticText(h,v+=vs,"Комплектность",true);
   EditField(h,v+=vs-10,300,"Батарея:",Normal,Batary,false,0);
   EditField(h,v+=vs,300,"Зар. устройство:",Normal,Zaryadka,false,0);
   EditField(h,v+=vs,300,"Другое:",Normal,Inshe,false,0);

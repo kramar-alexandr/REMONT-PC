@@ -163,80 +163,100 @@ begin
             testf = false;
         end;
         if(Actr.OKFlag>0)then begin testf = false; end;
+				
+				if(testf)then begin
+				
+					if(Nonblankdate(SVOr.RegDate) or (SVO2r.OrderStatus==2 and SVOr.OrderStatus!=2))then begin//напоминание выдать товар
+							testf1 = true;
+							if(Actr.ActType!="CLLCl")then begin testf1 = false; end;
+							testf1 = (testf1 and testf);
+							if(testf1)then begin
+									CloseActivity(Actr,"ОК");
+							end;	
+							
+							testf1 = true;
+							if(Actr.ActType!="RMDCl")then begin testf1 = false; end;
+							testf1 = (testf1 and testf);
+							if(testf1)then begin
+									CloseActivity(Actr,"ОК");
+							end;						
+					end;
+				
+					if(SVO2r.OrderStatus!=4 and SVOr.OrderStatus==6)then begin//отказ
+							testf1 = true;
+							if(Actr.ActType!="СОГЛ")then begin testf1 = false; end;
+							testf1 = (testf1 and testf);
+							if(testf1)then begin
+									CloseActivity(Actr,"ОТКАЗ");
+							end;
+					end;
 
-        if(SVO2r.OrderStatus!=4 and SVOr.OrderStatus==6)then begin//отказ
-            testf1 = true;
-            if(Actr.ActType!="СОГЛ")then begin testf1 = false; end;
-            testf1 = (testf1 and testf);
-            if(testf1)then begin
-                CloseActivity(Actr,"ОТКАЗ");
-            end;
-        end;
+					if(SVO2r.OrderStatus!=7 and SVOr.OrderStatus==7)then begin//согласовано
+							testf1 = true;
+							if(Actr.ActType!="СОГЛ")then begin testf1 = false; end;
+							testf1 = (testf1 and testf);
+							if(testf1)then begin
+									CloseActivity(Actr,"ОК");
+							end;
+					end;
+					if(SVO2r.OrderStatus!=2 and SVOr.OrderStatus==2)then begin//согласовано
+							testf1 = true;
+							if(Actr.ActType!="СОГЛ")then begin testf1 = false; end;
+							testf1 = (testf1 and testf);
+							if(testf1)then begin
+									CloseActivity(Actr,"ОК");
+							end;
+					end;
+					if(SVO2r.OrderStatus!=6 and SVOr.OrderStatus==6)then begin//согласовано
+							testf1 = true;
+							if(Actr.ActType!="СОГЛ")then begin testf1 = false; end;
+							testf1 = (testf1 and testf);
+							if(testf1)then begin
+									CloseActivity(Actr,"ОК");
+							end;
+					end;
 
-        if(SVO2r.OrderStatus!=7 and SVOr.OrderStatus==7)then begin//согласовано
-            testf1 = true;
-            if(Actr.ActType!="СОГЛ")then begin testf1 = false; end;
-            testf1 = (testf1 and testf);
-            if(testf1)then begin
-                CloseActivity(Actr,"ОК");
-            end;
-        end;
-        if(SVO2r.OrderStatus!=2 and SVOr.OrderStatus==2)then begin//согласовано
-            testf1 = true;
-            if(Actr.ActType!="СОГЛ")then begin testf1 = false; end;
-            testf1 = (testf1 and testf);
-            if(testf1)then begin
-                CloseActivity(Actr,"ОК");
-            end;
-        end;
-        if(SVO2r.OrderStatus!=6 and SVOr.OrderStatus==6)then begin//согласовано
-            testf1 = true;
-            if(Actr.ActType!="СОГЛ")then begin testf1 = false; end;
-            testf1 = (testf1 and testf);
-            if(testf1)then begin
-                CloseActivity(Actr,"ОК");
-            end;
-        end;
+					if(SVO2r.OrderStatus!=1 and SVOr.OrderStatus==1)then begin//ушло в ремонт
+							testf1 = true;
+							if(Actr.ActType!="СОГОК")then begin testf1 = false; end;
+							testf1 = (testf1 and testf);
+							if(testf1)then begin
+									CloseActivity(Actr,"ОК");
+							end;
+					end;
 
-        if(SVO2r.OrderStatus!=1 and SVOr.OrderStatus==1)then begin//ушло в ремонт
-            testf1 = true;
-            if(Actr.ActType!="СОГОК")then begin testf1 = false; end;
-            testf1 = (testf1 and testf);
-            if(testf1)then begin
-                CloseActivity(Actr,"ОК");
-            end;
-        end;
+					if(SVO2r.OrderStatus==10 and SVOr.OrderStatus!=10)then begin//закрыть запрос на заказ деталей
+							testf1 = true;
+							if(Actr.ActType!="ZAKAZ")then begin testf1 = false; end;
+							testf1 = (testf1 and testf);
+							if(testf1)then begin
+									CloseActivity(Actr,"ОК");
+							end;
+					end;
 
-        if(SVO2r.OrderStatus==10 and SVOr.OrderStatus!=10)then begin//закрыть запрос на заказ деталей
-            testf1 = true;
-            if(Actr.ActType!="ZAKAZ")then begin testf1 = false; end;
-            testf1 = (testf1 and testf);
-            if(testf1)then begin
-                CloseActivity(Actr,"ОК");
-            end;
-        end;
-
-        if(nonblankdate(SVOr.RegDate))then begin//закрыть запрос напоминание о выдаче
-            testf1 = true;
-            if(Actr.ActType!="RJCTD")then begin testf1 = false; end;
-            testf1 = (testf1 and testf);
-            if(testf1)then begin
-                CloseActivity(Actr,"ОК");
-            end;
-            testf1 = true;
-            if(Actr.ActType!="RJC")then begin testf1 = false; end;
-            testf1 = (testf1 and testf);
-            if(testf1)then begin
-                CloseActivity(Actr,"ОК");
-            end;
-        end;
-        //closing ENGNR Acts
-        if(((SVOr.OrderStatus>0 and SVOr.OrderStatus!=9) or SVOr.DoneMark>0))then begin
-            if(Actr.ActType=="ENGNR") then begin
-                if(Actr.OKFlag==0) then begin
-                    CloseActivity(Actr,"ОК");
-                end;
-            end;
+					if(nonblankdate(SVOr.RegDate))then begin//закрыть запрос напоминание о выдаче
+							testf1 = true;
+							if(Actr.ActType!="RJCTD")then begin testf1 = false; end;
+							testf1 = (testf1 and testf);
+							if(testf1)then begin
+									CloseActivity(Actr,"ОК");
+							end;
+							testf1 = true;
+							if(Actr.ActType!="RJC")then begin testf1 = false; end;
+							testf1 = (testf1 and testf);
+							if(testf1)then begin
+									CloseActivity(Actr,"ОК");
+							end;
+					end;
+					//closing ENGNR Acts
+					if(((SVOr.OrderStatus>0 and SVOr.OrderStatus!=9) or SVOr.DoneMark>0))then begin
+							if(Actr.ActType=="ENGNR") then begin
+									if(Actr.OKFlag==0) then begin
+											CloseActivity(Actr,"ОК");
+									end;
+							end;
+					end;
+        
         end;
 
     end;

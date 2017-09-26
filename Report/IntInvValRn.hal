@@ -81,6 +81,36 @@ BEGIN
   RETURN;
 END;
 
+global
+procedure MyPrintOneBatch(string item,string serialnr,val qp,Boolean firstf, string stattext)//Edit-------------------Vitalii 10:20 25.09.2017
+BEGIN
+  record BatchTextVc btr;
+  Date bbfd;
+  
+  btr.ArtCode = item;
+  btr.SerialNr = serialnr;
+  if (ReadFirstMain(btr,2,true)) then begin
+    bbfd = btr.BestBefore;
+  end;
+  StartFormat(15);
+  if (firstf) then begin
+    OutString(11,0,USetStr(5018),false);
+  end;
+  if (btr.ConsigStock==0) then begin
+    OutString(110,"DblSvoVcSer",serialnr,false);//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++edited by dima-f 12.09.17
+  end else begin
+    OutString(110,0,serialnr & " " & "(*)",false);
+  end;
+  OutString(170,0,stattext,false);
+  if (nonblankdate(bbfd)) then begin
+    OutDate(260,0,bbfd,false);
+  end;
+  OutVal(360,0,qp,M4UVal,true);
+  OutString(480,0,USetStr(2766),true);
+  EndFormat;
+  RETURN;
+END;
+
 procedure PrintIntSerialNumbers(string item,Integer itemtype,val qtp,Date dp,string location,record RcVc RepSpec,var integer cnt,boolean noprint)
 BEGIN
   record IntSerBalVc SBr;
@@ -181,7 +211,7 @@ BEGIN
               if (noprint) then begin
                 cnt = cnt + 1;
               end else begin
-                PrintOneBatch(item,SBr.Serial,SBr.Quant,first);
+                MyPrintOneBatch(item,SBr.Serial,SBr.Quant,first,SVOr.StatusText);
                 first = false;
               end;
             end;
@@ -304,7 +334,7 @@ BEGIN
                       if (noprint) then begin
                         cnt = cnt + 1;
                       end else begin
-                        PrintOneBatch(item,INTransferrw.SerialNr,q,first);
+                        MyPrintOneBatch(item,INTransferrw.SerialNr,q,first,SVOr.StatusText);
                         first = false;
                       end;
                     end;
@@ -410,7 +440,7 @@ BEGIN
                       if (noprint) then begin
                         cnt = cnt + 1;
                       end else begin
-                        PrintOneBatch(item,OHrw.SerialNr,q,first);
+                        MyPrintOneBatch(item,OHrw.SerialNr,q,first,SVOr.StatusText);
                         first = false;
                       end;
                     end;

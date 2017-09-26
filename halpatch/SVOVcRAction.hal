@@ -19,15 +19,15 @@ remote function Boolean PasteCUInSVO(var record SVOVc,string,var string);// Edit
 external updating procedure CreateNoterChangeInSVO(record SVOVc,string,string);
 external function Boolean FindStringInString(string,string);// Edit ************************** Thursday, 30 June 2016 10:55:59
 remote procedure CountNumberRepeatPhone(string,var array longint,var integer );
-external updating procedure CreateActFromSVOToEnginer(record SVOVc,string);
-external updating procedure CreateActFromSVOForInspectorIfItemIssued(record SVOVc);
+//external updating procedure CreateActFromSVOToEnginer(record SVOVc,string);----------------- dima-f 25.09.17
+//external updating procedure CreateActFromSVOForInspectorIfItemIssued(record SVOVc);------------- dima-f 25.09.17
 external updating function val ChangeCostOfIVsInSVO(longint);//Edit-------------------Vitalii 10:13 25.11.2016
 external updating procedure PhonesFromSVO(longint);//Edit-------------------Vitalii 17:10 03.11.2016
 //remote procedure SENDSECONDSMS(longint);// Edit ************************** Friday, 18 November 2016 14:48:29
 remote updating procedure FastPayInvoicesSVO(record RcVc);// Edit ************************** Friday, 25 November 2016 13:09:52
 external procedure NextM4Number(string,var string);
 remote updating function Integer CreateAndOKOffHireFromSVO(record SVOVc,record LocalMachineBlock,var string); //Edit***************************Sasha2,11:57 09.06.2017
-external updating procedure CreateActFromSVOForInspectorIfItemRejected(record SVOVc);
+//external updating procedure CreateActFromSVOForInspectorIfItemRejected(record SVOVc);----------- dima-f 25.09.17
 remote procedure CheckSVOIV(record SVOVc,var val,var val);
 external procedure RemoteUserFunction(string,string,string,string);// Edit ************************** Thursday, 20 July 2017 16:34:18
 external procedure CutAreaLeft(var area,integer);
@@ -74,6 +74,33 @@ begin
 
   return;
 end;
+//------------------------------------------------------- proc added by dima-f 25.09.17
+updating
+procedure AttachMainPersons(record SVOVc SVOr, var string mainpersons) begin
+    if(nonblank(SVOr.ServiceManager))begin
+        mainpersons = mainpersons & " " & SVOr.ServiceManager;
+    end;
+    if(nonblank(SVOr.CustomField7))begin
+        mainpersons = mainpersons & " " & SVOr.CustomField7;
+    end;
+    if(nonblank(SVOr.Inspector))begin
+        mainpersons = mainpersons & " " & SVOr.Inspector;
+    end;
+end;
+//------------------------------------------------------- proc added by dima-f 25.09.17
+updating
+procedure GenerateIngenerComent(record SVOVc SVOr,var string commentee) begin
+    row SVOVc SVOrw;
+    record INVc INr;
+    commentee = SVOr.SerNr & " " & SVOr.Comment1;
+    if(matrowcnt(SVOr)>0)then begin
+        matrowget(SVOr,0,SVOrw);
+        INr.Code = SVOrw.ArtCode;
+        if(readfirstmain(INr,1,true))then begin
+            commentee = INr.Code & " " & commentee;
+        end;
+    end;
+end;
 //------------------------------------------------------- proc added by dima-f 22.09.17
 updating
 procedure CloseActivity(var record ActVc Actr, string actResult)
@@ -94,7 +121,10 @@ begin
     TrHs = true;
     while(loopkey("SVOSerNr",Actr,1,TrHs)) begin
         testf = true;
-        if(Actr.SVOSerNr!=SVOr.SerNr)then begin TrHs=false; testf = false; end;
+        if(Actr.SVOSerNr!=SVOr.SerNr)then begin
+            TrHs=false;
+            testf = false;
+        end;
         if(Actr.OKFlag>0)then begin testf = false; end;
 
         if(SVO2r.OrderStatus!=4 and SVOr.OrderStatus==6)then begin//отказ
@@ -163,6 +193,14 @@ begin
                 CloseActivity(Actr,"ОК");
             end;
         end;
+        //closing ENGNR Acts
+        if(((SVOr.OrderStatus>0 and SVOr.OrderStatus!=9) or SVOr.DoneMark>0))then begin
+            if(Actr.ActType=="ENGNR") then begin
+                if(Actr.OKFlag==0) then begin
+                    CloseActivity(Actr,"ОК");
+                end;
+            end;
+        end;
 
     end;
 end;
@@ -170,12 +208,23 @@ end;
 updating
 procedure CreateActivitiesFromSVO(record SVOVc SVOr, record SVOVc SVO2r, boolean saveAfter)
 begin
+    string 128 mainPrsns,commentee;
+
+    mainPrsns="";
+    commentee="";
+
     if(saveAfter) begin //SVOVcRecordSaveAfter
-        if(SVOr.GetItemFlag>0)then begin
-            CreateActFromSVOToEnginer(SVOr,"");
+        if(SVOr.GetItemFlag>0 and SVOr.OrderStatus==0)then begin
+            //CreateActFromSVOToEnginer(SVOr,"");
+            GenerateIngenerComent(SVOr,commentee);
+            CreateCustomActivityFromSVO(SVOr,"ENGNR",SVOr.Inspector,currentdate,commentee);
         end;
         if (SVOr.OrderStatus==2 or NonBlankDate(SVOr.RegDate)) then begin
-            CreateActFromSVOForInspectorIfItemIssued(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
+            //mainperson logic here...
+            AttachMainPersons(SVOr,mainPrsns);
+            CreateCustomActivityFromSVO(SVOr,"CLLCl",mainPrsns,currentdate,"Ремонт готов.");
+            CreateCustomActivityFromSVO(SVOr,"RMDCl",mainPrsns,addday(currentdate,5),"Напомнить клиенту забрать отремонтированную технику.");
+            //CreateActFromSVOForInspectorIfItemIssued(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
         end;
         if (SVOr.OrderStatus==6 or NonBlankDate(SVOr.RegDate)) then begin
             //CreateActFromSVOForInspectorIfItemRejected(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
@@ -186,11 +235,17 @@ begin
             CreateCustomActivityFromSVO(SVOr,"СОГОК",SVOr.ServiceManager,currentdate,"Ремонт согласован!");//----------------- dima-f 22.09.17
         end;
     end else begin //SVOVcRecordUpdateAfter
-        if(SVOr.GetItemFlag>0)then begin
-            CreateActFromSVOToEnginer(SVOr,"");
+        if(SVOr.GetItemFlag>0 and SVO2r.GetItemFlag==0 and SVOr.OrderStatus==0)then begin
+            //CreateActFromSVOToEnginer(SVOr,"");
+            GenerateIngenerComent(SVOr,commentee);
+            CreateCustomActivityFromSVO(SVOr,"ENGNR",SVOr.Inspector,currentdate,commentee);
         end;
         if ((SVOr.OrderStatus==2 and SVO2r.OrderStatus!=2) or (BlankDate(SVO2r.RegDate) and NonBlankDate(SVOr.RegDate))) then begin
-            CreateActFromSVOForInspectorIfItemIssued(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
+            //mainperson logic here...
+            AttachMainPersons(SVOr,mainPrsns);
+            CreateCustomActivityFromSVO(SVOr,"CLLCl",mainPrsns,currentdate,"Ремонт готов.");
+            CreateCustomActivityFromSVO(SVOr,"RMDCl",mainPrsns,addday(currentdate,5),"Напомнить клиенту забрать отремонтированную технику.");
+            //CreateActFromSVOForInspectorIfItemIssued(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
         end;
         if ((SVOr.OrderStatus==6 and SVO2r.OrderStatus!=6) or (BlankDate(SVO2r.RegDate) and NonBlankDate(SVOr.RegDate))) then begin
             //CreateActFromSVOForInspectorIfItemRejected(SVOr); //Edit***************************Sasha2,10:45 16.06.2017

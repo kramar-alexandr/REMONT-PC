@@ -243,7 +243,6 @@ begin
         if(SVOr.GetItemFlag>0 and SVOr.OrderStatus==0)then begin
             //CreateActFromSVOToEnginer(SVOr,"");
             GenerateIngenerComent(SVOr,commentee);
-            
             CreateCustomActivityFromSVO(SVOr,"ENGNR",SVOr.Inspector,CalcWorkDate(currentdate,3,true),commentee);
         end;
         if (SVOr.OrderStatus==2 or NonBlankDate(SVOr.RegDate)) then begin
@@ -265,7 +264,7 @@ begin
         if(SVOr.GetItemFlag>0 and SVO2r.GetItemFlag==0 and SVOr.OrderStatus==0)then begin
             //CreateActFromSVOToEnginer(SVOr,"");
             GenerateIngenerComent(SVOr,commentee);
-            CreateCustomActivityFromSVO(SVOr,"ENGNR",SVOr.Inspector,currentdate,commentee);
+            CreateCustomActivityFromSVO(SVOr,"ENGNR",SVOr.Inspector,CalcWorkDate(currentdate,3,true),commentee);
         end;
         if ((SVOr.OrderStatus==2 and SVO2r.OrderStatus!=2) or (BlankDate(SVO2r.RegDate) and NonBlankDate(SVOr.RegDate))) then begin
             //mainperson logic here...

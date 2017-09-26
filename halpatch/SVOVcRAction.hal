@@ -104,13 +104,13 @@ end;
 updating
 procedure AttachMainPersons(record SVOVc SVOr, var string mainpersons) begin
     if(nonblank(SVOr.ServiceManager))begin
-        mainpersons = mainpersons & " " & SVOr.ServiceManager;
+        mainpersons = mainpersons & "," & SVOr.ServiceManager;
     end;
     if(nonblank(SVOr.CustomField7))begin
-        mainpersons = mainpersons & " " & SVOr.CustomField7;
+        mainpersons = mainpersons & "," & SVOr.CustomField7;
     end;
     if(nonblank(SVOr.Inspector))begin
-        mainpersons = mainpersons & " " & SVOr.Inspector;
+        mainpersons = mainpersons & "," & SVOr.Inspector;
     end;
 end;
 //------------------------------------------------------- proc added by dima-f 25.09.17
@@ -248,8 +248,8 @@ begin
         if (SVOr.OrderStatus==2 or NonBlankDate(SVOr.RegDate)) then begin
             //mainperson logic here...
             AttachMainPersons(SVOr,mainPrsns);
-            CreateCustomActivityFromSVO(SVOr,"CLLCl",mainPrsns,currentdate,"Ремонт готов.");
-            CreateCustomActivityFromSVO(SVOr,"RMDCl",mainPrsns,addday(currentdate,5),"Напомнить клиенту забрать отремонтированную технику.");
+            CreateCustomActivityFromSVO(SVOr,"CLLCL",mainPrsns,currentdate,"Ремонт готов.");
+            CreateCustomActivityFromSVO(SVOr,"RMDCL",mainPrsns,addday(currentdate,5),"Напомнить клиенту забрать отремонтированную технику.");
             //CreateActFromSVOForInspectorIfItemIssued(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
         end;
         if (SVOr.OrderStatus==6 or NonBlankDate(SVOr.RegDate)) then begin

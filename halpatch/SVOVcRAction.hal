@@ -44,11 +44,11 @@ begin
 	
 		if(work)then begin
 			countwdays = 0;
-			res = addday(curdate,3);//******************************* 3 work day
+			res = addday(curdate,days);//******************************* 3 work day
 			countwdays = CountWorkingDays(curdate,res,"","UA");	
 			
-			while(countwdays<3)begin
-				if(countwdays<3)then begin
+			while(countwdays<days)begin
+				if(countwdays<days)then begin
 					res = addday(res,1);
 				end;
 				countwdays = CountWorkingDays(curdate,res,"","UA");	

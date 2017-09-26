@@ -20,6 +20,7 @@ begin
   string 20 todate;
   boolean printf;
   boolean testf;
+  val totqty;
 
   StartReportjob(USetStr(11580));
   rw = 1;
@@ -140,6 +141,7 @@ begin
           OutString(100,0,Disrw.Spec,false);
           OutString(300,0,Disrw.SerialNr,false);
           OutString(450,0,DIsrw.Quant,true);
+          totqty = totqty + DIsrw.Quant;
           endformat;  
         end;
       end;    
@@ -155,6 +157,15 @@ begin
         gray_divider(300,1);
       end;
     end;  
+  end;
+  if (RepSpec.ArtMode == 1) then begin
+    Black_divider(0,1);
+    Startformat(15);
+    OutString(20,0,"",false);
+    OutString(100,0,"",false);
+    OutString(300,0,USetStr(12010),false);
+    OutString(450,0,totqty,true);
+    endformat;  
   end;
 
  // Black_divider(0,1);

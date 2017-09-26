@@ -381,7 +381,11 @@ begin
           testf = true;
         end;
       end;
-       
+      if (RepSpec.flags[17]==1) then begin /* Вернули на доработку*/
+        if (SVOr.OrderStatus==11) then begin
+          testf = true;
+        end;
+      end;
     end;
     if(testf)then begin
       mtrw = matrowcnt(SVOr);

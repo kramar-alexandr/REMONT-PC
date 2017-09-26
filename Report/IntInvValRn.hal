@@ -81,7 +81,37 @@ BEGIN
   RETURN;
 END;
 
-procedure PrintIntSerialNumbers(string item,Integer itemtype,val qtp,Date dp,string location)
+global
+procedure MyPrintOneBatch(string item,string serialnr,val qp,Boolean firstf, string stattext)//Edit-------------------Vitalii 10:20 25.09.2017
+BEGIN
+  record BatchTextVc btr;
+  Date bbfd;
+  
+  btr.ArtCode = item;
+  btr.SerialNr = serialnr;
+  if (ReadFirstMain(btr,2,true)) then begin
+    bbfd = btr.BestBefore;
+  end;
+  StartFormat(15);
+  if (firstf) then begin
+    OutString(11,0,USetStr(5018),false);
+  end;
+  if (btr.ConsigStock==0) then begin
+    OutString(110,"DblSvoVcSer",serialnr,false);//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++edited by dima-f 12.09.17
+  end else begin
+    OutString(110,0,serialnr & " " & "(*)",false);
+  end;
+  OutString(170,0,stattext,false);
+  if (nonblankdate(bbfd)) then begin
+    OutDate(260,0,bbfd,false);
+  end;
+  OutVal(360,0,qp,M4UVal,true);
+  OutString(480,0,USetStr(2766),true);
+  EndFormat;
+  RETURN;
+END;
+
+procedure PrintIntSerialNumbers(string item,Integer itemtype,val qtp,Date dp,string location,record RcVc RepSpec,var integer cnt,boolean noprint)
 BEGIN
   record IntSerBalVc SBr;
   record INTransferVc INTransferr;
@@ -92,11 +122,12 @@ BEGIN
   row RetVc Retrw;
   Boolean found;
   val q;
-  Boolean first;
+  Boolean first,testf;
   record IntINrsVc IntINrsr;
   Integer i,rwcnt;
   val t,instock,rem;
   string 20 loc2;
+  record SVOVc SVOr;
 
   first = true;
   if (blankdate(dp)) then begin
@@ -107,19 +138,93 @@ BEGIN
       if (SBr.Item==item) then begin
         if (SBr.Quant>=q) then begin
           if (blank(location) or (location==SBr.Location)) then begin
-            if (first) then begin
-              Gray_Divider(2,300);
+            testf = false; 
+            SVOr.InnerOrderNr = SBr.Serial;
+            if (ReadFirstKey("InnerOrderNr",SVOr,1,true)) then begin
+              if (RepSpec.flags[3]==1) then begin /* Предварит */
+                if (SVOr.OrderStatus==9) then begin
+                  testf = true;
+                end;
+              end;  
+              if (RepSpec.flags[4]==1) then begin /* В ожидании */
+                if (SVOr.OrderStatus==0) then begin
+                  testf = true;
+                end;
+              end;
+              if (RepSpec.flags[5]==1) then begin /* На диагностике*/
+                if (SVOr.OrderStatus==5) then begin
+                  testf = true;
+                end;
+              end;
+              if (RepSpec.flags[6]==1) then begin /* На согласовании*/
+                if (SVOr.OrderStatus==4) then begin
+                  testf = true;
+                end;
+              end;
+              if (RepSpec.flags[7]==1) then begin /* Согласовано*/
+                if (SVOr.OrderStatus==7) then begin
+                  testf = true;
+                end;
+              end;
+              if (RepSpec.flags[8]==1) then begin /* В ремонте*/
+                if (SVOr.OrderStatus==1) then begin
+                  testf = true;
+                end;
+              end;
+              if (RepSpec.flags[9]==1) then begin /* В удал. сервисе*/
+                if (SVOr.OrderStatus==8) then begin
+                  testf = true;
+                end;
+              end;
+              if (RepSpec.flags[12]==1) then begin /* Заказать запч.*/
+                if (SVOr.OrderStatus==10) then begin
+                  testf = true;
+                end;
+              end;
+              if (RepSpec.flags[13]==1) then begin /* Ожидает запч.*/
+                if (SVOr.OrderStatus==3) then begin
+                  testf = true;
+                end;
+              end;
+              if (RepSpec.flags[15]==1) then begin /* Готов.*/
+                if (SVOr.OrderStatus==2) then begin
+                  testf = true;
+                end;
+              end;
+              if (RepSpec.flags[17]==1) then begin /* Вернули на доработку*/
+                if (SVOr.OrderStatus==11) then begin
+                  testf = true;
+                end;
+              end;
+              if (RepSpec.flags[18]==1) then begin /* Отказ.*/
+                if (SVOr.OrderStatus==6) then begin
+                  testf = true;
+                end;
+              end;
             end;
-            PrintOneBatch(item,SBr.Serial,SBr.Quant,first);
-            first = false;
+            if (testf) then begin
+              if (first) then begin
+                if (!noprint) then begin
+                  Gray_Divider(2,300);
+                end;
+              end;
+              if (noprint) then begin
+                cnt = cnt + 1;
+              end else begin
+                MyPrintOneBatch(item,SBr.Serial,SBr.Quant,first,SVOr.StatusText);
+                first = false;
+              end;
+            end;
           end;
         end;
       end;
     end;
     if (first==false) then begin // this means there were some serienumbers
-      Gray_Divider(2,300);
-      StartFormat(10);
-      EndFormat;
+      if (!noprint) then begin
+        Gray_Divider(2,300);
+        StartFormat(10);
+        EndFormat;
+      end;
     end;
   end else begin
     // Now we read (qtp) goods receipts back to get the serial numbers
@@ -149,9 +254,6 @@ BEGIN
                   end;
                   if ((location==loc2) or (blank(location))) then begin
                     SerialInInternalStock(IntINrsr.ItemCode,INTransferrw.SerialNr,loc2,instock);
-                    if (first) then begin
-                      Gray_Divider(2,300);
-                    end;
                     t = rem - instock;
                     if (t<=0) then begin
                       q = rem;
@@ -159,8 +261,83 @@ BEGIN
                       q = instock;
                     end;
 //                    if (itemtype==1) then begin q = 1; end;//what is it for
-                    PrintOneBatch(item,INTransferrw.SerialNr,q,first);
-                    first = false;
+                    testf = false; 
+                    SVOr.InnerOrderNr = INTransferrw.SerialNr;
+                    if (ReadFirstKey("InnerOrderNr",SVOr,1,true)) then begin
+                      if (RepSpec.flags[3]==1) then begin /* Предварит */
+                        if (SVOr.OrderStatus==9) then begin
+                          testf = true;
+                        end;
+                      end;  
+                      if (RepSpec.flags[4]==1) then begin /* В ожидании */
+                        if (SVOr.OrderStatus==0) then begin
+                          testf = true;
+                        end;
+                      end;
+                      if (RepSpec.flags[5]==1) then begin /* На диагностике*/
+                        if (SVOr.OrderStatus==5) then begin
+                          testf = true;
+                        end;
+                      end;
+                      if (RepSpec.flags[6]==1) then begin /* На согласовании*/
+                        if (SVOr.OrderStatus==4) then begin
+                          testf = true;
+                        end;
+                      end;
+                      if (RepSpec.flags[7]==1) then begin /* Согласовано*/
+                        if (SVOr.OrderStatus==7) then begin
+                          testf = true;
+                        end;
+                      end;
+                      if (RepSpec.flags[8]==1) then begin /* В ремонте*/
+                        if (SVOr.OrderStatus==1) then begin
+                          testf = true;
+                        end;
+                      end;
+                      if (RepSpec.flags[9]==1) then begin /* В удал. сервисе*/
+                        if (SVOr.OrderStatus==8) then begin
+                          testf = true;
+                        end;
+                      end;
+                      if (RepSpec.flags[12]==1) then begin /* Заказать запч.*/
+                        if (SVOr.OrderStatus==10) then begin
+                          testf = true;
+                        end;
+                      end;
+                      if (RepSpec.flags[13]==1) then begin /* Ожидает запч.*/
+                        if (SVOr.OrderStatus==3) then begin
+                          testf = true;
+                        end;
+                      end;
+                      if (RepSpec.flags[15]==1) then begin /* Готов.*/
+                        if (SVOr.OrderStatus==2) then begin
+                          testf = true;
+                        end;
+                      end;
+                      if (RepSpec.flags[17]==1) then begin /* Вернули на доработку*/
+                        if (SVOr.OrderStatus==11) then begin
+                          testf = true;
+                        end;
+                      end;
+                      if (RepSpec.flags[18]==1) then begin /* Отказ.*/
+                        if (SVOr.OrderStatus==6) then begin
+                          testf = true;
+                        end;
+                      end;
+                    end;
+                    if (testf) then begin
+                      if (first) then begin
+                        if (!noprint) then begin
+                          Gray_Divider(2,300);
+                        end;
+                      end;
+                      if (noprint) then begin
+                        cnt = cnt + 1;
+                      end else begin
+                        MyPrintOneBatch(item,INTransferrw.SerialNr,q,first,SVOr.StatusText);
+                        first = false;
+                      end;
+                    end;
                     rem = rem - instock;
                     if (rem<=0) then begin goto LPrintIntSerialNumbers; end;
                   end;
@@ -184,7 +361,9 @@ BEGIN
                   if ((location==loc2) or (blank(location))) then begin
                     SerialInInternalStock(IntINrsr.ItemCode,OHrw.SerialNr,loc2,instock);
                     if (first) then begin
-                      Gray_Divider(2,300);
+                      if (!noprint) then begin
+                        Gray_Divider(2,300);
+                      end;
                     end;
                     t = rem - instock;
                     if (t<=0) then begin
@@ -193,8 +372,78 @@ BEGIN
                       q = instock;
                     end;
 //                    if (itemtype==1) then begin q = 1; end;//what is it for
-                    PrintOneBatch(item,OHrw.SerialNr,q,first);
-                    first = false;
+                    testf = false; 
+                    SVOr.InnerOrderNr = OHrw.SerialNr;
+                    if (ReadFirstKey("InnerOrderNr",SVOr,1,true)) then begin
+                      if (RepSpec.flags[3]==1) then begin /* Предварит */
+                        if (SVOr.OrderStatus==9) then begin
+                          testf = true;
+                        end;
+                      end;  
+                      if (RepSpec.flags[4]==1) then begin /* В ожидании */
+                        if (SVOr.OrderStatus==0) then begin
+                          testf = true;
+                        end;
+                      end;
+                      if (RepSpec.flags[5]==1) then begin /* На диагностике*/
+                        if (SVOr.OrderStatus==5) then begin
+                          testf = true;
+                        end;
+                      end;
+                      if (RepSpec.flags[6]==1) then begin /* На согласовании*/
+                        if (SVOr.OrderStatus==4) then begin
+                          testf = true;
+                        end;
+                      end;
+                      if (RepSpec.flags[7]==1) then begin /* Согласовано*/
+                        if (SVOr.OrderStatus==7) then begin
+                          testf = true;
+                        end;
+                      end;
+                      if (RepSpec.flags[8]==1) then begin /* В ремонте*/
+                        if (SVOr.OrderStatus==1) then begin
+                          testf = true;
+                        end;
+                      end;
+                      if (RepSpec.flags[9]==1) then begin /* В удал. сервисе*/
+                        if (SVOr.OrderStatus==8) then begin
+                          testf = true;
+                        end;
+                      end;
+                      if (RepSpec.flags[12]==1) then begin /* Заказать запч.*/
+                        if (SVOr.OrderStatus==10) then begin
+                          testf = true;
+                        end;
+                      end;
+                      if (RepSpec.flags[13]==1) then begin /* Ожидает запч.*/
+                        if (SVOr.OrderStatus==3) then begin
+                          testf = true;
+                        end;
+                      end;
+                      if (RepSpec.flags[15]==1) then begin /* Готов.*/
+                        if (SVOr.OrderStatus==2) then begin
+                          testf = true;
+                        end;
+                      end;
+                      if (RepSpec.flags[17]==1) then begin /* Вернули на доработку*/
+                        if (SVOr.OrderStatus==11) then begin
+                          testf = true;
+                        end;
+                      end;
+                      if (RepSpec.flags[18]==1) then begin /* Отказ.*/
+                        if (SVOr.OrderStatus==6) then begin
+                          testf = true;
+                        end;
+                      end;
+                    end;
+                    if (testf) then begin
+                      if (noprint) then begin
+                        cnt = cnt + 1;
+                      end else begin
+                        MyPrintOneBatch(item,OHrw.SerialNr,q,first,SVOr.StatusText);
+                        first = false;
+                      end;
+                    end;
                     rem = rem - instock;
                     if (rem<=0) then begin goto LPrintIntSerialNumbers; end;
                   end;
@@ -216,7 +465,7 @@ procedure InvListOneInternalItem(record RcVc RepSpec,record INVc INp,var Boolean
 BEGIN
   record WeigAvVc war;
   record IntISVc IntISr;
-  Integer typ;
+  Integer typ,SVOcnt;
   Boolean plhit;
   val upric,zero;
   val instock,t,t2;
@@ -242,6 +491,11 @@ BEGIN
       if (instock==0) then begin
         goto LInvListOneInternalItem;
       end;
+    end;
+    // find qty of serial with filter if 0 - goto
+    PrintIntSerialNumbers(INp.Code,INp.ItemType,instock,RepSpec.d1,RepSpec.f2,RepSpec,SVOcnt,true);
+    if (SVOcnt==0) then begin
+      goto LInvListOneInternalItem;
     end;
     BlockLoad(GenOptRec);
     if (RepSpec.flags[2]==1) then begin
@@ -365,7 +619,7 @@ BEGIN
       nrp = nrp + instock;
       groupsump = groupsump +t;
       if (RepSpec.flags[10]!=0) then begin
-        PrintIntSerialNumbers(INp.Code,INp.ItemType,instock,RepSpec.d1,RepSpec.f2);
+        PrintIntSerialNumbers(INp.Code,INp.ItemType,instock,RepSpec.d1,RepSpec.f2,RepSpec,SVOcnt,false);
       end;
       Gray_Divider(0,1);
     end;
@@ -459,7 +713,7 @@ BEGIN
       nrp = nrp + instock;
       groupsump = groupsump + t;
       if (RepSpec.flags[10]!=0) then begin
-        PrintIntSerialNumbers(INp.Code,INp.ItemType,instock,RepSpec.d1,RepSpec.f2);
+        PrintIntSerialNumbers(INp.Code,INp.ItemType,instock,RepSpec.d1,RepSpec.f2,RepSpec,SVOcnt,false);
       end;
     end;
     if (RepSpec.ArtMode==2) then begin// Per location

@@ -925,6 +925,10 @@ BEGIN
   LongInt res;
   
   SetSVOFlags(SVOr);
+  if (SVO2r.OrderStatus!=11 and SVOr.OrderStatus==11) then begin //Вернули на доработку
+    SVOr.StatusReturnCnt = SVOr.StatusReturnCnt + 1;
+  end;
+
   SVOVcRecordUpdate = res; 
   RETURN;
 END;
@@ -1196,6 +1200,7 @@ BEGIN
 			case 8: tstr = tstr & USetStr(31097);
 			case 9: tstr = tstr & USetStr(31501);
 			case 10: tstr = tstr & USetStr(31506);
+      case 11: tstr = tstr & USetStr(31509);//Edit-------------------Vitalii 15:51 21.09.2017
 		end;
 		tstr = tstr & "' " & USetStr(31058) & " '";
 		switch (SVOr.OrderStatus) begin
@@ -1210,6 +1215,7 @@ BEGIN
 			case 8: tstr = tstr & USetStr(31097);
 			case 9: tstr = tstr & USetStr(31501);
 			case 10: tstr = tstr & USetStr(31506);
+      case 11: tstr = tstr & USetStr(31509);//Edit-------------------Vitalii 15:51 21.09.2017
 		end;
 		tstr = tstr & "'";
 		comment = USetStr(31059);
@@ -2054,6 +2060,7 @@ BEGIN
 		case 8: SVOr.StatusText = USetStr(31097);
 		case 9: SVOr.StatusText = USetStr(31501);
 		case 10: SVOr.StatusText = USetStr(31506);
+    case 11: SVOr.StatusText = USetStr(31509);//Edit-------------------Vitalii 15:51 21.09.2017
   end;
   
   LogText(0,"SVOVc " & SVOr.SerNr & "  was changed. Company: " & CurrentCompany & " User: " & CurrentUser & "  ServiceMan:" & SVOr.ServiceManager);	//Edit----------------------Dima  30.10.2015

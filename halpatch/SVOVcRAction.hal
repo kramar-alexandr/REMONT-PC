@@ -234,7 +234,7 @@ begin
 							end;
 					end;
 
-					if(nonblankdate(SVOr.RegDate))then begin//закрыть запрос напоминание о выдаче
+					if(nonblankdate(SVOr.RegDate) or SVOr.OrderStatus!=6)then begin//закрыть запрос напоминание о выдаче
 							testf1 = true;
 							if(Actr.ActType!="RJCTD")then begin testf1 = false; end;
 							testf1 = (testf1 and testf);
@@ -283,7 +283,7 @@ begin
             CreateCustomActivityFromSVO(SVOr,"RMDCL",SVOr.Inspector,addday(currentdate,5),"Напомнить клиенту забрать отремонтированную технику.");
             //CreateActFromSVOForInspectorIfItemIssued(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
         end;
-        if (SVOr.OrderStatus==6 or NonBlankDate(SVOr.RegDate)) then begin
+        if (SVOr.OrderStatus==6) then begin
             //CreateActFromSVOForInspectorIfItemRejected(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
             CreateCustomActivityFromSVO(SVOr,"RJCTD",SVOr.Inspector,addday(currentdate,5),"Напомнить клиенту забрать технику без ремонта.");
             CreateCustomActivityFromSVO(SVOr,"RJC",SVOr.ServiceManager,currentdate,"Заказ отменен. Собрать устройство на выдачу!");
@@ -304,12 +304,9 @@ begin
             CreateCustomActivityFromSVO(SVOr,"RMDCL",SVOr.Inspector,addday(currentdate,5),"Напомнить клиенту забрать отремонтированную технику.");
             //CreateActFromSVOForInspectorIfItemIssued(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
         end;
-        if ((SVOr.OrderStatus==6 and SVO2r.OrderStatus!=6) or (BlankDate(SVO2r.RegDate) and NonBlankDate(SVOr.RegDate))) then begin
-            //CreateActFromSVOForInspectorIfItemRejected(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
-
+        if ((SVOr.OrderStatus==6 and SVO2r.OrderStatus!=6)) then begin
             CreateCustomActivityFromSVO(SVOr,"RJCTD",SVOr.Inspector,addday(currentdate,5),"Напомнить клиенту забрать технику без ремонта.");
             CreateCustomActivityFromSVO(SVOr,"RJC",SVOr.ServiceManager,currentdate,"Заказ отменен. Собрать устройство на выдачу!");
-
         end;
         if (SVOr.OrderStatus==7 and SVO2r.OrderStatus!=7) then begin
             CreateCustomActivityFromSVO(SVOr,"СОГОК",SVOr.ServiceManager,currentdate,"Ремонт согласован!");//----------------- dima-f 22.09.17

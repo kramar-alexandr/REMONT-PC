@@ -469,7 +469,7 @@ begin
   MatTypedRow(stp);
   Flip(0);
   MatCol(t=1,32,"Устройство",0,ArtCode,false,INUsersSClass);
-  MatCol(t,124,"Кол-во",0,Quant,true,0);
+  //MatCol(t,124,"Кол-во",0,Quant,true,0);
   Flip(1);
   MatCol(t=1,144,"Сер. №",0,NewSerialNr,false,0);
   EnterSkip(ItemType);

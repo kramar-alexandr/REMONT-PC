@@ -3893,8 +3893,8 @@ global //Edit***************************Sasha2,16:49 15.06.2017 {
 updating procedure CreateActFromSVOForInspectorIfItemIssued(record SVOVc SVOr)
 begin
 	
-	CreateActFromSVOForInspectorWithActType(SVOr,"CLLCl",0,"Ремонт готов.",SVOr.ServiceManager);
-	CreateActFromSVOForInspectorWithActType(SVOr,"RMDCl",5,"Напомнить клиенту забрать отремонтированную технику.","");
+	CreateActFromSVOForInspectorWithActType(SVOr,"CLLCL",0,"Ремонт готов.",SVOr.ServiceManager);
+	CreateActFromSVOForInspectorWithActType(SVOr,"RMDCL",5,"Напомнить клиенту забрать отремонтированную технику.","");
 
 return;
 end; //Edit***************************Sasha2,16:49 15.06.2017 }

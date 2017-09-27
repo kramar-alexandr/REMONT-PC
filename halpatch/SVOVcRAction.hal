@@ -168,7 +168,7 @@ begin
 				
 					if(Nonblankdate(SVOr.RegDate) or (SVO2r.OrderStatus==2 and SVOr.OrderStatus!=2))then begin//напоминание выдать товар
 							testf1 = true;
-							if(Actr.ActType!="CLLCl")then begin testf1 = false; end;
+							if(Actr.ActType!="CLLCL")then begin testf1 = false; end;
 							testf1 = (testf1 and testf);
 							if(testf1)then begin
 									CloseActivity(Actr,"ОК");

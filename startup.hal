@@ -71,6 +71,8 @@ begin
   Maintenance("Dell Reject",MyVClass,RejectReasonVcDelMn,modDBMain);
   Maintenance("TestJSON",MyVClass,TestJSON,modDBMain);
   
+  Maintenance("Fix Some Actr",MyVClass,FIXSOMEACTMn,modDBMain);
+  
   
   Maintenance("Fix WS SalesMan",MyVClass,FixWSManagerMn,modDBMain);
    

@@ -21,6 +21,7 @@ external procedure GetCurUser(var record UserVc);
 remote function Boolean IntORVc_PasteArtCode(var record IntORVc,Integer,Boolean);
 remote function Boolean IntORchrsum(record IntORVc,Integer);
 remote procedure SumupIntOR(var record IntORVc,var val);
+external function string 255 StrReplace(string,string,string);
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -4276,5 +4277,32 @@ begin
 		end;
 	end;
   
+return;
+end;
+
+
+global updating procedure FIXSOMEACTMn()
+begin
+	record ActVc Actr;
+	record SVOVc SVOr;
+	
+	
+	while(loopmain(Actr,1,true))begin
+		if(Actr.OKFlag==0)then begin
+			if(Actr.SVOSerNr>0)then begin
+				if(Actr.ActType=="RMDCl" or Actr.ActType=="CLLCl" or Actr.ActType=="RMDCL" or Actr.ActType=="CLLCL")then begin
+					SVOr.SerNr = Actr.SVOSerNr;
+					if(readfirstmain(SVOr,1,true))then begin
+						if(nonblankdate(SVOr.RegDate))then begin
+							Actr.OKFlag=1;
+						end;
+					end;
+					Actr.MainPersons =  StrReplace(Actr.MainPersons," ",",");
+					recordstore(Actr,true);
+				end;
+			end;		
+		end;
+	end;
+	
 return;
 end;

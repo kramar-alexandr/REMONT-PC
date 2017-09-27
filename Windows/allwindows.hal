@@ -491,7 +491,12 @@ begin
   v = v + 40;
   checkbox(20,v-20,0,"VIP",VIPStatus);
   checkbox(60,v-20,0,"Товар от партнера",ItemFrPartner); //Edit***************************Sasha2,14:19 08.12.2015
-  EditField(250,v-20,30,"Доработок",ViewOnly,StatusReturnCnt,false,0);
+  if(left(CurrentUSer,2)=="SA")then begin
+  	EditField(250,v-20,30,"Доработок",Normal,StatusReturnCnt,false,0);
+  end else begin
+  	EditField(250,v-20,30,"Доработок",ViewOnly,StatusReturnCnt,false,0);
+  end;
+  
   CheckBox(290,v-20,0,"Без СМС",NoSMS);
  	EditField(420,v-20,20,"Пост.Кл.",Normal,CustomField9,false,0);	// Edit ************************** Thursday, 30 June 2016 10:21:49
   HalPushButton(450,v-20,500,v+15,"ServClientOrderDsm","Отчет");

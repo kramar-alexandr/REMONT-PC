@@ -1060,7 +1060,10 @@ begin
   record OffHireVc OHr;
   row OffHireVc OHrw;
   Integer i,rwcnt;
-  Boolean found;
+  Boolean found,TrHs,testf;
+  record IntSerBalVc IntSBr;// Edit ************************** Wednesday, 27 September 2017 14:26:15
+  
+  
   
   found = true;
   OHr.SVONr = SVONr;
@@ -1076,6 +1079,29 @@ begin
       end;
     end;
   end;
+  
+  if(res>0 and nonblank(serialnr))then begin// Edit ************************** Wednesday, 27 September 2017 14:26:16
+  	IntSBr.Item = artcode;
+		IntSBr.Serial = serialnr;
+		TrHs = true;
+		testf = true;
+		while(loopmain(IntSBr,2,TrHs))begin
+			if(IntSBr.Item!=artcode)then begin TrHs = false; end;
+			if(IntSBr.Serial!=serialnr)then begin TrHs = false; end;
+			
+			if(TrHs)then begin
+				if(IntSBr.Quant>0)then begin
+					testf = false;
+				end;
+			end;
+		end;
+		resetloop(IntSBr);
+		
+		if(testf)then begin
+			res = 0;
+		end;
+  end;
+  
   AlreadyInOffHire = res;
   return;
 end;

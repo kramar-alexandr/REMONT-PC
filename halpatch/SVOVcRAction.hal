@@ -1307,27 +1307,33 @@ BEGIN
   RETURN;
 END;
 
-function Boolean FindOpenWSTrans(longint svonr)
+updating function Boolean FindOpenWSTrans(longint svonr)
 begin
   Boolean res;
   record WSVc WSr;
   boolean TrHs, testf;
+  Record SVOVc SVOr;
   
+  SVOr.SerNr = svonr;
   res = false;
-  WSr.SVONr = svonr;
-  TrHs = true;
-  while (LoopKey("SVONr",WSr,1,TrHs)) begin
-    if (TrHs) then begin
-      if (WSr.SVONr!=svonr) then begin
-        TrHs = false;
-      end;
-    end;
-    if (TrHs) then begin
-      if (WSr.OKFlag==0) then begin
-        res = true;
-        goto LFindOpenWSTrans;
-      end;
-    end;
+  if(readfirstmain(SVOr,1,true))then begin
+		WSr.SVONr = svonr;
+		TrHs = true;
+		while (LoopKey("SVONr",WSr,1,TrHs)) begin
+			if (TrHs) then begin
+				if (WSr.SVONr!=svonr) then begin
+					TrHs = false;
+				end;
+			end;
+			if (TrHs) then begin
+				if (WSr.OKFlag==0) then begin
+					res = true;
+					createrecordlink(SVOr,currentcompany,WSr,currentcompany);
+					createrecordlink(WSr,currentcompany,SVOr,currentcompany);
+					//goto LFindOpenWSTrans;
+				end;
+			end;
+		end;
   end;
 LFindOpenWSTrans:;
   FindOpenWSTrans = res;

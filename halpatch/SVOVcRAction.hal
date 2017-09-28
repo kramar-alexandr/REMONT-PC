@@ -278,7 +278,7 @@ begin
         end;
         if (SVOr.OrderStatus==2 and BlankDate(SVOr.RegDate) and SVOr.GetItemFlag>0) then begin
             //mainperson logic here...
-            AttachMainPersons(SVOr,mainPrsns);
+            //AttachMainPersons(SVOr,mainPrsns);
             CreateCustomActivityFromSVO(SVOr,"CLLCL",SVOr.Inspector,currentdate,"Ремонт готов.");
             CreateCustomActivityFromSVO(SVOr,"RMDCL",SVOr.Inspector,addday(currentdate,5),"Напомнить клиенту забрать отремонтированную технику.");
             //CreateActFromSVOForInspectorIfItemIssued(SVOr); //Edit***************************Sasha2,10:45 16.06.2017

@@ -575,6 +575,9 @@ begin
     WSp.Phone = SVOr.Phone;
     WSp.Fax = SVOr.Fax;
     //WSp.EMCode = USr.Code;// Edit ************************** Friday, 22 September 2017 13:56:16
+	 if(USr.Code==SVOr.ServiceManager)then begin
+			WSp.EMCode = SVOr.ServiceManager;
+		end;
     WSp.EMName = USr.Name;
     WSp.CurncyCode = SVOr.CurncyCode;
     WSp.FrRate = SVOr.FrRate;

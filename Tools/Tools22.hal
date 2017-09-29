@@ -369,6 +369,9 @@ BEGIN
       WSp.Phone = SVOp.Phone;
       WSp.Fax = SVOp.Fax;
       //WSp.EMCode = USr.Code;// Edit ************************** Friday, 22 September 2017 13:56:40
+      if(USr.Code==SVOp.ServiceManager)then begin
+      	WSp.EMCode = SVOp.ServiceManager;
+      end;
       WSp.EMName = USr.Name;
       WSVc_PasteEMCode(WSp,SVOp.SalesMan);      
       WSp.LangCode = SVOp.LangCode;

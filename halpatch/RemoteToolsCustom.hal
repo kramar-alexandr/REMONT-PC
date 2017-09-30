@@ -4245,6 +4245,62 @@ begin
   return;
 end; //Edit***************************Sasha2,14:33 15.08.2017 }
 
+global updating procedure REcalSVOPayments(record RcVc RepSpec)
+begin
+	record SVOVc SVOr;
+	record IPrsVc IPrsr;
+	record IVVc IVr;
+	boolean testf,TrHs,TrHs2;
+	record IPVc IPr;
+	row IPVc IPrw;
+	integer i,mtrw;
+	
+	if(RepSpec.long1>-1)then begin
+		SVOr.SerNr = RepSpec.long1;
+		if(readfirstmain(SVOr,1,true))then begin
+			SVOr.FastCash = blankval;
+			SVOr.FastTerm = blankval;
+			SVOr.FastPMBN = blankval;
+			SVOr.PrepaySum = blankval;
+			
+			resetloop(IVr);
+			TrHs = true;
+			IVr.SVONr = SVOr.SerNr;
+			while(loopkey("SVONr",IVr,1,TrHs))begin
+				if(IVr.SVONr!=SVOr.SerNr)then begin TrHs = false; end;
+				
+				if(TrHs)then begin
+					resetloop(IPrsr);
+					IPrsr.IVNr = IVr.SerNr;
+					TrHs2 = true;
+					while(loopkey("IVKey",IPrsr,1,TrHs2))begin
+						testf = true;
+						if(IPrsr.IVNr!=IVr.SerNr)then begin TrHs2 = false; testf = false; end;
+						if(IPrsr.TransType!=1)then begin testf = false; end;
+						
+						if(testf)then begin
+							IPr.SerNr = IPrsr.TransNr;
+							if(readfirstmain(IPr,1,true))then begin
+								mtrw = matrowcnt(IPr);
+								for(i=0;i<mtrw;i=i+1)begin
+									matrowget(IPr,i,IPrw);
+									if(IPrw.InvoiceNr==IVr.SerNr)then begin
+										
+									end;
+								end;
+							end;
+						end;
+					end;
+				end;
+			end;
+			
+			
+		end;
+	end;
+
+return;
+end;
+
 
 function string 100 WSGetEMCode(record WSVc WSr)
 begin

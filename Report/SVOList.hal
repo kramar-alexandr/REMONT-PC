@@ -203,6 +203,7 @@ begin
   date compareDate;
   record IntSerBalVc ISBr;// Edit ************************** Friday, 23 June 2017 16:51:36
 	record LocationVc Locr;
+	val sumsvo,qtysvo;
   
   afr = RepSpec.sStartDate;//FirstInRange(RepSpec.f1,30);
   ato = RepSpec.sEndDate;//LastInRange(RepSpec.f1,30);
@@ -454,6 +455,8 @@ begin
 					OutString(50,0,SVOr.PrepaySum,false);	
 					OutString(150,0,"К оплате:",false);
 					OutString(200,0,SVOr.WSCost,false);		
+					sumsvo = sumsvo + SVOr.WSCost;
+					qtysvo = qtysvo + 1;
 				EndFormat;
 				StartFormat(15);
 					OutString(0,0,"",false);
@@ -528,6 +531,10 @@ begin
     OutString(20,0,USetStr(8707),false);
     OutString(70,0,loops,false);
     EndFormat;
+    StartFormat(15);
+    OutString(20,0,"Сумма:",false);
+    OutString(70,0,sumsvo,false);
+    EndFormat;
   end;
   
   
@@ -580,7 +587,7 @@ record LocationVc Locr;
 				startformat(15);
 					outstring(0,"DblSVOVc",SVOr.SerNr,false);
 					outstring(50,0,SVOr.TransDate,false);
-					outstring(100,0,SVOr.Priynato & " " & SVOr.Name & " " & SVOr.MiddleName,false);
+					outstring(100,0,SVOr.Addr0,false);
 					outstring(200,0,artcode,false);
 					outstring(240,0,spec,false);
 					outstring(1,0,price,true);
@@ -610,8 +617,6 @@ record LocationVc Locr;
 									end else begin
 										OutString(230,0,ISBr.Location,false);
 									end;
-							
-							
 								endformat;
 							end;
 						end;

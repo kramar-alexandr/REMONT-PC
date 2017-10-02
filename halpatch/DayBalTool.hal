@@ -363,7 +363,7 @@ BEGIN
   Date nild;
   
   AddEuroCurncyNomARTrRow(TRp,acc,objs,vatcod,comm,valv,blankval,accf,dcflag,totsump,curncy,frrate,torate1,torate2,baserate1,baserate2,
-                          curval,nomval,"",-1,typ,qp,nild,insertrownr,negamf,taccnumber,tfilename,tcode);
+                          curval,nomval,"",-1,typ,qp,nild,insertrownr,negamf,taccnumber,tfilename,tcode);//????// Edit ************************** Monday, 2 October 2017 17:35:46??????????
   RETURN;                        
 END;
 

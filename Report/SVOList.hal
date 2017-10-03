@@ -590,6 +590,7 @@ record LocationVc Locr;
 					outstring(100,0,SVOr.Addr0,false);
 					outstring(200,0,artcode,false);
 					outstring(240,0,spec,false);
+					outstring(360,0,SVOr.StatusText,false);
 					outstring(1,0,price,true);
 				endformat;
 				

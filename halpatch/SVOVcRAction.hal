@@ -1566,6 +1566,9 @@ BEGIN
 			SVOr.GetItemTime = CurrentTime;
 			SVOr.CustomField7 = currentuser;
   		SVOr.Inspector = currentuser;
+  		if(blank(SVOr.Comment3))then begin
+  			SVOr.Comment3 = "Потертости, царапины";
+  		end;
   		Userr.Code = CurrentUser;
 			if (ReadFirstMain(Userr,1,true)) then begin end;
 			SVOr.SalesGroup = Userr.SalesGroup;
@@ -1579,11 +1582,15 @@ BEGIN
   	if(SVOr.GetItemFlag>0)then begin// Edit ************************** Tuesday, 18 July 2017 15:50:38
 			SVOr.GetItemDate = currentdate;
 			SVOr.GetItemTime = CurrentTime;
+			if(blank(SVOr.Comment3))then begin
+  			SVOr.Comment3 = "Потертости, царапины";
+  		end;
 		end;
   	if(SVOr.GetItemFlag==1 and blank(SVOr.CustomField7))then begin
   		SVOr.CustomField7 = currentuser;
   		SVOr.Inspector = currentuser;
   		Userr.Code = CurrentUser;
+  		
 			if (ReadFirstMain(Userr,1,true)) then begin end;
 			SVOr.SalesGroup = Userr.SalesGroup;
 			if(SVOr.OrderStatus==9)then begin

@@ -387,6 +387,11 @@ begin
           testf = true;
         end;
       end;
+      if (RepSpec.flags[18]==1) then begin /* Клиент думает*/
+        if (SVOr.OrderStatus==12) then begin
+          testf = true;
+        end;
+      end;
     end;
     if(testf)then begin
       mtrw = matrowcnt(SVOr);
@@ -685,6 +690,7 @@ begin
 				
 			*/
 			
+			if(SVOr.OrderStatus==12)then begin testf = false; end;
 			if(SVOr.OrderStatus==10)then begin testf = false; end;
 			if(SVOr.OrderStatus==9)then begin testf = false; end;
 			if(SVOr.OrderStatus==7)then begin testf = false; end;
@@ -757,6 +763,7 @@ begin
 			if(SVOr.OrderStatus==2)then begin testf = false; end;
 			if(SVOr.OrderStatus==9)then begin testf = false; end;
 			if(SVOr.OrderStatus==6)then begin testf = false; end;
+			if(SVOr.OrderStatus==12)then begin testf = false; end;
 			if(nonblank(RepSpec.f1) and SVOr.ServiceManager!=RepSpec.f1)then begin testf = false; end;
 			countwdays = CountWorkingDays(SVOr.TransDate,Currentdate,"","UA");		
 			if(countwdays<5)then begin testf = false; end;

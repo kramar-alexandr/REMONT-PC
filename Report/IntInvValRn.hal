@@ -201,6 +201,11 @@ BEGIN
                   testf = true;
                 end;
               end;
+              if (RepSpec.flags[19]==1) then begin /* Клиент думает*/
+                if (SVOr.OrderStatus==12) then begin
+                  testf = true;
+                end;
+              end;
             end;
             if (testf) then begin
               if (first) then begin
@@ -324,6 +329,11 @@ BEGIN
                           testf = true;
                         end;
                       end;
+                      if (RepSpec.flags[19]==1) then begin /* Клиент думает.*/
+                        if (SVOr.OrderStatus==12) then begin
+                          testf = true;
+                        end;
+                      end;
                     end;
                     if (testf) then begin
                       if (first) then begin
@@ -432,6 +442,11 @@ BEGIN
                       end;
                       if (RepSpec.flags[18]==1) then begin /* Отказ.*/
                         if (SVOr.OrderStatus==6) then begin
+                          testf = true;
+                        end;
+                      end;
+                      if (RepSpec.flags[19]==1) then begin /* Клиент думет.*/
+                        if (SVOr.OrderStatus==12) then begin
                           testf = true;
                         end;
                       end;

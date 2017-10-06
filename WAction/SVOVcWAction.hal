@@ -1874,7 +1874,7 @@ begin
 		case 9: res = USetStr(31501);
 		case 10: res = USetStr(31506);
     case 11: res = USetStr(31509);//Edit-------------------Vitalii 15:51 21.09.2017
-
+		case 12: res = USetStr(31510);
   end;
   
   SVOServStatus = res;

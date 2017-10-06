@@ -382,8 +382,8 @@ begin
   Tile(0,160,false,"",CustCode);
   EditField(h=90,v=6, 82,"Номер",Normal,SerNr,false,TSerSClass);
   EnterSkip(CustCode);
-  EditField(h2=240,v,250,"ФИО",Normal,Addr0,false,0);
-  EditField(h2+300,v,70,"Создал",ViewOnly,SalesMan,false,0);
+  EditField(h2=240,v,180,"ФИО",Normal,Addr0,false,0);
+  EditField(h2+250,v,70,"Создал",ViewOnly,SalesMan,false,0);
   EditField(h,vm=(v+=vs),82, "Клиент (телефон)",Normal,CustCode,false,CUSClass);
   
   halpushbutton(h-45,vm+17,h+80,vm+50,"ChangeSVOSalesGroup","Перенести ремонт"); 
@@ -400,29 +400,31 @@ begin
   EditField(260,vm+=20,100,"Ответственный менеджер",Normal,Inspector,false,UserSClass);
   EditField(500,vm,60,"Запланированый визит",Normal,PlanVisitDate,false,PasteCurDate); //Edit***************************Sasha2,16:52 09.06.2017
 
-  vm = 28;
-  ButtonFrame(h+490,vm+16,220,6,"Статус");
+  vm = 8;
+  ButtonFrame(h+490,vm+16,220,7,"Статус");
   RadioButton(h+490,vm+=16,9,0,"Предварит.",OrderStatus);
 	RadioButton(h+490,vm+=16,0,0,"В ожидании",OrderStatus);
 	tvm = vm;
 	RadioButton(h+490,vm+=16,5,0,"На диагностике",OrderStatus);
 	RadioButton(h+490,vm+=16,4,0,"На согласовании",OrderStatus);
+	RadioButton(h+490,vm+=16,12,0,"Клиент думает",OrderStatus);
 	RadioButton(h+490,vm+=16,7,0,"Согласовано",OrderStatus);
 	RadioButton(h+490,vm+=16,1,0,"В ремонте",OrderStatus);
 	
-	vm = 28+16;
+	vm = 8+16;
 	RadioButton(h+595,vm,8,0,"В удал. сервисе",OrderStatus);
 	RadioButton(h+595,vm+=16,10,0,"Заказать запч.",OrderStatus);// Edit ************************** Wednesday, 23 August 2017 17:16:01
 	RadioButton(h+595,vm+=16,3,0,"Ожидает запч.",OrderStatus);
   RadioButton(h+595,vm+=16,2,0,"Готов",OrderStatus);
   RadioButton(h+595,vm+=16,11,0,"Вернули на дораб.",OrderStatus);//Edit-------------------Vitalii 15:56 21.09.2017
   RadioButton(h+595,vm+=16,6,0,"Отказ",OrderStatus);
+  
     
   vm = 36;//vm + 32;
   
   //EditField(h+350,vm+20,100,"К оплате",ViewOnly,WSCost,false,0);
   
-  CheckBox(-80,16,0,"Завершено",DoneMark);
+  CheckBox(-50,16,0,"Завер.",DoneMark);
   statictext(50,240,"_",false);// Edit ************************** Thursday, 24 November 2016 11:54:03!!!!!!!!!!!!!!!!!!!!!!!!!!!!!SIZEEEEEE
   TileButton(1,"Дата");
   TileButton(2,"Товары");

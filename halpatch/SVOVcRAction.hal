@@ -32,6 +32,7 @@ remote procedure CheckSVOIV(record SVOVc,var val,var val);
 external procedure RemoteUserFunction(string,string,string,string);// Edit ************************** Thursday, 20 July 2017 16:34:18
 external procedure CutAreaLeft(var area,integer);
 external function LongInt CountWorkingDays(Date,Date,string,string);// Edit ************************** Monday, 18 September 2017 09:50:43
+external function LongInt DateDiff(Date,Date);// Edit ************************** Friday, 6 October 2017 11:19:10
 
 
 SetLangMode(LangRussian,"RUS",0);
@@ -1562,7 +1563,20 @@ BEGIN
     SVOr.SerNr = NextSerNr("SVOVc",SVOr.TransDate,GetUserSerNrSeries(-1),false,""); //Edit***************************Sasha2,16:59 18.05.2017
   end;
   
+  
+  
+  
   if(stat==updatemode)then begin
+  
+  	if(SVOr.OrderStatus==12 and SVO2r.OrderStatus!=12)then begin//klient dumaet// Edit ************************** Friday, 6 October 2017 11:21:02
+  		SVOr.DumatSd = currentdate;
+  	end;
+  	if(SVOr.OrderStatus!=12 and SVO2r.OrderStatus==12)then begin//klient dumaet// Edit ************************** Friday, 6 October 2017 11:21:03
+  		SVOr.DumatEd = currentdate;
+  		SVOr.DumatDiff = SVOr.DumatDiff + datediff(SVOr.DumatEd,SVOr.DumatSd);
+  	end;
+  	
+  	
 		if(SVOr.GetItemFlag>0 and SVO2r.GetItemFlag==0)then begin// Edit ************************** Tuesday, 18 July 2017 15:50:38
 			SVOr.GetItemDate = currentdate;
 			SVOr.GetItemTime = CurrentTime;
@@ -1581,6 +1595,10 @@ BEGIN
 	end;
   
   if(stat==insertmode)then begin
+  	if(SVOr.OrderStatus==12)then begin//klient dumaet// Edit ************************** Friday, 6 October 2017 11:21:00
+  		SVOr.DumatSd = currentdate;
+  	end;
+  	
   	if(SVOr.GetItemFlag>0)then begin// Edit ************************** Tuesday, 18 July 2017 15:50:38
 			SVOr.GetItemDate = currentdate;
 			SVOr.GetItemTime = CurrentTime;

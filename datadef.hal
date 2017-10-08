@@ -323,6 +323,9 @@ begin
     RecordField(UserPass,M4Str,50,0);// Edit ************************** Tuesday, 29 August 2017 11:26:03
     RecordField(PlanVisitDate,M4Date,0,0);// Edit ************************** Tuesday, 29 August 2017 13:54:40
     RecordField(StatusReturnCnt,M4Val,0,0);// Edit ************************** Tuesday, 8 September 2015 10:47:24
+    RecordField(DumatSd,M4Date,0,0);// Edit ************************** Friday, 6 October 2017 11:13:41
+    RecordField(DumatEd,M4Date,0,0);// Edit ************************** Friday, 6 October 2017 11:13:42
+    RecordField(DumatDiff,M4Int,0,0);// Edit ************************** Friday, 6 October 2017 11:13:43
     
     ArrayField(NewSerialNr,M4Str,60,0);// Edit ************************** Friday, 9 June 2017 09:29:41
     

@@ -8939,7 +8939,7 @@ begin
   BlockLoad(Modb);
   GetCurUser(Userr);
 
-  tstr = "Панель управления";
+  tstr = "Панель управления (" & Userr.PersPhone2 & ")";
   if (HasEMail or HasExternalEMail) then begin
     ggn = 5; 
   end else begin

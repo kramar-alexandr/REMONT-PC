@@ -40,6 +40,108 @@ BEGIN
   RETURN;
 END;
 
+
+function val SVOSerInStockQty(record RcVc RepSpec,string item,string location)
+begin
+	record IntSerBalVc SBr;
+	boolean found,testf;
+	record SVOVc SVOr;
+	val q;
+	
+	q=0;
+	
+	SBr.Item = item;
+	found = true;
+	while (LoopMain(SBr,1,found)) begin
+		if(SBr.Item!=item)then begin found = false; end;
+		
+		if (SBr.Item==item) then begin
+			
+			if (SBr.Quant>0) then begin
+				if (blank(location) or (location==SBr.Location)) then begin
+					testf = false; 
+					SVOr.InnerOrderNr = SBr.Serial;
+					
+					if (ReadFirstKey("InnerOrderNr",SVOr,1,true)) then begin
+						if (RepSpec.flags[3]==1) then begin /* Предварит */
+							if (SVOr.OrderStatus==9) then begin
+								testf = true;
+							end;
+						end;  
+						if (RepSpec.flags[4]==1) then begin /* В ожидании */
+							if (SVOr.OrderStatus==0) then begin
+								testf = true;
+							end;
+						end;
+						if (RepSpec.flags[5]==1) then begin /* На диагностике*/
+							if (SVOr.OrderStatus==5) then begin
+								testf = true;
+							end;
+						end;
+						if (RepSpec.flags[6]==1) then begin /* На согласовании*/
+							if (SVOr.OrderStatus==4) then begin
+								testf = true;
+							end;
+						end;
+						if (RepSpec.flags[7]==1) then begin /* Согласовано*/
+							if (SVOr.OrderStatus==7) then begin
+								testf = true;
+							end;
+						end;
+						if (RepSpec.flags[8]==1) then begin /* В ремонте*/
+							if (SVOr.OrderStatus==1) then begin
+								testf = true;
+							end;
+						end;
+						if (RepSpec.flags[9]==1) then begin /* В удал. сервисе*/
+							if (SVOr.OrderStatus==8) then begin
+								testf = true;
+							end;
+						end;
+						if (RepSpec.flags[12]==1) then begin /* Заказать запч.*/
+							if (SVOr.OrderStatus==10) then begin
+								testf = true;
+							end;
+						end;
+						if (RepSpec.flags[13]==1) then begin /* Ожидает запч.*/
+							if (SVOr.OrderStatus==3) then begin
+								testf = true;
+							end;
+						end;
+						if (RepSpec.flags[15]==1) then begin /* Готов.*/
+							if (SVOr.OrderStatus==2) then begin
+								testf = true;
+							end;
+						end;
+						if (RepSpec.flags[17]==1) then begin /* Вернули на доработку*/
+							if (SVOr.OrderStatus==11) then begin
+								testf = true;
+							end;
+						end;
+						if (RepSpec.flags[18]==1) then begin /* Отказ.*/
+							if (SVOr.OrderStatus==6) then begin
+								testf = true;
+							end;
+						end;
+						if (RepSpec.flags[19]==1) then begin /* Клиент думает*/
+							if (SVOr.OrderStatus==12) then begin
+								testf = true;
+							end;
+						end;
+					end;
+					if (testf) then begin
+						q = q+1;
+					end;
+				end;
+			end;
+		end;
+	end;
+
+SVOSerInStockQty = q;
+
+return;
+end;
+
 procedure FindAllStocksValue(string item,var val totvalp,Integer curncytday,Boolean print,Date todatp)
 BEGIN
   Boolean TrHs;
@@ -135,6 +237,8 @@ BEGIN
     SBr.Item = item;
     found = true;
     while (LoopMain(SBr,1,found)) begin
+    	if(SBr.Item!=item)then begin found = false; end;// Edit ************************** Tuesday, 10 October 2017 17:51:31
+    	
       if (SBr.Item==item) then begin
         if (SBr.Quant>=q) then begin
           if (blank(location) or (location==SBr.Location)) then begin
@@ -501,7 +605,9 @@ BEGIN
     fManyLocations = false;
   end;
   if (INp.ItemType==1) then begin
-    instock = HALGetIntStockQty(INp.Code,RepSpec.f2,RepSpec.d1);
+    //instock = HALGetIntStockQty(INp.Code,RepSpec.f2,RepSpec.d1);// Edit ************************** Tuesday, 10 October 2017 17:44:03
+    instock = SVOSerInStockQty(RepSpec,INp.Code,RepSpec.f2);// Edit ************************** Tuesday, 10 October 2017 17:44:03
+    
     if (RepSpec.UsedOnly==1) then begin
       if (instock==0) then begin
         goto LInvListOneInternalItem;

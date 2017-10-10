@@ -122,6 +122,7 @@ BEGIN
   RepSpec.flags[13] = 1;
   RepSpec.flags[15] = 1;
   RepSpec.flags[17] = 1;
+  RepSpec.flags[19] = 1;
   PutWindowRecord(wn,RepSpec);
   SelectWindow(wn);
   RETURN;

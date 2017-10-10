@@ -9559,6 +9559,7 @@ begin
   CheckBox(h,v+=16,0,"В ожидании",flags[4]);//0
   CheckBox(h,v+=16,0,"На диагностике",flags[5]);//5
   CheckBox(h,v+=16,0,"На согласовании",flags[6]);//4
+  CheckBox(h,v+=16,0,"Клиент думает",flags[19]);
   CheckBox(h,v+=16,0,"Согласовано",flags[7]);//7
   CheckBox(h,v+=16,0,"В ремонте",flags[8]);//1
   CheckBox(h,v+=16,0,"В удал. сервисе",flags[9]);//8

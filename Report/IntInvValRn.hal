@@ -10,7 +10,7 @@ external function roundmode DefaultRoundMode();
 external function Integer ItemCostPerLocation(record INVc);
 external function Boolean ReadFirstItem(string,var record INVc,Boolean,Boolean);
 external function val HALGetIntStockQty(string,string,Date);
-external procedure FindIntFIFOPrice(string,Integer,string,val,val,var val,Boolean,Boolean,Date);
+//external procedure FindIntFIFOPrice(string,Integer,string,val,val,var val,Boolean,Boolean,Date);// Edit ************************** Tuesday, 10 October 2017 18:07:51
 external procedure ExtractObj(string,var Integer,var string);
 external procedure HTArts(string, string, var string);
 external procedure HTDepartment(string,var string);
@@ -20,6 +20,15 @@ external procedure GetItemGroupDescription(string,var string);
 external procedure CalcSum(val,val,val,val,var val,Integer);
 external procedure PrintOneBatch(string,string,val,Boolean);
 external procedure FindIntStockValue2(string,string,var record IntISVc,Integer,Date,Integer,Boolean,var val,Integer,Boolean);
+
+
+
+procedure FindIntFIFOPrice(string x1,Integer x2,string x3,val x4,val x5,var val x6,Boolean x7,Boolean x8,Date x9)// Edit ************************** Tuesday, 10 October 2017 18:07:50
+begin
+
+
+return;
+end;
 
 procedure SerialInInternalStock(string item,string ser,string location,var val q)
 BEGIN
@@ -669,7 +678,7 @@ BEGIN
       if (blank(RepSpec.f2) and fManyLocations) then begin
         FindAllStocksValue(INp.Code,t,RepSpec.flags[1],true,RepSpec.d1);
       end else begin
-        FindIntFIFOPrice(INp.Code,-1,RepSpec.f2,instock,blankval,t,false,true,RepSpec.d1);
+        FindIntFIFOPrice(INp.Code,-1,RepSpec.f2,instock,blankval,t,false,true,RepSpec.d1);// Edit ************************** Tuesday, 10 October 2017 18:05:52
       end;
       Black_Divider(2,1);
       StartFormat(15);

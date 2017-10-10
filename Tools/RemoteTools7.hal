@@ -1147,7 +1147,8 @@ begin
     INr.Code = SVOrw.ArtCode;
     if (ReadFirstMain(INr,1,true)) then begin
       if (INr.ItemType==1) then begin
-        q = AlreadyInOffHire(OHr.SVONr,SVOrw.ArtCode,SVOrw.SerialNr);
+        //q = AlreadyInOffHire(OHr.SVONr,SVOrw.ArtCode,SVOrw.SerialNr);// Edit ************************** Tuesday, 10 October 2017 09:46:55
+        q = 0;// Edit ************************** Tuesday, 10 October 2017 09:46:57
         if (q<SVOrw.Quant) then begin
           OHrw.ArtCode = SVOrw.ArtCode;
           OHrw.Quant = SVOrw.Quant;

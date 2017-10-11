@@ -1527,6 +1527,120 @@ lFindCustByPhone:;
 return
 end;
 
+
+PROCEDURE FixStatusesDateDiff(var record SVOVc SVOr,record SVOVc SVO2r,LongInt stat)// Edit ************************** Wednesday, 11 October 2017 11:38:41
+begin
+
+	if(stat==Rs_update)then begin
+  	if(SVOr.OrderStatus==12 and SVO2r.OrderStatus!=12)then begin//klient dumaet// Edit ************************** Friday, 6 October 2017 11:21:02
+  		SVOr.DumatSd = currentdate;
+  	end;
+  	if(SVOr.OrderStatus!=12 and SVO2r.OrderStatus==12)then begin//klient dumaet// Edit ************************** Friday, 6 October 2017 11:21:03
+  		SVOr.DumatEd = currentdate;
+  		SVOr.DumatDiff = SVOr.DumatDiff + datediff(SVOr.DumatEd,SVOr.DumatSd);
+  	end;
+  	if(SVOr.OrderStatus==0 and SVO2r.OrderStatus!=0)then begin//Ojidaet// Edit ************************** Friday, 6 October 2017 11:21:02
+  		SVOr.Status0Sd = currentdate;
+  	end;
+  	if(SVOr.OrderStatus!=0 and SVO2r.OrderStatus==0)then begin//Ojidaet// Edit ************************** Friday, 6 October 2017 11:21:03
+  		SVOr.Status0Ed = currentdate;
+  		SVOr.Status0Diff = SVOr.Status0Diff + datediff(SVOr.Status0Ed,SVOr.Status0Sd);
+  	end;
+  	if(SVOr.OrderStatus==1 and SVO2r.OrderStatus!=1)then begin//Ojidaet// Edit ************************** Friday, 6 October 2017 11:21:02
+  		SVOr.Status1Sd = currentdate;
+  	end;
+  	if(SVOr.OrderStatus!=1 and SVO2r.OrderStatus==1)then begin//Ojidaet// Edit ************************** Friday, 6 October 2017 11:21:03
+  		SVOr.Status1Ed = currentdate;
+  		SVOr.Status1Diff = SVOr.Status1Diff + datediff(SVOr.Status1Ed,SVOr.Status1Sd);
+  	end;
+  	if(SVOr.OrderStatus==3 and SVO2r.OrderStatus!=3)then begin//Ojidaet// Edit ************************** Friday, 6 October 2017 11:21:02
+  		SVOr.Status3Sd = currentdate;
+  	end;
+  	if(SVOr.OrderStatus!=3 and SVO2r.OrderStatus==3)then begin//Ojidaet// Edit ************************** Friday, 6 October 2017 11:21:03
+  		SVOr.Status3Ed = currentdate;
+  		SVOr.Status3Diff = SVOr.Status3Diff + datediff(SVOr.Status3Ed,SVOr.Status3Sd);
+  	end;
+  	if(SVOr.OrderStatus==4 and SVO2r.OrderStatus!=4)then begin//Ojidaet// Edit ************************** Friday, 6 October 2017 11:21:02
+  		SVOr.Status4Sd = currentdate;
+  	end;
+  	if(SVOr.OrderStatus!=4 and SVO2r.OrderStatus==4)then begin//Ojidaet// Edit ************************** Friday, 6 October 2017 11:21:03
+  		SVOr.Status4Ed = currentdate;
+  		SVOr.Status4Diff = SVOr.Status4Diff + datediff(SVOr.Status4Ed,SVOr.Status4Sd);
+  	end;
+  	if(SVOr.OrderStatus==5 and SVO2r.OrderStatus!=5)then begin//Ojidaet// Edit ************************** Friday, 6 October 2017 11:21:02
+  		SVOr.Status5Sd = currentdate;
+  	end;
+  	if(SVOr.OrderStatus!=5 and SVO2r.OrderStatus==5)then begin//Ojidaet// Edit ************************** Friday, 6 October 2017 11:21:03
+  		SVOr.Status5Ed = currentdate;
+  		SVOr.Status5Diff = SVOr.Status5Diff + datediff(SVOr.Status5Ed,SVOr.Status5Sd);
+  	end;
+  	if(SVOr.OrderStatus==7 and SVO2r.OrderStatus!=7)then begin//Ojidaet// Edit ************************** Friday, 6 October 2017 11:21:02
+  		SVOr.Status7Sd = currentdate;
+  	end;
+  	if(SVOr.OrderStatus!=7 and SVO2r.OrderStatus==7)then begin//Ojidaet// Edit ************************** Friday, 6 October 2017 11:21:03
+  		SVOr.Status7Ed = currentdate;
+  		SVOr.Status7Diff = SVOr.Status7Diff + datediff(SVOr.Status7Ed,SVOr.Status7Sd);
+  	end;
+  	if(SVOr.OrderStatus==8 and SVO2r.OrderStatus!=8)then begin//Ojidaet// Edit ************************** Friday, 6 October 2017 11:21:02
+  		SVOr.Status8Sd = currentdate;
+  	end;
+  	if(SVOr.OrderStatus!=8 and SVO2r.OrderStatus==8)then begin//Ojidaet// Edit ************************** Friday, 6 October 2017 11:21:03
+  		SVOr.Status8Ed = currentdate;
+  		SVOr.Status8Diff = SVOr.Status8Diff + datediff(SVOr.Status8Ed,SVOr.Status8Sd);
+  	end;
+  	if(SVOr.OrderStatus==10 and SVO2r.OrderStatus!=10)then begin//Ojidaet// Edit ************************** Friday, 6 October 2017 11:21:02
+  		SVOr.Status10Sd = currentdate;
+  	end;
+  	if(SVOr.OrderStatus!=10 and SVO2r.OrderStatus==10)then begin//Ojidaet// Edit ************************** Friday, 6 October 2017 11:21:03
+  		SVOr.Status10Ed = currentdate;
+  		SVOr.Status10Diff = SVOr.Status10Diff + datediff(SVOr.Status10Ed,SVOr.Status10Sd);
+  	end;
+  	if(SVOr.OrderStatus==11 and SVO2r.OrderStatus!=11)then begin//Ojidaet// Edit ************************** Friday, 6 October 2017 11:21:02
+  		SVOr.Status11Sd = currentdate;
+  	end;
+  	if(SVOr.OrderStatus!=11 and SVO2r.OrderStatus==11)then begin//Ojidaet// Edit ************************** Friday, 6 October 2017 11:21:03
+  		SVOr.Status11Ed = currentdate;
+  		SVOr.Status11Diff = SVOr.Status11Diff + datediff(SVOr.Status11Ed,SVOr.Status11Sd);
+  	end;
+  end;
+	
+	
+	if(stat==Rs_insert)then begin
+  	if(SVOr.OrderStatus==12)then begin//klient dumaet// Edit ************************** Friday, 6 October 2017 11:21:00
+  		SVOr.DumatSd = currentdate;
+  	end;
+  	if(SVOr.OrderStatus==0)then begin//Ojidaet// Edit ************************** Friday, 6 October 2017 11:21:02
+  		SVOr.Status0Sd = currentdate;
+  	end;
+  	if(SVOr.OrderStatus==1)then begin//Ojidaet// Edit ************************** Friday, 6 October 2017 11:21:02
+  		SVOr.Status1Sd = currentdate;
+  	end;
+  	if(SVOr.OrderStatus==3)then begin//Ojidaet// Edit ************************** Friday, 6 October 2017 11:21:02
+  		SVOr.Status3Sd = currentdate;
+  	end;
+  	if(SVOr.OrderStatus==4)then begin//Ojidaet// Edit ************************** Friday, 6 October 2017 11:21:02
+  		SVOr.Status4Sd = currentdate;
+  	end;
+  	if(SVOr.OrderStatus==5)then begin//Ojidaet// Edit ************************** Friday, 6 October 2017 11:21:02
+  		SVOr.Status5Sd = currentdate;
+  	end;
+  	if(SVOr.OrderStatus==7)then begin//Ojidaet// Edit ************************** Friday, 6 October 2017 11:21:02
+  		SVOr.Status7Sd = currentdate;
+  	end;
+  	if(SVOr.OrderStatus==8)then begin//Ojidaet// Edit ************************** Friday, 6 October 2017 11:21:02
+  		SVOr.Status8Sd = currentdate;
+  	end;
+  	if(SVOr.OrderStatus==10)then begin//Ojidaet// Edit ************************** Friday, 6 October 2017 11:21:02
+  		SVOr.Status10Sd = currentdate;
+  	end;
+  	if(SVOr.OrderStatus==11)then begin//Ojidaet// Edit ************************** Friday, 6 October 2017 11:21:02
+  		SVOr.Status11Sd = currentdate;
+  	end; 
+  end;
+	
+return;
+end;
+
 global
 updating function LongInt SVOVcRecordCheck(var record SVOVc SVOr,record SVOVc SVO2r,LongInt stat,LongInt check)
 BEGIN
@@ -1564,19 +1678,10 @@ BEGIN
   end;
   
   
-  
+  FixStatusesDateDiff(SVOr,SVO2r,stat);// Edit ************************** Wednesday, 11 October 2017 11:37:39
   
   if(stat==updatemode)then begin
-  
-  	if(SVOr.OrderStatus==12 and SVO2r.OrderStatus!=12)then begin//klient dumaet// Edit ************************** Friday, 6 October 2017 11:21:02
-  		SVOr.DumatSd = currentdate;
-  	end;
-  	if(SVOr.OrderStatus!=12 and SVO2r.OrderStatus==12)then begin//klient dumaet// Edit ************************** Friday, 6 October 2017 11:21:03
-  		SVOr.DumatEd = currentdate;
-  		SVOr.DumatDiff = SVOr.DumatDiff + datediff(SVOr.DumatEd,SVOr.DumatSd);
-  	end;
-  	
-  	
+    	
 		if(SVOr.GetItemFlag>0 and SVO2r.GetItemFlag==0)then begin// Edit ************************** Tuesday, 18 July 2017 15:50:38
 			SVOr.GetItemDate = currentdate;
 			SVOr.GetItemTime = CurrentTime;
@@ -1594,11 +1699,7 @@ BEGIN
 		end;
 	end;
   
-  if(stat==insertmode)then begin
-  	if(SVOr.OrderStatus==12)then begin//klient dumaet// Edit ************************** Friday, 6 October 2017 11:21:00
-  		SVOr.DumatSd = currentdate;
-  	end;
-  	
+  if(stat==insertmode)then begin  	
   	if(SVOr.GetItemFlag>0)then begin// Edit ************************** Tuesday, 18 July 2017 15:50:38
 			SVOr.GetItemDate = currentdate;
 			SVOr.GetItemTime = CurrentTime;

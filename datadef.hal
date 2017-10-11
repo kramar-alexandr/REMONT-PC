@@ -327,6 +327,34 @@ begin
     RecordField(DumatEd,M4Date,0,0);// Edit ************************** Friday, 6 October 2017 11:13:42
     RecordField(DumatDiff,M4Int,0,0);// Edit ************************** Friday, 6 October 2017 11:13:43
     
+    RecordField(Status0Sd,M4Date,0,0);// Edit ************************** Wednesday, 11 October 2017 11:27:44
+    RecordField(Status0Ed,M4Date,0,0);// Edit ************************** Wednesday, 11 October 2017 11:27:46
+    RecordField(Status0Diff,M4Int,0,0);// Edit ************************** Wednesday, 11 October 2017 11:27:48
+    RecordField(Status1Sd,M4Date,0,0);// Edit ************************** Wednesday, 11 October 2017 11:27:44
+    RecordField(Status1Ed,M4Date,0,0);// Edit ************************** Wednesday, 11 October 2017 11:27:46
+    RecordField(Status1Diff,M4Int,0,0);// Edit ************************** Wednesday, 11 October 2017 11:27:48
+    RecordField(Status3Sd,M4Date,0,0);// Edit ************************** Wednesday, 11 October 2017 11:27:44
+    RecordField(Status3Ed,M4Date,0,0);// Edit ************************** Wednesday, 11 October 2017 11:27:46
+    RecordField(Status3Diff,M4Int,0,0);// Edit ************************** Wednesday, 11 October 2017 11:27:48
+    RecordField(Status4Sd,M4Date,0,0);// Edit ************************** Wednesday, 11 October 2017 11:27:44
+    RecordField(Status4Ed,M4Date,0,0);// Edit ************************** Wednesday, 11 October 2017 11:27:46
+    RecordField(Status4Diff,M4Int,0,0);// Edit ************************** Wednesday, 11 October 2017 11:27:48
+    RecordField(Status5Sd,M4Date,0,0);// Edit ************************** Wednesday, 11 October 2017 11:27:44
+    RecordField(Status5Ed,M4Date,0,0);// Edit ************************** Wednesday, 11 October 2017 11:27:46
+    RecordField(Status5Diff,M4Int,0,0);// Edit ************************** Wednesday, 11 October 2017 11:27:48
+    RecordField(Status7Sd,M4Date,0,0);// Edit ************************** Wednesday, 11 October 2017 11:27:44
+    RecordField(Status7Ed,M4Date,0,0);// Edit ************************** Wednesday, 11 October 2017 11:27:46
+    RecordField(Status7Diff,M4Int,0,0);// Edit ************************** Wednesday, 11 October 2017 11:27:48
+    RecordField(Status8Sd,M4Date,0,0);// Edit ************************** Wednesday, 11 October 2017 11:27:44
+    RecordField(Status8Ed,M4Date,0,0);// Edit ************************** Wednesday, 11 October 2017 11:27:46
+    RecordField(Status8Diff,M4Int,0,0);// Edit ************************** Wednesday, 11 October 2017 11:27:48
+    RecordField(Status10Sd,M4Date,0,0);// Edit ************************** Wednesday, 11 October 2017 11:27:44
+    RecordField(Status10Ed,M4Date,0,0);// Edit ************************** Wednesday, 11 October 2017 11:27:46
+    RecordField(Status10Diff,M4Int,0,0);// Edit ************************** Wednesday, 11 October 2017 11:27:48
+    RecordField(Status11Sd,M4Date,0,0);// Edit ************************** Wednesday, 11 October 2017 11:27:44
+    RecordField(Status11Ed,M4Date,0,0);// Edit ************************** Wednesday, 11 October 2017 11:27:46
+    RecordField(Status11Diff,M4Int,0,0);// Edit ************************** Wednesday, 11 October 2017 11:27:48
+    
     ArrayField(NewSerialNr,M4Str,60,0);// Edit ************************** Friday, 9 June 2017 09:29:41
     
     SubsetKeyBegin2(RegDate);// Edit ************************** Wednesday, 15 February 2017 19:31:45

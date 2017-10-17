@@ -1,0 +1,34 @@
+Global procedure WebGetSVOStatus()
+begin
+	string 50 sernr,phone;
+	record SVOVc SVOr;
+	
+	sernr = webgetarg("sernr");
+	phone = webgetarg("phone");
+	
+	logtext(0,"WebGetSVOStatus " & sernr & " " & phone);
+	
+	
+	SetCompany(1,false);
+	
+	SVOr.SerNr = evaltoval(sernr);
+	if(readfirstmain(SVOr,1,true))then begin
+		if(SVOr.Kontinfo1==phone)then begin
+			switch(SVOr.OrderStatus)begin
+				case 0:WeboutString("Ваше устройство принято в ремонт и передано мастеру для проведения диагностики.");
+				case 1:WeboutString("Диагностика Вашего устройства завершена. Ожидайте завершения ремонта.");
+				case 4:WeboutString("Диагностика Вашего устройства завершена. В ближайшее время с Вами свяжется представитель компании для согласования стоимости");
+							 WeboutString(" ремонта, а также сроков его выполнения.");
+				case 3:WeboutString("Ожидается поставка запчасти для выполнения последующего ремонта Вашего устройства. Вы будете проинформированы сразу после завершения");
+							 WeboutString(" ремонта с помощью SMS-сообщения.");
+				case 2:WeboutString("Ремонт Вашего устройства завершен. Внимание! Для получения устройства в сервисном центре обязательно наличие оригинала расписки.");
+			end;
+		end else begin
+			WeboutString("Не верный номер телефна");
+		end;
+	end else begin
+		WeboutString("Не верный номер ремонта");
+	end;
+	ResetCompany(1);
+return;
+end;

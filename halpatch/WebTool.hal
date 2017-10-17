@@ -1,4 +1,7 @@
-Global procedure WebGetSVOStatus()
+SetLangMode(LangRussian,"RUS",0);
+
+
+Global webpublic procedure WebGetSVOStatus()
 begin
 	string 50 sernr,phone;
 	record SVOVc SVOr;
@@ -8,10 +11,9 @@ begin
 	
 	logtext(0,"WebGetSVOStatus " & sernr & " " & phone);
 	
+	//WeboutString("Не верный номер ремонта");
 	
-	SetCompany(1,false);
-	
-	SVOr.SerNr = evaltoval(sernr);
+	SVOr.SerNr = stringtolongint(sernr);
 	if(readfirstmain(SVOr,1,true))then begin
 		if(SVOr.Kontinfo1==phone)then begin
 			switch(SVOr.OrderStatus)begin
@@ -29,6 +31,5 @@ begin
 	end else begin
 		WeboutString("Не верный номер ремонта");
 	end;
-	ResetCompany(1);
 return;
 end;

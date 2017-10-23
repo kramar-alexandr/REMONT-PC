@@ -2084,7 +2084,7 @@ begin
   EditField(h,v+=vs,90,"Код модели",Normal,Disp6,false,MyDISClass);
   EditField(h+110,v,-50,"",ViewOnly,Disp6Name,false,0);
   //EditField(h,v+=vs,70,"Тип устройства",Normal,Disp5,false,MyDISClass);
-  
+  v=v+vs;
   EditField(h,v+=vs,-240,"Классификация",Normal,DispGroups,false,DISClass);
   v = v + 2*vs;
   

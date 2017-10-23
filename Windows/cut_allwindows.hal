@@ -2076,6 +2076,8 @@ begin
   EditField(h+110,v,-50,"",ViewOnly,Disp4Name,false,0);
   EditField(h,v+=vs,90,"Бренд",Normal,Disp5,false,MyDISClass);
   EditField(h+110,v,-50,"",ViewOnly,Disp5Name,false,0);
+  EditField(h,v+=vs,90,"Код модели",Normal,Disp6,false,MyDISClass);
+  EditField(h+110,v,-50,"",ViewOnly,Disp6Name,false,0);
   //EditField(h,v+=vs,70,"Тип устройства",Normal,Disp5,false,MyDISClass);
   
   EditField(h,v+=vs,-240,"Классификация",Normal,DispGroups,false,DISClass);
@@ -3012,5 +3014,16 @@ begin
     SpecialMenu("Создать объекты",' ',1,"CreateObjectCUDsm");
     SpecialMenu("Создать письмо с паролем",' ',3,"RandomPassMailCUDsm");
   end;*/
+  EndWindow;
+end;
+
+
+window MyDispSClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  WindowBegin("Выберите классификацию",MyDispSClass,CGother,HBlRecType);
+  SetWRect(240,80,600,348);
+  StringList(9,9,-19,-19);
+  SearchField("Поиск");  
   EndWindow;
 end;

@@ -975,7 +975,7 @@ LValidateItemDescriptionRows_Polish:;
   return;
 end;
 
-updating procedure CheckAndCreateClass(var string chdir, var string mdir,var string name)
+updating procedure CheckAndCreateClass(var string chdir, var string mdir,var string name,string type)
 begin
 	record DIVc DIr,DI2r;
 	boolean foundf,testf,TrHs;
@@ -1019,6 +1019,7 @@ begin
 		
 		
 		DI2r.DispGroups = mdir;
+		DI2r.CType = type;
 		if(len(chdir)<11)then begin
 			DI2r.Code = chdir;
 			DIr.Code = DI2r.Code;
@@ -1066,7 +1067,7 @@ global
 updating function LongInt INVcRecordCheck(var record INVc INr,record INVc IN2r,LongInt stat,LongInt long4)
 begin
   LongInt res;
-  record INVc lINr;
+  record INVc lINr,INoldr;
   record ITVc ITr;
   Boolean checkf,check;
   record ItemSettingBlock ISb;
@@ -1081,7 +1082,9 @@ begin
   record STVc STr;    
   record TaxTemplateVc TTr;
   record ItemStatusVc ISr;
-  Integer rownr;
+  Integer rownr,ind;
+  string 10 indstr;
+  record DIVc DIr;// Edit ************************** Friday, 20 October 2017 10:32:47
   
   res = 0;
   if ((ProgramType==typFirstOffice) or 
@@ -1111,11 +1114,11 @@ begin
     res = -1; 
     goto LINVcRecordCheck;
   end;
-  if (blank(INr.Name)) then begin
-    RecordCheckError(1058,INr.Name,-1,"Name");      
+  /*if (blank(INr.Name)) then begin// Edit ************************** Friday, 20 October 2017 10:28:50
+    RecordCheckError(1058,INr.Name,-1,"Name");      //goto forvard
     res = -1; 
     goto LINVcRecordCheck;
-  end;
+  end;*/
   if (ISb.BarCodeLength>0) then begin
     if (nonblank(INr.BarCode)) then begin
       if (len(INr.BarCode)<ISb.BarCodeLength ) then begin
@@ -1125,6 +1128,28 @@ begin
       end;
     end;
   end;
+  
+  if(stat==Rs_insert)then begin// Edit ************************** Thursday, 19 October 2017 11:02:06
+		if (setinset("SKLADS",INr.Disp2) or setinset("SKLADU",INr.Disp2)) then begin
+			INr.ItemType = kItemTypeStocked;
+		end;
+		if (setinset("SERS",INr.Disp2)) then begin
+			INr.ItemType = kItemTypeService;
+		end;		
+	end;
+  
+  if((setinset("SKLADS",INr.Disp2) or setinset("SKLADU",INr.Disp2)) and INr.ItemType!=kItemTypeStocked) then begin
+		RecordCheckError(31511,"",-1,"Disp2");// Edit ************************** Thursday, 19 October 2017 11:15:18
+		res = -1; 
+		goto LINVcRecordCheck;
+	end; 
+	
+	if(setinset("SERS",INr.Disp2) and INr.ItemType!=kItemTypeService) then begin
+		RecordCheckError(31511,"",-1,"Disp2");// Edit ************************** Thursday, 19 October 2017 11:15:16
+		res = -1; 
+		goto LINVcRecordCheck;
+	end;
+  
   if (INr.ItemType==kItemTypeStructured) then begin
     if (blank(INr.Recepy)) then begin
       RecordCheckError(1058,"",-1,"Recepy");      
@@ -1179,13 +1204,13 @@ begin
     res = -1; 
     goto LINVcRecordCheck;
   end;
-  if (ISb.DemandItemGroup!=0) then begin
+  /*if (ISb.DemandItemGroup!=0) then begin//go to forvard // Edit ************************** Friday, 20 October 2017 10:30:05
     if (blank(INr.Group)) then begin
       RecordCheckError(1058,"",-1,"Group");      
       res = -1; 
       goto LINVcRecordCheck;
     end;
-  end;
+  end;*/
   if (nonblank(INr.Group)) then begin
     ITr.Code = INr.Group;
     if (ReadFirstMain(ITr,1,true)==false) then begin
@@ -1339,14 +1364,14 @@ begin
 		goto LINVcRecordCheck;
 	end;
 	
-	CheckAndCreateClass(INr.Disp2,INr.Disp1,INr.Disp2Name);
-	CheckAndCreateClass(INr.Disp3,INr.Disp2,INr.Disp3Name);
-	CheckAndCreateClass(INr.Disp4,INr.Disp3,INr.Disp4Name);
-	CheckAndCreateClass(INr.Disp5,INr.Disp4,INr.Disp5Name);
-	CheckAndCreateClass(INr.Disp6,INr.Disp5,INr.Disp6Name);
-	CheckAndCreateClass(INr.Disp7,INr.Disp6,INr.Disp7Name);
-	CheckAndCreateClass(INr.Disp8,INr.Disp7,INr.Disp8Name);
-	CheckAndCreateClass(INr.Disp9,INr.Disp8,INr.Disp9Name);
+	CheckAndCreateClass(INr.Disp2,INr.Disp1,INr.Disp2Name,"DISP2");
+	CheckAndCreateClass(INr.Disp3,INr.Disp2,INr.Disp3Name,"DISP3");
+	CheckAndCreateClass(INr.Disp4,INr.Disp3,INr.Disp4Name,"DISP4");
+	CheckAndCreateClass(INr.Disp5,INr.Disp4,INr.Disp5Name,"DISP5");
+	CheckAndCreateClass(INr.Disp6,INr.Disp5,INr.Disp6Name,"DISP6");
+	CheckAndCreateClass(INr.Disp7,INr.Disp6,INr.Disp7Name,"DISP7");
+	CheckAndCreateClass(INr.Disp8,INr.Disp7,INr.Disp8Name,"DISP8");
+	CheckAndCreateClass(INr.Disp9,INr.Disp8,INr.Disp9Name,"DISP9");
 	
 	if(nonblank(INr.Disp1))then begin
 		INr.DispGroups = INr.Disp1;
@@ -1358,13 +1383,13 @@ begin
 		INr.DispGroups = INr.DispGroups & "," & INr.Disp3;
 	end;
 	if(nonblank(INr.Disp4))then begin
-		INr.DispGroups = INr.DispGroups & "," & INr.Disp4;
+		INr.DispGroups = INr.DispGroups & "," & INr.Disp4;//Item Type Nmame
 	end;
 	if(nonblank(INr.Disp5))then begin
-		INr.DispGroups = INr.DispGroups & "," & INr.Disp5;
+		INr.DispGroups = INr.DispGroups & "," & INr.Disp5;//Brand
 	end;
 	if(nonblank(INr.Disp6))then begin
-		INr.DispGroups = INr.DispGroups & "," & INr.Disp6;
+		INr.DispGroups = INr.DispGroups & "," & INr.Disp6;//Product Code
 	end;
 	if(nonblank(INr.Disp7))then begin
 		INr.DispGroups = INr.DispGroups & "," & INr.Disp7;
@@ -1375,6 +1400,51 @@ begin
 	if(nonblank(INr.Disp9))then begin
 		INr.DispGroups = INr.DispGroups & "," & INr.Disp9;
 	end;
+	
+	
+	if(stat==Rs_insert)then begin// Edit ************************** Friday, 20 October 2017 10:20:48
+		INr.Name = INr.Disp4 & " " & INr.Disp5 & " " & INr.Disp6;
+		INoldr.Code = left(INr.Disp5 & INr.Disp6,20);
+		if(readfirstmain(INoldr,1,true)==false)then begin
+			INr.Code = left(INr.Disp5 & INr.Disp6,20);
+		end else begin
+			ind = 1;
+			indstr = ind;
+			INoldr.Code = left(left(INr.Disp5 & INr.Disp6,20-len(indstr)) & indstr,20);
+			while(readfirstmain(INoldr,1,true))begin
+				ind = ind+1;
+				indstr = ind;
+				INoldr.Code = left(left(INr.Disp5 & INr.Disp6,20-len(indstr)) & indstr,20);
+			end;
+		end;
+	end;
+	
+	if(nonblank(INr.Disp5))then begin// Edit ************************** Friday, 20 October 2017 10:32:20
+		DIr.Code = INr.Disp5;
+		if(readfirstmain(DIr,1,true))then begin
+			if(nonblank(DIr.Name))then begin
+				ITr.Comment = DIr.Name;
+				if(readfirstkey("Comment",ITr,1,true))then begin
+					INr.Group = ITr.Code;
+				end;
+			end;
+		end;
+		
+	end;
+	
+	if (blank(INr.Name)) then begin
+    RecordCheckError(1058,INr.Name,-1,"Name");      
+    res = -1; 
+    goto LINVcRecordCheck;
+  end;
+  
+  if (ISb.DemandItemGroup!=0) then begin
+    if (blank(INr.Group)) then begin
+      RecordCheckError(1058,"",-1,"Group");      
+      res = -1; 
+      goto LINVcRecordCheck;
+    end;
+  end;
 	
 	if (setinset("USER",INr.DispGroups)==false and setinset("SERV",INr.DispGroups)==false) then begin
 		RecordCheckError(1707,"USER или SERV",-1,"DispGroups");//change type     

@@ -2019,7 +2019,7 @@ begin
     PushButton(-110,5,-10,25,ToolImagePicker,"Фото"); 
     EndToolBar;
   end;
-
+	 ActiveFieldOnNew("Disp1"); 
   if (HasJewelleryInterface) then begin
     Tile(0,107,false,"",Code);
   end else begin
@@ -2066,15 +2066,20 @@ begin
   end;
   tilenr = 1;*/
   EditField(h,v+=vs,90,"Запчасть/Устройство",Normal,Disp1,false,MyDISClass);
+  EnterSkip(Disp2);
   EditField(h+110,v,-50,"",ViewOnly,Disp1Name,false,0);
   EditField(h,v+=vs,90,"Услуга/складируемый",Normal,Disp2,false,MyDISClass);
+  EnterSkip(Disp3);
   EditField(h+110,v,-50,"",ViewOnly,Disp2Name,false,0);
   EditField(h,v+=vs,90,"Вид устройства/детали",Normal,Disp3,false,MyDISClass);
+  EnterSkip(Disp4);
   EditField(h+110,v,-50,"",ViewOnly,Disp3Name,false,0);
   
   EditField(h,v+=vs,90,"Категория",Normal,Disp4,false,MyDISClass);
+  EnterSkip(Disp5);
   EditField(h+110,v,-50,"",ViewOnly,Disp4Name,false,0);
   EditField(h,v+=vs,90,"Бренд",Normal,Disp5,false,MyDISClass);
+  EnterSkip(Disp6);
   EditField(h+110,v,-50,"",ViewOnly,Disp5Name,false,0);
   EditField(h,v+=vs,90,"Код модели",Normal,Disp6,false,MyDISClass);
   EditField(h+110,v,-50,"",ViewOnly,Disp6Name,false,0);

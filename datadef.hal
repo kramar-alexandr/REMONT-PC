@@ -1028,6 +1028,7 @@ begin
     RecordField(PersSalesGroup,M4Code,20,0); //Edit***************************Sasha2,15:51 23.05.2017
     RecordField(PersLocation,M4Code,20,0); //Edit***************************Sasha2,15:51 23.05.2017
     RecordField(PersPhone2,M4Code,20,0);
+    RecordField(CallGroup,M4Code,100,0);//-------------------------------- dima-f 23.10.17
   EndRecordAdd;
   
   RecordAddBegin(IVVc,"IVVc_Custom");
@@ -1799,14 +1800,15 @@ begin
   
   
   BlockBegin(BinotelUserBlock,-,"");
-		RecordField(Math,M4Matrix,0,0);
-		ArrayBegin(Math,-,1);
-		ArrayField(User,M4Code,20,UserVc);
+    RecordField(Math,M4Matrix,0,0);
+    ArrayBegin(Math,-,1);
+    ArrayField(User,M4Code,20,UserVc);
     ArrayField(Phone,M4Str,100,0);
     ArrayField(Group,M4Str,100,0);
     ArrayField(ActType,M4Code,100,0);
     ArrayField(ActComment,M4Str,255,0);
-		EndArray;
+    ArrayField(CallGroup,M4Code,100,0);//----------------------------------------------- dima-f 23.10.17
+    EndArray;
 	EndBlock;
 	
 	BlockBegin(LogisticUserBlock,-,"");

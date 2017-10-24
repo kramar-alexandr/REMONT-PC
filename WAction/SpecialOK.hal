@@ -37,7 +37,7 @@ external function Boolean TouchScreenLook();
 remote function Boolean FindItemVAR(string,var string,var string,var string,var string);
 external procedure StripEndingSpaces(var string);
 external procedure DisplayStrArray(array string);
-
+SetLangMode(LangRussian,"RUS",0);
 global
 procedure PasteFromWn(Integer wn,string paststr)
 begin
@@ -1950,3 +1950,25 @@ begin
   CompNamesSClassOnOKWindow = false;
   return;
 end; //Edit***************************Sasha2,12:58 04.05.2016 }
+
+//-----------------------------------------------------------------------------------inserted by dima-f 24.10.17
+global
+function Boolean CallGroupSClassOnOpenWindow(integer wn)
+begin
+    record ObjVc Objr;
+    while(loopmain(Objr,1,true)) begin
+        if(Objr.OTCode=="CALGR") begin
+            SetListString(wn,60,Objr.Code & "   " & Objr.Comment,false);
+        end;
+    end;
+    return;
+end;
+
+//-----------------------------------------------------------------------------------inserted by dima-f 24.10.17
+global
+function Boolean CallGroupSClassOnOKWindow(integer wn)
+begin
+  PasteFromSysList(wn,-2);
+  CallGroupSClassOnOKWindow = false;
+  return;
+end;

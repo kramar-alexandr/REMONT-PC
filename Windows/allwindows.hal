@@ -9601,9 +9601,6 @@ begin
   EndWindow;
 end;
 
-<<<<<<< HEAD
-
-=======
 window INDClass:8
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
@@ -10061,4 +10058,3 @@ v = 6;
   SpecialMenu("Создать приём товара",' ',2,"RecFromINDsm");         
   EndWindow;
 end;
->>>>>>> e384bb07a581007b03de4d08fd60bf99c833e631

@@ -9601,4 +9601,464 @@ begin
   EndWindow;
 end;
 
+<<<<<<< HEAD
 
+=======
+window INDClass:8
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  integer tilenr;
+  real h,h1,h2,h3,h4,h5,h6,v,vm,vs;
+  string 255 label;
+  record CYBlock CYb;
+
+  BlockLoad(CYb);
+  WindowBegin("Товар",INDClass,CGview,-);
+  SetWRect(20,80,830,400);
+  Sizeable(-1,-1,-1,0);
+  DynamicWindow;
+  UseView(INVc);
+  ActiveFieldOnNew("Disp1");  
+  if (GuiType==kGuiAndroid) then begin
+    ToolBar;
+    PushButton(-110,5,-10,25,ToolImagePicker,"Фото"); 
+    EndToolBar;
+  end;
+
+  if (HasJewelleryInterface) then begin
+    Tile(0,107,false,"",Code);
+  end else begin
+    Tile(0,87,false,"",Code);
+  end;
+  v = 6; vs = 20; h = 155; h1 = 300; h2 = 385; h3 = 395; h4 = 285; h5 = 433;
+  EditField(h,v, 150,"Код товара",Normal,Code,false,0);
+  EditField(h2,v,80,"Группа",Normal,Group,false,ITSClass);
+  EditField(h,v+=vs,-40,"Наименование",Normal,Name,false,0);
+  if (HasJewelleryInterface) then begin
+    EditField(h,v+=vs,150,"Альтернативный код",Normal,AlternativeCode,false,0);
+  end;
+  tilenr = 1;
+  TileButton(tilenr,"Кратк."); tilenr = tilenr + 1;
+  TileButton(tilenr,"Цена"); tilenr = tilenr + 1;
+  if (HasJewelleryInterface) then begin
+    TileButton(tilenr,"Ювелир."); tilenr = tilenr + 1;
+    TileButton(tilenr,"Часы"); tilenr = tilenr + 1;
+  end;
+  TileButton(tilenr,"Склад"); tilenr = tilenr + 1;
+  if (StandardHansa==false) then begin
+    TileButton(tilenr,"Упр. складом"); tilenr = tilenr + 1;
+  end;
+  if (UserCanAction("ViewCostPrice",true)) then begin
+    TileButton(tilenr,"Стоимость"); tilenr = tilenr + 1;
+  end;
+  TileButton(tilenr,"Структура"); tilenr = tilenr + 1;
+  TileButton(tilenr,"Счета"); tilenr = tilenr + 1;
+  if (GuiType==kGuiiPhone) then begin
+    TileButton(tilenr,"Изобр."); tilenr = tilenr + 1;
+  end;
+  TileButton(tilenr,"Варианты"); tilenr = tilenr + 1;
+  TileButton(tilenr,"Текст"); tilenr = tilenr + 1;
+  TileButton(tilenr,"Модель ст-ти"); tilenr = tilenr + 1;
+  if (StandardHansa==false) then begin
+    //TileButton(tilenr,"Доп.данные"); tilenr = tilenr + 1;
+  end;
+  TileButton(tilenr,"Записки"); tilenr = tilenr + 1;  
+  if (HasCharts) then begin
+    TileButton(tilenr,"Аналитика"); tilenr = tilenr + 1;
+  end;
+  tilenr = 1;
+  CheckBox(h,v+=vs,0,"Закрыт",Terminated);
+  CheckBox(h2,v,0,"Не для продажи",NotForSales);
+  
+  // Edit Start ---------------------------------------------- Edit Start
+	//Monday, 23 October 2017 15:48:57
+	Tile(tilenr,209,false,tilenr,Disp1); tilenr = tilenr + 1;
+v = 6;
+  vm = v;
+  EditField(h,v+=vs,90,"Запчасть/Устройство (1)",Normal,Disp1,false,MyDISClass);
+  EnterSkip(Disp2);
+  EditField(h+110,v,-50,"",ViewOnly,Disp1Name,false,0);
+  EditField(h,v+=vs,90,"Услуга/складируемый (2)",Normal,Disp2,false,MyDISClass);
+  EnterSkip(Disp3);
+  EditField(h+110,v,-50,"",ViewOnly,Disp2Name,false,0);
+  EditField(h,v+=vs,90,"Вид устройства/детали (3)",Normal,Disp3,false,MyDISClass);
+  EnterSkip(Disp4);
+  EditField(h+110,v,-50,"",ViewOnly,Disp3Name,false,0);
+  
+  EditField(h,v+=vs,90,"Категория (4)",Normal,Disp4,false,MyDISClass);
+  EnterSkip(Disp5);
+  EditField(h+110,v,-50,"",ViewOnly,Disp4Name,false,0);
+  EditField(h,v+=vs,90,"Бренд (5)",Normal,Disp5,false,MyDISClass);
+  EnterSkip(Disp6);
+  EditField(h+110,v,-50,"",ViewOnly,Disp5Name,false,0);
+  EditField(h,v+=vs,90,"Код модели (6)",Normal,Disp6,false,MyDISClass);
+  EditField(h+110,v,-50,"",ViewOnly,Disp6Name,false,0);
+  //EditField(h,v+=vs,70,"Тип устройства",Normal,Disp5,false,MyDISClass);
+  v=v+vs;
+  EditField(h,v+=vs,-240,"Классификация",Normal,DispGroups,false,DISClass);
+  v = v + 2*vs;
+  
+  CheckBox(h,v,0,"Закрыт",Terminated);
+  CheckBox(h,v+=vs,0,"Не для продажи",NotForSales);
+  v = v + 2*vs;
+  
+  if (StandardHansa==false) then begin
+    ButtonFrame(h,v+=vs,120,4,"Тип товара");
+  end else begin
+    ButtonFrame(h,v+=vs,120,3,"Тип товара");   // From dict
+  end;
+  RadioButton(h,v,kItemTypePlain,0,"Свободный",ItemType);
+  RadioButton(h,v+=16,kItemTypeStocked,0,"Складируемый",ItemType);
+  RadioButton(h,v+=16,kItemTypeStructured,0,"Структурирован.",ItemType);
+  if (StandardHansa==false) then begin
+    RadioButton(h,v+=16,kItemTypeService,0,"Работа",ItemType);
+  end;
+  EndFrame;
+  
+  v = v + vs;
+  
+  ButtonFrame(h,v+=24,143,3,"Серийные номера");
+  RadioButton(h,v,0,0,"нет",SerNrf);
+  RadioButton(h,v+=16,1,0,"на единицу",SerNrf);
+  RadioButton(h,v+=16,2,0,"на партию",SerNrf);
+  
+	// Edit End ---------------------------------------------- Edit End
+	
+  Tile(tilenr,209,false,tilenr,Unittext); tilenr = tilenr + 1;
+  EditField(h,v=6 ,100,"Единица измерения",Normal,Unittext,false,UnitSClass);
+  if (HasJewelleryInterface) and (UserCanAction("ViewCostPrice",true)) then begin
+    EditField(h,v+=vs,100,"Стоимость",Normal,InPrice,true,0);
+  end;
+  EditField(h,v+=vs,100,"Базовая цена",Normal,UPrice1,true,0);
+  EditField(h,v+=vs,100,"Изменение баз. цены",ViewOnly,LastBasePriceChange,true,0);
+  EditField(h,v+=vs,100,"Фактор цены",Normal,PriceFactor,true,0);
+  EditField(h,v+=vs,100,"Формула тов.",Normal,CalcPrice,false,CPMSClass);
+  EditField(h,v+=vs,100,"Наценка, %",Normal,Markup,true,0);
+  EditField(h,v+=vs,100,"% премии",Normal,Bonus,true,0);
+  EditField(h,v+=vs,-240,"Объекты",Normal,Objects,false,ObjSClass);
+  if (HasItemClassification) then begin
+    EditField(h,v+=vs,-240,"Классификация",Normal,DispGroups,false,DISClass);
+  end;
+  if (StandardHansa==false) then begin
+    ButtonFrame(h1,v=24,120,4,"Тип товара");
+  end else begin
+    ButtonFrame(h1,v=24,120,3,"Тип товара");   // From dict
+  end;
+  RadioButton(h1,v,kItemTypePlain,0,"Свободный",ItemType);
+  RadioButton(h1,v+=16,kItemTypeStocked,0,"Складируемый",ItemType);
+  RadioButton(h1,v+=16,kItemTypeStructured,0,"Структурирован.",ItemType);
+  if (StandardHansa==false) then begin
+    RadioButton(h1,v+=16,kItemTypeService,0,"Работа",ItemType);
+  end;
+  EndFrame;
+  
+  Pict_Field(-205,8,-35,178,"");
+  if (GuiType==kGuiCocoa) then begin
+    PushButton(-160,182,-80,202,ToolImagePicker,"Добавить");
+  end;
+  if (StandardHansa==false) then begin
+    CheckBox(h1,v+=32,0,"В проекте товар как материал",ItemMaterial);
+  end;
+  if (HasJewelleryInterface) then begin
+    Tile(tilenr,110,false,tilenr,Metal); tilenr = tilenr + 1;
+    EditField(h,v=6, 140,"Метал",Normal,Metal,false,0);
+    EditField(h,v+=vs, 140,"Вес",Normal,RowWeight,false,0);
+    EditField(h,v+=vs, 140,"Размер",Normal,Size,false,0);
+    EditField(h,v+=vs, 140,"Длина",Normal,Length,false,0);
+    EditField(h,v+=vs, 140,"Ссылка",Normal,Reference,false,0);
+    v = 6;
+    EditField(h5,v, 140,"Гл. камень детали",Normal,MajStoneDet,false,0);
+    EditField(h5,v+=vs, 140,"Цвет",Normal,Colour,false,0);
+    EditField(h5,v+=vs, 140,"Прозрачность",Normal,Clarity,false,0);
+    EditField(h5,v+=vs, 140,"Сертификат",Normal,Cert,false,0);
+    EditField(h5,v+=vs, 140,"Мин. камень детали",Normal,MinStoneDet,false,0);
+    Tile(tilenr,90,false,tilenr,WatchBrand); tilenr = tilenr + 1;
+    EditField(h,v=6, 140,"Марка часов",Normal,WatchBrand,false,0);
+    EditField(h,v+=vs, 140,"Наим. стиля",Normal,StyleName,false,0);
+    EditField(h,v+=vs, 140,"Метал часов",Normal,WatchMetal,false,0);
+    EditField(h,v+=vs, 140,"Движение",Normal,Movement,false,0);
+    v = 6;
+    EditField(h5,v, 140,"Браслет/ремешок",Normal,BrcStr,false,0);
+    EditField(h5,v+=vs, 140,"Род",Normal,Gender,false,0);
+    EditField(h5,v+=vs, 140,"Проч.",Normal,Other,false,0);
+    EditField(h5,v+=vs, 140,"Проч.2",Normal,Other2,false,0);
+  end;
+  Tile(tilenr,170,false,tilenr,MinLevel);  tilenr = tilenr + 1; // Need to clean this Tile up!
+  v = 6;
+  vm = v;
+  ButtonFrame(h1,v+=24,143,3,"Серийные номера");
+  RadioButton(h1,v,0,0,"нет",SerNrf);
+  RadioButton(h1,v+=16,1,0,"на единицу",SerNrf);
+  RadioButton(h1,v+=16,2,0,"на партию",SerNrf);
+  CheckBox(h1+200,v,0,"Не требовать номер партии на сч/ф POS",DonotRequireBatchNrOnIVCash);
+  EditField(h,v=6,100,"Мин. кол-во на скл.",Normal,MinLevel,true,0);
+  EditField(h,v+=vs,100,"Макс. кол-во на скл.",Normal,MaxLevel,true,0);
+  EditField(h,v+=vs  ,100,"Отдел",Normal,Department,false,DepSClass);
+  EditField(h,v+=vs  ,100,"Полка",Normal,InvCode,false,0);
+  EditField(h,v+=vs,100,"Источник по умолч.",Normal,DefaultSource,false,SourceSClass);
+  EditField(h5,v ,50,"Налог на окр. среду/кг",Normal,RepaPricePerWeight,true,0);
+  EditField(h6=650,v ,80,"Основной тип заказа",Normal,DefOrderType,false,SetSClass);  
+  if (StandardHansa==false) then begin
+    EditField(h,v+=vs ,100,"Степень риска",Normal,HazLevCode,false,HazLevSClass);
+    EditField(h5,v ,50,"% алкоголя",Normal,AlcPrc,true,0);
+    if (HasLocalization("PRT")) then begin
+    EditField(h6,v, 80,"Тип скл. товара",Normal,StockItemType,false,SetSClass); 
+    end;
+  end;
+  EditField(h,v+=vs ,100,"Единица 2",Normal,Unittext2,false,UnitSClass);
+  EditField(h5,v ,50,"Конвертация 1",Normal,Conversion1,true,0);
+  EditField(h,v+=vs,100,"Коэфф-нт единицы",Normal,UnitCoefficient,true,0);
+  EditField(h5,v ,50,"Конвертация 2",Normal,Conversion2,true,0);
+  if (StandardHansa==true) then begin
+    EditField(h,v+=vs ,50,"Ширина",Normal,Width,true,0);
+    EditField(h4,v ,50,"Высота",Normal,Height,true,0);
+    EditField(h5,v ,50,"Глубина",Normal,Depth,true,0);
+    EditField(h,v+=vs ,50,"Объем",Normal,Volume,true,0);
+    EditField(h4,v ,50,"Плотность",Normal,Density,true,0);
+    EditField(h5,v ,50,"Вес",Normal,Weight,true,0);
+  end;
+  if (StandardHansa==false) then begin
+    Tile(tilenr,170,false,tilenr,LocArea);  tilenr = tilenr + 1;
+    EditField(h,vm=(v=6) ,100,"Товар паллеты",Normal,DefPalletItem,true,INSClass);
+    EditField(h5,v ,80,"Участок погрузки",Normal,PickArea,false,LocAreaSClass);
+    EditField(h,v+=vs ,100,"Участ. скл. по умолч.",Normal,LocArea,false,LocAreaSClass);
+    EditField(h5,v ,50,"Паллет на погрузке",Normal,PalletsInPickArea,true,0);
+    EditField(h,v+=vs ,50,"Макс. кол. на паллете",Normal,QtyonPallet,true,0);
+    EditField(h4,v ,50,"Слои в палл.",Normal,PalletLayers,true,0);
+    EditField(h5,v ,50,"Кол-во в слое",Normal,QtyonPalletLayer,true,0);
+    EditField(h,v+=vs ,50,"Ширина паллеты",Normal,PalletWidth,true,0);
+    EditField(h4,v ,50,"Высота",Normal,PalletHeight,true,0);
+    EditField(h5,v ,50,"Глубина",Normal,PalletDepth,true,0);
+    EditField(h,v+=vs ,50,"Шир. места по умолч.",Normal,DefPosWidth,true,0);
+    EditField(h4,v ,50,"Высота",Normal,DefPosHeight,true,0);
+    EditField(h5,v ,50,"Глубина",Normal,DefPosDepth,true,0);
+    EditField(h,v+=vs ,50,"Ширина",Normal,Width,true,0);
+    EditField(h4,v ,50,"Высота",Normal,Height,true,0);
+    EditField(h5,v ,50,"Глубина",Normal,Depth,true,0);
+    EditField(h,v+=vs ,50,"Объем",Normal,Volume,true,0);
+    EditField(h4,v ,50,"Плотность",Normal,Density,true,0);
+    EditField(h5,v ,50,"Нетто",Normal,NetWeight,true,0);
+    EditField(h5,v+=vs ,50,"Вес",Normal,Weight,true,0);
+  end;
+  if (UserCanAction("ViewCostPrice",true)) then begin
+  Tile(tilenr,190,false,tilenr,InPrice);  tilenr = tilenr + 1;
+  EditField(h,vm=(v=6),100,"Стоимость",Normal,InPrice,true,0);
+  if (StandardHansa==false) then begin
+    EditField(h5,v,70,"Изменение стоимости",ViewOnly,LastPriceChange,true,0);
+  end else begin
+    EditField(h3,v,70,"Изменение стоимости",ViewOnly,LastPriceChange,true,0);
+  end;
+  if (StandardHansa==false) then begin
+    EditField(h,v+=vs ,100,"Стоим. в осн. вал. 2",Normal,InPriceB2,true,0);
+    ButtonFrame(h1,v+=24,200,4,"Обновл. стоим. по поступл.");
+  end else begin
+    ButtonFrame(h1,v+=40,210,4,"Обновл. стоим. по поступл.");   // From dict
+  end;
+  RadioButton(h1,v,0,0,"не изменять",UpdateCost);
+  RadioButton(h1,v+=16,1,0,"на ст-ть посл.покупки,вкл.накл.з.",UpdateCost);
+  RadioButton(h1,v+=16,2,0,"на средневзвешенную",UpdateCost);
+  RadioButton(h1,v+=16,3,0,"на цену посл.покупки,искл.накл.з.)",UpdateCost);
+  ButtonFrame(h5=540,v=v-3*16,200,3,"Обнов.стоим. по переоц.");
+  RadioButton(h5,v,0,0,"не обновлять",SRUpdateCost);
+  RadioButton(h5,v+=16,1,0,"стоим. последн. переоценки",SRUpdateCost);
+  RadioButton(h5,v+=16,2,0,"средневзвешенная",SRUpdateCost);
+  if (StandardHansa==false) then begin
+    EditField(h,v=vm+2*vs,100,"Накладные расходы",Normal,ExtraCost,true,0);
+  end else begin
+    EditField(h,v=vm+vs,100,"Накладные расходы",Normal,ExtraCost,true,0);   // From dict
+  end;
+  EditField(h,v+=vs ,100,"Средневзвешенная",Normal,WeighedAvPrice,true,0);
+  if (StandardHansa==false) then begin
+    EditField(h,v+=vs ,100,"Средневзв. в осн.вал.2",Normal,WeighedAvPriceB2,true,0);
+  end;
+  EditField(h,v+=vs ,100,"Посл.покуп.(вкл.накл.)",Normal,LastPurchPrice,true,0);
+  EditField(h,v+=vs ,100,"Посл.покуп.(иск.накл.)",Normal,LastPurchPrice2,true,0);
+  EditField(h,v+=vs ,100,"Валюта посл. покупки",Normal,LastPurchCurncyCode,false,CurncyCodeSClass);
+  EditField(h,v+=vs ,100,"Фикс. фрахт",Normal,FixedFreight,true,0);
+  CheckBox(h1,v,0,"Включать фиксированный сбор на товар",InclItemFreight);
+  CheckBox(h5,v,0,"С акцизом",HasExcise);
+  end;
+  Tile(tilenr,170,false,tilenr,Recepy);  tilenr = tilenr + 1;
+  EditField(h,v=6 ,120,"Структура",Normal,Recepy,false,RecSClass);
+  CheckBox(h1,v,0,"Разбивать на компоненты при вводе",ExplodeRec); // "Show components on documents" is better English but VERY confusing
+  EditField(h,v+=vs ,120,"Структура в сч/ф",Normal,InvRecepy,false,RecSClass);
+  EditField(h2,v,150,"Штрих-код",Normal,BarCode,false,0);
+  EditField(h,v+=vs ,120,"Товар контракта",Normal,ContractItem,false,INSClass);
+  EditField(h2,v,150,"Код произв-ля",Normal,EUCodex,false,CommoditySClass);
+  v = v + vs;
+  if (StandardHansa==false) then begin
+    EditField(h,v,120,"Арендное фактур.",Normal,RentalItem,false,INSClass);
+  end;
+  EditField(h2,v,150,"Код EKN",Normal,EKNCode,false,0); // i think it is same as Commodity Code
+  if (StandardHansa==false) then begin
+    EditField(h2,v+=vs,150,"Класс. прод./услуг",Normal,CPSCode,false,0);
+  end;
+  EditField(h,v+=vs ,120,"Гарантия, мес.",Normal,WarrantyLength,true,0);
+  EditField(h2,v,150,"Цвет",Normal,colnr,false,SetSClass);
+  EditField(h,v+=vs,120,"Код сорт.",Normal,SortCode,true,0); 
+  EditField(h,v+=vs,-40,"Альтернативный код",Normal,AlternativeCode,false,0);
+  EditField(h,v+=vs,-40,"Предупреждение",Normal,WarnText1,false,0);
+  Tile(tilenr,170,false,tilenr,SalesAcc);  tilenr = tilenr + 1;
+  v = 6;
+  vm = v;
+  EditField(h,vm,55,"Счёт реализации",Normal,SalesAcc,false,AccSClass);
+  EditField(h,v+=vs,55,VATZoneNameRUS & "Счёт реализации, ",Normal,EUSalesAcc,false,AccSClass);
+  EditField(h,v+=vs,55,"Сч/реал., эксп.",Normal,ExpSalesAcc,false,AccSClass);
+  if (StandardHansa==false) then begin
+    EditField(h,v+=vs,55,"Серв. фактур. сч/реал.",Normal,SVOInvbleSalesAcc,false,AccSClass);
+//     EditField(h,v+=vs,55,"Serv. Warranty Sales A/C",Normal,SVOWarrantySalesAcc,false,AccSClass);
+//     EditField(h,v+=vs,55,"Serv. Contract Sales A/C",Normal,SVOContractSalesAcc,false,AccSClass);
+//     EditField(h,v+=vs,55,"Serv. Goodwill Sales A/C",Normal,SVOGoodwillSalesAcc,false,AccSClass);
+  end;
+  EditField(h,v+=vs,55,"Исп. компонент-в",Normal,CompUsage,false,AccSClass);
+  EditField(h,v+=vs,55,"Счёт исп-ния мат. проекта",Normal,ProjMaterialsUsageAcc,false,AccSClass);
+
+  EditField(h2=360,v=vm,55,"Внутр. счет стоим.",Normal,CostAcc,false,AccSClass);
+  EditField(h2,v+=vs,55,VATZoneNameRUS & "Счёт стоимости",Normal,EUCostAcc,false,AccSClass);
+  EditField(h2,v+=vs,55,"Счёт затрат, эксп.",Normal,ExpCostAcc,false,AccSClass);
+  if (StandardHansa==false) then begin
+    EditField(h2,v+=vs,55,"Серв. фактур. сч/затр.",Normal,SVOInvbleCostAcc,false,AccSClass);
+    EditField(h2,v+=vs,55,"Серв. гар. сч/затр",Normal,SVOWarrantyCostAcc,false,AccSClass);
+    EditField(h2,v+=vs,55,"Серв. контр. сч/затр.",Normal,SVOContractCostAcc,false,AccSClass);
+    EditField(h2,v+=vs,55,"Серв. гудвил сч/затр",Normal,SVOGoodwillCostAcc,false,AccSClass);
+    EditField(h2,v+=vs,55,"Отель - врем. сч.",Normal,HotelWIPAcc,false,AccSClass);
+  end;
+  EditField(h2=540,v=vm,20,"Код НДС",Normal,VATCode,false,VATCodeSClass);
+  EditField(h2,v+=vs,20,VATZoneEditFieldLabelRUS(1) & "Код НДС",Normal,VATCodeEU,false,VATCodeSClass); 
+  EditField(h2,v+=vs,20,"Код НДС, эксп.",Normal,VATCodeExp,false,VATCodeSClass);
+  if (HasExtTax) then begin
+  CheckBox(h2,v+=20,0,"Вычислять налоговые сборы",Perceptions);
+  end;
+  if (StandardHansa==false) then begin
+    if (HasWithholdingTax) then begin
+    CheckBox(h2,v+=16,0,"Вычислять удерживаемые налоги",Withholdings);
+    end;
+    if (CYb.UseTaxTemplatesforTaxCalc!=0) then begin
+    EditField(h2=670,v=vm,50,"Ш-н расч. нал",Normal,TaxTemplateCode,false,TaxTemplateSClass);
+    EditField(h2,v+=vs,50,VATZoneEditFieldLabelRUS(1) & "Нал. Шабл.",Normal,TaxTemplateCodeEU,false,TaxTemplateSClass); 
+    EditField(h2,v+=vs,50,"Экс. ш-н расч. нал",Normal,TaxTemplateCodeExp,false,TaxTemplateSClass);
+    end;
+    if (HasLocalization("GBR,LTU,POL")) then begin
+      EditField(h2=680,v=vm,20,"Reverse #VAT# Code",Normal,RvrsVATCode,false,VATCodeSClass); 
+    end;
+  end;
+  if (GuiType==kGuiiPhone or GuiType==kGuiAndroid) then begin
+    Tile(tilenr,70,false,tilenr,-);  tilenr = tilenr + 1;
+    AttachmentDisplay(10,10,200,200);
+//    PushButton(30,10,-80,40,ToolImagePicker,"Take picture");
+//    ControlLabel(0,0,0,0,"Take picture","SystemFont",17,kTextStyleBold,AdjCenter,patM4ReportsTextBlue);
+  end;
+  Tile(tilenr,70,false,tilenr,VARMask);  tilenr = tilenr + 1;
+  EditField(h,v=6,-40,"Маска варианта",Normal,VARMask,false,VARMasksSClass);
+  EditField(h,v+=vs,-40,"Порядок в отчете",Normal,VARRepOrder,false,VARMasksSClass);
+  EditField(h,v+=vs,-40,"Подмножества",Normal,VARSubsets,false,VARSubsetsSClass);
+  Tile(tilenr,120,true,tilenr,Math);  tilenr = tilenr + 1;
+  v = 24;
+  MatrixBegin(4,v,-32,-40,-,99);
+  MatCol(1,24,"Язык",0,LangCode,false,LangSClass);
+  MatCol(1,94,"Текст",0,Text,false,0);
+  EndMatrix;
+  Tile(tilenr,220,false,tilenr,CostPerc);  tilenr = tilenr + 1;
+  ButtonFrame(h=100,vm=(v=20),230,6,"Первичная модель стоимости");
+  RadioButton(h,v,0,0,"По умолчанию",PrimaryCostModel);
+  RadioButton(h,v+=16,1,0,"Стоимость покупки",PrimaryCostModel);
+  RadioButton(h,v+=16,2,0,"% _от базовой цены",PrimaryCostModel);
+  EditField(h+150,v,55,"%",Normal,CostPerc,true,0);
+  RadioButton(h,v+=16,3,0,"Средневзвешенная",PrimaryCostModel);
+  RadioButton(h,v+=16,4,0,"По очереди",PrimaryCostModel);
+  RadioButton(h,v+=16,kCostModelNoneItem,0,"Нет",PrimaryCostModel);
+  ButtonFrame(h,v+=40,230,3,"Модель стоимости по очереди");
+  RadioButton(h,v,0,0,"По умолчанию",QueuedCostModel);
+  RadioButton(h,v+=16,1,0,"FIFO цена",QueuedCostModel);
+  RadioButton(h,v+=16,2,0,"LIFO цена",QueuedCostModel);
+
+  ButtonFrame(h2=380,v=vm,200,3,"Стоимость на сер.номер");
+  RadioButton(h2,v,0,0,"По умолчанию",FIFOPerSerialNr);
+  RadioButton(h2,v+=16,1,0,"Стоимость не на серийн.номер",FIFOPerSerialNr);
+  RadioButton(h2,v+=16,2,0,"Стоимость на серийный номер",FIFOPerSerialNr);
+  ButtonFrame(h2,v+=40,200,3,"Стоимость по складам");
+  RadioButton(h2,v,0,0,"По умолчанию",FIFOPerLocation);
+  RadioButton(h2,v+=16,1,0,"Стоим.по очер.не по складам",FIFOPerLocation);
+  RadioButton(h2,v+=16,2,0,"Стоим.по очер.по кажд.кладу",FIFOPerLocation);
+  ButtonFrame(h2,v+=40,200,3,"Средневзвешенная по складам");
+  RadioButton(h2,v,0,0,"По умолчанию",WAPerLocation);
+  RadioButton(h2,v+=16,1,0,"Средневзвеш.не по складам",WAPerLocation);
+  RadioButton(h2,v+=16,2,0,"Средневзвеш.по кажд.складу",WAPerLocation);
+/*5.3
+  ButtonFrame(h2,v+=40,200,3,"Cost Price per Location");
+  RadioButton(h2,v,0,0,"По умолчанию",CostPricePerLocation);
+  RadioButton(h2,v+=16,1,0,"Cost Price not per Location",CostPricePerLocation);
+  RadioButton(h2,v+=16,2,0,"Cost Price per Location",CostPricePerLocation);
+*/
+  /*if (StandardHansa==false) then begin// Edit ************************** Monday, 23 October 2017 15:47:58
+    Tile(tilenr,240,false,tilenr,-); tilenr = tilenr + 1;
+    h = 180; v = 6;
+    label = UserDefined("INVc","UserStr1");
+    if (nonblank(label)) then begin
+      EditField(h,v=6 ,-40,label,Normal,UserStr1,false,0);
+    end;
+    label = UserDefined("INVc","UserStr2");
+    if (nonblank(label)) then begin
+      EditField(h,v+=vs,-40,label,Normal,UserStr2,false,0);
+    end;
+    label = UserDefined("INVc","UserStr3");
+    if (nonblank(label)) then begin
+      EditField(h,v+=vs,-40,label,Normal,UserStr3,false,0);
+    end;
+    label = UserDefined("INVc","UserStr4");
+    if (nonblank(label)) then begin
+      EditField(h,v+=vs,-40,label,Normal,UserStr4,false,0);
+    end;
+    label = UserDefined("INVc","UserStr5");
+    if (nonblank(label)) then begin
+      EditField(h,v+=vs,-40,label,Normal,UserStr5,false,0);
+    end;
+    label = UserDefined("INVc","UserVal1");
+    if (nonblank(label)) then begin
+      EditField(h,v+=vs,50,label,Normal,UserVal1,true,0);
+    end;
+    label = UserDefined("INVc","UserVal2");
+    if (nonblank(label)) then begin
+      EditField(h,v+=vs,50,label,Normal,UserVal2,true,0);
+    end;
+    label = UserDefined("INVc","UserVal3");
+    if (nonblank(label)) then begin
+      EditField(h,v+=vs,50,label,Normal,UserVal3,true,0);
+    end;
+    label = UserDefined("INVc","UserDate1");
+    if (nonblank(label)) then begin
+      EditField(h,v+=vs,80,label,Normal,UserDate1,true,PasteCurDate);
+    end;
+    label = UserDefined("INVc","UserDate2");
+    if (nonblank(label)) then begin
+      EditField(h,v+=vs,80,label,Normal,UserDate2,true,PasteCurDate);
+    end;
+    label = UserDefined("INVc","UserDate3");
+    if (nonblank(label)) then begin
+      EditField(h,v+=vs,80,label,Normal,UserDate3,true,PasteCurDate);
+    end;
+  end;*/
+  Tile(tilenr,400,false,tilenr,Math2); tilenr = tilenr + 1;
+  StaticText(50,v=20,"Записки",true);  
+  TextField(60,v-5,-20,370,Math2,0);
+  if (HasCharts) then begin
+    Tile(tilenr,400,false,tilenr,-); tilenr = tilenr + 1;
+    ChartArea(10,6,-10,390,"$INDCLass_BIChart");
+  end;
+  if (UserCanReport("INInfoRn","",true)) then begin
+    SpecialMenu("Справка по товару",'I',0,"INStatusINDsm");
+  end;
+//  SpecMenuItem("Recalculate Price List",' ',2);
+  if (UserCanReport("INrsRn","INrsRClass",true)) then begin
+    SpecialMenu("История товара",'h',3,"INrsRn_INSm");//CMD H DOES HIDE HANSA
+  end;
+  SpecialMenu("Статус товара по складу",' ',4,"LocItemStatDsm");
+  if (HasJewelleryInterface) and (UserCanReport("INInfoRn","",true)) then begin
+    SpecialMenu("Статус товара по альт. коду",'S',5,"ItemStatusAltINDsm");
+  end;
+  SpecMenuGroup("",kSpecMenuGroupTypeExtendedPlusMenu,0);         
+  SpecialMenu("Создать товар на закупку",' ',1,"PIFromINDsm");         
+  SpecialMenu("Создать приём товара",' ',2,"RecFromINDsm");         
+  EndWindow;
+end;
+>>>>>>> e384bb07a581007b03de4d08fd60bf99c833e631

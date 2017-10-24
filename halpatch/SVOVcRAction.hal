@@ -2141,7 +2141,9 @@ BEGIN
 					ISr.Code = INr.Code;
 					if(readfirstmain(ISr,1,true)==false)then begin
 						INr.SerNrf = 1;
-						recordstore(INr,true);
+						if(nonblank(INr.Code))then begin
+							recordstore(INr,true);
+						end;
 					end;
 				end;
       end;

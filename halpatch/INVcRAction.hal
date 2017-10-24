@@ -1348,7 +1348,7 @@ begin
 		res = -1; 
 		goto LINVcRecordCheck;
 	end;
-	if(nonblank(INr.Disp7) and blank(INr.Disp6))then begin
+	/*if(nonblank(INr.Disp7) and blank(INr.Disp6))then begin
 		RecordCheckError(1058,"",-1,"Disp6");//============================15/08/2017    
 		res = -1; 
 		goto LINVcRecordCheck;
@@ -1362,16 +1362,16 @@ begin
 		RecordCheckError(1058,"",-1,"Disp8");//============================15/08/2017    
 		res = -1; 
 		goto LINVcRecordCheck;
-	end;
+	end;*/
 	
 	CheckAndCreateClass(INr.Disp2,INr.Disp1,INr.Disp2Name,"DISP2");
 	CheckAndCreateClass(INr.Disp3,INr.Disp2,INr.Disp3Name,"DISP3");
 	CheckAndCreateClass(INr.Disp4,INr.Disp3,INr.Disp4Name,"DISP4");
 	CheckAndCreateClass(INr.Disp5,INr.Disp4,INr.Disp5Name,"DISP5");
 	CheckAndCreateClass(INr.Disp6,INr.Disp5,INr.Disp6Name,"DISP6");
-	CheckAndCreateClass(INr.Disp7,INr.Disp6,INr.Disp7Name,"DISP7");
+	/*CheckAndCreateClass(INr.Disp7,INr.Disp6,INr.Disp7Name,"DISP7");
 	CheckAndCreateClass(INr.Disp8,INr.Disp7,INr.Disp8Name,"DISP8");
-	CheckAndCreateClass(INr.Disp9,INr.Disp8,INr.Disp9Name,"DISP9");
+	CheckAndCreateClass(INr.Disp9,INr.Disp8,INr.Disp9Name,"DISP9");*/
 	
 	if(nonblank(INr.Disp1))then begin
 		INr.DispGroups = INr.Disp1;
@@ -1391,7 +1391,7 @@ begin
 	if(nonblank(INr.Disp6))then begin
 		INr.DispGroups = INr.DispGroups & "," & INr.Disp6;//Product Code
 	end;
-	if(nonblank(INr.Disp7))then begin
+	/*if(nonblank(INr.Disp7))then begin
 		INr.DispGroups = INr.DispGroups & "," & INr.Disp7;
 	end;
 	if(nonblank(INr.Disp8))then begin
@@ -1399,25 +1399,34 @@ begin
 	end;
 	if(nonblank(INr.Disp9))then begin
 		INr.DispGroups = INr.DispGroups & "," & INr.Disp9;
-	end;
+	end;*/
 	
+	if(INr.Disp2=="SERS" and INr.Disp1=="SERV")then begin
 	
-	if(stat==Rs_insert)then begin// Edit ************************** Friday, 20 October 2017 10:20:48
-		INr.Name = INr.Disp4 & " " & INr.Disp5 & " " & INr.Disp6;
-		INoldr.Code = left(INr.Disp5 & INr.Disp6,20);
-		if(readfirstmain(INoldr,1,true)==false)then begin
-			INr.Code = left(INr.Disp5 & INr.Disp6,20);
-		end else begin
-			ind = 1;
-			indstr = ind;
-			INoldr.Code = left(left(INr.Disp5 & INr.Disp6,20-len(indstr)) & indstr,20);
-			while(readfirstmain(INoldr,1,true))begin
-				ind = ind+1;
+	end else begin
+		if(stat==Rs_insert)then begin// Edit ************************** Friday, 20 October 2017 10:20:48
+			INr.Name = INr.Disp4Name & " " & INr.Disp5Name & " " & INr.Disp6Name;
+			INoldr.Code = left(INr.Disp5 & INr.Disp6,20);
+			if(readfirstmain(INoldr,1,true)==false)then begin
+				INr.Code = left(INr.Disp5 & INr.Disp6,20);
+			end else begin
+				ind = 1;
 				indstr = ind;
 				INoldr.Code = left(left(INr.Disp5 & INr.Disp6,20-len(indstr)) & indstr,20);
+				while(readfirstmain(INoldr,1,true))begin
+					ind = ind+1;
+					indstr = ind;
+					INoldr.Code = left(left(INr.Disp5 & INr.Disp6,20-len(indstr)) & indstr,20);
+				end;
 			end;
 		end;
 	end;
+	
+	if (len(INr.Code)<=0) then begin// Edit ************************** Monday, 23 October 2017 16:43:17
+    RecordCheckError(1130,"",-1,"Code");      
+    res = -1; 
+    goto LINVcRecordCheck;
+  end;
 	
 	if(nonblank(INr.Disp5))then begin// Edit ************************** Friday, 20 October 2017 10:32:20
 		DIr.Code = INr.Disp5;

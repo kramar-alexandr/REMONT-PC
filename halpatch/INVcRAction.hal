@@ -1366,9 +1366,9 @@ begin
 	
 	CheckAndCreateClass(INr.Disp2,INr.Disp1,INr.Disp2Name,"DISP2");
 	CheckAndCreateClass(INr.Disp3,INr.Disp2,INr.Disp3Name,"DISP3");
-	CheckAndCreateClass(INr.Disp4,INr.Disp3,INr.Disp4Name,"DISP4");
-	CheckAndCreateClass(INr.Disp5,INr.Disp4,INr.Disp5Name,"DISP5");
-	CheckAndCreateClass(INr.Disp6,INr.Disp5,INr.Disp6Name,"DISP6");
+	CheckAndCreateClass(INr.Disp4,INr.Disp3,INr.Disp4Name,"DISP4");//Item Type Name
+	CheckAndCreateClass(INr.Disp5,INr.Disp4,INr.Disp5Name,"DISP5");//Brand
+	CheckAndCreateClass(INr.Disp6,INr.Disp5,INr.Disp6Name,"DISP6");//Product Code
 	/*CheckAndCreateClass(INr.Disp7,INr.Disp6,INr.Disp7Name,"DISP7");
 	CheckAndCreateClass(INr.Disp8,INr.Disp7,INr.Disp8Name,"DISP8");
 	CheckAndCreateClass(INr.Disp9,INr.Disp8,INr.Disp9Name,"DISP9");*/
@@ -1383,7 +1383,7 @@ begin
 		INr.DispGroups = INr.DispGroups & "," & INr.Disp3;
 	end;
 	if(nonblank(INr.Disp4))then begin
-		INr.DispGroups = INr.DispGroups & "," & INr.Disp4;//Item Type Nmame
+		INr.DispGroups = INr.DispGroups & "," & INr.Disp4;//Item Type Name
 	end;
 	if(nonblank(INr.Disp5))then begin
 		INr.DispGroups = INr.DispGroups & "," & INr.Disp5;//Brand

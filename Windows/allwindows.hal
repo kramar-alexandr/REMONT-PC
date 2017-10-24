@@ -6996,6 +6996,7 @@ begin
   if (IsCloudControllerClient) then begin // Cloud Controller Specific
     EditField(h,v+=vs,100,"SSH Имя пользователя",Normal,SSHUsername,false,0);  
   end;
+  EditField(h,v+=vs,100,"Группа вызова",Normal,CallGroup,false,CallGroupSClass);//---------------------------------------dima-f 24.10.17
 //  EditField(h,v+=vs,100,"Discount Password",Normal,OldPassWord,false,0);
   if (StandardHansa==false) then begin
     ButtonFrame(h2,v=44,165,3,"Ограниченный доступ");
@@ -9599,3 +9600,5 @@ begin
   end;
   EndWindow;
 end;
+
+

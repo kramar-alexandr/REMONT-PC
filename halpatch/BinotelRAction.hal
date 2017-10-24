@@ -45,6 +45,19 @@ BEGIN
 						end else begin
 							users = users & "," & BUrw.User;
 						end;
+						//------------------------------------------------------------------------------ dima-f 23.10.17
+						if(nonblank(BUrw.CallGroup)) then begin
+						    while(loopmain(User,1,true))begin
+						        if(User.CallGroup==BUrw.CallGroup)then begin
+						            if(blank(users))then begin
+                                        users = User.Code;
+                                    end else begin
+                                        users = users & "," & User.Code;
+                                    end;
+						        end;
+						    end;
+						end;
+						//------------------------------------------------------------------------------- end
 					end;
 				end; 
 			end;

@@ -1402,7 +1402,7 @@ begin
 	end;
 	
 	
-	if(stat==Rs_insert)then begin// Edit ************************** Friday, 20 October 2017 10:20:48
+	if(stat==Rs_insert and INr.Disp2!="SERS" and INr.Disp1!="SERV")then begin// Edit ************************** Friday, 20 October 2017 10:20:48
 		INr.Name = INr.Disp4Name & " " & INr.Disp5Name & " " & INr.Disp6Name;
 		INoldr.Code = left(INr.Disp5 & INr.Disp6,20);
 		if(readfirstmain(INoldr,1,true)==false)then begin

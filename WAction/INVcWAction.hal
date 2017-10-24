@@ -201,6 +201,21 @@ begin
     	INr.Disp1Name = "";
     	putwindowrecord(wn,INr);
     end;
+    GetWindowRecord(wn,INr);
+    if(INr.Disp1=="USER")then begin
+    	INr.Disp2 = "SKLADU";
+    	DIr.Code = INr.Disp2;
+    	if(readfirstmain(DIr,1,true))then begin
+    		INr.Disp2Name = DIr.Name;
+    	end;
+    	INr.Disp3 = "Устройс001";
+    	DIr.Code = INr.Disp3;
+    	if(readfirstmain(DIr,1,true))then begin
+    		INr.Disp3Name = DIr.Name;
+    	end;
+    	putwindowrecord(wn,INr);
+    end;
+    
   end;
   INDClassDisp1EFAfter = res;
   return;

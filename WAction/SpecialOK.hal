@@ -1956,10 +1956,17 @@ global
 function Boolean CallGroupSClassOnOpenWindow(integer wn)
 begin
     record ObjVc Objr;
-    while(loopmain(Objr,1,true)) begin
+    boolean TrHs,testf;
+    
+    TrHs = true;
+    Objr.OTCode = "CALGR";
+    while(loopkey("OTCode",Objr,1,TrHs)) begin
+    	if(Objr.OTCode!="CALGR")then begin TrHs = false; end;
+    	if(TrHs)then begin
         if(Objr.OTCode=="CALGR") begin
-            SetListString(wn,60,Objr.Code & "   " & Objr.Comment,false);
+          SetListString(wn,60,Objr.Code & "   " & Objr.Comment,false);
         end;
+      end;
     end;
     return;
 end;

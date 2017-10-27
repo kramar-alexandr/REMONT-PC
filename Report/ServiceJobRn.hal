@@ -160,7 +160,16 @@ begin
 	array string 50 aing,aman,arjct;
 	integer ingcnt,mancnt,irjct;
 	vector boolean vIngExst,vManExst,vrjct; 
+	record UserVc User;
 	
+	if(usercanaction("ServiceJobsGroupAcces",false)==false)then begin
+		User.Code = currentuser;
+		if(readfirstmain(User,1,true))then begin
+			if(nonblank(User.SalesGroup))then begin
+				RepSpec.f1 = User.SalesGroup;
+			end;
+		end;
+	end;
 	
 	
 	tabs[0] = 0;

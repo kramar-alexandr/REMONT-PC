@@ -204,6 +204,16 @@ begin
   record IntSerBalVc ISBr;// Edit ************************** Friday, 23 June 2017 16:51:36
 	record LocationVc Locr;
 	val sumsvo,qtysvo;
+	record UserVc User;
+	
+	if(usercanaction("SVOListGroupAcces",false)==false)then begin
+		User.Code = currentuser;
+		if(readfirstmain(User,1,true))then begin
+			if(nonblank(User.SalesGroup))then begin
+				RepSpec.f5 = User.SalesGroup;
+			end;
+		end;
+	end;
   
   afr = RepSpec.sStartDate;//FirstInRange(RepSpec.f1,30);
   ato = RepSpec.sEndDate;//LastInRange(RepSpec.f1,30);
@@ -212,32 +222,7 @@ begin
   rw = 1;
   TotSum = 0;
   StartReportnoheaderJob(USetStr(7620));
-  /*StartFormat(15);
-    OutString(0,0,"Клиент",false);
-    OutString(0,0,"Имя",false);
-    OutString(0,0,"Устройство",false);
-    OutString(11,0,"Описание",false);
-    OutString(12,0,"Сер. №",false);
-    OutString(13,0,"Номер",false);
-    OutString(13,0,"Дата",false);
-    OutString(14,0,"Гарантия",false);
-    //OutString(15,0,"Тип",false);
-    //OutString(15,0,"Класс",false);
-    OutString(15,0,"Статус",false);
-    OutString(15,0,"Дата окон.",false);
-    OutString(15,0,"Выдача товара",false);// Edit ************************** Monday, 10 October 2011 16:32:52
-    OutString(15,0,"Service ArtCode",false);// Edit ************************** Monday, 10 October 2011 16:32:52
-    OutString(15,0,"Service Serial",false);// Edit ************************** Monday, 10 October 2011 16:32:52
-    OutString(15,0,"Жалобы собственника",false);// Edit ************************** Tuesday, 19 July 2011 15:34:57
-    OutString(16,0,"Предоплата дата",false); //Edit***************************Sasha2,10:20 28.04.2015
-    //OutString(17,0,"N квитанции",false); //Edit***************************Sasha2,10:20 28.04.2015
-    OutString(18,0,"Сумма",false); //Edit***************************Sasha2,10:20 28.04.2015
-    OutString(18,0,"Телефон",false); //Edit***************************Sasha2,10:20 28.04.2015
-    OutString(19,0,"Сервис. мастер",false); //Edit***************************Sasha2,14:19 14.02.2017
-    OutString(19,0,"Принял",false); //Edit***************************Sasha2,14:19 14.02.2017
-    OutString(19,0,"Груп.прод.",false); //Edit***************************Sasha2,14:19 14.02.2017
-    OutString(19,0,"Статус",false); //Edit***************************Sasha2,14:19 14.02.2017
-  EndFormat;*/
+
   
   StartFormat(15);
     OutString(0,0,"№",false);
@@ -247,27 +232,7 @@ begin
     OutString(300,0,"Телефон",false);
     OutString(340,0,"Дата",false);
     OutString(1,0,"Статус",true);
-   // OutString(260,0,"Устройство",false);
-    
-    /*OutString(13,0,"Номер",false);
-    OutString(13,0,"Дата",false);
-    OutString(14,0,"Гарантия",false);
-    //OutString(15,0,"Тип",false);
-    //OutString(15,0,"Класс",false);
-    OutString(15,0,"Статус",false);
-    OutString(15,0,"Дата окон.",false);
-    OutString(15,0,"Выдача товара",false);// Edit ************************** Monday, 10 October 2011 16:32:52
-    OutString(15,0,"Service ArtCode",false);// Edit ************************** Monday, 10 October 2011 16:32:52
-    OutString(15,0,"Service Serial",false);// Edit ************************** Monday, 10 October 2011 16:32:52
-    OutString(15,0,"Жалобы собственника",false);// Edit ************************** Tuesday, 19 July 2011 15:34:57
-    OutString(16,0,"Предоплата дата",false); //Edit***************************Sasha2,10:20 28.04.2015
-    //OutString(17,0,"N квитанции",false); //Edit***************************Sasha2,10:20 28.04.2015
-    OutString(18,0,"Сумма",false); //Edit***************************Sasha2,10:20 28.04.2015
-    OutString(18,0,"Телефон",false); //Edit***************************Sasha2,10:20 28.04.2015
-    OutString(19,0,"Сервис. мастер",false); //Edit***************************Sasha2,14:19 14.02.2017
-    OutString(19,0,"Принял",false); //Edit***************************Sasha2,14:19 14.02.2017
-    OutString(19,0,"Груп.прод.",false); //Edit***************************Sasha2,14:19 14.02.2017
-    OutString(19,0,"Статус",false); //Edit***************************Sasha2,14:19 14.02.2017*/
+
   EndFormat;
   
   

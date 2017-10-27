@@ -393,6 +393,10 @@ StrSetText(AllowAddingINtoRet,"Добавлять товары в возвраты");
   StrSetText(ORToSH,"Отгрузка из счетов клиентам");
   StrSetText(SentStockMovOK,"Отгрузка при перемещении товаров");
   StrSetText(UnCloseAll,"Открыть записи");// Edit ************************** Wednesday, 15 April 2015 17:21:45
+  
+  StrSetText(SVOListGroupAcces,"Ограничить журнал заказов на обслуживание группой продаж");
+  StrSetText(ServiceJobsGroupAcces,"Ограничить отчет по выполненым ремонтам группой продаж");
+  
   StrSetText(OpenTRFromSpec,"Открытие записи из меню Операция");
   StrSetText(OpenCashDrawer,"Открытие кассы");
   StrSetText(OpenVcFromTBIV,"Открытие регистра из записи операции по проекту");

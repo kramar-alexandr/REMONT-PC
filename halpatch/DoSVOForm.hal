@@ -564,11 +564,14 @@ LActPrintNote1:;
 		OUTFORMFIELD("F_DATEMONTHINWORDS",tstr);
 		tstr = GetJwl_CustomerName(SVOr.CustCode);
 		OUTFORMFIELD("F_KUNDNAMNJWL",tstr);  
-		
-		if(blankdate(SVOr.RegDate))then begin// Edit ************************** Wednesday, 13 September 2017 18:40:19
-			OUTFORMFIELD("F_ORDDATUM",SVOr.TransDate);
+		if(nonblankdate(SVOr.GetItemDate))then begin
+			OUTFORMFIELD("F_ORDDATUM",SVOr.GetItemDate);// Edit ************************** Monday, 30 October 2017 10:14:56
 		end else begin
-			OUTFORMFIELD("F_ORDDATUM",SVOr.RegDate);
+			if(blankdate(SVOr.RegDate))then begin// Edit ************************** Wednesday, 13 September 2017 18:40:19
+				OUTFORMFIELD("F_ORDDATUM",SVOr.TransDate);
+			end else begin
+				OUTFORMFIELD("F_ORDDATUM",SVOr.RegDate);
+			end;
 		end;
 		
 		

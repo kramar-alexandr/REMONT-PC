@@ -1307,13 +1307,13 @@ begin
       goto LINVcRecordCheck;
     end;
   end;
-  if (nonblank(INr.Group)) then begin
+ /*if (nonblank(INr.Group)) then begin// Edit ************************** Monday, 30 October 2017 10:20:40
     if (CheckDispGroupsInINVc(INr,tstr)==false) then begin
       RecordCheckError(1707," " & tstr,-1,"DispGroups");//change type     
       res = -1; 
       goto LINVcRecordCheck;
     end;
-  end;
+  end;*/
   if (nonblank(INr.DispGroups)) then begin
     errcode = VerifyClassification(INr.DispGroups,tstr);
     if (errcode!=0) then begin

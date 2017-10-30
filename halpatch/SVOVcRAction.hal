@@ -1749,9 +1749,11 @@ BEGIN
   	SVOr.PlanShipDate = currentdate;// Edit ************************** Thursday, 10 September 2015 17:31:49
   	SVOr.DoneTime = CurrentTime;
   end;
-  if(SVOr.OrderStatus==2)then begin
+  //if(SVOr.OrderStatus==2)then begin
+  if(nonblankdate(SVOr.RegDate))then begin
   	SVOr.GarantyToDate = addmonth(SVOr.RegDate,SVOr.GarantyMes);
-  end;
+  end;	
+  //end;
   if (nonblankdate(SVOr.PlanShipDate) and blankdate(SVOr.EndDiagnDate)) then begin //Edit***************************Sasha2,16:14 23.01.2017
     SVOr.EndDiagnDate = SVOr.PlanShipDate;
     SVOr.EndDiagnTime = SVOr.DoneTime;

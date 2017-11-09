@@ -7,6 +7,8 @@ external procedure HT2Per(Date, Date , var string);
 remote procedure CountNumberRepeatPhone(string,var array longint,var integer );
 external function LongInt CountWorkingDays(Date,Date,string,string);
 external function LongInt DateDiff(Date,Date);
+external function Time TimeDiff(Time,Time);// Edit ************************** Tuesday, 29 August 2017 14:21:47
+
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -747,6 +749,76 @@ begin
     			outstring(390,0,SVOrw.Spec,false);
 				endformat;
 			end;
+		end;
+		
+	endjob;
+	
+return;
+end;
+
+
+global procedure CallConversionRn(record RcVc RepSpec)
+begin
+	record SVOVc SVOr;
+	record ActVc Actr;
+	row SVOVc SVOrw;
+	record UserVc USr;
+	boolean testf,TrHs;
+	integer countwdays,i,acnt;
+	vector boolean operator;
+	vector integer calcnt,remcnt,predcnt;
+	array string 200 opername;
+	date sd,ed;
+	
+	StartReportNoHeaderJob("Статистика предварительных заказов");
+		USr.Code = CurrentUser;
+		readfirstmain(USr,1,true);
+		
+		
+		startformat(15);
+			outstring(0,0,"Оператор",false);
+			outstring(50,0,"Входящих",false);
+			outstring(90,0,"Предварительных заказов",false);
+			outstring(150,0,"Принятых",false);
+		endformat;
+		sd = RepSpec.sStartDate;
+		ed = RepSpec.sEndDate;
+		SVOr.TransDate = sd;
+		
+		SVOr.TransDate = sd;
+		TrHS = true;
+		while(loopkey("TransDate",SVOr,1,TrHs))begin
+			testf = true;
+			if(SVOr.TransDate<sd)then begin testf = false; end;
+			if(SVOr.TransDate>ed)then begin TrHs = false; testf = false; end;
+			
+			if(testf)then begin
+				if(operator[SVOr.SalesMan]==false)then begin 
+					opername[acnt] = SVOr.SalesMan;
+					acnt = acnt + 1;
+				end;
+				if(SVOr.TransDate<SVOr.GetItemDate or SVOr.OrderStatus==9)then begin
+					predcnt[SVOr.SalesMan] = predcnt[SVOr.SalesMan] + 1;
+					if(nonblankdate(SVOr.GetItemDate))then begin
+						remcnt[SVOr.SalesMan] = remcnt[SVOr.SalesMan] + 1;
+					end;
+				end;
+				if(SVOr.TransDate==SVOr.GetItemDate and TimeDiff(SVOr.RegTime,SVOr.GetItemTime)>stringtotime("1:0:0"))then begin
+					predcnt[SVOr.SalesMan] = predcnt[SVOr.SalesMan] + 1;
+					if(nonblankdate(SVOr.GetItemDate))then begin
+						remcnt[SVOr.SalesMan] = remcnt[SVOr.SalesMan] + 1;
+					end;
+				end;
+			end;
+		end;
+		
+		for(i=0;i<acnt;i=i+1)begin
+			startformat(15);
+				outstring(0,0,opername[acnt],false);
+				outstring(50,0,"Входящих",false);
+				outstring(90,0,predcnt[SVOr.SalesMan],false);
+				outstring(150,0,remcnt[SVOr.SalesMan],false);
+			endformat;
 		end;
 		
 	endjob;

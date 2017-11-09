@@ -861,7 +861,8 @@ begin
 						if(SVOr.TransDate!=Actr.TransDate)then begin testf1 = false; TrHs1 = false; end;
 						if(blank(SVOr.SalesMan))then begin testf1 = false; end;
 						if(setinset(SVOr.SalesMan,Actr.MainPersons)==false)then begin end;
-						
+						if(SVOr.CustCode!=Actr.CUCode)then begin testf1 = false; end;
+
 						if(testf1)then begin
 							if(operator[SVOr.SalesMan]==false)then begin 
 								operator[SVOr.SalesMan] = true;
@@ -913,6 +914,7 @@ begin
 								if(SVOr.TransDate!=Actr.TransDate)then begin testf1 = false; TrHs1 = false; end;
 								if(blank(SVOr.SalesMan))then begin testf1 = false; end;
 								if(setinset(SVOr.SalesMan,Actr.MainPersons)==false)then begin end;
+								if(SVOr.CustCode!=Actr.CUCode)then begin testf1 = false; end;
 
 								if(testf1)then begin
 									if(operator[SVOr.SalesMan]==false)then begin 

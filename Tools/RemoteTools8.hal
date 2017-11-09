@@ -1676,12 +1676,13 @@ begin
   //if (nonblank(SVOr.PlanShip)) then begin //Edit***************************Sasha2,14:49 16.02.2017 {
     //Actr.TransDate = StringToDate(SVOr.PlanShip);
     //Actr.EndDate = StringToDate(SVOr.PlanShip);
-  if (nonblankdate(SVOr.PlanShipDate)) then begin
+  /*if (nonblankdate(SVOr.PlanShipDate)) then begin
     Actr.TransDate = SVOr.PlanShipDate;
     Actr.EndDate = SVOr.PlanShipDate; //Edit***************************Sasha2,14:49 16.02.2017 }
   end else begin
     Actr.TransDate = SVOr.TransDate;
-  end;  
+  end;  */
+  Actr.TransDate = currentdate;// Edit ************************** Thursday, 9 November 2017 17:05:50
   BlockLoad(ASTb);
   Actr.ActType = ASTb.GenServOrder;
   if (PasteActTypeInAct("",Actr)) then begin

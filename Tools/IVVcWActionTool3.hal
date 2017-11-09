@@ -1537,6 +1537,11 @@ begin
   Integer rwcnt,err;
   row IVVc IVrw;
   Integer i;
+  record LocalMachineBlock LMb;// Edit ************************** Tuesday, 29 August 2017 14:43:22
+  record UserVc Userr;// Edit ************************** Tuesday, 29 August 2017 14:44:20
+  record SalesGroupVc SGr;// Edit ************************** Tuesday, 29 August 2017 14:43:21
+
+  blockload(LMb);// Edit ************************** Tuesday, 29 August 2017 14:46:18
 
   res = true;
   BlockLoad(MainCLRec);
@@ -1574,6 +1579,25 @@ begin
   if (GetPM(CLInr.PayMode,tstr,tstr)==false) then begin
     CLInr.PayMode = "";
   end;  
+  
+  
+  if(nonblank(LMb.SalesGroup))then begin
+  	SGr.SGroupCode = LMb.SalesGroup;
+  	if(readfirstmain(SGr,1,true))then begin
+			CLInr.PayMode = SGr.FastPMCash;
+		end;
+  end else begin
+  	Userr.Code = currentuser;
+  	if(readfirstmain(Userr,1,true))then begin
+  		if(nonblank(Userr.SalesGroup))then begin
+  			SGr.SGroupCode = Userr.SalesGroup;
+  			if(readfirstmain(SGr,1,true))then begin
+  				CLInr.PayMode = SGr.FastPMCash;
+  			end;
+  		end;
+  	end;
+  end;
+  
   if (blank(CLInr.PayMode)) then begin
     rwcnt = MatRowCnt(IVr);
     for (i=0;i<rwcnt;i=i+1) begin

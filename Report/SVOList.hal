@@ -8,6 +8,7 @@ remote procedure CountNumberRepeatPhone(string,var array longint,var integer );
 external function LongInt CountWorkingDays(Date,Date,string,string);
 external function LongInt DateDiff(Date,Date);
 external function Time TimeDiff(Time,Time);// Edit ************************** Tuesday, 29 August 2017 14:21:47
+external procedure ExtractObj(string,var Integer,var string);
 
 
 SetLangMode(LangRussian,"RUS",0);
@@ -763,12 +764,16 @@ begin
 	record ActVc Actr;
 	row SVOVc SVOrw;
 	record UserVc USr;
-	boolean testf,TrHs;
-	integer countwdays,i,acnt;
+	boolean testf,TrHs,testf1;
+	integer countwdays,i,acnt,cnt,pos;
 	vector boolean operator;
 	vector integer calcnt,remcnt,predcnt;
 	array string 200 opername;
 	date sd,ed;
+	record BinotelCallEndVc BCEr;
+	record RLinkVc RLr;
+	string 200 tstr;
+	
 	
 	StartReportNoHeaderJob("Статистика предварительных заказов");
 		USr.Code = CurrentUser;
@@ -814,10 +819,62 @@ begin
 			end;
 		end;
 		
+		Actr.TransDate = sd;
+		TrHS = true;
+		while(loopkey("TransDate",Actr,1,TrHs))begin
+			testf = true;
+			if(Actr.TransDate<sd)then begin testf = false; end;
+			if(Actr.TransDate>ed)then begin TrHs = false; testf = false; end;
+			if(Actr.ActType!="CALL")then begin testf = false; end;
+			
+			if(testf)then begin
+				if(Actr.Comment=="Принятый вызов")then begin
+				 
+				 pos = 0;
+				 tstr = "";
+				 ExtractObj(Actr.MainPersons,pos,tstr);
+				 while(nonblank(tstr))begin
+				 	if(nonblank(tstr))then begin
+				 		if(operator[tstr]==false)then begin 
+							operator[tstr] = true;
+							opername[acnt] = tstr;
+							acnt = acnt + 1;
+						end;
+						calcnt[tstr] = calcnt[tstr] + 1;
+				 	end;
+				 	ExtractObj(Actr.MainPersons,pos,tstr);
+				 end;
+				end else begin
+					cnt = 1;
+					testf1 = true;
+					while(ReadRecordLink(SVOr,cnt,BCEr,RLr)) begin
+						cnt = cnt+1;
+						if(BCEr.callType=="0")then begin
+							pos = 0;
+							tstr = "";
+							ExtractObj(Actr.MainPersons,pos,tstr);
+							while(nonblank(tstr))begin
+							if(nonblank(tstr))then begin
+								if(operator[tstr]==false)then begin 
+									operator[tstr] = true;
+									opername[acnt] = tstr;
+									acnt = acnt + 1;
+								end;
+								calcnt[tstr] = calcnt[tstr] + 1;
+							end;
+							ExtractObj(Actr.MainPersons,pos,tstr);
+							end;
+						end;
+					end;
+					
+				end;
+			end;
+		end;
+		
 		for(i=0;i<acnt;i=i+1)begin
 			startformat(15);
 				outstring(0,0,opername[i],false);
-				outstring(90,0,"Входящих",false);
+				outstring(90,0,calcnt[opername[i]],false);
 				outstring(130,0,predcnt[opername[i]],false);
 				outstring(170,0,remcnt[opername[i]],false);
 			endformat;

@@ -816,7 +816,7 @@ begin
 		
 		for(i=0;i<acnt;i=i+1)begin
 			startformat(15);
-				outstring(0,0,opername[acnt],false);
+				outstring(0,0,opername[i],false);
 				outstring(50,0,"Входящих",false);
 				outstring(90,0,predcnt[SVOr.SalesMan],false);
 				outstring(150,0,remcnt[SVOr.SalesMan],false);

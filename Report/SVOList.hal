@@ -817,9 +817,9 @@ begin
 		for(i=0;i<acnt;i=i+1)begin
 			startformat(15);
 				outstring(0,0,opername[i],false);
-				outstring(50,0,"Входящих",false);
-				outstring(90,0,predcnt[opername[i]],false);
-				outstring(150,0,remcnt[opername[i]],false);
+				outstring(90,0,"Входящих",false);
+				outstring(130,0,predcnt[opername[i]],false);
+				outstring(170,0,remcnt[opername[i]],false);
 			endformat;
 		end;
 		

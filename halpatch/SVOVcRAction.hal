@@ -33,6 +33,7 @@ external procedure RemoteUserFunction(string,string,string,string);// Edit *****
 external procedure CutAreaLeft(var area,integer);
 external function LongInt CountWorkingDays(Date,Date,string,string);// Edit ************************** Monday, 18 September 2017 09:50:43
 external function LongInt DateDiff(Date,Date);// Edit ************************** Friday, 6 October 2017 11:19:10
+external external procedure ExtractObj(string,var Integer,var string);
 
 
 SetLangMode(LangRussian,"RUS",0);
@@ -64,11 +65,14 @@ end;
 
 
 updating
-procedure CreateCustomActivityFromSVO(record SVOVc SVOr,string acttype,string mainpersons,date transdate,string comment)
+procedure CreateCustomActivityFromSVO(record SVOVc SVOr,string acttype,string mainpersons,date transdate,string comment, string group)
 begin
   record ActVc Actr;
   date blankd;
-  string 50 curPhone;
+  string 50 curPhone,tstr;
+  record UserVc USr;
+  integer pos;
+  
         
     if (SVOr.SerNr>-1) then begin
       curPhone = SVOr.Kontinfo1;
@@ -91,13 +95,41 @@ begin
   		Actr.Phone = curPhone;
 			Actr.MainPersons = mainpersons;
 			
-			if(blank(mainpersons))then begin
+			if(nonblank(group))then begin	
+				
+				pos = 0;
+				ExtractObj(group,pos,tstr);
+				while(nonblank(tstr))begin
+					if(nonblank(tstr))then begin
+						USr.Code = "";
+						while(loopmain(USr,1,true))begin
+							if(setinset(tstr,USr.AccessGroup))then begin
+								if(USr.TerminatedFlag==0)then begin
+									if(blank(Actr.MainPersons))then begin
+										Actr.MainPersons = USr.Code;
+									end else begin
+										if(setinset(USr.Code,Actr.MainPersons)==false)then begin
+											Actr.MainPersons = Actr.MainPersons & "," & USr.Code;
+										end;
+									end;
+								end;
+							end;
+						end;
+						resetloop(USr);
+					end;
+					ExtractObj(group,pos,tstr);
+				end;
+			end;
+			
+			if(blank(Actr.MainPersons))then begin
 				if(nonblank(SVOr.Inspector))then begin
 					Actr.MainPersons = SVOr.Inspector;
 				end else begin
 					Actr.MainPersons = currentuser;
 				end;
 			end;
+			
+			
 			
   		Actr.SerNr = NextSerNr("ActVc",Actr.TransDate,-1,false,"");
   		
@@ -234,6 +266,15 @@ begin
 									CloseActivity(Actr,"ОК");
 							end;
 					end;
+					
+					if(SVO2r.OrderStatus==3 and SVOr.OrderStatus!=3)then begin//закрыть напоминание о долгом заказе деталей
+							testf1 = true;
+							if(Actr.ActType!="ZAKAZ")then begin testf1 = false; end;
+							testf1 = (testf1 and testf);
+							if(testf1)then begin
+									CloseActivity(Actr,"ОК");
+							end;
+					end;
 
 					if(nonblankdate(SVOr.RegDate) or SVOr.OrderStatus!=6)then begin//закрыть запрос напоминание о выдаче
 							testf1 = true;
@@ -275,13 +316,13 @@ begin
         if(SVOr.GetItemFlag>0 and SVOr.OrderStatus==0)then begin
             //CreateActFromSVOToEnginer(SVOr,"");
             GenerateIngenerComent(SVOr,commentee);
-            CreateCustomActivityFromSVO(SVOr,"ENGNR",SVOr.Inspector,CalcWorkDate(currentdate,3,true),commentee);
+            CreateCustomActivityFromSVO(SVOr,"ENGNR",SVOr.Inspector,CalcWorkDate(currentdate,3,true),commentee,"");
         end;
         if (SVOr.OrderStatus==2 and BlankDate(SVOr.RegDate) and SVOr.GetItemFlag>0) then begin
             //mainperson logic here...
             //AttachMainPersons(SVOr,mainPrsns);
             //CreateCustomActivityFromSVO(SVOr,"CLLCL",SVOr.Inspector,currentdate,"Ремонт готов.");
-            CreateCustomActivityFromSVO(SVOr,"RMDCL",SVOr.Inspector,addday(currentdate,5),"Напомнить клиенту забрать отремонтированную технику.");
+            CreateCustomActivityFromSVO(SVOr,"RMDCL",SVOr.Inspector,addday(currentdate,5),"Напомнить клиенту забрать отремонтированную технику.","");
             //CreateActFromSVOForInspectorIfItemIssued(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
         end;
         /*if (SVOr.OrderStatus==6) then begin
@@ -290,42 +331,52 @@ begin
             CreateCustomActivityFromSVO(SVOr,"RJC",SVOr.ServiceManager,currentdate,"Заказ отменен. Собрать устройство на выдачу!");
         end;*/
         if (SVOr.OrderStatus==7) then begin
-            CreateCustomActivityFromSVO(SVOr,"СОГОК",SVOr.ServiceManager,currentdate,"Ремонт согласован!");//----------------- dima-f 22.09.17
+            CreateCustomActivityFromSVO(SVOr,"СОГОК",SVOr.ServiceManager,currentdate,"Ремонт согласован!","");//----------------- dima-f 22.09.17
+        end;
+        if (SVOr.OrderStatus==3) then begin
+          CreateCustomActivityFromSVO(SVOr,"ZAKAZ",SVOr.Inspector & "," & "КУМКО",addday(currentdate,4),"Ожидание запчасти больше 3 дней!!!!","ADMIN,СТМ_З");
         end;
     end else begin //SVOVcRecordUpdateAfter
         if(SVOr.GetItemFlag>0 and SVO2r.GetItemFlag==0 and SVOr.OrderStatus==0)then begin
             //CreateActFromSVOToEnginer(SVOr,"");
             GenerateIngenerComent(SVOr,commentee);
-            CreateCustomActivityFromSVO(SVOr,"ENGNR",SVOr.Inspector,CalcWorkDate(currentdate,3,true),commentee);
+            CreateCustomActivityFromSVO(SVOr,"ENGNR",SVOr.Inspector,CalcWorkDate(currentdate,3,true),commentee,"");
         end;
         if ((SVOr.OrderStatus==2 and SVO2r.OrderStatus!=2) and BlankDate(SVOr.RegDate) and SVOr.GetItemFlag>0) then begin
             //mainperson logic here...
             //AttachMainPersons(SVOr,mainPrsns);
             //CreateCustomActivityFromSVO(SVOr,"CLLCL",SVOr.Inspector,currentdate,"Ремонт готов.");
-            CreateCustomActivityFromSVO(SVOr,"RMDCL",SVOr.Inspector,addday(currentdate,5),"Напомнить клиенту забрать отремонтированную технику.");
+            CreateCustomActivityFromSVO(SVOr,"RMDCL",SVOr.Inspector,addday(currentdate,5),"Напомнить клиенту забрать отремонтированную технику.","");
             //CreateActFromSVOForInspectorIfItemIssued(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
         end;
+        
+        
+        
+        
         if (SVOr.OrderStatus==6 and SVO2r.OrderStatus!=6 and SVOr.GetItemFlag>0) then begin
-            CreateCustomActivityFromSVO(SVOr,"RJCTD",SVOr.Inspector,addday(currentdate,5),"Напомнить клиенту забрать технику без ремонта.");
-            CreateCustomActivityFromSVO(SVOr,"RJC",SVOr.ServiceManager,currentdate,"Заказ отменен. Собрать устройство на выдачу!");
+            CreateCustomActivityFromSVO(SVOr,"RJCTD",SVOr.Inspector,addday(currentdate,5),"Напомнить клиенту забрать технику без ремонта.","");
+            CreateCustomActivityFromSVO(SVOr,"RJC",SVOr.ServiceManager,currentdate,"Заказ отменен. Собрать устройство на выдачу!","");
         end;
         if (SVOr.OrderStatus==7 and SVO2r.OrderStatus!=7) then begin
-            CreateCustomActivityFromSVO(SVOr,"СОГОК",SVOr.ServiceManager,currentdate,"Ремонт согласован!");//----------------- dima-f 22.09.17
+            CreateCustomActivityFromSVO(SVOr,"СОГОК",SVOr.ServiceManager,currentdate,"Ремонт согласован!","");//----------------- dima-f 22.09.17
         end;
 
         if (SVOr.OrderStatus==4 and SVO2r.OrderStatus!=4) then begin
             if(nonblank(SVOr.Inspector))begin
-                CreateCustomActivityFromSVO(SVOr,"СОГЛ",SVOr.Inspector,currentdate,"Согласовать ремонт!");//----------------- dima-f 22.09.17
+                CreateCustomActivityFromSVO(SVOr,"СОГЛ",SVOr.Inspector,currentdate,"Согласовать ремонт!","");//----------------- dima-f 22.09.17
             end else begin
                 if (NonBlank(SVOr.CustomField7)) then begin
-                    CreateCustomActivityFromSVO(SVOr,"СОГЛ",SVOr.Inspector,currentdate,"Согласовать ремонт!");//----------------- dima-f 22.09.17
+                    CreateCustomActivityFromSVO(SVOr,"СОГЛ",SVOr.Inspector,currentdate,"Согласовать ремонт!","");//----------------- dima-f 22.09.17
                 end;
             end;
         end;
 
         if (SVOr.OrderStatus==10 and SVO2r.OrderStatus!=10) then begin// ZAKAZ DETALEY
-            CreateCustomActivityFromSVO(SVOr,"ZAKAZ","КУМКО",currentdate,"Заказать детали!");
-            CreateCustomActivityFromSVO(SVOr,"ZAKAZ",SVOr.Inspector & "," & "КУМКО",addday(currentdate,1),"Напомнить заказать детали!");
+            CreateCustomActivityFromSVO(SVOr,"ZAKAZ","КУМКО",currentdate,"Заказать детали!","");
+            CreateCustomActivityFromSVO(SVOr,"ZAKAZ",SVOr.Inspector & "," & "КУМКО",addday(currentdate,1),"Напомнить заказать детали!","");
+        end;
+        if ((SVOr.OrderStatus==3 and SVO2r.OrderStatus!=3)) then begin
+            CreateCustomActivityFromSVO(SVOr,"ZAKAZ","",addday(currentdate,4),"Ожидание запчасти больше 3 дней!!!!","ADMIN,СТМ_З");
         end;
     end;
 end;

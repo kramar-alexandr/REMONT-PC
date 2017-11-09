@@ -791,9 +791,11 @@ begin
 			testf = true;
 			if(SVOr.TransDate<sd)then begin testf = false; end;
 			if(SVOr.TransDate>ed)then begin TrHs = false; testf = false; end;
+			if(blank(SVOr.SalesMan))then begin testf = false; end;
 			
 			if(testf)then begin
 				if(operator[SVOr.SalesMan]==false)then begin 
+					operator[SVOr.SalesMan] = true;
 					opername[acnt] = SVOr.SalesMan;
 					acnt = acnt + 1;
 				end;

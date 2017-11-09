@@ -773,6 +773,7 @@ begin
 	record BinotelCallEndVc BCEr;
 	record RLinkVc RLr;
 	string 200 tstr;
+	integer totcall,sumbyman;
 	
 	
 	StartReportNoHeaderJob("Статистика предварительных заказов");
@@ -829,7 +830,7 @@ begin
 			
 			if(testf)then begin
 				if(Actr.Comment=="Принятый вызов")then begin
-				 
+				 totcall = totcall + 1;
 				 pos = 0;
 				 tstr = "";
 				 ExtractObj(Actr.MainPersons,pos,tstr);
@@ -841,6 +842,7 @@ begin
 							acnt = acnt + 1;
 						end;
 						calcnt[tstr] = calcnt[tstr] + 1;
+						sumbyman = sumbyman + 1;
 				 	end;
 				 	ExtractObj(Actr.MainPersons,pos,tstr);
 				 end;
@@ -850,6 +852,7 @@ begin
 					while(ReadRecordLink(SVOr,cnt,BCEr,RLr)) begin
 						cnt = cnt+1;
 						if(BCEr.callType=="0")then begin
+							totcall = totcall + 1;
 							pos = 0;
 							tstr = "";
 							ExtractObj(Actr.MainPersons,pos,tstr);
@@ -861,6 +864,7 @@ begin
 									acnt = acnt + 1;
 								end;
 								calcnt[tstr] = calcnt[tstr] + 1;
+								sumbyman = sumbyman + 1;
 							end;
 							ExtractObj(Actr.MainPersons,pos,tstr);
 							end;
@@ -872,13 +876,21 @@ begin
 		end;
 		
 		for(i=0;i<acnt;i=i+1)begin
-			startformat(15);
-				outstring(0,0,opername[i],false);
-				outstring(90,0,calcnt[opername[i]],false);
-				outstring(130,0,predcnt[opername[i]],false);
-				outstring(170,0,remcnt[opername[i]],false);
-			endformat;
+			if(calcnt[opername[i]]>0)then begin
+				startformat(15);
+					outstring(0,0,opername[i],false);
+					outstring(90,0,calcnt[opername[i]],false);
+					outstring(130,0,predcnt[opername[i]],false);
+					outstring(170,0,remcnt[opername[i]],false);
+				endformat;
+			end;
 		end;
+		
+		startformat(15);
+			outstring(0,0,sumbyman,false);
+			outstring(90,0,totcall,false);
+			outstring(130,0,sumbyman - totcall,false);
+		endformat;
 		
 	endjob;
 	

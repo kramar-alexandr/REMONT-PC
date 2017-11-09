@@ -764,7 +764,7 @@ begin
 	record ActVc Actr;
 	row SVOVc SVOrw;
 	record UserVc USr;
-	boolean testf,TrHs,testf1;
+	boolean testf,TrHs,testf1,TrHs1,foundf;
 	integer countwdays,i,acnt,cnt,pos;
 	vector boolean operator;
 	vector integer calcnt,remcnt,predcnt;
@@ -773,7 +773,7 @@ begin
 	record BinotelCallEndVc BCEr;
 	record RLinkVc RLr;
 	string 200 tstr;
-	integer totcall,sumbyman;
+	integer totcall,sumbyman,personcnt;
 	
 	
 	StartReportNoHeaderJob("Статистика предварительных заказов");
@@ -830,21 +830,51 @@ begin
 			
 			if(testf)then begin
 				if(Actr.Comment=="Принятый вызов")then begin
+				 foundf = false;
 				 totcall = totcall + 1;
 				 pos = 0;
+				 personcnt = 0;
 				 tstr = "";
 				 ExtractObj(Actr.MainPersons,pos,tstr);
 				 while(nonblank(tstr))begin
 				 	if(nonblank(tstr))then begin
-				 		if(operator[tstr]==false)then begin 
-							operator[tstr] = true;
-							opername[acnt] = tstr;
-							acnt = acnt + 1;
-						end;
-						calcnt[tstr] = calcnt[tstr] + 1;
-						sumbyman = sumbyman + 1;
+				 		personcnt = personcnt + 1;
+				 		
 				 	end;
 				 	ExtractObj(Actr.MainPersons,pos,tstr);
+				 end;
+				 
+				 if(personcnt==1)then begin
+				 	if(operator[Actr.MainPersons]==false)then begin 
+						operator[Actr.MainPersons] = true;
+						opername[acnt] = Actr.MainPersons;
+						acnt = acnt + 1;
+					end;
+					calcnt[Actr.MainPersons] = calcnt[Actr.MainPersons] + 1;
+					sumbyman = sumbyman + 1;
+					foundf = true;
+				 end else begin
+				 	SVOr.TransDate = Actr.TransDate;
+					TrHs1 = true;
+					while(loopkey("TransDate",SVOr,1,TrHs1))begin
+						testf1 = true;
+						if(SVOr.TransDate!=Actr.TransDate)then begin testf1 = false; TrHs1 = false; end;
+						if(blank(SVOr.SalesMan))then begin testf1 = false; end;
+						if(setinset(SVOr.SalesMan,Actr.MainPersons)==false)then begin end;
+						
+						if(testf1)then begin
+							if(operator[SVOr.SalesMan]==false)then begin 
+								operator[SVOr.SalesMan] = true;
+								opername[acnt] = SVOr.SalesMan;
+								acnt = acnt + 1;
+							end;
+							calcnt[SVOr.SalesMan] = calcnt[SVOr.SalesMan] + 1;
+							sumbyman = sumbyman + 1;
+							testf1 = false; TrHs1 = false;
+							foundf = true;
+						end;
+					end;
+					resetloop(SVOr);
 				 end;
 				end else begin
 					cnt = 1;
@@ -852,21 +882,51 @@ begin
 					while(ReadRecordLink(SVOr,cnt,BCEr,RLr)) begin
 						cnt = cnt+1;
 						if(BCEr.callType=="0")then begin
+							foundf = false;
 							totcall = totcall + 1;
 							pos = 0;
+							personcnt = 0;
 							tstr = "";
 							ExtractObj(Actr.MainPersons,pos,tstr);
 							while(nonblank(tstr))begin
 							if(nonblank(tstr))then begin
-								if(operator[tstr]==false)then begin 
-									operator[tstr] = true;
-									opername[acnt] = tstr;
-									acnt = acnt + 1;
-								end;
-								calcnt[tstr] = calcnt[tstr] + 1;
-								sumbyman = sumbyman + 1;
+								personcnt = personcnt + 1;
+
 							end;
 							ExtractObj(Actr.MainPersons,pos,tstr);
+							end;
+
+							if(personcnt==1)then begin
+							if(operator[Actr.MainPersons]==false)then begin 
+								operator[Actr.MainPersons] = true;
+								opername[acnt] = Actr.MainPersons;
+								acnt = acnt + 1;
+							end;
+							calcnt[Actr.MainPersons] = calcnt[Actr.MainPersons] + 1;
+							sumbyman = sumbyman + 1;
+							foundf = true;
+							end else begin
+							SVOr.TransDate = Actr.TransDate;
+							TrHs1 = true;
+							while(loopkey("TransDate",SVOr,1,TrHs1))begin
+								testf1 = true;
+								if(SVOr.TransDate!=Actr.TransDate)then begin testf1 = false; TrHs1 = false; end;
+								if(blank(SVOr.SalesMan))then begin testf1 = false; end;
+								if(setinset(SVOr.SalesMan,Actr.MainPersons)==false)then begin end;
+
+								if(testf1)then begin
+									if(operator[SVOr.SalesMan]==false)then begin 
+										operator[SVOr.SalesMan] = true;
+										opername[acnt] = SVOr.SalesMan;
+										acnt = acnt + 1;
+									end;
+									calcnt[SVOr.SalesMan] = calcnt[SVOr.SalesMan] + 1;
+									sumbyman = sumbyman + 1;
+									testf1 = false; TrHs1 = false;
+									foundf = true;
+								end;
+							end;
+							resetloop(SVOr);
 							end;
 						end;
 					end;

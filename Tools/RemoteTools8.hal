@@ -135,7 +135,8 @@ begin
     ReadFirstMain(WSr,1,true);
   end; //Edit***************************Sasha2,17:44 31.05.2017 }
   IVp.TransDate = CurrentDate;
-  IVp.UpdStockFlag = ARAccRecp.InvUpdStock;
+  //IVp.UpdStockFlag = ARAccRecp.InvUpdStock;// Edit ************************** Thursday, 9 November 2017 17:37:48
+  IVp.UpdStockFlag = 0;// Edit ************************** Thursday, 9 November 2017 17:37:45
   IVp.OrderNr = -1;
   if (nonblank(SVOp.InvoiceToCode)) then begin
     CUr.Code = SVOp.InvoiceToCode;

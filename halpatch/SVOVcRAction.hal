@@ -376,7 +376,7 @@ begin
             CreateCustomActivityFromSVO(SVOr,"ZAKAZ",SVOr.Inspector & "," & "КУМКО",addday(currentdate,1),"Напомнить заказать детали!","");
         end;
         if ((SVOr.OrderStatus==3 and SVO2r.OrderStatus!=3)) then begin
-            CreateCustomActivityFromSVO(SVOr,"ZAKAZ","",addday(currentdate,4),"Ожидание запчасти больше 3 дней!!!!","ADMIN,СТМ_З");
+            CreateCustomActivityFromSVO(SVOr,"ZAKAZ",SVOr.Inspector,addday(currentdate,4),"Ожидание запчасти больше 3 дней!!!!","ADMIN,СТМ_З");
         end;
     end;
 end;

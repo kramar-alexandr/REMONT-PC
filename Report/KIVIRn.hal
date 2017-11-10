@@ -57,11 +57,11 @@ begin
 	endformat;
 	
 	TrHs = true;
-	SVOr.TransDate = sd;
-	while(loopkey("TransDate",SVOr,1,TrHs))begin
+	SVOr.RegDate = sd;
+	while(loopkey("RegDate",SVOr,1,TrHs))begin
 		testf = true;
-		if(SVOr.TransDate>ed)then begin TrHs = false; testf = false; end;
-		if(SVOr.TransDate<sd)then begin testf = false; end;
+		if(SVOr.RegDate>ed)then begin TrHs = false; testf = false; end;
+		if(SVOr.RegDate<sd)then begin testf = false; end;
 		
 		kivifound = false;
 		if(SVOr.Region=="’…‹KI")then begin kivifound = true; end;

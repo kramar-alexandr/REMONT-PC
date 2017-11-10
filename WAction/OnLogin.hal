@@ -46,6 +46,7 @@ external updating function Boolean UserLicensesExpired();
 external procedure LogoutHansaWorldID();
 external procedure SendHansaWorldIDUserTask2(string,string,Integer);
 external procedure GetUserAccessGroup(string,var string);// Edit ************************** Thursday, 30 March 2017 10:16:28
+remote updating procedure RemodeUpdateOtherPhones(string,string);// Edit ************************** Friday, 10 November 2017 12:16:27
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -213,7 +214,7 @@ begin
   Boolean SetServerBuildProductCodef;
   record CurLicensesBlock CLb;
   record AprvlActMaintBlock AAMb;
-  string 255 accessgroup;// Edit ************************** Thursday, 30 March 2017 10:23:07
+  string 255 accessgroup,changeuser,changephone;// Edit ************************** Thursday, 30 March 2017 10:23:07
   
   if (IsStandardProduct) then begin
     if (ClientMode) then begin
@@ -292,9 +293,14 @@ begin
 				User.PersPhone2 = User.Phone2;
 			end;
 			User.Phone2 = LMb.PersPhone2;
+			Messagebox(0,"За Вами закреплен телефон №" & User.Phone2);
 		end else begin
 			if(nonblank(User.PersPhone2))then begin
-				User.Phone2 = User.PersPhone2;
+				//User.Phone2 = User.PersPhone2;// Edit ************************** Friday, 10 November 2017 12:21:41
+				if(blank(User.Phone2))then begin
+					RepSpec.f1 = User.PersPhone2;
+					OpenWindow("ChangeBinotelPhoneWClass",1,0,"","",RepSpec);
+				end;
 			end else begin
 				if(nonblank(User.Phone2))then begin
 					User.PersPhone2 = User.Phone2;
@@ -303,6 +309,20 @@ begin
 		end;
 		
 		recordstore(User,true);
+		if(nonblank(User.Phone2))then begin
+			changeuser = User.Code;// Edit ************************** Friday, 10 November 2017 12:14:01
+			changephone = User.Phone2;
+			User.Code = "";
+			while(loopmain(User,1,true))begin
+				if(User.Code!=changeuser)then begin
+					if(User.Phone2==changephone)then begin
+						User.Phone2 = "";
+						recordstore(User,true);
+					end;
+				end;
+			end;
+		end;
+		
 	end;
   savef = true;
   if (CompileType!=ctWindowsCE and CompileType!=ctSeries80 and CompileType!=ctSeries60 and CompileType!=ctNokiaE90 and CompileType!=ctBPadCE and CompileType!=ctWindowsCELandscape) then begin
@@ -950,6 +970,7 @@ begin
 	recordcopy(oldUser,User);
 	User.Phone2 = left(RepSpec.f1,3);
 	recordupdate(oldUser,User,true);
+	RemodeUpdateOtherPhones(User.Code,User.Phone2);
 	closewindow(wn);
 return;
 end;

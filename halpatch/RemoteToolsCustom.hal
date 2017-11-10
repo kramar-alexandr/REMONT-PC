@@ -4363,3 +4363,21 @@ begin
 	
 return;
 end;
+
+
+global updating procedure RemodeUpdateOtherPhones(string changeuser,string changephone)
+begin
+record UserVc User;
+	
+	User.Code = "";
+	while(loopmain(User,1,true))begin
+		if(User.Code!=changeuser)then begin
+			if(User.Phone2==changephone)then begin
+				User.Phone2 = "";
+				recordstore(User,true);
+			end;
+		end;
+	end;
+
+return;
+end;

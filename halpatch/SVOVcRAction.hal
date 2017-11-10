@@ -336,7 +336,14 @@ begin
         if (SVOr.OrderStatus==3) then begin
           CreateCustomActivityFromSVO(SVOr,"ZAKAZ",SVOr.Inspector & "," & "КУМКО",addday(currentdate,4),"Ожидание запчасти больше 3 дней!!!!","ADMIN,СТМ_З");
         end;
+        if (SVOr.OrderStatus==9 and nonblankdate(SVOr.PlanVisitDate)) then begin
+          CreateCustomActivityFromSVO(SVOr,"ПРЕДЗ",SVOr.SalesMan,addday(SVOr.PlanVisitDate,1),"Клиент не пришел по предварительной заявке!","");
+        end;
     end else begin //SVOVcRecordUpdateAfter
+    		if (SVOr.OrderStatus==9 and nonblankdate(SVOr.PlanVisitDate) and blankdate(SVO2r.PlanVisitDate)) then begin
+          CreateCustomActivityFromSVO(SVOr,"ПРЕДЗ",SVOr.SalesMan,addday(SVOr.PlanVisitDate,1),"Клиент не пришел по предварительной заявке!","");
+        end;
+    		
         if(SVOr.GetItemFlag>0 and SVO2r.GetItemFlag==0 and SVOr.OrderStatus==0)then begin
             //CreateActFromSVOToEnginer(SVOr,"");
             GenerateIngenerComent(SVOr,commentee);
@@ -1144,8 +1151,26 @@ BEGIN
   				goto lEndLoopMy;
   			end;*/
   		end;
+  		
   	end;
   end;
+  
+  if(SVOr.PlanVisitDate!=SVO2r.PlanVisitDate)then begin
+		TrHs = true;
+		Actr.SVOSerNr = SVOr.SerNr;
+		resetloop(Actr);
+		while(loopkey("SVOSerNr",Actr,1,TrHs))begin
+			if(Actr.SVOSerNr!=SVO2r.SerNr)then begin TrHs=false; end;
+		
+			if(TrHs)then begin
+				if(Actr.ActType=="ПРЕДЗ")then begin
+  				Actr.TransDate = addday(SVOr.PlanVisitDate,1);
+  				recordstore(Actr,true);
+  			end;
+			end;
+		end;
+	end;
+  
 	
 	lEndLoopMy:;
   

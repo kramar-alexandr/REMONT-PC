@@ -2756,6 +2756,34 @@ record SalesGroupVc SGr;
 return
 end;
 
+global procedure KIVISVODsm()
+begin
+integer wn;
+record SVOVc SVOr,wSVOr;
+array longint sernr;
+integer count;
+record RcVc RepSpec;
+record UserVc USr;
+string 100 host,page,getParam;
+area mainRequest,replyarea;
+longint port;
+string 50 location,ser;
+record SalesGroupVc SGr;
+	
+	wn = curwindow;
+	getwindowrecord(wn,SVOr);
+	
+
+	RepSpec.f1 = SVOr.KIVIPhone;
+	RepSpec.f2 = SVOr.KIVIName;
+	RepSpec.f3 = SVOr.KIVIAddr;
+	RepSpec.long1 = SVOr.SerNr;
+	OpenWindow("KIVISVOWClass",0,wn,"","",RepSpec);
+					
+	
+return
+end;
+
 
 global procedure DblCancelDsm()
 begin
@@ -2808,6 +2836,27 @@ begin
 		end;
 		beep;
 	end;*/
+
+return;
+end;
+
+global updating procedure DblConfirmKiviDsm()
+begin
+	integer wn,mwn;
+	record RcVc RepSpec;
+	val ivsum,ivpaysum;
+	record SVOVc SVOr;
+	
+	wn = curwindow;
+	deselectwindow(wn,true);
+	getwindowrecord(wn,RepSpec);
+	mwn = motherwindow(wn);
+	getwindowrecord(mwn,SVOr);
+		SVOr.KIVIPhone = RepSpec.f1;
+		SVOr.KIVIName = RepSpec.f2;
+		SVOr.KIVIAddr = RepSpec.f3;
+	putwindowrecord(mwn,SVOr);
+	closewindow(wn);
 
 return;
 end;

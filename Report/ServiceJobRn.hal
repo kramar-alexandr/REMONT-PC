@@ -112,6 +112,87 @@ begin
 return;
 end;
 
+
+procedure OutDaysInStatus(vector val st0,longint sernr)
+begin
+	array val tabs;
+	
+	tabs[0] = 0;
+	tabs[1] = 40;
+	tabs[2] = 80;
+	tabs[3] = 100;
+	tabs[4] = 150;
+	tabs[5] = 180;
+	tabs[6] = 240;
+	tabs[7] = 280;
+	tabs[8] = 340;
+	
+	if(st0[sernr & ":0"]>0)then begin
+		startformat(15);
+			outstring(tabs[0],0,"Дней в статусе:",false);
+			outstring(tabs[1],0,"В ожидании",false);
+			outstring(tabs[2],0,st0[sernr & ":0"],false);
+		endformat;
+	end;
+	if(st0[sernr & ":1"]>0)then begin
+		startformat(15);
+			outstring(tabs[0],0,"Дней в статусе:",false);
+			outstring(tabs[1],0,"В ремонте",false);
+			outstring(tabs[2],0,st0[sernr & ":1"],false);
+		endformat;
+	end;
+	if(st0[sernr & ":3"]>0)then begin
+		startformat(15);
+			outstring(tabs[0],0,"Дней в статусе:",false);
+			outstring(tabs[1],0,"Ожидает запч.",false);
+			outstring(tabs[2],0,st0[sernr & ":3"],false);
+		endformat;
+	end;
+	if(st0[sernr & ":4"]>0)then begin
+		startformat(15);
+			outstring(tabs[0],0,"Дней в статусе:",false);
+			outstring(tabs[1],0,"На согласовании",false);
+			outstring(tabs[2],0,st0[sernr & ":4"],false);
+		endformat;
+	end;
+	if(st0[sernr & ":5"]>0)then begin
+		startformat(15);
+			outstring(tabs[0],0,"Дней в статусе:",false);
+			outstring(tabs[1],0,"На диагностике",false);
+			outstring(tabs[2],0,st0[sernr & ":5"],false);
+		endformat;
+	end;
+	if(st0[sernr & ":7"]>0)then begin
+		startformat(15);
+			outstring(tabs[0],0,"Дней в статусе:",false);
+			outstring(tabs[1],0,"Согласовано",false);
+			outstring(tabs[2],0,st0[sernr & ":7"],false);
+		endformat;
+	end;
+	if(st0[sernr & ":8"]>0)then begin
+		startformat(15);
+			outstring(tabs[0],0,"Дней в статусе:",false);
+			outstring(tabs[1],0,"В удал. сервисе",false);
+			outstring(tabs[2],0,st0[sernr & ":8"],false);
+		endformat;
+	end;
+	if(st0[sernr & ":10"]>0)then begin
+		startformat(15);
+			outstring(tabs[0],0,"Дней в статусе:",false);
+			outstring(tabs[1],0,"Заказать запч.",false);
+			outstring(tabs[2],0,st0[sernr & ":10"],false);
+		endformat;
+	end;
+	if(st0[sernr & ":11"]>0)then begin
+		startformat(15);
+			outstring(tabs[0],0,"Дней в статусе:",false);
+			outstring(tabs[1],0,"Вернули на дораб.",false);
+			outstring(tabs[2],0,st0[sernr & ":11"],false);
+		endformat;
+	end;
+return;
+end;
+
 global procedure ServiceJobsRn(record RcVc RepSpec)
 begin
 	record INVc INr;
@@ -161,6 +242,7 @@ begin
 	integer ingcnt,mancnt,irjct;
 	vector boolean vIngExst,vManExst,vrjct; 
 	record UserVc User;
+	vector val st0;
 	
 	if(usercanaction("ServiceJobsGroupAcces",false)==false)then begin
 		User.Code = currentuser;
@@ -483,6 +565,17 @@ begin
 				if(svoout)then begin
 					totpayremqty = totpayremqty + 1;
 					totrem = totrem + 1;
+					
+					st0[SVOr.SerNr & ":0"] = datediff(SVOr.Status0Sd,SVOr.Status0Sd);
+					st0[SVOr.SerNr & ":1"] = datediff(SVOr.Status1Sd,SVOr.Status1Sd);
+					st0[SVOr.SerNr & ":3"] = datediff(SVOr.Status3Sd,SVOr.Status3Sd);
+					st0[SVOr.SerNr & ":4"] = datediff(SVOr.Status4Sd,SVOr.Status4Sd);
+					st0[SVOr.SerNr & ":5"] = datediff(SVOr.Status5Sd,SVOr.Status5Sd);
+					st0[SVOr.SerNr & ":7"] = datediff(SVOr.Status7Sd,SVOr.Status7Sd);
+					st0[SVOr.SerNr & ":8"] = datediff(SVOr.Status8Sd,SVOr.Status8Sd);
+					st0[SVOr.SerNr & ":10"] = datediff(SVOr.Status10Sd,SVOr.Status10Sd);
+					st0[SVOr.SerNr & ":11"] =datediff(SVOr.Status11Sd,SVOr.Status11Sd);
+					
 					startformat(15);
 						outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
 						outstring(tabs[1],0,SVOr.TransDate,false);
@@ -493,6 +586,9 @@ begin
 						outstring(tabs[8],0,SVOr.StatusText,false);
 						//outstring(tabs[6],0,SVOr.WSCost,false);
 					endformat;
+					
+					OutDaysInStatus(st0,SVOr.SerNr);
+										
 					if(nonblank(vCuDomain[SVOr.CustCode]))then begin
 						if(nonblank(vCuDomain[SVOr.CustCode]))then begin
 							startformat(15);
@@ -737,6 +833,17 @@ begin
 				if(svoout)then begin
 					totnopayremqty = totnopayremqty + 1;
 					totrem = totrem + 1;
+					
+					st0[SVOr.SerNr] = datediff(SVOr.Status0Sd,SVOr.Status0Sd);
+					st0[SVOr.SerNr & ":1"] = datediff(SVOr.Status1Sd,SVOr.Status1Sd);
+					st0[SVOr.SerNr & ":3"] = datediff(SVOr.Status3Sd,SVOr.Status3Sd);
+					st0[SVOr.SerNr & ":4"] = datediff(SVOr.Status4Sd,SVOr.Status4Sd);
+					st0[SVOr.SerNr & ":5"] = datediff(SVOr.Status5Sd,SVOr.Status5Sd);
+					st0[SVOr.SerNr & ":7"] = datediff(SVOr.Status7Sd,SVOr.Status7Sd);
+					st0[SVOr.SerNr & ":8"] = datediff(SVOr.Status8Sd,SVOr.Status8Sd);
+					st0[SVOr.SerNr & ":10"] = datediff(SVOr.Status10Sd,SVOr.Status10Sd);
+					st0[SVOr.SerNr & ":11"] =datediff(SVOr.Status11Sd,SVOr.Status11Sd);
+					
 					startformat(15);
 						outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
 						outstring(tabs[1],0,SVOr.TransDate,false);
@@ -746,6 +853,9 @@ begin
 						outstring(tabs[5],0,blankval,false);
 						//outstring(tabs[6],0,SVOr.WSCost,false);
 					endformat;
+					
+					OutDaysInStatus(st0,SVOr.SerNr);
+					
 					if(nonblank(vCuDomain[SVOr.CustCode]))then begin
 						if(nonblank(vCuDomain[SVOr.CustCode]))then begin
 							startformat(15);
@@ -985,6 +1095,17 @@ begin
 				if(svoout)then begin
 					totdolgqty = totdolgqty + 1;
 					totrem = totrem + 1;
+					
+					st0[SVOr.SerNr] = datediff(SVOr.Status0Sd,SVOr.Status0Sd);
+					st0[SVOr.SerNr & ":1"] = datediff(SVOr.Status1Sd,SVOr.Status1Sd);
+					st0[SVOr.SerNr & ":3"] = datediff(SVOr.Status3Sd,SVOr.Status3Sd);
+					st0[SVOr.SerNr & ":4"] = datediff(SVOr.Status4Sd,SVOr.Status4Sd);
+					st0[SVOr.SerNr & ":5"] = datediff(SVOr.Status5Sd,SVOr.Status5Sd);
+					st0[SVOr.SerNr & ":7"] = datediff(SVOr.Status7Sd,SVOr.Status7Sd);
+					st0[SVOr.SerNr & ":8"] = datediff(SVOr.Status8Sd,SVOr.Status8Sd);
+					st0[SVOr.SerNr & ":10"] = datediff(SVOr.Status10Sd,SVOr.Status10Sd);
+					st0[SVOr.SerNr & ":11"] =datediff(SVOr.Status11Sd,SVOr.Status11Sd);
+					
 					startformat(15);
 						outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
 						outstring(tabs[1],0,SVOr.TransDate,false);
@@ -994,6 +1115,9 @@ begin
 						outstring(tabs[5],0,blankval,false);
 						//outstring(tabs[6],0,SVOr.WSCost,false);
 					endformat;
+					
+					OutDaysInStatus(st0,SVOr.SerNr);
+					
 					if(nonblank(vCuDomain[SVOr.CustCode]))then begin
 						if(nonblank(vCuDomain[SVOr.CustCode]))then begin
 							startformat(15);
@@ -1088,6 +1212,17 @@ begin
 			if(testf)then begin
 				if(SVOr.OrderStatus==6)then begin
 					totcan = totcan + 1;
+					
+					st0[SVOr.SerNr] = datediff(SVOr.Status0Sd,SVOr.Status0Sd);
+					st0[SVOr.SerNr & ":1"] = datediff(SVOr.Status1Sd,SVOr.Status1Sd);
+					st0[SVOr.SerNr & ":3"] = datediff(SVOr.Status3Sd,SVOr.Status3Sd);
+					st0[SVOr.SerNr & ":4"] = datediff(SVOr.Status4Sd,SVOr.Status4Sd);
+					st0[SVOr.SerNr & ":5"] = datediff(SVOr.Status5Sd,SVOr.Status5Sd);
+					st0[SVOr.SerNr & ":7"] = datediff(SVOr.Status7Sd,SVOr.Status7Sd);
+					st0[SVOr.SerNr & ":8"] = datediff(SVOr.Status8Sd,SVOr.Status8Sd);
+					st0[SVOr.SerNr & ":10"] = datediff(SVOr.Status10Sd,SVOr.Status10Sd);
+					st0[SVOr.SerNr & ":11"] =datediff(SVOr.Status11Sd,SVOr.Status11Sd);
+					
 					startformat(15);
 					outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
 					outstring(tabs[1],0,SVOr.TransDate,false);
@@ -1105,6 +1240,9 @@ begin
 							totcanceled = totcanceled + 1;
 						end;
 					end;
+					
+					OutDaysInStatus(st0,SVOr.SerNr);
+					
 					totcanceled = totcanceled + 1;
 					outstring(tabs[6],0,blankval,false);
 					outstring(tabs[7],0,SVOr.RejectReason,false);

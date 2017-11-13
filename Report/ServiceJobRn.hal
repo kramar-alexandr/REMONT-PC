@@ -566,15 +566,15 @@ begin
 					totpayremqty = totpayremqty + 1;
 					totrem = totrem + 1;
 					
-					st0[SVOr.SerNr & ":0"] = datediff(SVOr.Status0Sd,SVOr.Status0Sd);
-					st0[SVOr.SerNr & ":1"] = datediff(SVOr.Status1Sd,SVOr.Status1Sd);
-					st0[SVOr.SerNr & ":3"] = datediff(SVOr.Status3Sd,SVOr.Status3Sd);
-					st0[SVOr.SerNr & ":4"] = datediff(SVOr.Status4Sd,SVOr.Status4Sd);
-					st0[SVOr.SerNr & ":5"] = datediff(SVOr.Status5Sd,SVOr.Status5Sd);
-					st0[SVOr.SerNr & ":7"] = datediff(SVOr.Status7Sd,SVOr.Status7Sd);
-					st0[SVOr.SerNr & ":8"] = datediff(SVOr.Status8Sd,SVOr.Status8Sd);
-					st0[SVOr.SerNr & ":10"] = datediff(SVOr.Status10Sd,SVOr.Status10Sd);
-					st0[SVOr.SerNr & ":11"] =datediff(SVOr.Status11Sd,SVOr.Status11Sd);
+					st0[SVOr.SerNr & ":0"] = datediff(SVOr.Status0Sd,SVOr.Status0Ed);
+					st0[SVOr.SerNr & ":1"] = datediff(SVOr.Status1Sd,SVOr.Status1Ed);
+					st0[SVOr.SerNr & ":3"] = datediff(SVOr.Status3Sd,SVOr.Status3Ed);
+					st0[SVOr.SerNr & ":4"] = datediff(SVOr.Status4Sd,SVOr.Status4Ed);
+					st0[SVOr.SerNr & ":5"] = datediff(SVOr.Status5Sd,SVOr.Status5Ed);
+					st0[SVOr.SerNr & ":7"] = datediff(SVOr.Status7Sd,SVOr.Status7Ed);
+					st0[SVOr.SerNr & ":8"] = datediff(SVOr.Status8Sd,SVOr.Status8Ed);
+					st0[SVOr.SerNr & ":10"] = datediff(SVOr.Status10Sd,SVOr.Status10Ed);
+					st0[SVOr.SerNr & ":11"] =datediff(SVOr.Status11Sd,SVOr.Status11Ed);
 					
 					startformat(15);
 						outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
@@ -834,15 +834,15 @@ begin
 					totnopayremqty = totnopayremqty + 1;
 					totrem = totrem + 1;
 					
-					st0[SVOr.SerNr] = datediff(SVOr.Status0Sd,SVOr.Status0Sd);
-					st0[SVOr.SerNr & ":1"] = datediff(SVOr.Status1Sd,SVOr.Status1Sd);
-					st0[SVOr.SerNr & ":3"] = datediff(SVOr.Status3Sd,SVOr.Status3Sd);
-					st0[SVOr.SerNr & ":4"] = datediff(SVOr.Status4Sd,SVOr.Status4Sd);
-					st0[SVOr.SerNr & ":5"] = datediff(SVOr.Status5Sd,SVOr.Status5Sd);
-					st0[SVOr.SerNr & ":7"] = datediff(SVOr.Status7Sd,SVOr.Status7Sd);
-					st0[SVOr.SerNr & ":8"] = datediff(SVOr.Status8Sd,SVOr.Status8Sd);
-					st0[SVOr.SerNr & ":10"] = datediff(SVOr.Status10Sd,SVOr.Status10Sd);
-					st0[SVOr.SerNr & ":11"] =datediff(SVOr.Status11Sd,SVOr.Status11Sd);
+					st0[SVOr.SerNr] = datediff(SVOr.Status0Sd,SVOr.Status0Ed);
+					st0[SVOr.SerNr & ":1"] = datediff(SVOr.Status1Sd,SVOr.Status1Ed);
+					st0[SVOr.SerNr & ":3"] = datediff(SVOr.Status3Sd,SVOr.Status3Ed);
+					st0[SVOr.SerNr & ":4"] = datediff(SVOr.Status4Sd,SVOr.Status4Ed);
+					st0[SVOr.SerNr & ":5"] = datediff(SVOr.Status5Sd,SVOr.Status5Ed);
+					st0[SVOr.SerNr & ":7"] = datediff(SVOr.Status7Sd,SVOr.Status7Ed);
+					st0[SVOr.SerNr & ":8"] = datediff(SVOr.Status8Sd,SVOr.Status8Ed);
+					st0[SVOr.SerNr & ":10"] = datediff(SVOr.Status10Sd,SVOr.Status10Ed);
+					st0[SVOr.SerNr & ":11"] =datediff(SVOr.Status11Sd,SVOr.Status11Ed);
 					
 					startformat(15);
 						outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
@@ -1096,15 +1096,15 @@ begin
 					totdolgqty = totdolgqty + 1;
 					totrem = totrem + 1;
 					
-					st0[SVOr.SerNr] = datediff(SVOr.Status0Sd,SVOr.Status0Sd);
-					st0[SVOr.SerNr & ":1"] = datediff(SVOr.Status1Sd,SVOr.Status1Sd);
-					st0[SVOr.SerNr & ":3"] = datediff(SVOr.Status3Sd,SVOr.Status3Sd);
-					st0[SVOr.SerNr & ":4"] = datediff(SVOr.Status4Sd,SVOr.Status4Sd);
-					st0[SVOr.SerNr & ":5"] = datediff(SVOr.Status5Sd,SVOr.Status5Sd);
-					st0[SVOr.SerNr & ":7"] = datediff(SVOr.Status7Sd,SVOr.Status7Sd);
-					st0[SVOr.SerNr & ":8"] = datediff(SVOr.Status8Sd,SVOr.Status8Sd);
-					st0[SVOr.SerNr & ":10"] = datediff(SVOr.Status10Sd,SVOr.Status10Sd);
-					st0[SVOr.SerNr & ":11"] =datediff(SVOr.Status11Sd,SVOr.Status11Sd);
+					st0[SVOr.SerNr] = datediff(SVOr.Status0Sd,SVOr.Status0Ed);
+					st0[SVOr.SerNr & ":1"] = datediff(SVOr.Status1Sd,SVOr.Status1Ed);
+					st0[SVOr.SerNr & ":3"] = datediff(SVOr.Status3Sd,SVOr.Status3Ed);
+					st0[SVOr.SerNr & ":4"] = datediff(SVOr.Status4Sd,SVOr.Status4Ed);
+					st0[SVOr.SerNr & ":5"] = datediff(SVOr.Status5Sd,SVOr.Status5Ed);
+					st0[SVOr.SerNr & ":7"] = datediff(SVOr.Status7Sd,SVOr.Status7Ed);
+					st0[SVOr.SerNr & ":8"] = datediff(SVOr.Status8Sd,SVOr.Status8Ed);
+					st0[SVOr.SerNr & ":10"] = datediff(SVOr.Status10Sd,SVOr.Status10Ed);
+					st0[SVOr.SerNr & ":11"] =datediff(SVOr.Status11Sd,SVOr.Status11Ed);
 					
 					startformat(15);
 						outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
@@ -1213,15 +1213,15 @@ begin
 				if(SVOr.OrderStatus==6)then begin
 					totcan = totcan + 1;
 					
-					st0[SVOr.SerNr] = datediff(SVOr.Status0Sd,SVOr.Status0Sd);
-					st0[SVOr.SerNr & ":1"] = datediff(SVOr.Status1Sd,SVOr.Status1Sd);
-					st0[SVOr.SerNr & ":3"] = datediff(SVOr.Status3Sd,SVOr.Status3Sd);
-					st0[SVOr.SerNr & ":4"] = datediff(SVOr.Status4Sd,SVOr.Status4Sd);
-					st0[SVOr.SerNr & ":5"] = datediff(SVOr.Status5Sd,SVOr.Status5Sd);
-					st0[SVOr.SerNr & ":7"] = datediff(SVOr.Status7Sd,SVOr.Status7Sd);
-					st0[SVOr.SerNr & ":8"] = datediff(SVOr.Status8Sd,SVOr.Status8Sd);
-					st0[SVOr.SerNr & ":10"] = datediff(SVOr.Status10Sd,SVOr.Status10Sd);
-					st0[SVOr.SerNr & ":11"] =datediff(SVOr.Status11Sd,SVOr.Status11Sd);
+					st0[SVOr.SerNr] = datediff(SVOr.Status0Sd,SVOr.Status0Ed);
+					st0[SVOr.SerNr & ":1"] = datediff(SVOr.Status1Sd,SVOr.Status1Ed);
+					st0[SVOr.SerNr & ":3"] = datediff(SVOr.Status3Sd,SVOr.Status3Ed);
+					st0[SVOr.SerNr & ":4"] = datediff(SVOr.Status4Sd,SVOr.Status4Ed);
+					st0[SVOr.SerNr & ":5"] = datediff(SVOr.Status5Sd,SVOr.Status5Ed);
+					st0[SVOr.SerNr & ":7"] = datediff(SVOr.Status7Sd,SVOr.Status7Ed);
+					st0[SVOr.SerNr & ":8"] = datediff(SVOr.Status8Sd,SVOr.Status8Ed);
+					st0[SVOr.SerNr & ":10"] = datediff(SVOr.Status10Sd,SVOr.Status10Ed);
+					st0[SVOr.SerNr & ":11"] =datediff(SVOr.Status11Sd,SVOr.Status11Ed);
 					
 					startformat(15);
 					outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);

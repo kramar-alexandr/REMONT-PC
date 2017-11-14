@@ -182,7 +182,7 @@ begin
     recordupdate(lActr,Actr,true);
 end;
 
-function boolean KIVIFound(record SVOVc SVOr)
+global function boolean KIVIFound(record SVOVc SVOr)
 begin
 	boolean res;
 	record LetVc Letr;
@@ -192,6 +192,12 @@ begin
 	res = false;
 	if(SVOr.Region=="’…‹KI")then begin res = true; end;
 	if(SVOr.Region=="KIVI")then begin res = true; end;
+	
+	if(SVOr.Region=="‘’ŒKI")then begin res = true; end;
+	if(SVOr.Region=="‹€KI")then begin res = true; end;
+	if(SVOr.Region=="‘KI")then begin res = true; end;
+	if(SVOr.Region=="›‹KI")then begin res = true; end;
+
 	
 	if(matrowcnt(SVOr)>0)then begin
 		matrowget(SVOr,0,SVOrw);
@@ -208,6 +214,21 @@ begin
 		INr.Code = SVOrw.ArtCode;
 		if(readfirstmain(INr,1,true))then begin
 			if(INr.Group=="’…‹KI")then begin
+				res = true;
+			end;
+			if(INr.Group=="KIVI")then begin
+				res = true;
+			end;
+			if(INr.Group=="‘’ŒKI")then begin
+				res = true;
+			end;
+			if(INr.Group=="‹€KI")then begin
+				res = true;
+			end;
+			if(INr.Group=="‘KI")then begin
+				res = true;
+			end;
+			if(INr.Group=="›‹KI")then begin
 				res = true;
 			end;
 		end;

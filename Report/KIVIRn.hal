@@ -1,5 +1,5 @@
 external procedure MySortStringArray(var array string,integer);
-
+external function boolean KIVIFound(record SVOVc);
 SetLangMode(LangRussian,"RUS",0);
 
 
@@ -8,7 +8,7 @@ begin
 	record SVOVc SVOr;
 	row SVOVc SVOrw;
 	date sd,ed;
-	boolean testf,TrHs,kivifound;
+	boolean testf,TrHs,kivif;
 	record LetVc Letr;
 	string 20 diagstr;
 	boolean diagfound;
@@ -63,32 +63,8 @@ begin
 		if(SVOr.RegDate>ed)then begin TrHs = false; testf = false; end;
 		if(SVOr.RegDate<sd)then begin testf = false; end;
 		
-		kivifound = false;
-		if(SVOr.Region=="’…‹KI")then begin kivifound = true; end;
-		if(SVOr.Region=="KIVI")then begin kivifound = true; end;
-		
-		if(matrowcnt(SVOr)>0)then begin
-			matrowget(SVOr,0,SVOrw);
-			recordnew(Letr);
-			AddToText(SVOrw.ArtCode,Letr);
-			AddToText(SVOrw.Spec,Letr);
-			
-			if(StringInText("KIVI",Letr))then begin
-				kivifound = true;
-			end;
-			if(StringInText("Kivi",Letr))then begin
-				kivifound = true;
-			end;
-			INr.Code = SVOrw.ArtCode;
-			if(readfirstmain(INr,1,true))then begin
-				if(INr.Group=="’…‹KI")then begin
-					kivifound = true;
-				end;
-			end;
-			
-		end;
-		
-		testf = kivifound;
+		kivif = KIVIFound(SVOr);		
+		testf = kivif;
 		
 		if(testf)then begin
 			startformat(15);

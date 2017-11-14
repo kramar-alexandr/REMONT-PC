@@ -70,6 +70,7 @@ begin
   record ActVc Actr;
   date blankd;
   string 50 curPhone,tstr;
+  string 255 tmpusers;
   record UserVc USr;
   integer pos;
   
@@ -128,8 +129,25 @@ begin
 					Actr.MainPersons = currentuser;
 				end;
 			end;
+			pos = 0;
+			ExtractObj(Actr.MainPersons,pos,tstr);
+			while(nonblank(tstr))begin
+				if(nonblank(tstr))then begin
+					USr.Code = tstr;
+					if(readfirstmain(USr,1,true))then begin
+						if(USr.TerminatedFlag==0)then begin
+							if(nonblank(tmpusers))then begin
+								tmpusers = tmpusers & "," & USr.Code;
+							end else begin
+								tmpusers = USr.Code;
+							end;
+						end;
+					end;
+				end;
+				ExtractObj(Actr.MainPersons,pos,tstr);
+			end;
 			
-			
+			Actr.MainPersons = tmpusers;
 			
   		Actr.SerNr = NextSerNr("ActVc",Actr.TransDate,-1,false,"");
   		

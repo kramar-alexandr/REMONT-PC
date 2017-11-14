@@ -181,6 +181,47 @@ begin
     Actr.OKFlag = 1;
     recordupdate(lActr,Actr,true);
 end;
+
+function boolean KIVIFound(record SVOVc SVOr)
+begin
+	boolean res;
+	record LetVc Letr;
+	record INVc INr;
+	row SVOVc SVOrw;
+	
+	res = false;
+	if(SVOr.Region=="ТЕЛKI")then begin res = true; end;
+	if(SVOr.Region=="KIVI")then begin res = true; end;
+	
+	if(matrowcnt(SVOr)>0)then begin
+		matrowget(SVOr,0,SVOrw);
+		recordnew(Letr);
+		AddToText(SVOrw.ArtCode,Letr);
+		AddToText(SVOrw.Spec,Letr);
+		
+		if(StringInText("KIVI",Letr))then begin
+			res = true;
+		end;
+		if(StringInText("Kivi",Letr))then begin
+			res = true;
+		end;
+		INr.Code = SVOrw.ArtCode;
+		if(readfirstmain(INr,1,true))then begin
+			if(INr.Group=="ТЕЛKI")then begin
+				res = true;
+			end;
+		end;
+		
+	end;
+	
+	KIVIFound = res;
+
+return;
+end;
+
+
+
+
 //------------------------------------------------------- proc added by dima-f 22.09.17
 updating
 procedure CloseActivitiesFromSVO(var record SVOVc SVOr,var record SVOVc SVO2r, var record ActVc Actr)
@@ -267,6 +308,16 @@ begin
 							end;
 					end;
 					
+					
+					if(nonblank(SVOr.KIVIPhone) and nonblank(SVOr.KIVIName) and nonblank(SVOr.KIVIAddr))then begin//закрыть запрос на заказ деталей
+							testf1 = true;
+							if(Actr.ActType!="KIVI")then begin testf1 = false; end;
+							testf1 = (testf1 and testf);
+							if(testf1)then begin
+									CloseActivity(Actr,"ОК");
+							end;
+					end;
+					
 					if(SVO2r.OrderStatus==3 and SVOr.OrderStatus!=3)then begin//закрыть напоминание о долгом заказе деталей
 							testf1 = true;
 							if(Actr.ActType!="ZAKAZ")then begin testf1 = false; end;
@@ -290,6 +341,9 @@ begin
 									CloseActivity(Actr,"ОК");
 							end;
 					end;
+					
+					
+					
 					//closing ENGNR Acts
 					if(((SVOr.OrderStatus>0 and SVOr.OrderStatus!=9) or SVOr.DoneMark>0))then begin
 							if(Actr.ActType=="ENGNR") then begin
@@ -318,18 +372,18 @@ begin
             GenerateIngenerComent(SVOr,commentee);
             CreateCustomActivityFromSVO(SVOr,"ENGNR",SVOr.Inspector,CalcWorkDate(currentdate,3,true),commentee,"");
         end;
-        if (SVOr.OrderStatus==2 and BlankDate(SVOr.RegDate) and SVOr.GetItemFlag>0) then begin
-            //mainperson logic here...
-            //AttachMainPersons(SVOr,mainPrsns);
-            //CreateCustomActivityFromSVO(SVOr,"CLLCL",SVOr.Inspector,currentdate,"Ремонт готов.");
-            CreateCustomActivityFromSVO(SVOr,"RMDCL",SVOr.Inspector,addday(currentdate,5),"Напомнить клиенту забрать отремонтированную технику.","");
-            //CreateActFromSVOForInspectorIfItemIssued(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
+        
+        if(SVOr.GetItemFlag>0)then begin
+        	if(KIVIFound(SVOr))then begin
+        		if(blank(SVOr.KIVIPhone) or blank(SVOr.KIVIName) or blank(SVOr.KIVIAddr))then begin
+							CreateCustomActivityFromSVO(SVOr,"KIVI",SVOr.Inspector,currentdate,"Внести данные KIVI","");
+        		end;
+        	end;
         end;
-        /*if (SVOr.OrderStatus==6) then begin
-            //CreateActFromSVOForInspectorIfItemRejected(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
-            CreateCustomActivityFromSVO(SVOr,"RJCTD",SVOr.Inspector,addday(currentdate,5),"Напомнить клиенту забрать технику без ремонта.");
-            CreateCustomActivityFromSVO(SVOr,"RJC",SVOr.ServiceManager,currentdate,"Заказ отменен. Собрать устройство на выдачу!");
-        end;*/
+        
+        if (SVOr.OrderStatus==2 and BlankDate(SVOr.RegDate) and SVOr.GetItemFlag>0) then begin
+            CreateCustomActivityFromSVO(SVOr,"RMDCL",SVOr.Inspector,addday(currentdate,5),"Напомнить клиенту забрать отремонтированную технику.","");
+        end;
         if (SVOr.OrderStatus==7) then begin
             CreateCustomActivityFromSVO(SVOr,"СОГОК",SVOr.ServiceManager,currentdate,"Ремонт согласован!","");//----------------- dima-f 22.09.17
         end;
@@ -345,20 +399,21 @@ begin
         end;
     		
         if(SVOr.GetItemFlag>0 and SVO2r.GetItemFlag==0 and SVOr.OrderStatus==0)then begin
-            //CreateActFromSVOToEnginer(SVOr,"");
             GenerateIngenerComent(SVOr,commentee);
             CreateCustomActivityFromSVO(SVOr,"ENGNR",SVOr.Inspector,CalcWorkDate(currentdate,3,true),commentee,"");
         end;
         if ((SVOr.OrderStatus==2 and SVO2r.OrderStatus!=2) and BlankDate(SVOr.RegDate) and SVOr.GetItemFlag>0) then begin
-            //mainperson logic here...
-            //AttachMainPersons(SVOr,mainPrsns);
-            //CreateCustomActivityFromSVO(SVOr,"CLLCL",SVOr.Inspector,currentdate,"Ремонт готов.");
             CreateCustomActivityFromSVO(SVOr,"RMDCL",SVOr.Inspector,addday(currentdate,5),"Напомнить клиенту забрать отремонтированную технику.","");
-            //CreateActFromSVOForInspectorIfItemIssued(SVOr); //Edit***************************Sasha2,10:45 16.06.2017
         end;
         
         
-        
+        if(SVOr.GetItemFlag>0 and SVO2r.GetItemFlag==0)then begin
+        	if(KIVIFound(SVOr))then begin
+        		if(blank(SVOr.KIVIPhone) or blank(SVOr.KIVIName) or blank(SVOr.KIVIAddr))then begin
+							CreateCustomActivityFromSVO(SVOr,"KIVI",SVOr.Inspector,currentdate,"Внести данные KIVI","");
+        		end;
+        	end;
+        end;
         
         if (SVOr.OrderStatus==6 and SVO2r.OrderStatus!=6 and SVOr.GetItemFlag>0) then begin
             CreateCustomActivityFromSVO(SVOr,"RJCTD",SVOr.Inspector,addday(currentdate,5),"Напомнить клиенту забрать технику без ремонта.","");
@@ -2773,10 +2828,18 @@ record SalesGroupVc SGr;
 	wn = curwindow;
 	getwindowrecord(wn,SVOr);
 	
-
 	RepSpec.f1 = SVOr.KIVIPhone;
+	if(blank(SVOr.KIVIPhone))then begin
+		RepSpec.f1 = SVOr.Kontinfo1;
+	end;
 	RepSpec.f2 = SVOr.KIVIName;
+	if(blank(SVOr.KIVIName))then begin
+		RepSpec.f2 = SVOr.Addr0;
+	end;
 	RepSpec.f3 = SVOr.KIVIAddr;
+	if(blank(SVOr.KIVIAddr))then begin
+		RepSpec.f3 = SVOr.Kontinfo3;
+	end;
 	RepSpec.long1 = SVOr.SerNr;
 	OpenWindow("KIVISVOWClass",0,wn,"","",RepSpec);
 					

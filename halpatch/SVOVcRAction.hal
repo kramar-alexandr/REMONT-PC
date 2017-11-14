@@ -348,7 +348,7 @@ begin
 					end;
 					
 					
-					if(nonblank(SVOr.KIVIPhone) and nonblank(SVOr.KIVIName) and nonblank(SVOr.KIVIAddr))then begin//закрыть запрос на заказ деталей
+					if(nonblank(SVOr.Kontinfo1) and nonblank(SVOr.Addr0) and nonblank(SVOr.Kontinfo3))then begin//закрыть запрос на заказ деталей
 							testf1 = true;
 							if(Actr.ActType!="KIVI")then begin testf1 = false; end;
 							testf1 = (testf1 and testf);
@@ -414,7 +414,7 @@ begin
         
         if(SVOr.GetItemFlag>0)then begin
         	if(KIVIFound(SVOr))then begin
-        		if(blank(SVOr.KIVIPhone) or blank(SVOr.KIVIName) or blank(SVOr.KIVIAddr))then begin
+        		if(blank(SVOr.Kontinfo1) or blank(SVOr.Kontinfo3) or blank(SVOr.Addr0))then begin
 							CreateCustomActivityFromSVO(SVOr,"KIVI",SVOr.Inspector,currentdate,"Внести данные KIVI","");
         		end;
         	end;
@@ -448,7 +448,7 @@ begin
         
         if(SVOr.GetItemFlag>0 and SVO2r.GetItemFlag==0)then begin
         	if(KIVIFound(SVOr))then begin
-        		if(blank(SVOr.KIVIPhone) or blank(SVOr.KIVIName) or blank(SVOr.KIVIAddr))then begin
+        		if(blank(SVOr.Kontinfo1) or blank(SVOr.Kontinfo3) or blank(SVOr.Addr0))then begin
 							CreateCustomActivityFromSVO(SVOr,"KIVI",SVOr.Inspector,currentdate,"Внести данные KIVI","");
         		end;
         	end;

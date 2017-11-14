@@ -454,7 +454,7 @@ begin
   
   v=vm-20;
   halpushbutton(h2+220,v,h2+325,v+50,"FastPaySVODsm","Быстрая оплата");// Edit ************************** Friday, 25 November 2016 11:32:03 
-  halpushbutton(h2+220,v+25,h2+325,v+65,"KIVISVODsm","KIVI Реквизиты");// Edit ************************** Friday, 25 November 2016 11:32:03 
+  //halpushbutton(h2+220,v+25,h2+325,v+65,"KIVISVODsm","KIVI Реквизиты");// Edit ************************** Friday, 25 November 2016 11:32:03 
 
   EditField(h2+145,v,60, "Наличные",adminMode,FastCash,false,0);
   EditField(h2+400,v,60, "Предопл.",adminMode,PrepaySum,false,0);

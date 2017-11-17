@@ -1428,7 +1428,7 @@ begin
     goto LINVcRecordCheck;
   end;
 	
-	if(nonblank(INr.Disp5))then begin// Edit ************************** Friday, 20 October 2017 10:32:20
+	if(nonblank(INr.Disp5) and stat==Rs_insert)then begin// Edit ************************** Friday, 20 October 2017 10:32:20
 		DIr.Code = INr.Disp5;
 		if(readfirstmain(DIr,1,true))then begin
 			if(nonblank(DIr.Name))then begin
@@ -1439,6 +1439,19 @@ begin
 			end;
 		end;
 		
+	end;
+	if(stat==Rs_update)then begin// Edit ************************** Friday, 20 October 2017 10:32:20
+		if(nonblank(INr.Disp5) and INr.Disp5!=IN2r.Disp5)then begin
+			DIr.Code = INr.Disp5;
+			if(readfirstmain(DIr,1,true))then begin
+				if(nonblank(DIr.Name))then begin
+					ITr.Comment = DIr.Name;
+					if(readfirstkey("Comment",ITr,1,true))then begin
+						INr.Group = ITr.Code;
+					end;
+				end;
+			end;
+		end;
 	end;
 	
 	if (blank(INr.Name)) then begin

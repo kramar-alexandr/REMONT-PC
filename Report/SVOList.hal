@@ -789,10 +789,10 @@ begin
 	
 	tb[0] = 0;
 	tb[1] = 90;
-	tb[2] = 120;
-	tb[3] = 160;
-	tb[4] = 190;
-	tb[5] = 270;
+	tb[2] = 130;
+	tb[3] = 170;
+	tb[4] = 200;
+	tb[5] = 280;
 	
 	
 	
@@ -873,6 +873,7 @@ begin
 					pos = 0;
 					tstr = "";
 					totcallother = totcallother + 1;
+					ExtractObj(Actr.MainPersons,pos,tstr);
 					while(nonblank(tstr))begin
 						if(nonblank(tstr))then begin
 							personcnt = personcnt + 1;
@@ -897,6 +898,7 @@ begin
 					pos = 0;
 					tstr = "";
 					totcallother = totcallother + 1;
+					ExtractObj(Actr.MainPersons,pos,tstr);
 					while(nonblank(tstr))begin
 						if(nonblank(tstr))then begin
 							personcnt = personcnt + 1;

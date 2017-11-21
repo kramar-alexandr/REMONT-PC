@@ -778,7 +778,7 @@ begin
 	record BinotelCallEndVc BCEr;
 	record RLinkVc RLr;
 	string 200 tstr;
-	integer totcall,sumbyman,personcnt;
+	integer totcall,sumbyman,personcnt,totcallout,totcallother;
 	vector val caltypeqty;
 	array string 100 calltype;
 	vector boolean calltypflag;
@@ -857,6 +857,12 @@ begin
 			end;
 			
 			if(testf)then begin
+				if(Actr.Comment!="Исходящий вызов" and Actr.Comment!="Принятый вызов")then begin
+					totcallother = totcallother + 1;
+				end;
+				if(Actr.Comment=="Исходящий вызов")then begin
+					totcallout = totcallout + 1;
+				end;
 				if(Actr.Comment=="Принятый вызов")then begin
 				 foundf = false;
 				 totcall = totcall + 1;
@@ -975,11 +981,32 @@ begin
 			end;
 		end;
 		
+		
+		
 		startformat(15);
 			outstring(0,0,sumbyman,false);
 			outstring(90,0,totcall,false);
 			outstring(130,0,sumbyman - totcall,false);
 		endformat;
+		
+		
+		startformat(15);
+			outstring(0,0,"Принятых активностей",false);
+			outstring(90,0,totcall,false);
+		endformat;
+		startformat(15);
+			outstring(0,0,"Исходящих активностей",false);
+			outstring(90,0,totcallout,false);
+		endformat;
+		startformat(15);
+			outstring(0,0,"Других активностей",false);
+			outstring(90,0,totcallother,false);
+		endformat;
+		startformat(15);
+			outstring(0,0,"Всего",false);
+			outstring(90,0,totcallother + totcallout + totcall,false);
+		endformat;
+		
 		
 		resetloop(BCEr);
 		BCEr.TransDate = sd;

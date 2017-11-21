@@ -772,7 +772,7 @@ begin
 	boolean testf,TrHs,testf1,TrHs1,foundf;
 	integer countwdays,i,acnt,cnt,pos;
 	vector boolean operator;
-	vector integer calcnt,remcnt,predcnt;
+	vector integer calcnt,remcnt,predcnt,caloutcnt,calothercnt;
 	array string 200 opername;
 	date sd,ed;
 	record BinotelCallEndVc BCEr;
@@ -785,6 +785,15 @@ begin
 	integer callcnt;
 	val callsum;
 	val answercnt;
+	array integer tb;
+	
+	tb[0] = 0;
+	tb[1] = 90;
+	tb[2] = 120;
+	tb[3] = 160;
+	tb[4] = 190;
+	tb[5] = 270;
+	
 	
 	
 	StartReportNoHeaderJob("Статистика предварительных заказов");
@@ -802,10 +811,12 @@ begin
 		endformat;
 		
 		startformat(15);
-			outstring(0,0,"Оператор",false);
-			outstring(90,0,"Входящих",false);
-			outstring(130,0,"Предварительных заказов",false);
-			outstring(170,0,"Принятых",false);
+			outstring(tb[0],0,"Оператор",false);
+			outstring(tb[1],0,"Входящих",false);
+			outstring(tb[2],0,"Исходящие",false);
+			outstring(tb[3],0,"Другие",false);
+			outstring(tb[4],0,"Предварительных заказов",false);
+			outstring(tb[5],0,"Принятых",false);
 		endformat;
 		sd = RepSpec.sStartDate;
 		ed = RepSpec.sEndDate;
@@ -858,10 +869,51 @@ begin
 			
 			if(testf)then begin
 				if(Actr.Comment!="Исходящий вызов" and Actr.Comment!="Принятый вызов")then begin
+					personcnt = 0;
+					pos = 0;
+					tstr = "";
 					totcallother = totcallother + 1;
+					while(nonblank(tstr))begin
+						if(nonblank(tstr))then begin
+							personcnt = personcnt + 1;
+						end;
+						ExtractObj(Actr.MainPersons,pos,tstr);
+					 end;
+				 
+					 if(personcnt==1)then begin
+						if(operator[Actr.MainPersons]==false)then begin 
+							operator[Actr.MainPersons] = true;
+							opername[acnt] = Actr.MainPersons;
+							acnt = acnt + 1;
+						end;
+						calothercnt[Actr.MainPersons] = calothercnt[Actr.MainPersons] + 1;
+						sumbyman = sumbyman + 1;
+						foundf = true;
+					 end;
 				end;
 				if(Actr.Comment=="Исходящий вызов")then begin
 					totcallout = totcallout + 1;
+					personcnt = 0;
+					pos = 0;
+					tstr = "";
+					totcallother = totcallother + 1;
+					while(nonblank(tstr))begin
+						if(nonblank(tstr))then begin
+							personcnt = personcnt + 1;
+						end;
+						ExtractObj(Actr.MainPersons,pos,tstr);
+					 end;
+				 
+					 if(personcnt==1)then begin
+						if(operator[Actr.MainPersons]==false)then begin 
+							operator[Actr.MainPersons] = true;
+							opername[acnt] = Actr.MainPersons;
+							acnt = acnt + 1;
+						end;
+						caloutcnt[Actr.MainPersons] = caloutcnt[Actr.MainPersons] + 1;
+						sumbyman = sumbyman + 1;
+						foundf = true;
+					 end;
 				end;
 				if(Actr.Comment=="Принятый вызов")then begin
 				 foundf = false;
@@ -973,10 +1025,12 @@ begin
 		for(i=0;i<acnt;i=i+1)begin
 			if(calcnt[opername[i]]>0)then begin
 				startformat(15);
-					outstring(0,0,opername[i],false);
-					outstring(90,0,calcnt[opername[i]],false);
-					outstring(130,0,predcnt[opername[i]],false);
-					outstring(170,0,remcnt[opername[i]],false);
+					outstring(tb[0],0,opername[i],false);
+					outstring(tb[1],0,calcnt[opername[i]],false);
+					outstring(tb[2],0,caloutcnt[opername[i]],false);
+					outstring(tb[3],0,calothercnt[opername[i]],false);
+					outstring(tb[4],0,predcnt[opername[i]],false);
+					outstring(tb[5],0,remcnt[opername[i]],false);
 				endformat;
 			end;
 		end;
@@ -1007,6 +1061,10 @@ begin
 			outstring(90,0,totcallother + totcallout + totcall,false);
 		endformat;
 		
+		Gray_Divider(0,1);
+		startformat(15);
+			outstring(200,0,"По регистру Binotel",false);
+		endformat;
 		
 		resetloop(BCEr);
 		BCEr.TransDate = sd;

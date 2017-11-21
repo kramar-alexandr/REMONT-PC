@@ -581,7 +581,12 @@ LActPrintNote1:;
 		end;
 		OUTFORMFIELD("F_VARREFERENS",SVOr.OurContact);
 		OUTFORMFIELD("F_ERREFERENS",SVOr.CustContact);
-		OUTFORMFIELD("F_PLANLEVDATUM",SVOr.PlanShipDate); //Edit***************************Sasha2,14:53 16.02.2017
+		if(nonblankdate(SVOr.RegDate))then begin
+			OUTFORMFIELD("F_PLANLEVDATUM",SVOr.RegDate); //Edit***************************Sasha2,14:53 16.02.2017
+		end else begin
+			OUTFORMFIELD("F_PLANLEVDATUM",SVOr.PlanShipDate); //Edit***************************Sasha2,14:53 16.02.2017
+
+		end;
 		OUTFORMFIELD("F_KUNDORDNR",SVOr.CustOrdNr);
 		OUTFORMFIELD("F_KOMMENTAR",SVOr.Comment1);
 		OUTFORMFIELD("F_KOMMENTAR",SVOr.Comment2);

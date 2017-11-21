@@ -9,6 +9,7 @@ external function LongInt CountWorkingDays(Date,Date,string,string);
 external function LongInt DateDiff(Date,Date);
 external function Time TimeDiff(Time,Time);// Edit ************************** Tuesday, 29 August 2017 14:21:47
 external procedure ExtractObj(string,var Integer,var string);
+external procedure MySortStringArray(var array string,integer);
 
 
 SetLangMode(LangRussian,"RUS",0);
@@ -669,14 +670,14 @@ begin
 			if(SVOr.OrderStatus==6)then begin testf = false; end;
 			if(SVOr.DoneMark>0)then begin testf = false; end;
 			if(nonblank(RepSpec.f1) and SVOr.ServiceManager!=RepSpec.f1)then begin testf = false; end;
-			countwdays = CountWorkingDays(SVOr.TransDate,Currentdate,"","UA");		
+			countwdays = CountWorkingDays(SVOr.GetItemDate,Currentdate,"","UA");		
 			LogText(0,"SVODateOff3RepRn Oreder #" & SVOr.SerNr & " CountWorkingDays=" & countwdays); //Edit***************************Sasha2,18:42 05.09.2017
 			if(countwdays<3)then begin testf = false; end;
 			
 			if(testf)then begin
 				startformat(15);
 					outstring(0,"DblSVOVc",SVor.SerNr,false);
-					outstring(50,0,SVOr.TransDate,false);
+					outstring(50,0,SVOr.GetItemDate,false);
 					outstring(90,0,countwdays,false);
 					outstring(150,0,SVOr.Vlastnik,false);
 					outstring(220,0,SVOr.ServiceManager,false);
@@ -733,14 +734,14 @@ begin
 			if(SVOr.OrderStatus==6)then begin testf = false; end;
 			if(SVOr.OrderStatus==12)then begin testf = false; end;
 			if(nonblank(RepSpec.f1) and SVOr.ServiceManager!=RepSpec.f1)then begin testf = false; end;
-			countwdays = CountWorkingDays(SVOr.TransDate,Currentdate,"","UA");		
+			countwdays = CountWorkingDays(SVOr.GetItemDate,Currentdate,"","UA");		
 			if(countwdays<5)then begin testf = false; end;
 			
 			
 			if(testf)then begin
 				startformat(15);
 					outstring(0,"DblSVOVc",SVor.SerNr,false);
-					outstring(50,0,SVOr.TransDate,false);
+					outstring(50,0,SVOr.GetItemDate,false);
 					outstring(90,0,countwdays,false);
 					outstring(150,0,SVOr.Vlastnik,false);
 					outstring(220,0,SVOr.ServiceManager,false);
@@ -774,12 +775,26 @@ begin
 	record RLinkVc RLr;
 	string 200 tstr;
 	integer totcall,sumbyman,personcnt;
+	vector val caltypeqty;
+	array string 100 calltype;
+	vector boolean calltypflag;
+	integer callcnt;
+	val callsum;
 	
 	
 	StartReportNoHeaderJob("Статистика предварительных заказов");
 		USr.Code = CurrentUser;
 		readfirstmain(USr,1,true);
 		
+		
+		startformat(15);
+			outstring(0,0,"Период:",false);
+			outstring(90,0,RepSpec.sStartDate & ":" & RepSpec.sEndDate,false);
+		endformat;
+		startformat(15);
+			outstring(0,0,"Оператор:",false);
+			outstring(90,0,RepSpec.f4,false);
+		endformat;
 		
 		startformat(15);
 			outstring(0,0,"Оператор",false);
@@ -798,6 +813,9 @@ begin
 			if(SVOr.TransDate<sd)then begin testf = false; end;
 			if(SVOr.TransDate>ed)then begin TrHs = false; testf = false; end;
 			if(blank(SVOr.SalesMan))then begin testf = false; end;
+			if(nonblank(RepSpec.f4) and SVOr.SalesMan!=RepSpec.f4)then begin
+				testf = false;
+			end;
 			
 			if(testf)then begin
 				if(operator[SVOr.SalesMan]==false)then begin 
@@ -827,6 +845,11 @@ begin
 			if(Actr.TransDate<sd)then begin testf = false; end;
 			if(Actr.TransDate>ed)then begin TrHs = false; testf = false; end;
 			if(Actr.ActType!="CALL")then begin testf = false; end;
+			if(nonblank(RepSpec.f4))then begin
+				if(setinset(RepSpec.f4,Actr.MainPersons)==false)then begin
+					testf = false;
+				end;
+			end;
 			
 			if(testf)then begin
 				if(Actr.Comment=="Принятый вызов")then begin
@@ -839,7 +862,6 @@ begin
 				 while(nonblank(tstr))begin
 				 	if(nonblank(tstr))then begin
 				 		personcnt = personcnt + 1;
-				 		
 				 	end;
 				 	ExtractObj(Actr.MainPersons,pos,tstr);
 				 end;
@@ -952,6 +974,39 @@ begin
 			outstring(0,0,sumbyman,false);
 			outstring(90,0,totcall,false);
 			outstring(130,0,sumbyman - totcall,false);
+		endformat;
+		
+		resetloop(BCEr);
+		BCEr.TransDate = sd;
+		TrHs = true;
+		while(loopkey("TransDate",BCEr,1,TrHs))begin
+			testf = true;
+			if(BCEr.TransDate<sd or BCEr.TransDate>ed)then begin TrHs = false; testf = false; end;
+			
+			
+			if(testf)then begin
+				
+				if(calltypflag[BCEr.internalNumber & ":" & BCEr.disposition]==false)then begin
+					calltypflag[BCEr.internalNumber & ":" & BCEr.disposition] = true;
+					calltype[callcnt] = BCEr.internalNumber & ":" & BCEr.disposition;
+					callcnt = callcnt + 1;
+				end;
+				caltypeqty[BCEr.internalNumber & ":" & BCEr.disposition] = caltypeqty[BCEr.internalNumber & ":" & BCEr.disposition] + 1;
+				callsum = callsum + 1;				
+			end;
+		end;
+		
+		MySortStringArray(calltype,callcnt);
+		
+		For(i=0;i<callcnt;i=i+1) begin
+			startformat(15);
+			 outstring(0,0,calltype[i],false);
+			 outstring(100,0,caltypeqty[calltype[i]],false);
+			endformat;
+		end; 
+		startformat(15);
+		 outstring(0,0,"TOTAL",false);
+		 outstring(100,0,callsum,false);
 		endformat;
 		
 	endjob;

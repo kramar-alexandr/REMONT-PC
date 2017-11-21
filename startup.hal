@@ -18,7 +18,7 @@ begin
   Setting("Настройки Binotel",BinotelSettingsTClass,modSY);
   Setting("Вспомог. рег. Внутренние Серийные номера",IntSerBalLClass,modDBMain); //Edit***************************Sasha2,14:59 08.08.2017
 	
-	Report("Статистика предварительных заказов",ServiceJobsRClass,CallConversionRn,0,modSVO);
+	Report("Статистика предварительных заказов",CallConversionRClass,CallConversionRn,0,modSVO);
 	Report("KIVI отчет",ServiceJobsRClass,KIVIRn,0,modSVO);
 	Report("Выполненые ремонты",ServiceJobsRClass,ServiceJobsRn,0,modSVO);
 	Report("Binotel Short Report",ServiceJobsRClass,BinotelSimpleRepRn,0,modSVO);

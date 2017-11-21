@@ -727,7 +727,11 @@ begin
 		
 		while(loopkey("AllServTransDate",SVOr,1,true))begin
 			testf = true;	
-			if(USr.SalesGroup!=SVOr.SalesGroup)then begin testf = false; end;
+			if(USr.AccessGroup!="ADM_V")then begin
+				if(nonblank(USr.SalesGroup))then begin
+					if(USr.SalesGroup!=SVOr.SalesGroup)then begin testf = false; end;
+				end;
+			end;
 			if(SVOr.DoneMark>0)then begin testf = false; end;
 			if(SVOr.OrderStatus==2)then begin testf = false; end;
 			if(SVOr.OrderStatus==9)then begin testf = false; end;

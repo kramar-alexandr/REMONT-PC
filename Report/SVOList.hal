@@ -780,6 +780,7 @@ begin
 	vector boolean calltypflag;
 	integer callcnt;
 	val callsum;
+	val answercnt;
 	
 	
 	StartReportNoHeaderJob("‘татистика предварительных заказов");
@@ -992,7 +993,12 @@ begin
 					callcnt = callcnt + 1;
 				end;
 				caltypeqty[BCEr.internalNumber & ":" & BCEr.disposition] = caltypeqty[BCEr.internalNumber & ":" & BCEr.disposition] + 1;
-				callsum = callsum + 1;				
+				callsum = callsum + 1;	
+				
+				if(BCEr.disposition=="ANSWER" or BCEr.disposition=="TRANSFER")then begin
+					answercnt = answercnt + 1;
+				end;
+							
 			end;
 		end;
 		
@@ -1007,6 +1013,10 @@ begin
 		startformat(15);
 		 outstring(0,0,"TOTAL",false);
 		 outstring(100,0,callsum,false);
+		endformat;
+		startformat(15);
+		 outstring(0,0,"ANSWER",false);
+		 outstring(100,0,answercnt,false);
 		endformat;
 		
 	endjob;

@@ -372,7 +372,7 @@ LActPrintNote1:;
 		OUTFORMFIELD("MYF_Prepayment",SVOr.PrepaySum);
 		
 		OUTFORMFIELD("MYF_SUM",SVOr.WSCost);
-		ValToText(SVOr.WSCost - SVOr.PrepaySum,M4Val,"UAH","RUS",tstr);
+		ValToText(SVOr.WSCost - SVOr.PrepaySum,M4Val,"UAH","UKR",tstr);
 		OUTFORMFIELD("MYF_SUMTEXT",tstr);
 		OUTFORMFIELD("MYF_DOLGBEZPP",SVOr.WSCost - SVOr.PrepaySum);
 		

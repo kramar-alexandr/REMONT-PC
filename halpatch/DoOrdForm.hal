@@ -1242,7 +1242,6 @@ BEGIN
 			tstr1 = ORr.CurncyCode;
 		end;*/
 		//ValToText(sumwitjvat,M4Val,tstr1,"UKR",tstr); // Edit ************************** Monday, 23 February 2015 17:26:10 }
-		logtext(0,"F_ATTBETALATEXT " & tstr);
     OUTFORMFIELD("F_ATTBETALATEXT",tstr);  
   end;
   PrintValue("F_FRAKT",ORr.FrPrice,M4Val,LangNrr,SysFormatRec,false);

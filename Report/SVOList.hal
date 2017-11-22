@@ -868,7 +868,14 @@ begin
 			end;
 			
 			if(testf)then begin
-				if(Actr.Comment!="Исходящий вызов" and Actr.Comment!="Принятый вызов")then begin
+				if(Actr.CallType==2)then begin
+					Actr.Comment="Исходящий вызов";
+				end;
+				if(Actr.CallType==1)then begin
+					Actr.Comment="Принятый вызов";
+				end;
+				
+				if(Actr.Comment!="Исходящий вызов" and Actr.Comment!="Принятый вызов" and Actr.CallType==0)then begin
 					personcnt = 0;
 					pos = 0;
 					tstr = "";
@@ -892,7 +899,7 @@ begin
 						foundf = true;
 					 end;
 				end;
-				if(Actr.Comment=="Исходящий вызов")then begin
+				if(Actr.Comment=="Исходящий вызов" or Actr.CallType==2)then begin
 					totcallout = totcallout + 1;
 					personcnt = 0;
 					pos = 0;
@@ -917,7 +924,7 @@ begin
 						foundf = true;
 					 end;
 				end;
-				if(Actr.Comment=="Принятый вызов")then begin
+				if(Actr.Comment=="Принятый вызов" or Actr.CallType==1)then begin
 				 foundf = false;
 				 totcall = totcall + 1;
 				 pos = 0;

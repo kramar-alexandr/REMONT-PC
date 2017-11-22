@@ -1053,6 +1053,7 @@ begin
     RecordField(BinotelCallPushSerNr,M4Long,0,0); //Edit***************************Sasha2,14:25 15.04.2016
     RecordField(BinotelCallEndSerNr,M4Long,0,0); //Edit***************************Sasha2,14:25 15.04.2016
     RecordField(PlanVisitDate,M4Date,0,0);// Edit ************************** Tuesday, 29 August 2017 14:10:22
+    RecordField(CallType,M4Int,0,0);
   EndRecordAdd;
   
   ////------------------------------------------------PRICE ETICETKA

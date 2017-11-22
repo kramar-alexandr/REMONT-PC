@@ -21,6 +21,7 @@ BEGIN
   record CUVc CUr;
   record UserVc User;
   record SVOVc SVOr;
+  integer calltype;
  	
  	if(BCEr.disposition=="NOANSWER" or BCEr.disposition=="CANCEL" or BCEr.disposition=="BUSY" or BCEr.disposition=="ANSWER" or BCEr.disposition=="TRANSFER" or BCEr.disposition=="CHANUNAVAIL" or BCEr.disposition=="CONGESTION" or BCEr.disposition=="VM")then begin
 		
@@ -65,9 +66,12 @@ BEGIN
 		
 		if(BCEr.disposition=="ANSWER" or BCEr.disposition=="TRANSFER")then begin
 			acttype = "CALL";
+			calltype = 0;
 			if(BCEr.callType=="0")then begin
+				calltype = 1;
 				comment = "Принятый вызов";
 			end else begin
+				calltype = 2;
 				comment = "Исходящий вызов";
 			end;
 			if(nonblank(BCEr.internalNumber))then begin
@@ -97,6 +101,7 @@ BEGIN
 			Actr.TransDate = currentdate;
 			Actr.SerNr = NextSerNr("ActVc",Actr.TransDate,-1,false,"");
 			Actr.Comment = comment;
+			Actr.CallType = calltype;
 			//Actr.AlarmType = kAlarmTypeMessage; //Edit-------------------Vitalii 11:31 23.12.2016
       Actr.AlarmType = kAlarmTypeNone;
 			Actr.TodoFlag = kTodoFlagTodo;
@@ -168,6 +173,7 @@ BEGIN
 				Actr.OKFlag = 1;
 				Actr.ActResult = "ЗВ";
 				comment = "Исходящий вызов";
+				Actr.CallType = 2;
 			end;
 			
 			recordstore(Actr,true);

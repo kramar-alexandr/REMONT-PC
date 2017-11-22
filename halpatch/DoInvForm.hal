@@ -1738,7 +1738,7 @@ BEGIN
   if (FIELDINFORM("F_ATTBETALATEXT")) then begin
     t = IVr.Sum4;
     SubPrePayments(IVr,t,t1);
-    ValToText(t,M4Val,IVr.CurncyCode,IVr.LangCode,tstr);
+    ValToText(t,M4Val,"UAH","UKR",tstr);// Edit ************************** BPI Ukraine - KramarAlexandr - Wednesday, 22 November 2017 09:52:27
     OUTFORMFIELD("F_ATTBETALATEXT",tstr);  
   end;
   PrintValue("F_TOTQTY",totqty,M4Qty,LangNrr,SysFormatRec,negamountf);

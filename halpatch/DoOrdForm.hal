@@ -1236,11 +1236,11 @@ BEGIN
     OUTFORMFIELD("F_SALJARNAMN",tstr);
   end;  
   if (FIELDINFORM("F_ATTBETALATEXT")) then begin
-    //ValToText(ORr.Sum4,M4Val,ORr.CurncyCode,ORr.LangCode,tstr); //Edit------------Dima -------22.01.2015
-    GetFieldArgument(Docr,F_KUNDVALUTA,tstr1); // Edit ************************** Monday, 23 February 2015 17:26:10 {
+    ValToText(ORr.Sum4,M4Val,ORr.CurncyCode,"",tstr); //Edit------------Dima -------22.01.2015
+   /* GetFieldArgument(Docr,F_KUNDVALUTA,tstr1); // Edit ************************** Monday, 23 February 2015 17:26:10 {
 		if (blank(tstr1)) then begin
 			tstr1 = ORr.CurncyCode;
-		end;
+		end;*/
 		ValToText(sumwitjvat,M4Val,tstr1,"UKR",tstr); // Edit ************************** Monday, 23 February 2015 17:26:10 }
     OUTFORMFIELD("F_ATTBETALATEXT",tstr);  
   end;

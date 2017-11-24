@@ -7994,7 +7994,7 @@ begin
   WindowBegin("Определите журнал заказов на обслуживание",SVOListRClass,CGRcW,RcType);
   SetWRect(20,80,450,300);
   v= 6; vs = 20;
-  EditFieldTL(150,v, 150,"№ заказа",   M4Str,Normal,30,f1,false,0);
+  //EditFieldTL(150,v, 150,"№ заказа",   M4Str,Normal,30,f1,false,0);
   PeriodField(150,v+=vs,"Период");
   EditFieldTL(150,v+=vs ,150,"Клиент",M4UStr,Normal,20,f2,false,CUSClass);
   if (HasMultiLocations) then begin 

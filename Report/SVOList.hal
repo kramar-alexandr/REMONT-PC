@@ -456,63 +456,6 @@ begin
 				EndFormat;
 				
 				gray_divider(0,1);
-        
-        /*StartFormat(15);
-          OutString(0,0,SVOr.CustCode,false);
-          OutString(0,0,SVOr.Vlastnik,false);
-          OutString(0,0,SVOrw.ArtCode,false);
-          OutString(11,0,SVOrw.Spec,false);
-          OutString(12,0,SVOrw.NewSerialNr,false);
-          OutString(13,0,SVOr.SerNr,false);
-          OutString(13,0,SVOr.TransDate,false);
-          OutString(14,0,SVOr.Garanty,false);
-          switch (SVOrw.ItemType) begin
-            case 0: tstr = "";
-            case 1: tstr = USetStr(8154);
-            case 2: tstr = USetStr(8155);
-            case 3: tstr = USetStr(8156);
-            case 4: tstr = USetStr(31003);
-          end;  
-          //OutString(15,0,tstr,false);
-          //OutString(15,0,SVOr.OrderClass,false);
-          if(SVOr.DoneMark==1)then begin
-            OutString(15,0,USetStr(14174),false);
-          end else begin
-            OutString(15,0,USetStr(15219),false);
-          end;
-          OutString(15,0,SVOr.PlanShipDate,false);
-          OutString(15,0,SVOr.RegDate,false);// Edit ************************** Monday, 10 October 2011 16:31:20
-          
-         // Edit Start ---------------------------------------------- Edit Start
-	//Tuesday, 11 October 2011 16:23:09
-	        TrHs1 = true;
-          WSr.SVONr = SVOr.SerNr;
-          While(loopkey("SVONr",WSr,1,TrHs1)) begin
-            if(WSr.SVONr!=SVOr.SerNr)then begin Trhs1=false; end;
-            if(TrHs1)then begin
-              mtrw1 = matrowcnt(WSr);
-              for(j=0;j<mtrw1;j=j+1)begin
-                matrowget(WSr,j,WSrw);
-                artcode = artcode & WSrw.ArtCode & ",";
-                serial = serial & WSrw.SerialNr & ",";
-              end;
-            end;
-          end;
-          resetloop(WSr);
-	// Edit End ---------------------------------------------- Edit End
-	
-          OutString(15,0,artcode,false);// Edit ************************** Tuesday, 11 October 2011 16:03:31
-          OutString(15,0,serial,false);// Edit ************************** Tuesday, 11 October 2011 16:03:32
-          OutString(15,0,SVOr.Comment1 & " " & SVOr.Comment2,false);// Edit ************************** Monday, 10 October 2011 16:31:26
-          OutString(16,0,SVOr.PrepaySum,false); //Edit***************************Sasha2,10:20 28.04.2015
-          //OutString(17,0,SVOr.CustomField4,false); //Edit***************************Sasha2,10:20 28.04.2015
-          OutString(18,0,SVOr.WSCost,false); //Edit***************************Sasha2,10:20 28.04.2015
-          OutString(18,0,SVOr.Kontinfo1,false); //Edit***************************Sasha2,10:20 28.04.2015
-          OutString(19,0,SVOr.ServiceManager,false); //Edit***************************Sasha2,14:20 14.02.2017
-          OutString(19,0,SVOr.CustomField7,false); //Edit***************************Sasha2,14:20 14.02.2017
-          OutString(19,0,SVOr.SalesGroup,false); //Edit***************************Sasha2,14:20 14.02.2017
-          OutString(19,0,SVOr.StatusText,false);
-        EndFormat;*/
         loops = loops + 1;
       end;
     end;    

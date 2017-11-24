@@ -385,6 +385,8 @@ begin
         end;
       end;
     end;
+    
+    
     logtext(0,SVOr.SerNr & "     " & testf);
     if(testf)then begin
       mtrw = matrowcnt(SVOr);

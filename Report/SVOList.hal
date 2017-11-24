@@ -315,6 +315,7 @@ begin
     if (RepSpec.flags[6]==0) then begin /* Completed  */
       if (SVOr.DoneMark!=0) then begin testf = false; end;
     end;
+    logtext(0,SVOr.SerNr & "   " & testf);
     
     if (testf) then begin 
       testf = false; 
@@ -384,6 +385,7 @@ begin
         end;
       end;
     end;
+    logtext(0,SVOr.SerNr & "     " & testf);
     if(testf)then begin
       mtrw = matrowcnt(SVOr);
       for(i=0;i<mtrw;i=i+1) begin

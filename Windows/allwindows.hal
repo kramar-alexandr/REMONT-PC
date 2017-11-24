@@ -8031,7 +8031,7 @@ begin
   CheckBox(h,v+=16,0,"В ожидании",flags[1]);//0
   CheckBox(h,v+=16,0,"На диагностике",flags[2]);//5
   CheckBox(h,v+=16,0,"На согласовании",flags[3]);//4
-  CheckBox(h,v+=16,0,"Клиент думает",flags[18]);RepSpec.flags[18]//12 Думает
+  CheckBox(h,v+=16,0,"Клиент думает",flags[18]);//12 Думает
   CheckBox(h,v+=16,0,"Согласовано",flags[14]);//7
   CheckBox(h,v+=16,0,"В ремонте",flags[9]);//1
   CheckBox(h,v+=16,0,"В удал. сервисе",flags[10]);//8

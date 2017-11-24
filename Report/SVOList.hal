@@ -304,6 +304,9 @@ begin
 		if(nonblank(RepSpec.f8) and !setinset(RepSpec.f8,INr.DispGroups))then begin
 			testf = false;
 		end;
+		logtext(0,SVOr.SerNr & " " & testf);
+		
+		
     
     
     if (RepSpec.flags[4]==0) then begin /* Not Completed  */

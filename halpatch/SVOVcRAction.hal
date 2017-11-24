@@ -39,7 +39,7 @@ external external procedure ExtractObj(string,var Integer,var string);
 SetLangMode(LangRussian,"RUS",0);
 
 
-function date CalcWorkDate(date curdate,integer days,boolean work)
+global function date CalcWorkDate(date curdate,integer days,boolean work)
 begin
 	date res;
 	integer countwdays;

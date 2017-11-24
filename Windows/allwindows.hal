@@ -8006,6 +8006,10 @@ begin
   EditFieldTL(150,v+=vs ,100,"Сервис.мастер",M4UStr,Normal,50,f3,false,UserSClass); //Edit***************************Sasha2,12:00 14.02.2017
   EditFieldTL(150,v+=vs ,100,"Принял",M4UStr,Normal,50,f4,false,UserSClass); //Edit***************************Sasha2,12:00 14.02.2017
   EditFieldTL(150,v+=vs ,50,"Гр.Пр.",M4UStr,Normal,50,f5,false,SalesGroupSClass); //Edit***************************Sasha2,12:00 14.02.2017
+  EditFieldTL(150,v+=vs ,100,"Товар",M4Code,Normal,50,f6,false,INSClass);
+  EditFieldTL(150,v+=vs ,100,"Группа",M4Code,Normal,50,f7,false,ITSClass);
+  EditFieldTL(150,v+=vs ,-20,"Классификация",M4UStr,Normal,50,f8,false,DISClass);
+  
   //CheckBox(h=160,v+=22,0,"Показать проблему",flags[7]); //origin field
   /*ButtonFrame(h=12,vm=(v+=41),123,3,"Функция"); //origin field
   RadioButton(h,v,0,0,"Сводный",ArtMode); //origin field

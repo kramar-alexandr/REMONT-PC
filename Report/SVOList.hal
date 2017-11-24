@@ -209,6 +209,7 @@ begin
 	record LocationVc Locr;
 	val sumsvo,qtysvo;
 	record UserVc User;
+	record INVc INr;
 	
 	if(usercanaction("SVOListGroupAcces",false)==false)then begin
 		User.Code = currentuser;
@@ -285,6 +286,24 @@ begin
     if (nonblank(RepSpec.f3) and RepSpec.f3 <> SVOr.ServiceManager) then begin testf = false; end; //Edit***************************Sasha2,12:01 14.02.2017
     if (nonblank(RepSpec.f4) and RepSpec.f4 <> SVOr.CustomField7) then begin testf = false; end; //Edit***************************Sasha2,12:01 14.02.2017
     if (nonblank(RepSpec.f5) and RepSpec.f5 <> SVOr.SalesGroup) then begin testf = false; end; //Edit***************************Sasha2,12:01 14.02.2017
+    
+    mtrw = matrowcnt(SVOr);
+		if(mtrw>0)then begin
+			matrowget(SVOr,0,SVOrw);
+			if(nonblank(SVOrw.ArtCode))then begin	
+				INr.Code = SVOrw.ArtCode;
+				readfirstmain(INr,1,true);
+			end;
+		end;
+		if(nonblank(RepSpec.f6) and SVOrw.ArtCode!=RepSpec.f6)then begin
+			testf = false;
+		end;
+		if(nonblank(RepSpec.f7) and RepSpec.f7!=INr.Group)then begin
+			testf = false;
+		end;
+		if(nonblank(RepSpec.f8) and !setinset(RepSpec.f8,INr.DispGroups))then begin
+			testf = false;
+		end;
     
     
     if (RepSpec.flags[4]==0) then begin /* Not Completed  */

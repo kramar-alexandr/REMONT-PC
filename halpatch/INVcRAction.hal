@@ -1053,7 +1053,7 @@ begin
 			end;
 			if(nonblank(DI2r.Code))then begin
 				DIr.Code = DI2r.Code;
-				if(readfirstmain(DIr,1,true)==false and nonblank(DI2r.Name))then begin
+				if(readfirstmain(DIr,1,true)==false)then begin
 					recordstore(DI2r,true);
 					chdir = DI2r.Code;
 				end else begin

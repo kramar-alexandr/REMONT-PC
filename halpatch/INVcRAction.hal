@@ -35,7 +35,7 @@ begin
   res = "";
   for (i=0;i<=len(ostr);i=i+1) begin
   	c = asc(Mid(ostr,i,1));
-    if ((c>=asc("0") and c<asc("9")) or (c>=asc("a") and c<asc("z")) or (c>=asc("A") and c<asc("Z")) or (c>=asc("€") and c<asc("Ÿ")) or (c>=asc("à") and c<asc("ß"))) then begin
+    if ((c>=asc("0") and c<=asc("9")) or (c>=asc("a") and c<=asc("z")) or (c>=asc("A") and c<=asc("Z")) or (c>=asc("€") and c<=asc("Ÿ")) or (c>=asc("à") and c<=asc("ß"))) then begin
       res = res &  Mid(ostr,i,1);
     end;
   end;

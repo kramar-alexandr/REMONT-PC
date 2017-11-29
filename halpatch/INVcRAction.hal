@@ -1077,7 +1077,7 @@ begin
   record RecVc Recr;
   record UnitVc Unitr;
   Integer errcode;
-  Boolean lightFlag,found,testf;
+  Boolean lightFlag,found,testf,inloopf;// Edit ************************** BPI Ukraine - KramarAlexandr - Wednesday, 29 November 2017 13:20:01
   record MainStockBlock MSb;
   record AccVc Accr;
   record ItemHistVc IHr;  
@@ -1415,10 +1415,17 @@ begin
 				ind = 1;
 				indstr = ind;
 				INoldr.Code = left(left(INr.Disp5 & INr.Disp6,20-len(indstr)) & indstr,20);
-				while(readfirstmain(INoldr,1,true))begin
-					ind = ind+1;
-					indstr = ind;
-					INoldr.Code = left(left(INr.Disp5 & INr.Disp6,20-len(indstr)) & indstr,20);
+				inloopf = true;
+				INr.Code = INoldr.Code;
+				while(inloopf)begin
+					if(readfirstmain(INoldr,1,true))then begin
+						ind = ind+1;
+						indstr = ind;
+						INoldr.Code = left(left(INr.Disp5 & INr.Disp6,20-len(indstr)) & indstr,20);
+						INr.Code = INoldr.Code;
+					end else begin
+						inloopf = false;
+					end;
 				end;
 			end;
 		end;

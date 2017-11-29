@@ -1097,7 +1097,7 @@ begin
   end;  
   BlockLoad(ISb);
   BlockLoad(MSb);
-  if (blank(INr.Code)) then begin
+  /*if (blank(INr.Code)) then begin// Edit ************************** BPI Ukraine - KramarAlexandr - Wednesday, 29 November 2017 15:02:49
     if (GetNextItemNr(INr.Code)) then begin end;
     lINr.Code = INr.Code;
     if (ReadFirstMain(lINr,1,true)) then begin
@@ -1105,7 +1105,7 @@ begin
       res = -1; 
       goto LINVcRecordCheck;
     end;
-  end;
+  end;*/
   if (long4>0) then begin
     check = true;
   end else begin

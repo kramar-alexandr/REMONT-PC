@@ -983,7 +983,6 @@ begin
 	
 	foundf = false;
 	
-	if(nonblank(name))then begin
 		DIr.Code = chdir;
 		if(readfirstmain(DIr,1,true))then begin
 			if(DIr.DispGroups==mdir)then begin
@@ -1060,7 +1059,6 @@ begin
 				end;
 			end;
 		end;
-	end;
 	
 return;
 end;

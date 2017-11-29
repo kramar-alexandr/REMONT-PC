@@ -1111,11 +1111,7 @@ begin
   end else begin
     check = false;
   end;
-  if (len(INr.Code)<=0) then begin
-    RecordCheckError(1130,"",-1,"Code");      
-    res = -1; 
-    goto LINVcRecordCheck;
-  end;
+
   /*if (blank(INr.Name)) then begin// Edit ************************** Friday, 20 October 2017 10:28:50
     RecordCheckError(1058,INr.Name,-1,"Name");      //goto forvard
     res = -1; 

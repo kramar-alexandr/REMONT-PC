@@ -70,7 +70,6 @@ begin
 			startformat(15);
 				outstring(0,"DblSVOVcSer",SVOr.InnerOrderNr,false);
 				outstring(0,0,SVOr.GetItemDate,false);
-				outstring(50,0,SVOr.Addr0 & " " & SVOr.Kontinfo1,false);
 				outstring(80,0,SVOr.RegDate,false);
 				
 				partnum = SVOrw.ArtCode;
@@ -224,6 +223,9 @@ begin
 				end else begin
 					outstring(350,0,"",false);
 				end;
+				outstring(380,0,"",false);
+				outstring(390,0,"",false);
+				outstring(400,0,SVOr.Addr0 & " " & SVOr.Kontinfo1,false);
 				
 			endformat;
 			

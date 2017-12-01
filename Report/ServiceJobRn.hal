@@ -1479,6 +1479,7 @@ begin
 					outstring(tabs[4],0,vIngSum[aing[i] & ":NOPAY:SERV"],false);
 					outstring(tabs[6],0,vIngSum[aing[i] & ":DOLG:SERV"],false);
 					outstring(tabs[7],0,vIngCanQty[aing[i]],false);
+					outstring(tabs[8],0,vIngCanQty[aman[i] & "DOR"],false);
 				endformat;
 				tot[1] = tot[1] + vIngSum[aing[i] & ":GOTOV:SERV"];
 				tot[2] = tot[2] + vIngSum[aing[i] & ":NOPAY:SERV"];

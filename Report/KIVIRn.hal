@@ -72,6 +72,9 @@ begin
 				outstring(0,0,SVOr.GetItemDate,false);
 				outstring(80,0,SVOr.RegDate,false);
 				
+				if(matrowcnt(SVOr)>0)then begin
+					matrowget(SVOr,0,SVOrw);
+				end;
 				partnum = SVOrw.ArtCode;
 				if(left(partnum,5)=="KIVI_")then begin
 					partnum = mid(partnum,5,len(partnum)-5);

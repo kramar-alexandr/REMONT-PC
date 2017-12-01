@@ -114,7 +114,7 @@ return;
 end;
 
 
-procedure OutDaysInStatus(vector val st0,longint sernr)
+procedure OutDaysInStatus(vector val st0,longint sernr,string man,string ing,var vector integer vManCanQty,var vector integer vIngCanQty)
 begin
 	array val tabs;
 	
@@ -128,69 +128,81 @@ begin
 	tabs[7] = 280;
 	tabs[8] = 340;
 	
-	if(st0[sernr & ":0"]>0)then begin
+	/*if(st0[sernr & ":0"]>0)then begin
 		startformat(15);
 			outstring(tabs[0],0,"Дней в статусе:",false);
 			outstring(tabs[1],0,"В ожидании",false);
 			outstring(tabs[2],0,st0[sernr & ":0"],false);
 		endformat;
-	end;
-	if(st0[sernr & ":1"]>0)then begin
+	end;*/
+	if(st0[sernr & ":1"]>3)then begin
 		startformat(15);
-			outstring(tabs[0],0,"Дней в статусе:",false);
+			outstring(tabs[0],0,"Просрочено Дней в статусе:",false);
 			outstring(tabs[1],0,"В ремонте",false);
-			outstring(tabs[2],0,st0[sernr & ":1"],false);
+			outstring(tabs[2],0,st0[sernr & ":1"]-3,false);
 		endformat;
+		vManCanQty[man & ":1"] = vManCanQty[man & ":1"] + st0[sernr & ":1"]-3;
+		vIngCanQty[ing & ":1"] = vIngCanQty[ing & ":1"] + st0[sernr & ":1"]-3;
+		vManCanQty[man & ":T"] = vManCanQty[man & ":T"] + st0[sernr & ":1"]-3;
+		vIngCanQty[ing & ":T"] = vIngCanQty[ing & ":T"] + st0[sernr & ":1"]-3;
 	end;
-	if(st0[sernr & ":3"]>0)then begin
+	/*if(st0[sernr & ":3"]>0)then begin
 		startformat(15);
 			outstring(tabs[0],0,"Дней в статусе:",false);
 			outstring(tabs[1],0,"Ожидает запч.",false);
 			outstring(tabs[2],0,st0[sernr & ":3"],false);
 		endformat;
-	end;
-	if(st0[sernr & ":4"]>0)then begin
+	end;*/
+	/*if(st0[sernr & ":4"]>0)then begin
 		startformat(15);
 			outstring(tabs[0],0,"Дней в статусе:",false);
 			outstring(tabs[1],0,"На согласовании",false);
 			outstring(tabs[2],0,st0[sernr & ":4"],false);
 		endformat;
-	end;
-	if(st0[sernr & ":5"]>0)then begin
+	end;*/
+	if(st0[sernr & ":5"]>3)then begin
 		startformat(15);
-			outstring(tabs[0],0,"Дней в статусе:",false);
+			outstring(tabs[0],0,"Просрочено Дней в статусе:",false);
 			outstring(tabs[1],0,"На диагностике",false);
-			outstring(tabs[2],0,st0[sernr & ":5"],false);
+			outstring(tabs[2],0,st0[sernr & ":5"]-3,false);
 		endformat;
+		vManCanQty[man & ":5"] = vManCanQty[man & ":5"] + st0[sernr & ":5"]-3;
+		vIngCanQty[ing & ":5"] = vIngCanQty[ing & ":5"] + st0[sernr & ":5"]-3;
+		vManCanQty[man & ":T"] = vManCanQty[man & ":T"] + st0[sernr & ":5"]-3;
+		vIngCanQty[ing & ":T"] = vIngCanQty[ing & ":T"] + st0[sernr & ":5"]-3;
 	end;
-	if(st0[sernr & ":7"]>0)then begin
+	/*if(st0[sernr & ":7"]>0)then begin
 		startformat(15);
 			outstring(tabs[0],0,"Дней в статусе:",false);
 			outstring(tabs[1],0,"Согласовано",false);
 			outstring(tabs[2],0,st0[sernr & ":7"],false);
 		endformat;
-	end;
-	if(st0[sernr & ":8"]>0)then begin
+	end;*/
+	/*if(st0[sernr & ":8"]>0)then begin
 		startformat(15);
 			outstring(tabs[0],0,"Дней в статусе:",false);
 			outstring(tabs[1],0,"В удал. сервисе",false);
 			outstring(tabs[2],0,st0[sernr & ":8"],false);
 		endformat;
-	end;
-	if(st0[sernr & ":10"]>0)then begin
+	end;*/
+	if(st0[sernr & ":10"]>3)then begin
 		startformat(15);
-			outstring(tabs[0],0,"Дней в статусе:",false);
+			outstring(tabs[0],0,"Просрочено Дней в статусе:",false);
 			outstring(tabs[1],0,"Заказать запч.",false);
-			outstring(tabs[2],0,st0[sernr & ":10"],false);
+			outstring(tabs[2],0,st0[sernr & ":10"]-3,false);
 		endformat;
+		vManCanQty[man & ":10"] = vManCanQty[man & ":10"] + st0[sernr & ":10"]-3;
+		vIngCanQty[ing & ":10"] = vIngCanQty[ing & ":10"] + st0[sernr & ":10"]-3;
+		vManCanQty[man & ":T"] = vManCanQty[man & ":T"] + st0[sernr & ":10"]-3;
+		vIngCanQty[ing & ":T"] = vIngCanQty[ing & ":T"] + st0[sernr & ":10"]-3;
 	end;
-	if(st0[sernr & ":11"]>0)then begin
+	/*if(st0[sernr & ":11"]>0)then begin
 		startformat(15);
 			outstring(tabs[0],0,"Дней в статусе:",false);
 			outstring(tabs[1],0,"Вернули на дораб.",false);
 			outstring(tabs[2],0,st0[sernr & ":11"],false);
 		endformat;
-	end;
+	end;*/
 return;
 end;
 
@@ -600,7 +612,7 @@ begin
 						endformat;
 					end;
 					
-					OutDaysInStatus(st0,SVOr.SerNr);
+					OutDaysInStatus(st0,SVOr.SerNr,SVOr.Inspector,SVOr.ServiceManager,vManCanQty,vIngCanQty);
 										
 					if(nonblank(vCuDomain[SVOr.CustCode]))then begin
 						if(nonblank(vCuDomain[SVOr.CustCode]))then begin
@@ -875,7 +887,7 @@ begin
 						endformat;
 					end;
 					
-					OutDaysInStatus(st0,SVOr.SerNr);
+					OutDaysInStatus(st0,SVOr.SerNr,SVOr.Inspector,SVOr.ServiceManager,vManCanQty,vIngCanQty);
 					
 					if(nonblank(vCuDomain[SVOr.CustCode]))then begin
 						if(nonblank(vCuDomain[SVOr.CustCode]))then begin
@@ -1144,7 +1156,7 @@ begin
 							outstring(tabs[2],0,SVOr.StatusReturnCnt,false);
 						endformat;
 					end;
-					OutDaysInStatus(st0,SVOr.SerNr);
+					OutDaysInStatus(st0,SVOr.SerNr,SVOr.Inspector,SVOr.ServiceManager,vManCanQty,vIngCanQty);
 					
 					if(nonblank(vCuDomain[SVOr.CustCode]))then begin
 						if(nonblank(vCuDomain[SVOr.CustCode]))then begin
@@ -1277,7 +1289,7 @@ begin
 						end;
 					end;
 					
-					OutDaysInStatus(st0,SVOr.SerNr);
+					OutDaysInStatus(st0,SVOr.SerNr,SVOr.Inspector,SVOr.ServiceManager,vManCanQty,vIngCanQty);
 					
 					totcanceled = totcanceled + 1;
 					outstring(tabs[6],0,blankval,false);
@@ -1451,6 +1463,21 @@ begin
 			outstring(tabs[0],0,"Клиент не пришел",false);
 			outstring(tabs[3],0,totcanceled,false);
 		endformat;*/
+		
+		tabs[0] = 0;
+		tabs[1] = 40;
+		tabs[2] = 80;
+		tabs[3] = 100;
+		tabs[4] = 130;
+		tabs[5] = 160;
+		tabs[6] = 190;
+		tabs[7] = 210;
+		tabs[8] = 240;
+		tabs[9] = 310;
+		tabs[10] = 360;
+		tabs[11] = 420;
+		tabs[12] = 470;
+		
 		gray_divider(0,1);
 		if(blank(RepSpec.f2))then begin
 			startformat(15);
@@ -1466,12 +1493,20 @@ begin
 				outstring(tabs[6],0,"Долг",false);
 				outstring(tabs[7],0,"Отмена",false);
 				outstring(tabs[8],0,"Возвр. на доработку",false);
+				outstring(tabs[9],0,"Проср. диагн.",false);
+				outstring(tabs[10],0,"Проср. заказ запч.",false);
+				outstring(tabs[11],0,"Проср. ремонт.",false);
+				outstring(tabs[12],0,"Проср. всего",false);
 			endformat;
 			tot[1] = blankval;
 			tot[2] = blankval;
 			tot[3] = blankval;
 			tot[4] = blankval;
 			tot[5] = blankval;
+			tot[6] = blankval;
+			tot[7] = blankval;
+			tot[8] = blankval;
+			tot[9] = blankval;
 			For(i=0;i<ingcnt;i=i+1) begin
 				
 	  		startformat(15);
@@ -1481,12 +1516,20 @@ begin
 					outstring(tabs[6],0,vIngSum[aing[i] & ":DOLG:SERV"],false);
 					outstring(tabs[7],0,vIngCanQty[aing[i]],false);
 					outstring(tabs[8],0,vIngCanQty[aing[i] & "DOR"],false);
+					outstring(tabs[9],0,vIngCanQty[aing[i] & ":5"],false);
+					outstring(tabs[10],0,vIngCanQty[aing[i] & ":10"],false);
+					outstring(tabs[11],0,vIngCanQty[aing[i] & ":1"],false);
+					outstring(tabs[12],0,vIngCanQty[aing[i] & ":T"],false);
 				endformat;
 				tot[1] = tot[1] + vIngSum[aing[i] & ":GOTOV:SERV"];
 				tot[2] = tot[2] + vIngSum[aing[i] & ":NOPAY:SERV"];
 				tot[3] = tot[3] + vIngSum[aing[i] & ":DOLG:SERV"];
 				tot[4] = tot[4] + vIngCanQty[aing[i]];
 				tot[5] = tot[5] + vIngCanQty[aing[i] & "DOR"];
+				tot[6] = tot[6] + vIngCanQty[aing[i] & ":5"];
+				tot[7] = tot[7] + vIngCanQty[aing[i] & ":10"];
+				tot[8] = tot[8] + vIngCanQty[aing[i] & ":11"];
+				tot[9] = tot[9] + vIngCanQty[aing[i] & ":T"];				
 				gray_divider(0,1);
 			end; 
 			startformat(15);
@@ -1496,6 +1539,10 @@ begin
 				outstring(tabs[6],0,tot[3],false);
 				outstring(tabs[7],0,tot[4],false);
 				outstring(tabs[8],0,tot[5],false);
+				outstring(tabs[9],0,tot[6],false);
+				outstring(tabs[10],0,tot[7],false);
+				outstring(tabs[11],0,tot[8],false);
+				outstring(tabs[12],0,tot[9],false);
 			endformat;
 			startformat(15);
 				outstring(tabs[0],0,"Детали",false);
@@ -1505,6 +1552,10 @@ begin
 			tot[3] = blankval;
 			tot[4] = blankval;
 			tot[5] = blankval;
+			tot[6] = blankval;
+			tot[7] = blankval;
+			tot[8] = blankval;
+			tot[9] = blankval;
 			For(i=0;i<ingcnt;i=i+1) begin
 	  		startformat(15);
 	  			outstring(tabs[0],0,aing[i],false);
@@ -1539,6 +1590,11 @@ begin
 				outstring(tabs[6],0,"Долг",false);
 				outstring(tabs[7],0,"Отмена",false);
 				outstring(tabs[8],0,"Возвр. на доработку",false);
+				outstring(tabs[9],0,"Проср. диагн.",false);
+				outstring(tabs[10],0,"Проср. заказ запч.",false);
+				outstring(tabs[11],0,"Проср. ремонт.",false);
+				outstring(tabs[12],0,"Проср. всего",false);
+				
 			endformat;
 			tot[1] = blankval;
 			tot[2] = blankval;
@@ -1552,12 +1608,20 @@ begin
 					outstring(tabs[6],0,vManSum[aman[i] & ":DOLG:SERV"],false);
 					outstring(tabs[7],0,vManCanQty[aman[i]],false);
 					outstring(tabs[8],0,vManCanQty[aman[i] & "DOR"],false);
+					outstring(tabs[9],0,vManCanQty[aing[i] & ":5"],false);
+					outstring(tabs[10],0,vManCanQty[aing[i] & ":10"],false);
+					outstring(tabs[11],0,vManCanQty[aing[i] & ":1"],false);
+					outstring(tabs[12],0,vManCanQty[aing[i] & ":T"],false);
 				endformat;
 				tot[1] = tot[1] + vManSum[aman[i] & ":GOTOV:SERV"];
 				tot[2] = tot[2] + vManSum[aman[i] & ":NOPAY:SERV"];
 				tot[3] = tot[3] + vManSum[aman[i] & ":DOLG:SERV"];
 				tot[4] = tot[4] + vManCanQty[aman[i]];
 				tot[5] = tot[5] + vManCanQty[aman[i] & "DOR"];
+				tot[6] = tot[6] + vManCanQty[aing[i] & ":5"];
+				tot[7] = tot[7] + vManCanQty[aing[i] & ":10"];
+				tot[8] = tot[8] + vManCanQty[aing[i] & ":11"];
+				tot[9] = tot[9] + vManCanQty[aing[i] & ":T"];	
 				gray_divider(0,1);
 			end; 
 			startformat(15);
@@ -1567,6 +1631,10 @@ begin
 				outstring(tabs[6],0,tot[3],false);
 				outstring(tabs[7],0,tot[4],false);
 				outstring(tabs[8],0,tot[5],false);
+				outstring(tabs[9],0,tot[6],false);
+				outstring(tabs[10],0,tot[7],false);
+				outstring(tabs[11],0,tot[8],false);
+				outstring(tabs[12],0,tot[9],false);
 			endformat;
 			startformat(15);
 				outstring(tabs[0],0,"Детали",false);

@@ -82,12 +82,19 @@ begin
 				if(right(partnum,1)=="_")then begin
 					partnum = left(partnum,len(partnum)-1);
 				end;
+				if(left(partnum,4)=="KIVI")then begin
+					partnum = mid(partnum,4,len(partnum)-4);
+				end;
 				
 				outstring(130,0,partnum,false);
 				diagstr = left(SVOrw.ArtCode,2);
 				
 				if(left(SVOrw.ArtCode,5)=="KIVI_")then begin
 					diagstr = mid(SVOrw.ArtCode,5,2);
+				end else begin
+					if(left(SVOrw.ArtCode,4)=="KIVI")then begin
+						diagstr = mid(SVOrw.ArtCode,4,2);
+					end;
 				end;
 				
 				diagfound = false;

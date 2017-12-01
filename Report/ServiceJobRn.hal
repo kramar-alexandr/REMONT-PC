@@ -588,7 +588,8 @@ begin
 						outstring(tabs[8],0,SVOr.StatusText,false);
 						//outstring(tabs[6],0,SVOr.WSCost,false);
 					endformat;
-					
+					vManCanQty[SVOr.Inspector & "DOR"] = vManCanQty[SVOr.Inspector & "DOR"] + SVOr.StatusReturnCnt;
+					vIngCanQty[SVOr.ServiceManager & "DOR"] = vIngCanQty[SVOr.ServiceManager & "DOR"] + SVOr.StatusReturnCnt;
 					OutDaysInStatus(st0,SVOr.SerNr);
 										
 					if(nonblank(vCuDomain[SVOr.CustCode]))then begin
@@ -855,6 +856,8 @@ begin
 						outstring(tabs[5],0,blankval,false);
 						//outstring(tabs[6],0,SVOr.WSCost,false);
 					endformat;
+					vManCanQty[SVOr.Inspector & "DOR"] = vManCanQty[SVOr.Inspector & "DOR"] + SVOr.StatusReturnCnt;
+					vIngCanQty[SVOr.ServiceManager & "DOR"] = vIngCanQty[SVOr.ServiceManager & "DOR"] + SVOr.StatusReturnCnt;
 					
 					OutDaysInStatus(st0,SVOr.SerNr);
 					
@@ -1117,7 +1120,8 @@ begin
 						outstring(tabs[5],0,blankval,false);
 						//outstring(tabs[6],0,SVOr.WSCost,false);
 					endformat;
-					
+					vManCanQty[SVOr.Inspector & "DOR"] = vManCanQty[SVOr.Inspector & "DOR"] + SVOr.StatusReturnCnt;
+					vIngCanQty[SVOr.ServiceManager & "DOR"] = vIngCanQty[SVOr.ServiceManager & "DOR"] + SVOr.StatusReturnCnt;
 					OutDaysInStatus(st0,SVOr.SerNr);
 					
 					if(nonblank(vCuDomain[SVOr.CustCode]))then begin

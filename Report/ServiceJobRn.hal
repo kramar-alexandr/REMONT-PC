@@ -588,8 +588,17 @@ begin
 						outstring(tabs[8],0,SVOr.StatusText,false);
 						//outstring(tabs[6],0,SVOr.WSCost,false);
 					endformat;
-					vManCanQty[SVOr.Inspector & "DOR"] = vManCanQty[SVOr.Inspector & "DOR"] + SVOr.StatusReturnCnt;
-					vIngCanQty[SVOr.ServiceManager & "DOR"] = vIngCanQty[SVOr.ServiceManager & "DOR"] + SVOr.StatusReturnCnt;
+					
+					
+					if(SVOr.StatusReturnCnt>0)then begin
+						vManCanQty[SVOr.Inspector & "DOR"] = vManCanQty[SVOr.Inspector & "DOR"] + SVOr.StatusReturnCnt;
+						vIngCanQty[SVOr.ServiceManager & "DOR"] = vIngCanQty[SVOr.ServiceManager & "DOR"] + SVOr.StatusReturnCnt;
+						startformat(15);
+							outstring(tabs[0],0,"Возвратов на доработку",false);
+							outstring(tabs[2],0,SVOr.StatusReturnCnt,false);
+						endformat;
+					end;
+					
 					OutDaysInStatus(st0,SVOr.SerNr);
 										
 					if(nonblank(vCuDomain[SVOr.CustCode]))then begin
@@ -856,8 +865,14 @@ begin
 						outstring(tabs[5],0,blankval,false);
 						//outstring(tabs[6],0,SVOr.WSCost,false);
 					endformat;
-					vManCanQty[SVOr.Inspector & "DOR"] = vManCanQty[SVOr.Inspector & "DOR"] + SVOr.StatusReturnCnt;
-					vIngCanQty[SVOr.ServiceManager & "DOR"] = vIngCanQty[SVOr.ServiceManager & "DOR"] + SVOr.StatusReturnCnt;
+					if(SVOr.StatusReturnCnt>0)then begin
+						vManCanQty[SVOr.Inspector & "DOR"] = vManCanQty[SVOr.Inspector & "DOR"] + SVOr.StatusReturnCnt;
+						vIngCanQty[SVOr.ServiceManager & "DOR"] = vIngCanQty[SVOr.ServiceManager & "DOR"] + SVOr.StatusReturnCnt;
+						startformat(15);
+							outstring(tabs[0],0,"Возвратов на доработку",false);
+							outstring(tabs[2],0,SVOr.StatusReturnCnt,false);
+						endformat;
+					end;
 					
 					OutDaysInStatus(st0,SVOr.SerNr);
 					
@@ -1120,8 +1135,14 @@ begin
 						outstring(tabs[5],0,blankval,false);
 						//outstring(tabs[6],0,SVOr.WSCost,false);
 					endformat;
-					vManCanQty[SVOr.Inspector & "DOR"] = vManCanQty[SVOr.Inspector & "DOR"] + SVOr.StatusReturnCnt;
-					vIngCanQty[SVOr.ServiceManager & "DOR"] = vIngCanQty[SVOr.ServiceManager & "DOR"] + SVOr.StatusReturnCnt;
+					if(SVOr.StatusReturnCnt>0)then begin
+						vManCanQty[SVOr.Inspector & "DOR"] = vManCanQty[SVOr.Inspector & "DOR"] + SVOr.StatusReturnCnt;
+						vIngCanQty[SVOr.ServiceManager & "DOR"] = vIngCanQty[SVOr.ServiceManager & "DOR"] + SVOr.StatusReturnCnt;
+						startformat(15);
+							outstring(tabs[0],0,"Возвратов на доработку",false);
+							outstring(tabs[2],0,SVOr.StatusReturnCnt,false);
+						endformat;
+					end;
 					OutDaysInStatus(st0,SVOr.SerNr);
 					
 					if(nonblank(vCuDomain[SVOr.CustCode]))then begin
@@ -1235,8 +1256,14 @@ begin
 					outstring(tabs[2],0,1,false);
 					outstring(tabs[3],0,blankval,false);
 					outstring(tabs[4],0,1,false);
-					vManCanQty[SVOr.Inspector & "DOR"] = vManCanQty[SVOr.Inspector & "DOR"] + SVOr.StatusReturnCnt;
-					vIngCanQty[SVOr.ServiceManager & "DOR"] = vIngCanQty[SVOr.ServiceManager & "DOR"] + SVOr.StatusReturnCnt;
+					if(SVOr.StatusReturnCnt>0)then begin
+						vManCanQty[SVOr.Inspector & "DOR"] = vManCanQty[SVOr.Inspector & "DOR"] + SVOr.StatusReturnCnt;
+						vIngCanQty[SVOr.ServiceManager & "DOR"] = vIngCanQty[SVOr.ServiceManager & "DOR"] + SVOr.StatusReturnCnt;
+						startformat(15);
+							outstring(tabs[0],0,"Возвратов на доработку",false);
+							outstring(tabs[2],0,SVOr.StatusReturnCnt,false);
+						endformat;
+					end;
 					if(SVOr.RejectReason=="Не смог сделать")then begin
 						totourcan = totourcan + 1;
 						outstring(tabs[5],0,1,false);

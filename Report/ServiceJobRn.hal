@@ -1528,7 +1528,7 @@ begin
 				tot[5] = tot[5] + vIngCanQty[aing[i] & "DOR"];
 				tot[6] = tot[6] + vIngCanQty[aing[i] & ":5"];
 				tot[7] = tot[7] + vIngCanQty[aing[i] & ":10"];
-				tot[8] = tot[8] + vIngCanQty[aing[i] & ":11"];
+				tot[8] = tot[8] + vIngCanQty[aing[i] & ":1"];
 				tot[9] = tot[9] + vIngCanQty[aing[i] & ":T"];				
 				gray_divider(0,1);
 			end; 
@@ -1620,7 +1620,7 @@ begin
 				tot[5] = tot[5] + vManCanQty[aman[i] & "DOR"];
 				tot[6] = tot[6] + vManCanQty[aing[i] & ":5"];
 				tot[7] = tot[7] + vManCanQty[aing[i] & ":10"];
-				tot[8] = tot[8] + vManCanQty[aing[i] & ":11"];
+				tot[8] = tot[8] + vManCanQty[aing[i] & ":1"];
 				tot[9] = tot[9] + vManCanQty[aing[i] & ":T"];	
 				gray_divider(0,1);
 			end; 

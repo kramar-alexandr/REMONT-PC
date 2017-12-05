@@ -418,6 +418,15 @@ begin
 									end;
 							end;
 					end;
+					
+					if(SVOr.OrderStatus!=9)then begin
+						if(Actr.ActType=="…„‡") then begin
+							if(Actr.OKFlag==0) then begin
+								CloseActivity(Actr,"Š");
+							end;
+						end;
+					end;
+					
         
         end;
 

@@ -75,6 +75,7 @@ begin
   Maintenance("Fix Some Actr",MyVClass,FIXSOMEACTMn,modDBMain);
   
   Maintenance("Замена групп товаров",FixItemGroupVClass,FixItenGroupsMn,modIN);
+  Maintenance("Fix DICodes",MyVClass,FixDI,modIN);
   
   
   Maintenance("Fix WS SalesMan",MyVClass,FixWSManagerMn,modDBMain);

@@ -2181,3 +2181,24 @@ begin
 
 return;
 end;
+
+
+global updating procedure FixDI()
+begin
+	record INVc INr;
+	record DIVc DIr;
+	
+	INr.Code = "";
+	while(loopmain(INr,1,true))begin
+		INr.DispGroups = uppercase(INr.DispGroups);
+		recordstore(INr,true);
+	end;
+	
+	DIr.Code = "";
+	while(loopmain(DIr,1,true))begin
+		DIr.Code = uppercase(DIr.Code);
+		recordstore(DIr,true);
+	end;
+
+return;
+end;

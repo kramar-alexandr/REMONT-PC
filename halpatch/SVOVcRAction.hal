@@ -1290,17 +1290,10 @@ BEGIN
   			recordstore(Actr,true);
   			logtext(0,"ActVcRecordUpdateAfter " & Actr.MainPersons & " UpdateToDoWclass");
   			AllClientsRemoteAsync.RemoteUserFunction(Actr.MainPersons,"UpdateToDoWclass","","");
-  			//recordupdate(oldActr,Actr,true);
   			if (SVO2r.SerNr!=SVOr.SerNr) then begin
   			  stepback(Actr);
   			end;
-  			/*counter = counter +1;
-  			if(counter>20)then begin
-  				TrHs = false;
-  				goto lEndLoopMy;
-  			end;*/
   		end;
-  		
   	end;
   end;
   

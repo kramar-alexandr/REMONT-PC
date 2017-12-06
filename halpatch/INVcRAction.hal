@@ -1054,6 +1054,7 @@ begin
 			if(nonblank(DI2r.Code))then begin
 				DIr.Code = DI2r.Code;
 				if(readfirstmain(DIr,1,true)==false)then begin
+					DI2r.Code = uppercase(DI2r.Code);
 					recordstore(DI2r,true);
 					chdir = DI2r.Code;
 				end else begin

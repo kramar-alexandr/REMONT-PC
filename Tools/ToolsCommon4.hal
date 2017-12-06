@@ -2191,6 +2191,14 @@ begin
 	INr.Code = "";
 	while(loopmain(INr,1,true))begin
 		INr.DispGroups = uppercase(INr.DispGroups);
+		INr.Disp1 = uppercase(INr.Disp1);
+		INr.Disp2 = uppercase(INr.Disp2);
+		INr.Disp3 = uppercase(INr.Disp3);
+		INr.Disp4 = uppercase(INr.Disp4);
+		INr.Disp5 = uppercase(INr.Disp5);
+		INr.Disp6 = uppercase(INr.Disp6);
+		INr.Disp7 = uppercase(INr.Disp7);
+		
 		recordstore(INr,true);
 	end;
 	

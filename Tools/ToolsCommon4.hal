@@ -2118,3 +2118,62 @@ begin
 	ResetCompany(curCompany);	
   
 end;
+
+
+global updating procedure FixItenGroupsMn(record RcVc RepSpec)
+begin
+	record INVc INr;
+	record ITVc ITr;
+	boolean TrHs,TrHs2,testf;
+	record LetVc Letr;
+	
+	if(nonblank(RepSpec.f1))then begin
+		
+		if(nonblank(RepSpec.f2))then begin
+			ITr.Code = RepSpec.f2;
+		end else begin
+			ITr.Code = "";
+		end;
+	
+		
+		TrHs2 = true;
+		while(loopmain(ITr,1,TrHs2))begin
+			testf = true;
+			if(nonblank(RepSpec.f2) and ITr.Code!=RepSpec.f2)then begin
+				TrHs2 = false;
+				testf = false;
+			end;
+			recordnew(Letr);
+			AddToText(ITr.Comment,Letr);
+			if(nonblank(RepSpec.f3))then begin
+				if(StringInText(RepSpec.f3,Letr)==false)then begin
+					testf = false;
+				end;
+			end;
+			if(ITr.Code==RepSpec.f1)then begin
+				testf = false;
+			end;
+			
+			if(testf)then begin
+				resetloop(INr);
+				INr.Group = ITr.Code;
+				TrHs = true;
+				while(loopkey("Group",INr,1,TrHs))begin
+					if(INr.Group!=ITr.Code)then begin TrHs = false; end;
+			
+					if(TrHs)then begin
+						INr.Group = RepSpec.f1;
+						recordstore(INr,true);
+					end;
+				end;
+				
+				recorddelete(ITr);
+				stepback(ITr);
+				
+			end;
+		end;
+	
+	end;
+
+return;
+end;

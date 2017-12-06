@@ -2205,6 +2205,7 @@ begin
 	DIr.Code = "";
 	while(loopmain(DIr,1,true))begin
 		DIr.Code = uppercase(DIr.Code);
+		DIr.DispGroups = uppercase(DIr.DispGroups);
 		recordstore(DIr,true);
 	end;
 

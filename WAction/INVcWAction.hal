@@ -1476,6 +1476,22 @@ begin
 end;
 
 
+/*global
+function Boolean DISClassOnOpenWindow(Integer wn)
+begin
+  LongInt l;
+  string 255 subset;
+  Array string 255 adi;
+  Integer i,acnt,mwn;
+  
+  subset = "DISP4";
+  setwindowsubset(wn,subset);
+  
+  DISClassOnOpenWindow = true;
+  return;
+end;*/
+
+
 global updating procedure DeleteThisINDsm()
 begin
 	record INVc INr;

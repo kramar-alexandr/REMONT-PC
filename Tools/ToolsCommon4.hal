@@ -2153,6 +2153,10 @@ begin
 			if(ITr.Code==RepSpec.f1)then begin
 				testf = false;
 			end;
+			if(blank(RepSpec.f2) and blank(RepSpec.f3))then begin
+				testf = false;
+				TrHs2 = false;
+			end;
 			
 			if(testf)then begin
 				resetloop(INr);

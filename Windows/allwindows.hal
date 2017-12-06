@@ -10065,3 +10065,26 @@ v = 6;
   SpecialMenu("Создать приём товара",' ',2,"RecFromINDsm");         
   EndWindow;
 end;
+
+
+window DISClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer,iPad,iPhone")
+begin
+  WindowBegin("Выберите классификацию товара",DISClass,CGslist,DIView);
+  SpawnClass(DIDClass);
+  UseView(DIVc);
+  SetWRect(100,80,500,398);
+  RecordList(4,17,-21,-39);
+  if (GUIType==kGuiiPhone) then begin
+    RLCellKey(10,6,120,19,Code,false,12,patM4blue,Code);
+    RLCell(210,6,280,19,CType,false,12,patM4black);
+    RLCell(10,26,280,39,Name,false,12,patM4black);
+  end else begin
+    RlColKey(4,4,"Код",Code,false,Code);
+    RlColKey(84,84,"Тип",CType,false,CType);
+    RlColKey(164,164,"Наим.",Name,false,Name);
+    CalculatedColumn(-120,-120,"Раздел","DIMotherDI",false); // Edit ************************** BPI Ukraine - KramarAlexandr - Wednesday, 6 December 2017 16:44:30
+  end;
+  SearchField("Поиск");
+  EndWindow;
+end;

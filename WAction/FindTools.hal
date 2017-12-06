@@ -936,3 +936,19 @@ BEGIN
 
   RETURN;
 END;
+
+
+global function string 255 GetMotherDIName(record DIVc DIr)
+begin
+	string 255 res;
+	record DIVc mDIr;
+	
+	if(nonblank(DIr.DispGroups))then begin
+		mDIr.Code = DIr.DispGroups;
+		if(readfirstmain(mDIr,1,true))then begin
+			res = mDIr.Name;
+		end;
+	end;	
+	GetMotherDIName = res;
+return;
+end;

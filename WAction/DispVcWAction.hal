@@ -8,6 +8,7 @@ external function string 40 DelAddrSClassSpecPName(string);
 remote function Boolean PasteCust2InDispatch(var record DispatchVc,Boolean,var string);
 remote function Boolean DispatchVc_PasteArtCode(var record DispatchVc,Integer,var string);
 remote procedure NewRentalCharge(Integer,var record RentChrgVc,Date,LongInt,LongInt,var string,string);
+remote function string 255 GetMotherDIName(record DIVc);
 
 global
 procedure DispatchSumup(var record DispatchVc Dispr)
@@ -302,5 +303,13 @@ begin
   Integer nwn;
   
   nwn = OpenWindow("DispatchDClass",1,0,"","",Dispatchp);
+  return;
+end;
+
+
+global function string 255 DIMotherDI(var record DIVc DIr)	// Edit ************************** BPI Ukraine - KramarAlexandr - Wednesday, 6 December 2017 16:59:07
+begin
+  
+  DIMotherDI = GetMotherDIName(DIr);
   return;
 end;

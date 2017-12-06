@@ -1838,5 +1838,19 @@ begin
   RecordField(SalesGroup,M4Code,20,0);// Edit ************************** Thursday, 27 July 2017 15:04:02
   RecordField(PersPhone2,M4Str,20,0);
   EndBlock;
+  
+  
+  
+  RecordAddBegin(DIVc,"DIVc2")
+		SubsetKeyBegin2(CTypeCode);
+		StoreInBaseKey;
+		AppendListFieldToKeyName(CType);
+		KeySegment(Code);
+		SubsetKeyBegin2(CTypeName);
+		StoreInBaseKey;
+		AppendListFieldToKeyName(CType);
+		KeySegment(Name);
+		KeySegment(Code);
+  endrecordadd;
 return;
 end;

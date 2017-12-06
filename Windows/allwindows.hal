@@ -10080,9 +10080,9 @@ begin
     RLCell(210,6,280,19,CType,false,12,patM4black);
     RLCell(10,26,280,39,Name,false,12,patM4black);
   end else begin
-    RlColKey(4,4,"Код",Code,false,Code);
-    RlColKey(84,84,"Тип",CType,false,CType);
-    RlColKey(144,144,"Наим.",Name,false,Name);
+    RlColKey(4,4,"Код",Code,false,CTypeCode);
+    RlCol(84,84,"Тип",CType,false);
+    RlColKey(144,144,"Наим.",Name,false,CTypeName);
     CalculatedColumn(-140,-140,"Раздел","DIMotherDI",false); // Edit ************************** BPI Ukraine - KramarAlexandr - Wednesday, 6 December 2017 16:44:30
   end;
   SearchField("Поиск");

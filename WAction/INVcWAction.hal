@@ -1476,7 +1476,7 @@ begin
 end;
 
 
-/*global
+global
 function Boolean DISClassOnOpenWindow(Integer wn)
 begin
   LongInt l;
@@ -1489,7 +1489,7 @@ begin
   
   DISClassOnOpenWindow = true;
   return;
-end;*/
+end;
 
 
 global updating procedure DeleteThisINDsm()

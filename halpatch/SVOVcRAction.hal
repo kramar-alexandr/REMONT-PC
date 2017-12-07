@@ -263,10 +263,14 @@ end;
 
 //------------------------------------------------------- proc added by dima-f 22.09.17
 updating
-procedure CloseActivitiesFromSVO(var record SVOVc SVOr,var record SVOVc SVO2r, var record ActVc Actr)
+procedure CloseActivitiesFromSVO(var record SVOVc SVOr,var record SVOVc SVO2r, var record ActVc oldActr)
 begin
     boolean TrHs,testf,testf1;
+    record ActVc Actr;
+    
     resetloop(Actr);
+    
+    
     Actr.SVOSerNr = SVOr.SerNr;
     TrHs = true;
     while(loopkey("SVOSerNr",Actr,1,TrHs)) begin
@@ -1234,7 +1238,20 @@ BEGIN
   record RLinkVc RLr;
   integer counter;
   
-  
+  if(SVOr.SerNr!=SVO2r.SerNr)then begin
+  	Actr.SVOSerNr = SVO2r.SerNr;
+  	TrHs = true;
+  	while(loopkey("SVOSerNr",Actr,1,TrHs))begin
+  		if(Actr.SVOSerNr!=SVO2r.SerNr)then begin TrHs = false; end;
+  		
+  		if(TrHs)then begin
+  			Actr.SVOSerNr = SVOr.SerNr;
+  			recordstore(Actr,true);
+  		end;
+  		
+  	end;
+  	resetloop(Actr);
+  end;
   
   Actr.CUCode = SVOr.CustCode;
   Actr.TransDate = SVOr.TransDate;

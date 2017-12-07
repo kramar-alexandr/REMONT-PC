@@ -670,6 +670,7 @@ function Boolean INDClassActiveEditField(Integer wn,string fieldname,Integer fn,
 begin
   Boolean res;
   record ItemSettingBlock ItemRec;
+  record INVc INr;
   
   res = true;
   if (wnst==2) then begin//Rs_update
@@ -692,6 +693,21 @@ begin
         end;
     end;
   end;
+  // Edit Start ---------------------------------------------- Edit Start
+	//Thursday, 7 December 2017 18:30:08
+	
+  getwindowrecord(wn,INr);
+  switch (fieldname) begin
+  	case"Disp2":if(blank(INr.Disp1))then begin res = false; end;
+  	case"Disp3":if(blank(INr.Disp2) or INr.Disp2=="SERS")then begin res = false; end;
+  	case"Disp4":if(blank(INr.Disp3) or INr.Disp2=="SERS")then begin res = false; end;
+  	case"Disp5":if(blank(INr.Disp4) or INr.Disp2=="SERS")then begin res = false; end;
+  	case"Disp6":if(blank(INr.Disp5) or INr.Disp2=="SERS")then begin res = false; end;
+  end;
+	
+	// Edit End ---------------------------------------------- Edit End
+	
+  
   INDClassActiveEditField = res;
   return;
 end;

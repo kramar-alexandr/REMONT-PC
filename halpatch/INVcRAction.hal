@@ -1148,6 +1148,11 @@ begin
 		res = -1; 
 		goto LINVcRecordCheck;
 	end;
+	if(setinset("SERS",INr.Disp2) and INr.ItemType==kItemTypeService) then begin// Edit ************************** BPI Ukraine - KramarAlexandr - Thursday, 7 December 2017 18:32:52
+		if(blank(INr.Group))then begin
+			INr.Group = "ëê";
+		end;
+	end;
   
   if (INr.ItemType==kItemTypeStructured) then begin
     if (blank(INr.Recepy)) then begin

@@ -1010,12 +1010,12 @@ begin
 	
 		if(foundf==false and nonblank(chdir))then begin
 			recordnew(DI2r);
-			if(nonblank(name))then begin
-				DI2r.Name = name;
-			end else begin
+			//if(nonblank(name))then begin
+				//DI2r.Name = name;
+			//end else begin
 				DI2r.Name = chdir;
 				name = chdir;
-			end;
+			//end;
 			chdir = StripWrongCharacter(chdir);
 		
 		

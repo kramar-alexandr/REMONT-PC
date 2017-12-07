@@ -2211,3 +2211,26 @@ begin
 
 return;
 end;
+
+
+
+global updating procedure FixActSVONr()
+begin
+	record ActVc Actr;
+	record SVOVc SVOr;
+	
+	while(loopmain(Actr,1,true))begin
+		if(Actr.SVOSerNr>0)then begin
+			SVOr.SerNr = Actr.SVOSerNr;
+			if(Actr.OKFlag==0)then begin
+				if(readfirstmain(SVOr,1,true)==false)then begin
+					Actr.OKFlag = 1;
+					Logtext(0,Actr.SVOSerNr);
+					recordstore(Actr,true);
+				end;
+			end;
+		end;
+	end;
+
+return;
+end;

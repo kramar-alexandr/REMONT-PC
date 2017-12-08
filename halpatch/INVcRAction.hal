@@ -989,8 +989,8 @@ begin
 				if(DIr.DispGroups==mdir)then begin
 					foundf = true;
 				end;
-			end else begin
-		
+			end;
+			if(foundf==false)then begin
 				resetloop(DIr);
 				DIr.Name = chdir;
 				TrHs = true;
@@ -1007,33 +1007,35 @@ begin
 				end;
 			end;
 		end;
-	
+
 		if(foundf==false and nonblank(chdir))then begin
-			recordnew(DI2r);
-			//if(nonblank(name))then begin
-				//DI2r.Name = name;
-			//end else begin
-				DI2r.Name = chdir;
-				name = chdir;
-			//end;
-			chdir = StripWrongCharacter(chdir);
-		
-		
-		
+
+			DI2r.Name = chdir;
+			name = chdir;
+			chdir = StripWrongCharacter(chdir);		
 			DI2r.DispGroups = mdir;
 			DI2r.CType = type;
 			if(len(chdir)<11)then begin
 				DI2r.Code = chdir;
 				DIr.Code = DI2r.Code;
 				if(readfirstmain(DIr,1,true)==false)then begin
-					//DI2r.Code = left(chdir,7) & "001";
 				end else begin
-				
 					FindPref(DI2r.Code,DIr.Code);
 					DIr.Code = left(DIr.Code,7) & "999";
 					if(readlastmain(DIr,1,false))then begin
 						NextM4Number(DIr.Code,itemnr);
 						DI2r.Code = itemnr;
+						DIr.Code = DI2r.Code;
+						if(readfirstmain(DIr,1,true))then begin
+							DIr.Code = left(DIr.Code,7) & "001";
+							NextM4Number(DIr.Code,itemnr);
+							DIr.Code = itemnr;
+							while(readfirstmain(DIr,1,true))begin
+								NextM4Number(DIr.Code,itemnr);
+								DIr.Code = itemnr;
+							end;
+							DI2r.Code = itemnr;
+						end;
 					end;
 				end;
 			end else begin
@@ -1048,9 +1050,21 @@ begin
 					if(readlastmain(DIr,1,false))then begin
 						NextM4Number(DIr.Code,itemnr);
 						DI2r.Code = itemnr;
+						DIr.Code = DI2r.Code;
+						if(readfirstmain(DIr,1,true))then begin
+							DIr.Code = left(DIr.Code,7) & "001";
+							NextM4Number(DIr.Code,itemnr);
+							DIr.Code = itemnr;
+							while(readfirstmain(DIr,1,true))begin
+								NextM4Number(DIr.Code,itemnr);
+								DIr.Code = itemnr;
+							end;
+							DI2r.Code = itemnr;
+						end;
 					end;
 				end;
 			end;
+			logtext(0,DI2r.Code);
 			if(nonblank(DI2r.Code))then begin
 				DIr.Code = DI2r.Code;
 				if(readfirstmain(DIr,1,true)==false)then begin

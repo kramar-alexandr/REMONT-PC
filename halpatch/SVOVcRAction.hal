@@ -64,8 +64,7 @@ return;
 end;
 
 
-updating
-procedure CreateCustomActivityFromSVO(record SVOVc SVOr,string acttype,string mainpersons,date transdate,string comment, string group)
+global updating procedure CreateCustomActivityFromSVO(record SVOVc SVOr,string acttype,string mainpersons,date transdate,string comment, string group)
 begin
   record ActVc Actr;
   date blankd;

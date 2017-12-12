@@ -12,6 +12,9 @@ external function Boolean Date2Test(string,Date,string,Integer);
 external updating procedure StoreItemHistory_In(record MainStockBlock,string,string,string,string,Date,Date,val,val,val,LongInt,Integer,Integer,string,string,record TempStockVc,Boolean);
 external updating procedure StoreItemHistory_Out(record MainStockBlock,string,string,string,string,Date,val,val,val,LongInt,Integer,Integer,string,record TempStockVc,Boolean);
 external updating procedure CreateActFromSVOToEnginer(record SVOVc,string); //Edit***************************Sasha2,18:20 12.06.2017
+external updating procedure CreateCustomActivityFromSVO(record SVOVc,string,string,date,string,string);// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 12 December 2017 11:56:41
+
+SetLangMode(LangRussian,"RUS",0);// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 12 December 2017 12:03:00
 
 global
 function LongInt InternMovVcRecordDefaults(var record InternMovVc Intmovr,record InternMovVc Disp2r,LongInt stat,LongInt long4)
@@ -202,6 +205,7 @@ begin
   record SVOVc SVOr;
   row InternMovVc InternMovrw;
   integer rwcnt,i;
+  record ActVc Actr;
     
     rwcnt = matrowcnt(InternMovr);
     if(rwcnt>0)then begin
@@ -210,6 +214,9 @@ begin
       	if(nonblank(InternMovrw.ArtCode) and  NonBlank(InternMovrw.SerialNr))then begin
       	  SVOr.InnerOrderNr = InternMovrw.SerialNr;
       	  if (ReadLastKey("InnerOrderNr",SVOr,1,true)) then begin
+      	  	if(SVOr.OrderStatus==2 or SVOr.OrderStatus==6)then begin
+      	  		CreateCustomActivityFromSVO(SVOr,"RMDCl",SVOr.Inspector,currentdate,"Товар клиента переместился на пункт выдачи","");
+      	  	end;
       	    CreateActFromSVOToEnginer(SVOr,InternMovr.ToLocation);
       	  end;
       	end;

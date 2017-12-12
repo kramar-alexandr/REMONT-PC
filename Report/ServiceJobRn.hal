@@ -1584,7 +1584,7 @@ begin
 				outstring(tabs[0],0,"Услуги",false);
 			endformat;
 			startformat(15);
-				outstring(tabs[0],0,"Инженер",false);
+				outstring(tabs[0],0,"Менеджер",false);
 				outstring(tabs[2],0,"Оплачено",false);
 				outstring(tabs[4],0,"Неоплаченно",false);
 				outstring(tabs[6],0,"Долг",false);

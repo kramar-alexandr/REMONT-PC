@@ -83,7 +83,7 @@ begin
     if (ReadFirstMain(INr,1,true)==false) then begin
       SRb.LastArtCode = itemnr;
     end else begin
-      INr.Code = "ZZZZZZZZZZZZZZZZZZZ";
+      INr.Code = "SRV9999";// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 12 December 2017 11:31:42
       if (ReadLastMain(INr,1,false)) then begin
         NextM4Number(INr.Code,itemnr);
         if (nonblank(itemnr)) then begin
@@ -280,7 +280,7 @@ begin
   
   BlockLoad(ISb);
   if (SingleUserMode) then begin
-    if (GetNextItemNr(INr.Code)) then begin end;
+    //if (GetNextItemNr(INr.Code)) then begin end;// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 12 December 2017 11:34:09
   end else begin
     INr.Code = "";
   end;
@@ -357,11 +357,15 @@ begin
   SplitAlphaDigit(INr.Code,curitemnr,curinnr);
   if (curitemnr==lastitemnr) then begin
     if (curinnr!=lastinnr) then begin
-      SRb.LastArtCode = INr.Code;
+    	if(left(INr.Code,3)=="SRV" and SRb.LastArtCode<INr.Code)then begin
+				SRb.LastArtCode = INr.Code;// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 12 December 2017 11:30:34
+      end;
       BlockStore(SRb);
     end;
   end else begin
-    SRb.LastArtCode = INr.Code;
+  	if(left(INr.Code,3)=="SRV" and SRb.LastArtCode<INr.Code)then begin
+			SRb.LastArtCode = INr.Code;// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 12 December 2017 11:30:35
+    end;
     BlockStore(SRb);
   end;
 
@@ -1148,6 +1152,18 @@ begin
 		end;
 		if (setinset("SERS",INr.Disp2)) then begin
 			INr.ItemType = kItemTypeService;
+			
+			if (blank(INr.Code)) then begin// Edit ************************** BPI Ukraine - KramarAlexandr - Wednesday, 29 November 2017 15:02:49
+				INr.Code = "SRV0001";
+				if (GetNextItemNr(INr.Code)) then begin end;
+				lINr.Code = INr.Code;
+				if (ReadFirstMain(lINr,1,true)) then begin
+					RecordCheckError(1547,INr.Code,-1,"Code");      
+					res = -1; 
+					goto LINVcRecordCheck;
+				end;
+			end;
+			
 		end;		
 	end;
   

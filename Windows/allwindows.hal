@@ -9535,6 +9535,8 @@ begin
     EditFieldTL(h,v+=vs,150,"Классиф. поставщиков",M4UStr,Normal,30,f5,false,CClassSClass);
   end;
   EditFieldTL(h,v+=vs, 100,"Дата",M4Date,Normal,0,d1,false,PasteCurDate);
+  EditFieldTL(h,v+=vs,150,"Классиф. товаров",M4UStr,Normal,30,f6,false,DISClass);
+  
   ButtonFrame(h=30,vm=(v+=41),123,4,"Функция");
   RadioButton(h,v,0,0,"Сводный",ArtMode);
   RadioButton(h,v+=16,1,0,"Подробно",ArtMode);

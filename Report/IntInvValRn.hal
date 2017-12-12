@@ -1041,6 +1041,13 @@ BEGIN
       end;
     end;
     if (TrHs==false) then begin testf = false; end;
+    
+    if(testf)then begin// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 12 December 2017 11:14:19
+			if(nonblank(RepSpec.f6) and !setinset(RepSpec.f6,INr.DispGroups))then begin
+				testf = false;
+			end;
+		end;
+    
     if (testf) then begin
       InvListOneInternalItem(RepSpec,INr,itemout,grout,lastgroup,sum1p,nrp,groupsum,roundof);
     end;
@@ -1173,7 +1180,11 @@ BEGIN
       end;
     end;
     if (TrHs==false) then begin testf = false; end;
-
+		if(testf)then begin// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 12 December 2017 11:14:19
+			if(nonblank(RepSpec.f6) and !setinset(RepSpec.f6,INr.DispGroups))then begin
+				testf = false;
+			end;
+		end;
     if (testf) then begin
       InvListOneInternalItem(RepSpec,INr,itemout,grout,lastgroup,sum1p,nrp,groupsum,roundof);
     end;

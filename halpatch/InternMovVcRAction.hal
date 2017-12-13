@@ -215,7 +215,7 @@ begin
       	  SVOr.InnerOrderNr = InternMovrw.SerialNr;
       	  if (ReadLastKey("InnerOrderNr",SVOr,1,true)) then begin
       	  	if(SVOr.OrderStatus==2 or SVOr.OrderStatus==6)then begin
-      	  		CreateCustomActivityFromSVO(SVOr,"RMDCl",SVOr.Inspector,currentdate,"РўРѕРІР°СЂ РєР»РёРµРЅС‚Р° РїРµСЂРµРјРµСЃС‚РёР»СЃСЏ РЅР° РїСѓРЅРєС‚ РІС‹РґР°С‡Рё","");
+      	  		CreateCustomActivityFromSVO(SVOr,"RMDCl",SVOr.Inspector,currentdate,"’овар клиента переместилсЯ на пункт выдачи","");
       	  	end;
       	    CreateActFromSVOToEnginer(SVOr,InternMovr.ToLocation);
       	  end;

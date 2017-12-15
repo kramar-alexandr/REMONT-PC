@@ -18,6 +18,7 @@ begin
 	integer i,mtrw,vi,ivmtrw,artcnt,wokcnt;
 	boolean TrHs1,testf1;
 	array string 255 worklist,workname;
+	array val workprice,artprice;
 	vector boolean worktag;
 	vector integer workqty;
 	string 255 vkey,work,partnum;
@@ -47,7 +48,9 @@ begin
 		outstring(0,0,"Серийный номер",false);
 		outstring(0,0,"Неисправность ",false);
 		outstring(0,0,"Выполненная работа ",false);
+		outstring(0,0,"Сумма",false);
 		outstring(0,0,"Наименование деталей",false);
+		//outstring(0,0,"Сумма",false);
 		outstring(0,0,"Выезд/Доставка",false);
 		outstring(0,0,"Город",false);
 		outstring(0,0,"ФИО,Адрес,тел.",false);
@@ -147,6 +150,7 @@ begin
 	  										worktag[vkey] = true;
 	  										worklist[wokcnt] = vkey;
 	  										workname[wokcnt] = IVrw.Spec;
+	  										workprice[wokcnt] = IVrw.Sum;
 	  										wokcnt = wokcnt + 1;
 	  									end;
 	  								end;
@@ -169,6 +173,7 @@ begin
 	  										artktag[vkey] = true;
 	  										artklist[artcnt] = vkey;
 	  										artkname[artcnt] = INr.Name;
+	  										artprice[artcnt] = IVrw.Sum;
 	  										artcnt = artcnt + 1;
 	  									end;
 	  								end;
@@ -215,7 +220,9 @@ begin
 						end;
 					end; 
 					outstring(350,0,workname[0],false);
+					outstring(350,0,workprice[0],false);
 				end else begin
+					outstring(350,0,"",false);
 					outstring(350,0,"",false);
 				end;
 				
@@ -230,8 +237,10 @@ begin
 						end;
 					end; 
 					outstring(350,0,artkname[0],false);
+					//outstring(350,0,artprice[0],false);
 				end else begin
 					outstring(350,0,"",false);
+					//outstring(350,0,"",false);
 				end;
 				outstring(380,0,"",false);
 				outstring(390,0,"",false);
@@ -251,7 +260,9 @@ begin
 							outstring(0,0,"",false);
 							outstring(0,0,"",false);
 							outstring(350,0,workname[vi],false);
+							outstring(350,0,workprice[vi],false);
 							outstring(350,0,artkname[vi],false);
+							//outstring(350,0,artprice[vi],false);
 						endformat;
 					end;
 				end else begin
@@ -265,7 +276,9 @@ begin
 							outstring(0,0,"",false);
 							outstring(0,0,"",false);
 							outstring(350,0,workname[vi],false);
+							outstring(350,0,workprice[vi],false);
 							outstring(350,0,artkname[vi],false);
+							//outstring(350,0,artprice[vi],false);
 						endformat;
 					end;
 				end;

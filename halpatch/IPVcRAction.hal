@@ -517,13 +517,13 @@ some mistery code, what if customer has Sales Currency Defined?
                   temp = ARPayr.RVal;
                 end;
                 temp = temp + IPrw.RecVal;
-                if (temp!=0) and (IPrw.RecVal>0) then begin
+                if ((temp!=0) and (IPrw.RecVal>0) and (ARHistr.CustCode!=IPrw.CustCode)) then begin// Edit ************************** BPI Ukraine - KramarAlexandr - Wednesday, 20 December 2017 14:02:44
                   RecordCheckError(20057,"",i,"CUPNr");      
                   res = -1; 
                   goto LIPVcRecordCheck;
                 end;
                 if (IPrw.InvVal>0) then begin
-                  if (ARPayr.PayDate!=IPp.TransDate) then begin
+                  if ((ARPayr.PayDate!=IPp.TransDate) and (ARHistr.CustCode!=IPrw.CustCode)) then begin// Edit ************************** BPI Ukraine - KramarAlexandr - Wednesday, 20 December 2017 14:03:39
                     RecordCheckError(20853,"",i,"CUPNr");      
                     res = -1; 
                     goto LIPVcRecordCheck;

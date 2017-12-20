@@ -582,7 +582,7 @@ begin
   EndToolBar; //Edit***************************Sasha2,17:21 10.05.2017 }
   FormName(PrintSVOL);
   RecordList(4,17,-21,-39);
-  RlColKey(4,4,"Дата приемки",TransDate,false,AllServGetItemDate);
+  RlColKey(4,4,"Дата приемки",GetItemDate,false,AllServGetItemDate);
   RlColKey(79,79,"№",SerNr,false,AllServSerNr);
   RlColKey(150,150,"Наим.",ItemName,false,AllServItemName);
   RlCol(300,300,"Проблема",Comment1,false);
@@ -641,7 +641,7 @@ begin
   UseView(SVOVc);
   FormName(PrintSVOL);
   RecordList(4,17,-21,-39);
-  RlColKey(4,4,"Дата приемки.",TransDate,false,UnServGetItemDate);
+  RlColKey(4,4,"Дата приемки.",GetItemDate,false,UnServGetItemDate);
   RlColKey(79,79,"№",SerNr,false,UnServSerNr);
   
   RlColKey(160,160,"Товар",ItemName,false,UnServItemName);

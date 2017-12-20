@@ -2727,6 +2727,7 @@ BEGIN
   
     if (indexname=="UnServSerNr")  then begin res = 0; end;
     if (indexname=="UnServTransDate")  then begin res = 0; end;
+    if (indexname=="UnServGetItemDate")  then begin res = 0; end;
     if (indexname=="UnServItemName")  then begin res = 0; end;
     if (indexname=="UnServGaranty")  then begin res = 0; end;
     if (indexname=="UnServVIPStatus")  then begin res = 0; end;
@@ -2741,6 +2742,7 @@ BEGIN
     
     if (indexname=="AllServSerNr")  then begin res = 0; end;
     if (indexname=="AllServTransDate")  then begin res = 0; end;
+    if (indexname=="AllServGetItemDate")  then begin res = 0; end;
     if (indexname=="AllServItemName")  then begin res = 0; end;
     if (indexname=="AllServGaranty")  then begin res = 0; end;
     if (indexname=="AllServVIPStatus")  then begin res = 0; end;
@@ -2757,6 +2759,7 @@ BEGIN
   if (nonblank(SVOr.ServiceManager) or SVOr.OrderStatus==9) then begin 
     if (indexname=="UnServSerNr")  then begin res = 0; end;
     if (indexname=="UnServTransDate")  then begin res = 0; end;
+    if (indexname=="UnServGetItemDate")  then begin res = 0; end;
     if (indexname=="UnServItemName")  then begin res = 0; end;
     if (indexname=="UnServGaranty")  then begin res = 0; end;
     if (indexname=="UnServVIPStatus")  then begin res = 0; end;
@@ -2772,6 +2775,7 @@ BEGIN
   if (SVOr.DoneMark>0 or blankdate(SVOr.RegDate)) then begin 
     if (indexname=="DolgSerNr")  then begin res = 0; end;
     if (indexname=="DolgTransDate")  then begin res = 0; end;
+    if (indexname=="DolgGetItemDate")  then begin res = 0; end;
     if (indexname=="DolgItemName")  then begin res = 0; end;
     if (indexname=="DolgServiceManager")  then begin res = 0; end;
     if (indexname=="DolgKontinfo1")  then begin res = 0; end;

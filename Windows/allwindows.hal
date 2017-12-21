@@ -921,7 +921,8 @@ begin
   if (HasPriceLists) then begin
     EditField(h,v+=vs,80,"Прейскурант",Normal,PriceList,false,PLDefSClass);
   end;
-  EditField(h+120,v,80,"Гр.П.",Normal,SalesGroup,false,0);// Edit ************************** Monday, 22 February 2016 11:00:04
+  EditField(h+120,v-16,80,"Гр.П.",Normal,SalesGroup,false,0);// Edit ************************** Monday, 22 February 2016 11:00:04
+  EditField(h+120,v,80,"Скидка",Normal,RebCode,false,0);// Edit ************************** BPI Ukraine - KramarAlexandr - Thursday, 21 December 2017 13:53:52
   if (HasVATZone) then begin
     v = VATZoneButtonsLabelsrus(h2,v=vm+vs,170,16);
   end;

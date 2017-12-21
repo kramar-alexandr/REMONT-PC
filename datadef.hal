@@ -430,6 +430,16 @@ begin
     KeySegment(TransDate);
     KeySegment(SerNr);
     
+    SubsetKeyBegin2(UnServGetItemDate);
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
+    KeySegment(GetItemDate);
+    KeySegment(SerNr);
+        
     SubsetKeyBegin2(UnServItemName);
     StoreInBaseKey;
     AppendFieldToKeyName(SalesGroup);
@@ -558,6 +568,16 @@ begin
     AppendFieldToKeyName(CustomField7);
     AppendFieldToKeyName(Inspector);
     KeySegment(TransDate);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(AllServGetItemDate);
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
+    KeySegment(GetItemDate);
     KeySegment(SerNr);
     
     SubsetKeyBegin2(AllServItemName);
@@ -690,6 +710,16 @@ begin
     KeySegment(TransDate);
     KeySegment(SerNr);
     
+    SubsetKeyBegin2(AllGetItemDate);
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
+    KeySegment(GetItemDate);
+    KeySegment(SerNr);
+    
     SubsetKeyBegin2(AllItemName);
     StoreInBaseKey;
     AppendFieldToKeyName(SalesGroup);
@@ -818,6 +848,16 @@ begin
     AppendFieldToKeyName(CustomField7);
     AppendFieldToKeyName(Inspector);
     KeySegment(TransDate);
+    KeySegment(SerNr);
+    
+    SubsetKeyBegin2(DolgGetItemDate);
+    StoreInBaseKey;
+    AppendFieldToKeyName(SalesGroup);
+    AppendFieldToKeyName(SalesMan);
+    AppendFieldToKeyName(ServiceManager);
+    AppendFieldToKeyName(CustomField7);
+    AppendFieldToKeyName(Inspector);
+    KeySegment(GetItemDate);
     KeySegment(SerNr);
     
     SubsetKeyBegin2(DolgItemName);

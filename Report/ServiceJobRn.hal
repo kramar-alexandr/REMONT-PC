@@ -711,6 +711,18 @@ begin
 					if(IVr.OKFlag==0)then begin testf = false; end;
 					if(nonblankdate(SVOr.RegDate))then begin testf = false; end;
 					
+					enginer = "";
+					cnt=1;
+					while(ReadRecordLink(IVr,cnt,WSr,RLr)) begin
+						if(nonblank(WSr.EMCode))then begin
+							If(WSr.EMCode!=IVr.SalesMan) then begin
+								IVr.SalesMan = WSr.EMCode;
+							end; 
+						end;
+						cnt = cnt+1;
+					end;
+						
+					
 					if(testf)then begin
 						filter = true;
 						enginer = "";
@@ -983,6 +995,16 @@ begin
 					if(IVr.OKFlag==0)then begin testf = false; end;
 					if(blankdate(SVOr.RegDate))then begin testf = false; end;
 					
+					enginer = "";
+					cnt=1;
+					while(ReadRecordLink(IVr,cnt,WSr,RLr)) begin
+						if(nonblank(WSr.EMCode))then begin
+							If(WSr.EMCode!=IVr.SalesMan) then begin
+								IVr.SalesMan = WSr.EMCode;
+							end; 
+						end;
+						cnt = cnt+1;
+					end;
 					
 					if(testf)then begin
 						filter = true;

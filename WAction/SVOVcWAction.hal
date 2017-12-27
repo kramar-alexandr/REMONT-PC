@@ -2341,3 +2341,33 @@ BEGIN
   end;
   RETURN;
 END; //Edit***************************Sasha2,16:30 22.08.2017 }
+
+
+global
+function Boolean SVODClassOrderStatusButtonAction(Integer wn,Integer value)// Edit ************************** BPI Ukraine - KramarAlexandr - Wednesday, 27 December 2017 18:14:03
+BEGIN
+  Boolean res;
+  record SVOVc SVOr;
+  Integer normalmode,updatemode;
+ 
+  res = true;
+
+	if(usercanaction("DenySVOrStatus12",false))then begin
+		if (value==12) then begin
+			res = false;
+		end;
+	end;
+	if(usercanaction("DenySVOrStatus3",false))then begin
+		if (value==3) then begin
+			res = false;
+		end;
+	end;
+	if(usercanaction("DenySVOrStatus3",false))then begin
+		if (value==8) then begin
+			res = false;
+		end;
+	end;
+//if (IPButActSpec(IPp,IP2p,WindowState(wn),*(Integer*)ap2)==false) then res = false;//I think it is not needed
+  SVODClassOrderStatusButtonAction = res;
+  RETURN;
+END;

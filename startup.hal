@@ -315,6 +315,13 @@ StrSetText(AllowAddingINtoRet,"Добавлять товары в возвраты");
   StrSetText(ChangeSHItemSpec,"Измен. наимен. товара в отгрузке");
   StrSetText(ChangeIVItemSpec,"Измен. наимен. товара в с/ф");
   StrSetText(ChangeORItemSpec,"Измен. наимен. товара в счете");
+  
+  
+  StrSetText(DenySVOrStatus12,"Отмечать статус заказа: Клиент думает");
+  StrSetText(DenySVOrStatus3,"Отмечать статус заказа: Ожидает запч.");
+  StrSetText(DenySVOrStatus8,"Отмечать статус заказа: В удал. сервисе");
+
+  
   StrSetText(AllowSuppInvNoChangeOKVI,"Изменение № сч/ф поставщика на утвежденных сч/ф поставщика");
   StrSetText(AllowWSUpdateStockChange,"Изменение в таблицах работ - Обновление склада");
   StrSetText(AllowGuestChange,"Изменение гостей");

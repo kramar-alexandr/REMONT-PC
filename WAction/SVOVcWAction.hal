@@ -2352,17 +2352,17 @@ BEGIN
  
   res = true;
 
-	if(usercanaction("DenySVOrStatus12",false))then begin
+	if(usercanaction("DenySVOrStatus12",true)==false)then begin
 		if (value==12) then begin
 			res = false;
 		end;
 	end;
-	if(usercanaction("DenySVOrStatus3",false))then begin
+	if(usercanaction("DenySVOrStatus3",true)==false)then begin
 		if (value==3) then begin
 			res = false;
 		end;
 	end;
-	if(usercanaction("DenySVOrStatus3",false))then begin
+	if(usercanaction("DenySVOrStatus8",true)==false)then begin
 		if (value==8) then begin
 			res = false;
 		end;

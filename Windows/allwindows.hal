@@ -10091,3 +10091,436 @@ begin
   SearchField("Поиск");
   EndWindow;
 end;
+
+
+
+window PODClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,h1,h2,h3,h4,v,vm,vs;
+  record CYBlock CYb;
+  string 255 label;
+  Integer tilenr,flipnr,f,rn;
+
+  vs = 20;
+  BlockLoad(CYb);
+  WindowBegin("Заказ поставщику",PODClass,CGview,-);
+  SetWRect(20,80,750,460);
+  Sizeable(-1,-1,0,0);
+  UseView(POVc);
+  CommunicateButton;
+  ActiveFieldOnNew("VECode");
+  Tile(0,74,false,"",VECode);
+  EditField(75,vm=(v=6),95,"Номер",Normal,SerNr,false,TSerSClass);
+  EditField(75,v+=20,95,"Поставщик",Normal,VECode,false,VESClass);
+  EnterSkip(PayDeal);
+  EditField(h=255,v=vm,-40,"Наим.",Normal,Addr0,false,0);
+  if (IsEnterprise) then begin
+    EditField(h,vm=(v+=20),95,"Подписи",Normal,OKPersons,false,UserSClass);
+    CheckBox(h4=-100,v,0,"ОК",OKFlag);
+  end else begin
+    CheckBox(h4=-100,v+=vs,0,"OK",OKFlag);
+  end;
+  tilenr = 1;
+  TileButton(tilenr,"Условия"); tilenr = tilenr + 1;
+  TileButton(tilenr,"Товары"); tilenr = tilenr + 1;
+  if (HasMultiCurrency or HasBase2) then begin
+    TileButton(tilenr,"Валюта"); tilenr = tilenr + 1;
+  end;
+  if (HasModIN) then begin
+    TileButton(tilenr,"Усл. отгрузки"); tilenr = tilenr + 1;
+  end;
+  TileButton(tilenr,"Комментарий"); tilenr = tilenr + 1;
+  TileButton(tilenr,"Адрес зак."); tilenr = tilenr + 1;
+  TileButton(tilenr,"Адрес дост."); tilenr = tilenr + 1;
+  if (IsEnterprise and StandardHansa==false) then begin
+    TileButton(tilenr,"Доп. затр."); tilenr = tilenr + 1;
+  end;
+  tilenr = 1;
+  Tile(tilenr,90,false,tilenr,TransDate); tilenr = tilenr + 1;
+  vs = 20; h1 = 110; h2 = 290; h3 = 530; h4 = -100;
+  EditField(h1,vm=(v=6),82,"Дата",Normal,TransDate,false,PasteCurDate);
+  EditField(h1,v+=vs,25,"Условия оплаты",Normal,PayDeal,false,PDSClass);
+  if (IsEnterprise) then begin
+    EditField(h1,v+=vs,82,"Действителен до",Normal,ValidUntil,false,PasteCurDate);
+  end;
+  if (HasModIN) then begin
+    EditField(h1,v+=vs,82,"Заплан.отгрузка",Normal,PlanShip,false,PasteCurDate);
+  end;
+  EditField(h2,v=vm,135,"Наша ссылка",Normal,OurContact,false,0);
+  EditField(h2,v+=vs,135,"Внимание",Normal,VEContact,false,ContactSClass);
+  if (HasObjects) then begin
+    EditField(h2,v+=vs,135,"Объекты",Normal,Objects,false,ObjSClass);
+  end;
+    EditField(h2,v+=vs,135,"Рекомендатель",Normal,Reference,false,0);
+  if (HasSalesman or HasSalesmanBonus) then begin
+    EditField(h3,v=vm,80,"Продавец",Normal,SalesMan,false,UserSClass);
+  end;
+  if (HasModTS or IsEnterprise) then begin
+    EditField(h3,v+=vs,80,"Проект",Normal,PRCode,false,PRSClass);
+  end;
+  if (IsEnterprise) then begin
+    EditField(h3,v+=vs,80,"Вид заказа пост.",Normal,POClass,false,POrderClassSClass);
+    EditField(h3,v+=vs,80,"Тип счета",ViewOnly,OrderType,false,0);
+  end;
+  CheckBox(h4,v=6,0,"Закрыт",Closed);
+  if (CYb.UseTaxTemplatesforTaxCalc==0) then begin
+  CheckBox(h4,v+=16,0,"Цена вкл. НДС",InclVAT);
+  end else begin
+    CheckBox(h4,v+=16,0,"Цена вкл. НДС",InclVAT);  
+  end;
+  EnterSkip(Math);
+  Tile(tilenr,120,true,tilenr,Math); tilenr = tilenr + 1;
+  if (HasMultiCurrency or HasBase2) then begin
+    EditField(110,-41,70,"Валюта",Normal,CurncyCode,false,CurncyCodeSClass);
+  end;
+  if (IsEnterprise and StandardHansa==false) then begin
+    EditField(110,-21,70,"Паллеты",ViewOnly,TotPalletNr,true,0);
+    EditField(260,-41,70,"Фрахт",Normal,ShipCost,true,0);
+    EditField(260,-21,70,"Таможня",Normal,CustomsCost,true,0);
+  end;
+  if (CYb.UseTaxTemplatesforTaxCalc==0) then begin
+  EditField(410,-41,70,"НДС",ViewOnly,Sum3,true,0);
+  if (HasExtTax) then begin
+    EditField(410,-21,70,"Внеш. нал.",ViewOnly,TAX1Sum,false,0);
+    end;
+  end else begin
+    EditField(410,-41,70,"НДС",ViewOnly,Sum3,true,0);  
+  end;
+  EditField(-169,-41,118,"Подытог",ViewOnly,Sum1,true,0);
+  EditField(-169,-21,118,"Итого",ViewOnly,Sum4,true,0);
+//  CheckBox(20,-21,0,"OK",OKFlag);
+  v = 24;
+  if (HasModIN or HasModPL or HasObjects) then begin
+    MatrixBegin(3,v,-50,-44,-,199);
+  end else begin
+    MatrixBegin(3,v,-25,-44,-,199);
+  end;
+  MatTypedRow(stp);
+  Flip(0);
+  MatCol(1,28,"Товар",0,ArtCode,false,INEnginerSClass);// Edit ************************** BPI Ukraine - KramarAlexandr - Wednesday, 27 December 2017 13:27:26
+//  MatCol(1,84,"Var",0,VARList,true,VARSClass);
+//  MatCol(1,144,"Qty",0,Quant,true,0);
+  if (HasVarieties) then begin
+    MatCol(1,94,"К-во",0,Quant,true,MATVARINSClass);
+  end else begin
+    MatCol(1,94,"К-во",0,Quant,true,0);
+  end;
+  EnterSkip(ArtCode);
+//  MatCol(1,194,"Описание",0,Spec,false,0);
+  flipnr = 1;
+  Flip(flipnr); flipnr = flipnr + 1;
+  MatColTL(1,164,"Ед.",0,M4Code,ViewOnly,5,UnitCode,false,UnitSCLass);
+  MatCol(1,204,"Наименование",0,Spec,false,0);
+  if (HasJewelleryInterface) then begin
+    MatCol(1,-337,"Тип склада",0,StockType,false,SetSClass);
+  end;
+  MatCol(1,-237,"Цена",0,Price,true,0);
+  MatCol(1,-151,"%",0,vRebate,true,0);
+  MatCol(1,-116,"Сумма",0,Sum,true,0);
+  if (CYb.UseTaxTemplatesforTaxCalc!=0) then begin
+    MatCol(1,-30,"Ш.н.",0,TaxTemplateCode,false,TaxTemplateSClass);
+  end else begin
+    MatCol(1,-30,"НДС",0,VATCode,false,VATCodeSClass);
+  end;
+  if (HasObjects) then begin
+    Flip(flipnr); flipnr = flipnr + 1;
+    MatCol(1,164,"Наименование",0,Spec,false,0);
+    if (IsEnterprise) then begin
+      MatCol(1,-310,"Счёт опр.",0,CostAcc,false,AccSClass);
+    end;
+    MatCol(1,-240,"Объекты",0,Objects,false,ObjSClass);
+    if (IsEnterprise) then begin
+      MatCol(1,-170,"Товар пост.",0,VEArtCode,false,PISClass);
+      MatColTL(1,-100,"Ед.пост.",0,M4Code,ViewOnly,5,VEUnit,false,UnitSCLass);//MatCol(1);
+      MatCol(1,-50,"Кол. пост.",0,VEQuant,true,0);
+    end;
+  end;
+  if (HasModIN) then begin
+    Flip(flipnr); flipnr = flipnr + 1;
+    MatCol(1,164,"Наименование",0,Spec,false,0);
+    MatCol(1,-330,"Пост. 1",0,Shipd1,true,0);
+    MatCol(1,-270,"Пост. 2",0,Shipd2,true,0);
+    if (HasModPL) then begin
+      MatCol(1,-210,"Сч/ф",0,Invd,true,0);
+    end;
+    if (HasModWHM) then begin
+      MatCol(1,-150,"№ паллеты",0,PalletNr,true,0);
+    end;
+    if (HasModTS) then begin
+      MatCol(1,-90,"Проект",0,PRCode,true,PRSClass);
+    end;
+    if (HasModSVO) then begin
+      MatCol(1,-40,"№ ТР.",0,WSNr,true,0);
+    end;
+  end;
+  if (IsEnterprise) then begin
+    Flip(flipnr); flipnr = flipnr + 1;
+    if (StandardHansa==false) then begin
+      MatCol(1,164,"Тип заказа",0,OrderType,false,0);
+      MatCol(1,-400,"Тип склада",0,StockType,false,SetSClass);
+    end else begin
+      MatCol(1,164,"Наименование",0,Spec,false,0);
+    end;
+    if (HasTREO) then begin
+      MatCol(1,-300,"TREO",0,TREO,false,SetSClass);
+    end;
+    MatCol(1,-200,"Запл. отгрузка",0,PlanShipRow,true,PasteCurDate);
+    MatCol(1,-100,"Комментарий",0,Comment,true,0);
+    if (StandardHansa==false) then begin
+      Flip(flipnr); flipnr = flipnr + 1;
+      MatCol(1,164,"Наименование",0,Spec,false,0);
+      MatCol(1,-420,"Фрахт",0,ShipCost,true,0);
+      MatCol(1,-360,"Таможня",0,CustomsCost,true,0);
+      label = UserDefined("AccBlock","PUCost1");
+      if (blank(label)) then begin label = "Затраты 1";end;
+      MatCol(1,-300,label,0,RowCost1,true,0);
+      label = UserDefined("AccBlock","PUCost2");
+      if (blank(label)) then begin label = "Затраты 2";end;
+      MatCol(1,-240,label,0,RowCost2,true,0);
+      label = UserDefined("AccBlock","PUCost3");
+      if (blank(label)) then begin label = "Затраты 3";end;
+      MatCol(1,-180,label,0,RowCost3,true,0);
+      label = UserDefined("AccBlock","PUCost4");
+      if (blank(label)) then begin label = "Затраты 4";end;
+      MatCol(1,-120,label,0,RowCost4,true,0);
+      label = UserDefined("AccBlock","PUCost5");
+      if (blank(label)) then begin label = "Затраты 5";end;
+      MatCol(1,-60,label,0,RowCost5,true,0);
+    end;
+  end;
+  DeleteRowTest;
+  InsertRowTest;
+  RowMenuBegin("");         
+  if (HasModIN and GuiType!=kGuiAndroid) then begin
+    RowMenuItem(0,"Статус товара",'I','I',0,"ItemStatusPODsm");         
+  end;
+  if (IsEnterprise) then begin
+    RowMenuItem(0,"Предыдущие цены по продажам",' ',' ',0,"POLastPPrsm");         
+  end;
+  EndRowMenu;
+  EndMatrix;
+  vs = 20;
+//  v = 18;
+  v = v + 1;
+  if (flipnr>2) then begin
+    for (f=1;f<flipnr;f=f+1) begin
+      VTab(-35,v,-16,v+vs,ToolFlip,f,chr(asc("A") + f - 1));
+      v = v + vs;
+    end;
+  end;
+  if (HasMultiCurrency or HasBase2) then begin
+    Tile(tilenr,70,false,tilenr,FrRate); tilenr = tilenr + 1;
+    vs = 20; h = 110; h2 = 295;
+    if (HasBase2) then begin
+      h1 = h1 + 20;
+    end;
+    EditField(h1,v=6,50,"Валюта",Normal,CurncyCode,false,CurncyCodeSClass);
+    if (HasMultiCurrency) then begin
+      if (HasBase2) then begin
+        EditField(h1,v+vs,50,"Осноная валюта 1",Normal,BaseRate1,true,0);
+      end else begin
+        EditField(h1,v+vs,50,"Осноная валюта",Normal,BaseRate1,true,0);
+      end;
+      if (HasBase2) then begin  
+        EditField(h1,v+(vs*2),50,"Осноная валюта 2",Normal,BaseRate2,true,0);  
+      end;
+      EditField(h2=295,v,50,"Курс",Normal,FrRate,true,0);  
+      if (HasBase2) then begin  
+        RateField(h3=360,v,50,":",Normal,"ToRateB1",true,h3+60,v+14,"Осноная валюта 1",false);  
+        RateField(h3,v+=vs,50,":",Normal,"ToRateB2",true,h3+60,v+14,"Осноная валюта 2",false);            
+      end else begin
+        RateField(h3=360,v,50,":",Normal,"ToRateB1",true,h3+60,v+14,"Осноная валюта",false);      
+      end;
+    end else begin
+      EditField(h1,v+=vs,50,"Осноная валюта 1",Normal,BaseRate1,true,0);
+      EditField(h1,v+=vs,50,"Осноная валюта 2",Normal,BaseRate2,true,0);
+    end;
+  end;
+  if (HasModIN) then begin
+    Tile(tilenr,90,false,tilenr,ShipDeal); tilenr = tilenr + 1;
+    vs = 20; h1 = 110; h2 = 290; h3 = 530; h4 = -100;
+    EditField(h1,v=6,80,"Условия доставки",Normal,ShipDeal,false,ShipDealSClass);
+    if (IsEnterprise) then begin
+      EditField(h1,v+=vs,80,"Метод доставки",Normal,ShipMode,false,DMSClass);
+    end;
+    if (HasMultiLocations) then begin
+      EditField(h1,v+=vs,80,"Склад",Normal,Location,false,LocationSClass);
+    end;
+    if (IsEnterprise) then begin
+      if (StandardHansa==false) then begin
+        EditField(h1,v+=vs,80,"Подразделение",ViewOnly,BranchID,false,0);
+//  EditField(h2,v=vm,80,"Total Quantity",ViewOnly,TotQty,true,0);
+//  EditField(h2,v+=vs,80,"Total Weight",ViewOnly,TotWeight,true,0);
+//  EditField(h2,v+=vs,80,"Total Volume",ViewOnly,TotVolume,true,0);
+        EditField(h2,v=vm,80,"Заказ на обсл.",Normal,SVONr,false,0);
+        EditField(h2,v+=vs,80,"№ зак. на работу",Normal,WONr,false,0);
+        EditField(h2,v+=vs,80,"№ процесса",Normal,POCQStatNr,true,POCQStatSClass);
+        EditField(h2,v+=vs,80,"№ контракта",ViewOnly,POCOSerNr,true,0);
+      end;
+      CheckBox(473,v=vm,0,"Счёт перед поступл. товара",InvBeforePU);
+      CheckBox(473,v+=vs,0,"Обнулить поступление товара",SetZeroPUQuant);
+      EditField(h3,v+=vs,80,"Код транспорта интрастат",Normal,IntrastatTransCode,false,IntrastatTransCodeSClass);  
+    end;
+  end;
+  if (IsEnterprise) then begin
+    Tile(tilenr,90,false,tilenr,LangCode); tilenr = tilenr + 1;
+    EditField(h1,v=6,80,"Дискон. матрица",Normal,RebCode,false,RebSClass);
+    if (StandardHansa==false) then begin
+      EditField(h1,v+=vs,80,"Факторинг",Normal,VEFactoring,false,VESClass);
+    end;
+    EditField(h1,v+=vs,80,"№ заказа",Normal,OrdNr,false,0);
+    EditField(h1,v+=vs,-20,"Комментарий",Normal,Comment,false,0);
+    if (HasSalesGroup) then begin
+      EditField(h2,v=vm,80,"Группа продаж",Normal,SalesGroup,false,SalesGroupSClass);
+      EditField(h2,v+=vs,80,"Сч/ф на",Normal,InvoiceToCode,false,VESClass);
+    end;
+    EditField(h2,v+=vs,80,"Ст-сть покупки",Normal,CostPerUnit,true,0);
+    if (HasLanguages) then begin
+      EditField(h3,v=vm,80,"Язык",Normal,LangCode,false,LangSClass);
+    end;
+  end else begin
+    Tile(tilenr,20,false,tilenr,Comment); tilenr = tilenr + 1;
+    if (HasAdvancedPricing) then begin
+      EditField(h1,v=6,80,"Дискон. матрица",Normal,RebCode,false,RebSClass);
+    end else begin
+      EditField(h1,v=6,-20,"Коммент.",Normal,Comment,false,0);
+    end;
+    if (HasLanguages) then begin
+      EditField(h1,v+=vs,80,"Язык",Normal,LangCode,false,LangSClass);         
+    end;    
+  end;
+  Tile(tilenr,230,false,tilenr,Addr1); tilenr = tilenr + 1;
+  label = UserDefined("CUVc","InvAddr0");
+  if (blank(label)) then begin label = "Ordering"; end;
+  EditField(h=110,v=6,-20,label,Normal,Addr1,false,0);
+  label = UserDefined("CUVc","InvAddr1");
+  if (blank(label)) then begin label = "Адрес"; end;
+  EditField(h,v+=vs, -20,label,Normal,Addr2,false,0);
+  label = UserDefined("CUVc","InvAddr2");
+  EditField(h,v+=vs, -20,label,Normal,Addr3,false,0);
+  label = UserDefined("CUVc","InvAddr3");
+  EditField(h,v+=vs, -20,label,Normal,InvAddr3,false,0);
+  label = UserDefined("CUVc","InvAddr4");
+  EditField(h,vm=(v+=vs), -20,label,Normal,InvAddr4,false,0);
+  vm = vm + 40;
+//jjacpt  
+  if (HasApprovals) then begin
+    SoftEditField(h3=h+4,v=vm,123,"Статус утверждения",ViewOnly,"AcceptanceStatusFlag",false,0,M4Str,255);
+  end;
+/*
+//oldapprovals  
+  if (HasApprovals) then begin
+    ButtonFrame(h3=h+4,v=vm,123,6,"Статус утверждения");
+    RadioButton(h3,v,kAcceptanceStateNotRequired,0,"не обязательно",AcceptanceStatus);
+    RadioButton(h3,v+=16,kAcceptanceStateNotStarted,0,"не начато",AcceptanceStatus);
+    RadioButton(h3,v+=16,kAcceptanceStateNotRequested,0,"не запрошено",AcceptanceStatus);
+    RadioButton(h3,v+=16,kAcceptanceStatePending,0,"в ожидании",AcceptanceStatus);
+    RadioButton(h3,v+=16,kAcceptanceStateApproved,0,"утверждено",AcceptanceStatus);
+    RadioButton(h3,v+=16,kAcceptanceStateRejected,0,"отклонено",AcceptanceStatus);
+  end;
+*/  
+  if (HasVATZone) then begin
+    v = VATZoneButtonsLabelsrus(h3=290,v=vm,170,16);
+  end;
+  if (IsEnterprise) then begin
+    EditField(h2=-170,v=vm,150,"Регион",Normal,Region,false,RegionSClass);
+//  EditField(h2,v+=vs,150,"ИНН",Normal,VATNr,false,0);
+//  EditField(h2,v+=vs,150,"Telephone",Normal,Phone,false,0);
+//  EditField(h2,v+=vs,150,"Fax",Normal,Fax,false,0);
+  end;
+  Tile(tilenr,130,false,tilenr,ShipAddr0); tilenr = tilenr + 1;
+  EditField(h,v=6,-20,"Доставка",Normal,ShipAddr0,false,0);
+  EditField(h,v+=vs,-20,"Адрес",Normal,ShipAddr1,false,0);
+  EditField(h,v+=vs,-20,"",Normal,ShipAddr2,false,0);
+  EditField(h,v+=vs,-20,"",Normal,ShipAddr3,false,0);
+  EditField(h,v+=vs,-20,"",Normal,DelAddr3,false,0);
+  EditField(h,v+=vs,-20,"",Normal,DelAddr4,false,0);
+  if (IsEnterprise and StandardHansa==false) then begin
+    Tile(tilenr,70,false,tilenr,ShipCost); tilenr = tilenr + 1;
+    vs = 20; h2 = 290; h3 = 530;
+    label = UserDefined("AccBlock","PUCost1");
+    if (blank(label)) then begin label = "Накл. расходы 1";end;
+    EditField(h1,v=6,70,label,Normal,Cost1,true,0);
+    label = UserDefined("AccBlock","PUCost2");
+    if (blank(label)) then begin label = "Накл. расходы 2";end;
+    EditField(h2,v,70,label,Normal,Cost2,true,0);
+    label = UserDefined("AccBlock","PUCost3");
+    if (blank(label)) then begin label = "Накл. расходы 3";end;
+    EditField(h1,v+=vs,70,label,Normal,Cost3,true,0);
+    label = UserDefined("AccBlock","PUCost4");
+    if (blank(label)) then begin label = "Накл. расходы 4";end;
+    EditField(h2,v,70,label,Normal,Cost4,true,0);
+    label = UserDefined("AccBlock","PUCost5");
+    if (blank(label)) then begin label = "Накл. расходы 5";end;
+    EditField(h1,v+=vs,70,label,Normal,Cost5,true,0);
+    EnterSkip(TransDate);
+    ButtonFrame(h3,v=16,130,2,"Расчет накл. затрат");
+    RadioButton(h3,v,0,0,"Стоимость",ExtraCostsCalculation);
+    RadioButton(h3,v+=16,1,0,"Вес",ExtraCostsCalculation);
+  end;
+  if (GuiType==kGuiMetro) then begin // Temporarily disabled on Windows 8
+/*  
+    if (IsEnterprise) then begin
+      SpecialMenu("Add Planned Payment",' ',9,"PlannedPaymentPODsm");         
+    end;
+*/    
+    if (HasModIN) then begin
+      SpecialMenu("Статус товара",'I',2,"ItemStatusPODsm");
+    end;
+    SpecialMenu("Статус заказа поставщику",'r',5,"POStatRnPODsm");
+    SpecMenuGroup("",kSpecMenuGroupTypeExtendedPlusMenu,0);         
+    if (HasModIN) then begin
+      SpecialMenu("Создать поступление",'L',0,"PUFromPODsm");
+    end;
+    if (HasModPL) then begin
+      SpecialMenu("Создать реализацию",'F',1,"VIFromPODsm");
+    end;
+    if (IsEnterprise) then begin
+      SpecialMenu("Создать возврат товаров",'B',6,"RetPUFromPODsm");
+    end;
+/*
+  if (HaseMail) then begin
+    SpecialMenu("Создать эл. письмо",'m',3,"CreateMailFromPODsm");
+  end;
+*/
+  end else begin
+  SpecialMenu("Поиск товара",'f',1,"ItemSearchDsm");         
+  if (HasTaxMatrix) then begin
+    SpecialMenu("Открыть матрицу налогов",' ',25,"OpenVatMatrixPODsm");  
+  end;  
+  SpecialMenu("Статус заказа поставщику",'r',5,"POStatRnPODsm");         
+  if (IsEnterprise) then begin
+    SpecialMenu("Резервации",' ',6,"POReservPODsm");         
+  end;
+  if (HasApprovals) then begin
+    SpecialMenu("Запросить утверждение",' ',6,"POSendforAcceptancePODsm"); 
+    SpecialMenu("Отменить запрос утверждения",' ',2,"CancelApprovalRequestDsm"); 
+  end;
+  SpecMenuGroup("",kSpecMenuGroupTypeExtendedPlusMenu,0);         
+  if (HasModCRM) then begin
+//    SpecialMenu("Activity",'c',9,"CreateActFromPODsm");
+  end;
+  if (HasDownpayments) then begin
+    SpecialMenu("Счёт на предоплату",' ',3,"DownPayFromPODsm"); 
+  end;
+  if (HaseMail) then begin
+    SpecialMenu("Эл. письмо",'m',3,"CreateMailFromPODsm");         
+  end;
+  if (HasModIN) then begin
+    SpecialMenu("Поступление",'L',0,"PUFromPODsm");
+  end;
+  if (IsEnterprise and StandardHansa==false) then begin
+    SpecialMenu("Уведомление об отгрузке",'l',0,"DropSHFromPODsm");
+  end;
+  if (HasModPL) then begin
+    SpecialMenu("Счёт-фактуру",'F',1,"VIFromPODsm");
+  end;
+  if (HasRetGoodsToSupp and HasModIN) then begin
+    SpecialMenu("Возврат товаров",'B',6,"RetPUFromPODsm");
+  end;
+    SpecialMenu("Добавить поставщика",' ',0,"AddSupplierPODsm"); 
+    SpecialMenu("Добавить товар",' ',0,"AddItemPODsm");     
+  end;
+  EndWindow;
+end;

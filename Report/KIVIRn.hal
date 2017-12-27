@@ -33,6 +33,7 @@ begin
 	integer sumworkscnt;
 	vector boolean vbsumworks;
 	record INVc INr;
+	val sumprices;
 	
 	sd = RepSpec.sStartDate;
 	ed = RepSpec.sEndDate;
@@ -151,6 +152,7 @@ begin
 	  										worklist[wokcnt] = vkey;
 	  										workname[wokcnt] = IVrw.Spec;
 	  										workprice[wokcnt] = IVrw.Sum;
+	  										sumprices = sumprices + IVrw.Sum;
 	  										wokcnt = wokcnt + 1;
 	  									end;
 	  								end;
@@ -286,6 +288,27 @@ begin
 		end;
 		
 	end;
+	
+	startformat(15);
+		outstring(0,0,"",false);	
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"‚ρεγξ",false);
+		outstring(0,0,sumprices,false);
+		outstring(0,0,"",false);
+		//outstring(0,0,"‘σμμΰ",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+	endformat;
+	
 	startformat(15);
 	endformat;
 	

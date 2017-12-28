@@ -1376,11 +1376,11 @@ BEGIN
           goto LCheckObjsNew;
         end;
         if (nonblank(RUr.OTCode)) then begin
-          if (otfound[RUr.OTCode]) then begin
+          /*if (otfound[RUr.OTCode]) then begin// Edit ************************** BPI Ukraine - KramarAlexandr - Thursday, 28 December 2017 12:09:48
             res = 1071;
             resstr = ostr;
             goto LCheckObjsNew;
-          end;
+          end;*/
           otfound[RUr.OTCode] = true;        
 /*        
           ots[ocnt] = RUr.OTCode;

@@ -1295,6 +1295,14 @@ BEGIN
     end;
   end;
   GetWindowRecord(wn,SVOr);
+  
+  if(blank(SVOr.Kontinfo1))then begin
+  	if(fieldname!="Kontinfo1")then begin
+  		res = false;
+  		messagebox(0,"При заполнении данных первым должен быть введен номер телефона!");// Edit ************************** BPI Ukraine - KramarAlexandr - Wednesday, 3 January 2018 12:28:04
+    	goto LSVODClassActiveEditField;
+  	end;
+  end;
   switch (fieldname) begin
     case "VATNr": res = HasLocalization("PRT")==false;
     case "Addr0": res = HasLocalization("PRT")==false;

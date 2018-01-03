@@ -1887,6 +1887,26 @@ return;
 end;
 
 global
+updating function LongInt SVOVcRecordCheckClient(var record SVOVc SVOr,record SVOVc SVO2r,LongInt stat,LongInt check)// Edit ************************** BPI Ukraine - KramarAlexandr - Wednesday, 3 January 2018 11:26:37
+BEGIN
+	record CUVc CUr;
+	
+	
+	if(nonblank(SVOr.CustCode))then begin
+		CUr.Code = SVOr.CustCode;
+		if(readfirstmain(CUr,1,true))then begin
+			if(nonblank(CUr.WarnText1))then begin
+				messagebox(0,CUr.WarnText1);
+			end;
+		end;
+	end;
+	
+	SVOVcRecordCheckClient = 0;
+return;
+end;
+
+
+global
 updating function LongInt SVOVcRecordCheck(var record SVOVc SVOr,record SVOVc SVO2r,LongInt stat,LongInt check)
 BEGIN
   row SVOVc SVOrw;

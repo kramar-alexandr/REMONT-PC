@@ -2186,3 +2186,48 @@ begin
 		  MessageBox(1356,"");
 		end; 
 end;
+
+global //Edit***************************Sasha2,13:21 13.10.2016
+updating procedure CUToBlackListDsm()
+begin
+	integer wn;
+	record SVOVc SVOr,SVO2r;
+	record CUVc CUr;
+	
+		wn = CurWindow;
+		if (WindowState(wn)==Rs_normal) then begin
+  		DeselectWindow(wn,false);
+  		GetWindowRecord(wn,SVOr);
+   		
+   		if(nonblank(SVOr.CustCode))then begin
+				CUr.Code = SVOr.CustCode;
+				if(readfirstmain(CUr,1,true))then begin
+					if(blank(CUr.WarnText1))then begin
+						CUr.WarnText1 = "Љлиент в черном списке";
+						recordstore(CUr,true);
+					end;
+				end;
+			end;
+		end else begin
+		  MessageBox(1356,"");
+		end; 
+end;
+
+global //Edit***************************Sasha2,13:21 13.10.2016
+updating procedure CloseContactDsm()
+begin
+	integer wn;
+	record SVOVc SVOr,SVO2r;
+	record CUVc CUr;
+	
+		wn = CurWindow;
+		if (WindowState(wn)==Rs_normal) then begin
+  		DeselectWindow(wn,false);
+  		GetWindowRecord(wn,CUr);
+			CUr.blockedFlag = 1;
+			recordstore(CUr,true);
+			putwindowrecord(wn,CUr);
+		end else begin
+		  MessageBox(1356,"");
+		end; 
+end;

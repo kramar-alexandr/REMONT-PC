@@ -2497,13 +2497,16 @@ begin
   EditField(h1,v,50,"Категория поставщика",Normal,VECat,false,VGSClass);
   
   CheckBox(h1+80,v=6,0,"Клиент",CUType);
+  CheckBox(h1+300,v,0,"Закрыт",blockedFlag);
   CheckBox(h1+80,v+=16,0,"Поставщик",VEType);
   CheckBox(h1+80,v+=16,0,"Партнер",IsPartner); //Edit***************************Sasha2,10:18 09.12.2015  
   CheckBox(h1+180,v+=16,0,"Потенциальный клиент",LeadType);
   
+  
   EditField(h,v+=vs,-50,"ФИО",Normal,Name,false,0);
   v = v + vs;
   StaticText(h,v+=vs,"Юридический адрес",false);
+  EditField(h+250,v-10,-20,"Предупр",Normal,WarnText1,false,0);
   label = UserDefined("CUVc","InvAddr0");
   EditField(h,v+=vs,-20,label,Normal,InvAddr0,false,0);
   label = UserDefined("CUVc","InvAddr1");
@@ -3020,6 +3023,7 @@ begin
     SpecialMenu("Создать объекты",' ',1,"CreateObjectCUDsm");
     SpecialMenu("Создать письмо с паролем",' ',3,"RandomPassMailCUDsm");
   end;*/
+  SpecialMenu("Закрыть карточку контакта",' ',1,"CloseContactDsm");
   EndWindow;
 end;
 

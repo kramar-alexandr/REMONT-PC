@@ -549,6 +549,9 @@ begin
   SpecialMenu("Поиск товара",'f',2,"ItemSearchDsm");
   SpecialMenu("Статус оплат по заказу",' ',0,"SVOPaymentRnDsm");
   SpecialMenu("Печатать чек",' ',0,"PrintSVOReceiptDsm"); //Edit***************************Sasha2,13:47 13.10.2016
+  SpecialMenu("--------------------------------",' ',0,""); 
+  SpecialMenu("Добавить клиента в черный список",' ',0,"CUToBlackListDsm"); //Edit***************************Sasha2,13:47 13.10.2016
+
   SpecMenuGroup("",kSpecMenuGroupTypeExtendedPlusMenu,0);
   SpecialMenu("Копировать",'',3,"MakeSVORecordCopyDsm");
   SpecialMenu("Создать деятельность",'G',3,"ActFromSVODsm");
@@ -6936,6 +6939,7 @@ begin
   if (GuiType==kGuiiPhone) then begin
     SpecialMenu("Поменять пароль",' ',1,"ChangePasswdCUDsm");
   end;
+  SpecialMenu("Закрыть карточку контакта",' ',1,"CloseContactDsm");
     SpecMenuGroup("",kSpecMenuGroupTypeExtendedPlusMenu,0); 
 //    SpecialMenu("",'c',2,"NewActCUDsm");
     SpecialMenu("Контакт",' ',1,"NewContactCUDsm"); 

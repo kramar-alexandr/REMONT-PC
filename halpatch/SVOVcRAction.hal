@@ -2363,6 +2363,15 @@ BEGIN
       goto LSVOVcRecordCheck;
   end;
   
+  CUr.Code = SVOr.CustCode;
+  if(readfirstmain(CUr,1,true))then begin
+  	if(CUr.blockedFlag>0)then begin
+  		RecordCheckError(1265,CUr.Code,-1,"CustCode");      
+      res = -1;
+      goto LSVOVcRecordCheck;
+  	end;
+  end;
+  
   errcode = CheckObjs("",SVOr.Objects,errstr);
   if (errcode!=0) then begin
     RecordCheckError(errcode,errstr,-1,"Objects");      

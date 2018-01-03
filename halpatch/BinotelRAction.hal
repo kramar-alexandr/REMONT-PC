@@ -186,7 +186,9 @@ BEGIN
 			createrecordlink(BCEr,currentcompany,Actr,currentcompany);
 			
 			logtext(0,"RemoteUserFunction " & users & " OpenNewActivity");
-			AllClientsRemoteAsync.RemoteUserFunction(users,"OpenNewActivity",Actr.SerNr,"");
+			if(calltype==1)then begin
+				AllClientsRemoteAsync.RemoteUserFunction(users,"OpenNewActivity",Actr.SerNr,"");
+			end;
 			
 		
 		end;

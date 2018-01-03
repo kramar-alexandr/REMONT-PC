@@ -494,14 +494,14 @@ begin
         end;
         
         if (nonBlankDate(SVOr.RegDate) and BlankDate(SVO2r.RegDate) and SVOr.GetItemFlag>0 and SVOr.OrderStatus==2) then begin
-          CreateCustomActivityFromSVO(SVOr,"ОБЗВ",SVOr.Inspector,addday(SVOr.RegDate,7),"Обзвон 7 дней","ОБЗВ");
-          CreateCustomActivityFromSVO(SVOr,"ОБЗВ",SVOr.Inspector,addday(SVOr.RegDate,60),"Обзвон 60 дней","ОБЗВ");
-          CreateCustomActivityFromSVO(SVOr,"ОБЗВ",SVOr.Inspector,addday(SVOr.GarantyToDate,-7),"Обзвон -7 дней до гарантии","ОБЗВ");
+          CreateCustomActivityFromSVO(SVOr,"ОБЗВ",SVOr.Inspector,addday(SVOr.RegDate,7),"Обзвон 7 дней",SVOr.SalesGroup);
+          CreateCustomActivityFromSVO(SVOr,"ОБЗВ",SVOr.Inspector,addday(SVOr.RegDate,60),"Обзвон 60 дней",SVOr.SalesGroup);
+          CreateCustomActivityFromSVO(SVOr,"ОБЗВ",SVOr.Inspector,addday(SVOr.GarantyToDate,-7),"Обзвон -7 дней до гарантии",SVOr.SalesGroup);
         end;
         if (nonBlankDate(SVOr.RegDate) and nonBlankDate(SVO2r.RegDate) and SVOr.GetItemFlag>0 and SVOr.OrderStatus==2 and SVOr.OrderStatus!=2) then begin
-          CreateCustomActivityFromSVO(SVOr,"ОБЗВ",SVOr.Inspector,addday(SVOr.RegDate,7),"Обзвон 7 дней","ОБЗВ");
-          CreateCustomActivityFromSVO(SVOr,"ОБЗВ",SVOr.Inspector,addday(SVOr.RegDate,60),"Обзвон 60 дней","ОБЗВ");
-          CreateCustomActivityFromSVO(SVOr,"ОБЗВ",SVOr.Inspector,addday(SVOr.GarantyToDate,-7),"Обзвон -7 дней до гарантии","ОБЗВ");
+          CreateCustomActivityFromSVO(SVOr,"ОБЗВ",SVOr.Inspector,addday(SVOr.RegDate,7),"Обзвон 7 дней",SVOr.SalesGroup);
+          CreateCustomActivityFromSVO(SVOr,"ОБЗВ",SVOr.Inspector,addday(SVOr.RegDate,60),"Обзвон 60 дней",SVOr.SalesGroup);
+          CreateCustomActivityFromSVO(SVOr,"ОБЗВ",SVOr.Inspector,addday(SVOr.GarantyToDate,-7),"Обзвон -7 дней до гарантии",SVOr.SalesGroup);
         end;
         
         

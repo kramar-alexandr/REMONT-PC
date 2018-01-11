@@ -249,6 +249,11 @@ begin
 				res = true;
 			end;
 		end;
+		if(nonblank(INr.Disp6Name))then begin
+			if(INr.Disp6Name!="KIVI" and INr.Disp6Name!="kivi" and INr.Disp6Name!="Kivi")then begin
+				res = false;
+			end;
+		end;
 		
 	end;
 	

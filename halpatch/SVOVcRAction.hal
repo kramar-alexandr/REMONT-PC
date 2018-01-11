@@ -249,8 +249,8 @@ begin
 				res = true;
 			end;
 		end;
-		if(nonblank(INr.Disp6Name))then begin
-			if(INr.Disp6Name!="KIVI" and INr.Disp6Name!="kivi" and INr.Disp6Name!="Kivi")then begin
+		if(nonblank(INr.Disp5Name))then begin
+			if(INr.Disp5Name!="KIVI" and INr.Disp5Name!="kivi" and INr.Disp5Name!="Kivi")then begin
 				res = false;
 			end;
 		end;

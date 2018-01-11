@@ -98,11 +98,11 @@ begin
 				outstring(130,0,partnum,false);
 				diagstr = left(partnum,2);
 				
-				if(left(SVOrw.ArtCode,5)=="KIVI_")then begin
-					diagstr = mid(SVOrw.ArtCode,5,2);
+				if(left(partnum,5)=="KIVI_")then begin
+					diagstr = mid(partnum,5,2);
 				end else begin
-					if(left(SVOrw.ArtCode,4)=="KIVI")then begin
-						diagstr = mid(SVOrw.ArtCode,4,2);
+					if(left(partnum,4)=="KIVI")then begin
+						diagstr = mid(partnum,4,2);
 					end;
 				end;
 				

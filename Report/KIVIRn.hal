@@ -125,9 +125,9 @@ begin
 					outstring(200,0,"",false);
 					diagstr = "";
 				end;
-				if(left(currentuser,2)=="SA")then begin
+				/*if(left(currentuser,2)=="SA")then begin
 					outstring(220,0,SVOrw.Spec,false);
-				end;
+				end;*/
 				outstring(220,0,SVOrw.NewSerialNr,false);
 				outstring(260,0,SVOr.Comment1,false);
 				

@@ -276,8 +276,13 @@ begin
 							outstring(0,0,"",false);
 							outstring(0,0,"",false);
 							outstring(0,0,"",false);
-							outstring(350,0,workname[vi],false);
-							outstring(350,0,workprice[vi],false);
+							if(vi<artcnt)then begin
+								outstring(350,0,workname[vi],false);
+								outstring(350,0,workprice[vi],false);
+							end else begin
+								outstring(350,0,"",false);
+								outstring(350,0,"",false);
+							end;
 							outstring(350,0,artkname[vi],false);
 							//outstring(350,0,artprice[vi],false);
 						endformat;
@@ -294,7 +299,11 @@ begin
 							outstring(0,0,"",false);
 							outstring(350,0,workname[vi],false);
 							outstring(350,0,workprice[vi],false);
-							outstring(350,0,artkname[vi],false);
+							if(vi<artcnt)then begin
+								outstring(350,0,artkname[vi],false);
+							end else begin
+								outstring(350,0,"",false);
+							end;
 							//outstring(350,0,artprice[vi],false);
 						endformat;
 					end;

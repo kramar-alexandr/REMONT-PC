@@ -85,6 +85,10 @@ begin
 				if(left(partnum,5)=="KIVI_")then begin
 					partnum = mid(partnum,5,len(partnum)-5);
 				end;
+				if(left(partnum,5)=="’…‹…‚ˆ‡_KI")then begin
+					partnum = mid(partnum,12,len(partnum)-12);
+				end;
+				
 				if(right(partnum,1)=="_")then begin
 					partnum = left(partnum,len(partnum)-1);
 				end;

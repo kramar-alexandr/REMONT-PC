@@ -2258,6 +2258,7 @@ global updating procedure CloseActrCustomMn()begin
 				if(nonblankdate(SVOr.PlanShipDate) or nonblankdate(SVOr.RegDate) or SVOr.OrderStatus==2 or SVOr.OrderStatus==6)then begin
 					Actr.OKFlag = 1;
 					recordstore(Actr,true);
+					stepback(Actr);
 				end;
 			end;
 		end;		

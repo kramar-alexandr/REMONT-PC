@@ -18,6 +18,9 @@ external function Boolean PUVc_PasteArtCode(var record PUVc,Integer,var string,v
 external function Integer PUVc_PasteQuant(var record PUVc,Integer);//Edit----------------------Dima  18.03.2016
 external function Boolean PUVc_PasteVECode(var record PUVc); //Edit----------------------Dima  18.03.2016
 
+SetLangMode(LangRussian,"RUS",0);
+
+
 global
 function roundmode DefaultRoundMode()
 begin

@@ -909,7 +909,12 @@ begin
   	    if (Actr.SVOSerNr!=SVOr.SerNr) then begin TrHs = false; testf = false; end;
   	    if (Actr.ActType!="ENGNR") then begin testf = false; end;
   	    if (testf) then begin
-  	      Actr.Comment = SVOr.SerNr & " " & SVOr.Comment1;
+  	    	if(nonblank(SVOr.InnerOrderNr))then begin
+						Actr.Comment = SVOr.InnerOrderNr & " " & SVOr.Comment1;
+					end else begin
+						Actr.Comment = SVOr.SerNr & " " & SVOr.Comment1;
+					end;
+
       		if(matrowcnt(SVOr)>0)then begin
       			matrowget(SVOr,0,SVOrw);
       			INr.Code = SVOrw.ArtCode;

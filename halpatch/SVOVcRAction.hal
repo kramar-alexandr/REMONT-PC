@@ -81,7 +81,12 @@ begin
   	  end;
       
       recordnew(Actr);
-  		Actr.Comment = SVOr.SerNr & " " & comment;
+      if(nonblank(SVOr.InnerOrderNr))then begin
+      	Actr.Comment = SVOr.InnerOrderNr & " " & comment;
+      end else begin
+      	Actr.Comment = SVOr.SerNr & " " & comment;
+      end;
+  		
   		Actr.CUCode = SVOr.CustCode;
   		Actr.CUName = SVOr.Addr0;
       Actr.AlarmType = kAlarmTypeNone;

@@ -77,6 +77,7 @@ begin
   Maintenance("Замена групп товаров",FixItemGroupVClass,FixItenGroupsMn,modIN);
   Maintenance("Fix DICodes",MyVClass,FixDI,modIN);
   Maintenance("Fix OJC Acts",MyVClass,FixActSVONr,modSY);
+  Maintenance("Close GOGOK Acts",MyVClass,CloseActrCustomMn,modSY);
   
   
   Maintenance("Fix WS SalesMan",MyVClass,FixWSManagerMn,modDBMain);

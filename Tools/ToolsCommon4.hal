@@ -2234,3 +2234,31 @@ begin
 
 return;
 end;
+
+
+global updating procedure CloseActrCustomMn()begin
+	record ActVc Actr;
+	record SVOVc SVOr;
+	boolean TrHs,testf;
+	
+	Actr.OKFlag = 0;
+	TrHs = true;
+	while(loopkey("OKFlag",Actr,1,TrHs))begin
+		testf = true;
+		if(Actr.OKFlag!=0)then begin TrHs = false; testf = false; end;
+		if(Actr.ActType!="‘ŽƒŽŠ")then begin testf = false; end;
+		if(Actr.SVOSerNr<0)then begin testf = false; end;
+		
+		if(testf)then begin
+			SVOr.SerNr = Actr.SVOSerNr;
+			if(readfirstmain(SVOr,1,true))then begin
+				if(nonblankdate(SVOr.PlanShipDate) or nonblankdate(SVOr.RegDate) or SVOr.OrderStatus==2 or SVOr.OrderStatus==6)then begin
+					Actr.OKFlag = 1;
+					recordstore(Actr,true);
+				end;
+			end;
+		end;		
+	end;
+	
+return;
+end;

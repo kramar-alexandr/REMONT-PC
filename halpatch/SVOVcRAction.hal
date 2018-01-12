@@ -201,7 +201,11 @@ begin
     recordcopy(lActr,Actr);
     Actr.ActResult = actResult;
     Actr.OKFlag = 1;
-    recordupdate(lActr,Actr,true);
+    if(recordupdate(lActr,Actr,true)!=0)then begin
+    	Actr.ActResult = actResult;
+			Actr.OKFlag = 1;
+			recordstore(Actr,true);
+    end;
 end;
 
 global function boolean KIVIFound(record SVOVc SVOr)
@@ -350,7 +354,7 @@ begin
 							end;
 					end;
 
-					if(SVO2r.OrderStatus!=1 and SVOr.OrderStatus==1)then begin//ушло в ремонт
+					if((SVO2r.OrderStatus!=1 and SVOr.OrderStatus==1) or nonblankdate(SVOr.PlanShipDate) or nonblankdate(SVOr.RegDate))then begin//ушло в ремонт
 							testf1 = true;
 							if(Actr.ActType!="‘ЋѓЋЉ")then begin testf1 = false; end;
 							testf1 = (testf1 and testf);

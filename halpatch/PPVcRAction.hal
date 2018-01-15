@@ -705,12 +705,14 @@ L12:;
         	if (GetPMRow(PPr.PayMode,PMrw)) then begin
         		if(nonblank(PMrw.Objects))then begin
         			if(!setinset(PMrw.Objects,PPrw.Objects))then begin
-								PPrw.Objects = PPrw.Objects & "," & PMrw.Objects;
-								matrowput(PPr,i,PPrw);
+        				if(nonblank(PPrw.Objects))then begin
+									PPrw.Objects = PPrw.Objects & "," & PMrw.Objects;
+									matrowput(PPr,i,PPrw);
+								end else begin
+									PPrw.Objects = PMrw.Objects;
+        					matrowput(PPr,i,PPrw);
+								end;
         			end;
-        		end else begin
-        			PPrw.Objects = PMrw.Objects;
-        			matrowput(PPr,i,PPrw);
         		end;
         	end;
         end;// Edit ************************** BPI Ukraine - KramarAlexandr - понеділок, 15 січня 2018 р. о 22:29:38

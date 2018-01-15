@@ -700,6 +700,11 @@ L12:;
           res = -1; 
           goto LPPVcRecordCheck;
         end;
+        
+        if(blank(PPrw.PayMode))then begin
+        	PPrw.PayMode = PPr.PayMode;// Edit ************************** BPI Ukraine - KramarAlexandr - понеділок, 15 січня 2018 р. о 22:22:50
+        end;
+        
         errcode = CheckObjs(Userr.PersAcc,PPrw.Objects,errstr);
         if (errcode!=0) then begin
           RecordCheckError(errcode,errstr,i,"Objects");      

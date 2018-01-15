@@ -730,7 +730,9 @@ L12:;
         end;  
         if (HasIntegratedNL) then begin
           if (GetPMRow(pmmode,PMrw)) then begin end;
+          logtext(0,PPrw.Objects);
           errcode = CheckObjs(PMrw.AccNr,PPrw.Objects,errstr);
+          logtext(0,errcode);
           if (errcode!=0) then begin
             RecordCheckError(errcode,errstr,i,"Objects");      
             res = -1;

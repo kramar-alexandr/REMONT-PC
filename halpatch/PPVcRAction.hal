@@ -716,7 +716,7 @@ L12:;
         		end;
         	end;
         end;// Edit ************************** BPI Ukraine - KramarAlexandr - понеділок, 15 січня 2018 р. о 22:29:38
-        
+        messagebox(0,PPrw.Objects);
         errcode = CheckObjs(Userr.PersAcc,PPrw.Objects,errstr);
         if (errcode!=0) then begin
           RecordCheckError(errcode,errstr,i,"Objects");      

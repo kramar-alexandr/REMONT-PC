@@ -718,6 +718,7 @@ L12:;
         end;// Edit ************************** BPI Ukraine - KramarAlexandr - понеділок, 15 січня 2018 р. о 22:29:38
         logtext(0,PPrw.Objects);
         errcode = CheckObjs(Userr.PersAcc,PPrw.Objects,errstr);
+        logtext(0,errcode);
         if (errcode!=0) then begin
           RecordCheckError(errcode,errstr,i,"Objects");      
           res = -1; 

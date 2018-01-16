@@ -1277,16 +1277,16 @@ BEGIN
             resstr = ostr;
             goto LCheckObjs;
           end;
-          /*if (nonblank(RUr.OTCode)) then begin// Edit ************************** BPI Ukraine - KramarAlexandr - Thursday, 28 December 2017 11:06:57
+          if (nonblank(RUr.OTCode)) then begin// Edit ************************** BPI Ukraine - KramarAlexandr - Thursday, 28 December 2017 11:06:57
             ots[ocnt] = RUr.OTCode;
             for (j=0;j<ocnt ;j=j+1) begin
               if (ots[j]==ots[ocnt]) then begin
-                res = 1071;
-                resstr = ostr;
-                goto LCheckObjs;
+                //res = 1071;// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 16 January 2018 10:01:03
+                //resstr = ostr;
+                //goto LCheckObjs;
               end;
             end;
-          end;*/
+          end;
         end;
         if (found["CUVc"]) then begin
           if (CUr.blockedFlag!=0) then begin

@@ -664,7 +664,8 @@ begin
 			outstring(90,0,"Проср.календ.дн.",false);
 			outstring(150,0,"Собств.",false);
 			outstring(220,0,"Серв.мастер.",false);
-			outstring(270,0,"Устройство",false);
+			//outstring(270,0,"Устройство",false);
+			outstring(270,0,"Статус",false);
 			outstring(350,0,"Сер.номер",false);
 			outstring(390,0,"Наименование",false);
 		endformat;
@@ -705,7 +706,8 @@ begin
 					outstring(150,0,SVOr.Vlastnik,false);
 					outstring(220,0,SVOr.ServiceManager,false);
 					MatRowGet(SVOr,0,SVOrw);
-					outstring(270,0,SVOrw.ArtCode,false);
+					//outstring(270,0,SVOrw.ArtCode,false);
+					outstring(270,0,SVOr.StatusText,false);
     			outstring(350,0,SVOrw.SerialNr,false);
     			outstring(390,0,SVOrw.Spec,false);
 				endformat;
@@ -743,7 +745,8 @@ begin
 			outstring(90,0,"Проср.календ.дн.",false);
 			outstring(150,0,"Собств.",false);
 			outstring(220,0,"Серв.мастер",false);
-			outstring(270,0,"Устройство",false);
+			//outstring(270,0,"Устройство",false);
+			outstring(270,0,"Статус",false);
 			outstring(350,0,"Сер.номер",false);
 			outstring(390,0,"Наименование",false);
 		endformat;
@@ -773,7 +776,8 @@ begin
 					outstring(150,0,SVOr.Vlastnik,false);
 					outstring(220,0,SVOr.ServiceManager,false);
 					MatRowGet(SVOr,0,SVOrw);
-					outstring(270,0,SVOrw.ArtCode,false);
+					//outstring(270,0,SVOrw.ArtCode,false);
+					outstring(270,0,SVOr.StatusText,false);
     			outstring(350,0,SVOrw.SerialNr,false);
     			outstring(390,0,SVOrw.Spec,false);
 				endformat;

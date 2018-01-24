@@ -361,6 +361,14 @@ begin
 									CloseActivity(Actr,"ОК");
 							end;
 					end;
+					if(SVO2r.OrderStatus!=12 and SVOr.OrderStatus==12)then begin//Клиент думает - тоже согласовано
+							testf1 = true;
+							if(Actr.ActType!="СОГЛ")then begin testf1 = false; end;
+							testf1 = (testf1 and testf);
+							if(testf1)then begin
+									CloseActivity(Actr,"ОК");
+							end;
+					end;
 
 					if((SVO2r.OrderStatus!=1 and SVOr.OrderStatus==1) or nonblankdate(SVOr.PlanShipDate) or nonblankdate(SVOr.RegDate))then begin//ушло в ремонт
 							testf1 = true;

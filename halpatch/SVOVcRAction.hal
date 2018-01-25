@@ -2337,6 +2337,7 @@ BEGIN
   		recordnew(CUr);
   		CUr.Code = SVOr.Kontinfo1;
   		CUr.Phone = SVOr.Kontinfo1;
+  		CUr.AltPhone = SVOr.Phone2;
   		if(nonblank(SVOr.Vlastnik))then begin
   			CUr.Name = SVOr.Vlastnik;
   		end else begin

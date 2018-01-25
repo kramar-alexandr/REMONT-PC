@@ -1134,18 +1134,20 @@ BEGIN
 				end;
 			end;
 		end;
-		if(nonblank(SVOr.Phone2) and SVOr.Phone2!=CUr.Phone and SVOr.Phone2!=CUr.Mobile and SVOr.Phone2!=CUr.AltPhone)then begin
-			if(blank(CUr.Mobile))then begin
-				CUr.Mobile = SVOr.Phone2;
+		
+		if(nonblank(SVOr.Phone2) and SVOr.Phone2!=CUr.Phone and SVOr.Phone2!=CUr.AltPhone and SVOr.Phone2!=CUr.Mobile)then begin
+			if(blank(CUr.AltPhone))then begin
+				CUr.AltPhone = SVOr.Phone2;
 				modify = true;
 			end;
 			if(SVOr.Phone2!=CUr.Phone and SVOr.Phone2!=CUr.Mobile and SVOr.Phone2!=CUr.AltPhone)then begin
-				if(blank(CUr.AltPhone))then begin
-					CUr.AltPhone = SVOr.Phone2;
+				if(blank(CUr.Mobile))then begin
+					CUr.Mobile = SVOr.Phone2;
 					modify = true;
 				end;
 			end;
-		end;
+		end;	
+		
 		if(nonblank(SVOr.Kontinfo3) and blank(CUr.InvAddr0))then begin
 			CUr.InvAddr0 = SVOr.Kontinfo3;
 			modify = true;
@@ -1386,25 +1388,25 @@ BEGIN
 			modify = true;
 		end;
 		if(nonblank(SVOr.Kontinfo1) and SVOr.Kontinfo1!=CUr.Phone and SVOr.Kontinfo1!=CUr.Mobile and SVOr.Kontinfo1!=CUr.AltPhone)then begin
-			if(blank(CUr.Mobile))then begin
-				CUr.Mobile = SVOr.Kontinfo1;
+			if(blank(CUr.AltPhone))then begin
+				CUr.AltPhone = SVOr.Kontinfo1;
 				modify = true;
 			end;
 			if(SVOr.Kontinfo1!=CUr.Phone and SVOr.Kontinfo1!=CUr.Mobile and SVOr.Kontinfo1!=CUr.AltPhone)then begin
-				if(blank(CUr.AltPhone))then begin
-					CUr.AltPhone = SVOr.Kontinfo1;
+				if(blank(CUr.Mobile))then begin
+					CUr.Mobile = SVOr.Kontinfo1;
 					modify = true;
 				end;
 			end;
 		end;
 		if(nonblank(SVOr.Phone2) and SVOr.Phone2!=CUr.Phone and SVOr.Phone2!=CUr.Mobile and SVOr.Phone2!=CUr.AltPhone)then begin
-			if(blank(CUr.Mobile))then begin
-				CUr.Mobile = SVOr.Phone2;
+			if(blank(CUr.AltPhone))then begin
+				CUr.AltPhone = SVOr.Phone2;
 				modify = true;
 			end;
 			if(SVOr.Phone2!=CUr.Phone and SVOr.Phone2!=CUr.Mobile and SVOr.Phone2!=CUr.AltPhone)then begin
-				if(blank(CUr.AltPhone))then begin
-					CUr.AltPhone = SVOr.Phone2;
+				if(blank(CUr.Mobile))then begin
+					CUr.Mobile = SVOr.Phone2;
 					modify = true;
 				end;
 			end;

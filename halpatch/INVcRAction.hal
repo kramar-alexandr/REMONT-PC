@@ -1358,7 +1358,7 @@ begin
   end;
 	
 	if(nonblank(INr.Disp2) and blank(INr.Disp1))then begin
-		RecordCheckError(1058,"USER или SERV или SALE",-1,"Disp1");//============================15/08/2017    
+		RecordCheckError(1058,"USER или SERV или SALE или ZASSET",-1,"Disp1");//============================15/08/2017    
 		res = -1; 
 		goto LINVcRecordCheck;
 	end;

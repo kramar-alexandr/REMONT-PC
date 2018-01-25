@@ -1509,7 +1509,7 @@ begin
     end;
   end;
 	
-	if (setinset("USER",INr.DispGroups)==false and setinset("SERV",INr.DispGroups)==false and setinset("SALE",INr.DispGroups)==false) then begin
+	if (setinset("USER",INr.DispGroups)==false and setinset("SERV",INr.DispGroups)==false and setinset("SALE",INr.DispGroups)==false and setinset("ZASSET",INr.DispGroups)==false) then begin
 		RecordCheckError(1707,"USER или SERV или SALE",-1,"DispGroups");//change type     
 		res = -1; 
 		goto LINVcRecordCheck;

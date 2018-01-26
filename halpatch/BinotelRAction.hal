@@ -175,6 +175,12 @@ BEGIN
 				comment = "Исходящий вызов";
 				Actr.CallType = 2;
 			end;
+			if(BCEr.callType=="0")then begin
+				Actr.OKFlag = 1;
+				Actr.ActResult = "ЗВ";
+				comment = "Принятый вызов";
+				Actr.CallType = 1;
+			end;
 			
 			recordstore(Actr,true);
 			
@@ -187,7 +193,7 @@ BEGIN
 			
 			logtext(0,"RemoteUserFunction " & users & " OpenNewActivity");
 			if(calltype==1)then begin
-				AllClientsRemoteAsync.RemoteUserFunction(users,"OpenNewActivity",Actr.SerNr,"");
+				//AllClientsRemoteAsync.RemoteUserFunction(users,"OpenNewActivity",Actr.SerNr,"");
 			end;
 			
 		

@@ -176,7 +176,7 @@ BEGIN
     while(loopkey("CustCode",SVOr,1,TrHs))begin
     	if(SVOr.CustCode!=CUr.Code)then begin TrHs = false; end;
     	
-    	if(SVOr.OrderStatus==9)then begin
+    	if(SVOr.OrderStatus==9 and SVOr.SerNr!=SVOp.SerNr)then begin
     		if(blank(warntext))then begin
 					warntext = "Ќа клиента есть предварительный заказ " & SVOr.SerNr;
     		end else begin

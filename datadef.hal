@@ -358,7 +358,7 @@ begin
     RecordField(KIVIPhone,M4Str,255,0);
     RecordField(KIVIName,M4Str,255,0);
     RecordField(KIVIAddr,M4Str,255,0);
-    
+	RecordField(FinishDate,M4Date,0,0); // Edit ************************ Tuesday, 30 January 2018 11:55
     ArrayField(NewSerialNr,M4Str,60,0);// Edit ************************** Friday, 9 June 2017 09:29:41
     
     SubsetKeyBegin2(RegDate);// Edit ************************** Wednesday, 15 February 2017 19:31:45

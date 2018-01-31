@@ -1266,6 +1266,9 @@ BEGIN
   Boolean res;
   record SVOVc SVOr;
   record SVOVc SVO2r;
+  record OffHireVc OffHirer;
+  record SVOVc      SVOVc_test_r;
+
   Integer updatemode,insertmode;
   string 200 tstr;
   
@@ -1294,8 +1297,16 @@ BEGIN
         goto LSVODClassActiveEditField;
     end;
   end;
-  GetWindowRecord(wn,SVOr);
-  
+  GetWindowRecord(wn,SVOr); // Edit Dima 31.01.2018 16:28
+  OffHirer.SVONr = SVor.SerNr;
+  if (fieldname=="ArtCode") then begin
+    if (UserCanAction("AllowEditDevice",false)==false) then begin
+        if (ReadFirstKey("SVONr",OffHirer,1,true)) then begin
+            res = false;
+            messagebox(0,"Запрещено менять товар, если он уже поступил на склад!");
+         end;
+    end;
+  end;
   if(blank(SVOr.Kontinfo1))then begin
   	if(fieldname!="Kontinfo1")then begin
   		res = false;
@@ -2077,8 +2088,6 @@ BEGIN
   RETURN;
 END;
 
-
-
 global
 function Boolean CallStatusSClassOnOpenWindow(Integer wn)
 begin
@@ -2118,6 +2127,73 @@ begin
   return;
 end;
 
+/*
+*
+*/
+
+// this function will be called when the SClass window will be opened
+// It will initialize the array of data for further choosing
+
+global
+function boolean  RejectReason2SClassonOpenWindow(Integer wn)
+begin
+  Integer                 mwn;                      // variable that stores the id of the parent window
+  Array string 100        reject_reasons;           // an array that stores strings
+  Integer                 i;
+  record  RejectReasonVc  reasons_record;
+  record  UserVc          Usr;
+  String 50               name;
+  boolean                 Res, testf;
+
+  name = currentuser;                         // my login
+  mwn = MotherWindow(wn);                     // take an ID of parent window
+
+  Usr.Code = name;
+  Res = ReadFirstMain(Usr,1,true);
+  if (Res) then begin
+    if (nonblankdate(Usr.RsFilter)) then begin
+        i = 0;
+        while(loopkey("RejectReason",reasons_record,0,true)) begin
+            testf = true;
+            if (SetInSet(Usr.RsFilter,reasons_record.RsFilter)==false) then begin
+                testf = false;
+            end;
+            if (testf) then begin
+              reject_reasons[i] = reasons_record.RejectReason;
+              SetListString(wn,len(reject_reasons[i]),reject_reasons[i],false);
+              i = i+1;
+            end;
+        end;
+    end else begin
+      i = 0;
+      while(loopkey("RejectReason",reasons_record,0,true)) begin
+            reject_reasons[i] = reasons_record.RejectReason;
+            SetListString(wn,len(reject_reasons[i]),reject_reasons[i],false);
+            i = i+1;
+      end;
+    end;
+  end;
+  RejectReason2SClassonOpenWindow = false;
+  return;
+end;
+
+// this function is called when user double clicks on some data from the list
+// and allows to return the data to the parent window
+
+global
+function boolean RejectReason2SClassOnOkWindow(Integer wn)
+begin
+
+  Integer mwn;              // id of the mother window
+
+  mwn = MotherWindow(wn);   // getting the id of mother window
+  PasteFromSysList(wn, 0)   // taking the data from a list
+  RejectReason2SClassOnOkWindow = false;
+end;
+
+/*
+*
+*/
 
 global procedure OpenNewActivity(record ActVc Actr)
 begin

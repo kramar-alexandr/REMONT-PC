@@ -2,11 +2,21 @@ external function date CalcWorkDate(date,integer,boolean);
 
 SetLangMode(LangRussian,"RUS",0);
 
-
 Global webpublic procedure WebGetSVOStatus()
 begin
 	string 50 sernr,phone;
-	record SVOVc SVOr;
+	record SVOVc  SVOr;
+	boolean TrHs,testf;
+  record IVVc IVr;
+  row IVVc IVrw;
+  integer mtrw,i;
+
+  record INVc INr;
+  vector val artCodeQty;
+  vector string 255 artCodeCode,artCodeName;
+  vector val artSpecQty;
+  val tQty;
+  array string 255 atags;
 	
 	sernr = webgetarg("sernr");
 	phone = webgetarg("phone");
@@ -18,59 +28,99 @@ begin
 	SVOr.SerNr = stringtolongint(sernr);
 	if(readfirstmain(SVOr,1,true))then begin
 		if(SVOr.Kontinfo1==phone)then begin
-			/*switch(SVOr.OrderStatus)begin
-				case 0:WeboutString("Ваше устройство принято в ремонт и передано мастеру для проведения диагностики.");
-				case 1:WeboutString("Диагностика Вашего устройства завершена. Ожидайте завершения ремонта.");
-				case 4:WeboutString("Диагностика Вашего устройства завершена. В ближайшее время с Вами свяжется представитель компании для согласования стоимости");
-							 WeboutString(" ремонта, а также сроков его выполнения.");
-				case 3:WeboutString("Ожидается поставка запчасти для выполнения последующего ремонта Вашего устройства. Вы будете проинформированы сразу после завершения");
-							 WeboutString(" ремонта с помощью SMS-сообщения.");
-				case 2:WeboutString("Ремонт Вашего устройства завершен. Внимание! Для получения устройства в сервисном центре обязательно наличие оригинала расписки.");
-			end;*/
-			
-			switch(SVOr.OrderStatus)begin
-				case 0:WeboutString("Ваш пристрій знаходиться НА ДІАГНОСТИЦІ. Орієнтовна дата завершення діагностики: " & CalcWorkDate(SVOr.GetItemDate,3,true));//В ожидании
-				case 1:WeboutString("Ваш пристрій знаходится В РЕМОНТІ. Наш менеджер зателефонує Вам, коли пристрій буде готовий.");//В ремонте
-				case 2:WeboutString("РЕМОНТ Вашего пристрою ЗАВЕРШЕНО. Наш менеджер зателефонує Вам, як тільки апарат буде доставлено в пункт видачі");//Готов
-				case 3:WeboutString("Ваше пристрій знаходиться в статусі \"ОЧІКУВАННЯ ДЕТАЛІ\". Наш спеціаліст приступить до виконання ремонту, як тільки деталь будет доставлено");//Ожидает запч.
-				case 4:WeboutString("ДІАГНОСТИКУ Вашего пристрою ЗАВЕРШЕНО. Найближчим часом Вам зателефонує наш менеджер і повідомить несправніть та вартість ремонту.");//На согласовании
-				case 5:WeboutString("Ваш пристрій знаходиться НА ДІАГНОСТИЦІ. Орієнтовна дата завершення діагностики: " & CalcWorkDate(SVOr.GetItemDate,3,true));//На диагностике
-				case 6:WeboutString("Ваш пристрій буде выдано БЕЗ РЕМОНТУ. Наш менеджер зателефонує Вам, як тільки апарат буде доставлено в пункт видачі");//Отказ
-				case 7:WeboutString("Ваш пристрій знаходится В РЕМОНТІ. Наш менеджер зателефонує Вам, коли пристрій буде готовий.");//Согласовано
-				case 8:WeboutString("Ваш пристрій знаходится В РЕМОНТІ. Наш менеджер зателефонує Вам, коли пристрій буде готовий.");//В удал. сервисе
-				case 9:WeboutString("");//Предварит
-				case 10:WeboutString("Ваше пристрій знаходиться в статусі \"ОЧІКУВАННЯ ДЕТАЛІ\". Наш спеціаліст приступить до виконання ремонту, як тільки деталь будет доставлено");//Заказать запч.
-				case 11:WeboutString("Здається, щось пішло не так... Ваш пристрій відправлено НА ДООПРАЦЮВАННЯ. Наш менеджер зателефонує Вам, коли пристрій буде готовий.");//Вернули на дораб.
-				case 12:WeboutString("ДІАГНОСТИКУ Вашего пристрою ЗАВЕРШЕНО, про результат сповіщено. Інженер почне ремонт після Вашего підтверждення");//Клиент думает
-			end;
-			if (nonblankdate(SVOr.FinishDate)) then begin // Edit ************** 30 January 2018 12:04
-				WebOutString("<br>");
-				WebOutString("Ваш пристрій орієнтовно буде готовий ");
-				WebOutString(DateToString(SVOr.FinishDate, "DD.MM.YYYY"));
-			end;
-		end else begin
-			WeboutString("При введенні номеру телефона було допущено помилку. Введіть, будь-ласка, телефон в форматі: 098ХХХХХХХ");
-		end;
+			if (blankdate(SVOr.RegDate) or SVOr.DoneMark==0) then begin
+          switch(SVOr.OrderStatus)begin
+            case 0:WeboutString("Ваш пристрій знаходиться НА ДІАГНОСТИЦІ. Орієнтовна дата завершення діагностики: " & CalcWorkDate(SVOr.GetItemDate,3,true));//В ожидании
+            case 1:WeboutString("Ваш пристрій знаходится В РЕМОНТІ. Наш менеджер зателефонує Вам, коли пристрій буде готовий.");//В ремонте
+            case 2:WeboutString("РЕМОНТ Вашего пристрою ЗАВЕРШЕНО. Наш менеджер зателефонує Вам, як тільки апарат буде доставлено в пункт видачі");//Готов
+            case 3:WeboutString("Ваше пристрій знаходиться в статусі \"ОЧІКУВАННЯ ДЕТАЛІ\". Наш спеціаліст приступить до виконання ремонту, як тільки деталь будет доставлено");//Ожидает запч.
+            case 4:WeboutString("ДІАГНОСТИКУ Вашего пристрою ЗАВЕРШЕНО. Найближчим часом Вам зателефонує наш менеджер і повідомить несправніть та вартість ремонту.");//На согласовании
+            case 5:WeboutString("Ваш пристрій знаходиться НА ДІАГНОСТИЦІ. Орієнтовна дата завершення діагностики: " & CalcWorkDate(SVOr.GetItemDate,3,true));//На диагностике
+            case 6:WeboutString("Ваш пристрій буде выдано БЕЗ РЕМОНТУ. Наш менеджер зателефонує Вам, як тільки апарат буде доставлено в пункт видачі");//Отказ
+            case 7:WeboutString("Ваш пристрій знаходится В РЕМОНТІ. Наш менеджер зателефонує Вам, коли пристрій буде готовий.");//Согласовано
+            case 8:WeboutString("Ваш пристрій знаходится В РЕМОНТІ. Наш менеджер зателефонує Вам, коли пристрій буде готовий.");//В удал. сервисе
+            case 9:WeboutString("");//Предварит
+            case 10:WeboutString("Ваше пристрій знаходиться в статусі \"ОЧІКУВАННЯ ДЕТАЛІ\". Наш спеціаліст приступить до виконання ремонту, як тільки деталь будет доставлено");//Заказать запч.
+            case 11:WeboutString("Здається, щось пішло не так... Ваш пристрій відправлено НА ДООПРАЦЮВАННЯ. Наш менеджер зателефонує Вам, коли пристрій буде готовий.");//Вернули на дораб.
+            case 12:WeboutString("ДІАГНОСТИКУ Вашего пристрою ЗАВЕРШЕНО, про результат сповіщено. Інженер почне ремонт після Вашего підтверждення");//Клиент думает
+          end;
+          if (nonblankdate(SVOr.FinishDate)) then begin // Edit ************** 30 January 2018 12:04
+            WebOutString("<br>");
+            WebOutString("Ваш пристрій орієнтовно буде готовий ");
+            WebOutString(DateToString(SVOr.FinishDate, "DD.MM.YYYY"));
+          end;
+          if (SVOr.OrderStatus==2) then begin
+              IVr.SVONr = SVOr.SerNr;
+              TrHS = true;
+              while(loopkey("SVONr",IVr,1,TrHs)) begin
+                  testf = true;
+                  if(IVr.SVONr!=SVOr.SerNr)then begin
+                    testf = false;
+                    TrHs = false;
+                  end;
+                  if(IVr.OKFlag==0)then begin
+                    testf = false;
+                  end;
+                  if(testf)then begin
+                    mtrw = matrowcnt(IVr);
+                    for (i=0;i<mtrw;i=i+1) begin
+                      matrowget(IVr,i,IVrw);
+                      if (IVrw.stp==kInvoiceRowTypeNormal) then begin
+                        tQty = IVrw.Quant;
+                        if (IVr.InvType==kInvoiceTypeCredit or IVr.InvType==kInvoiceTypeCreditSpecialSales) then begin //8
+                          tQty = -tQty;
+                        end;
+                        if (nonblank(IVrw.ArtCode)) then begin
+                          artCodeQty[IVrw.ArtCode & IVrw.Spec] = artCodeQty[IVrw.ArtCode & IVrw.Spec] + tQty;
+                          artCodeCode[IVrw.ArtCode & IVrw.Spec] = IVrw.ArtCode;
+                          artCodeName[IVrw.ArtCode & IVrw.Spec] = IVrw.Spec;
+                        end else begin
+                          artSpecQty[IVrw.Spec] = artSpecQty[IVrw.Spec] + tQty;
+                        end;
+                      end;
+                    end;
+                  end;
+              end;
+              GetVectorTags(artCodeQty,atags);
+              for (i=0;i<atags.length;i=i+1) begin
+                  if (artCodeQty[atags[i]]>0) then begin
+                   INr.Code = artCodeCode[atags[i]];
+                     if(readfirstmain(INr,1,true)) begin
+                      if(INr.ItemType==3 or INr.ItemType==0)then begin
+                        WebOutString("<br>");
+                        WebOutString(artCodeName[atags[i]]);
+                      end;
+                     end;
+                    end;
+              end;
+          end;
+      end;
+    end else begin //1
+          WeboutString("При введенні номеру телефона було допущено помилку. Введіть, будь-ласка, телефон в форматі: 098ХХХХХХХ");
+    end;
+
 	end else begin
 		SVOr.InnerOrderNr = sernr;
 		if(readfirstkey("InnerOrderNr",SVOr,1,true))then begin
 			if(SVOr.Kontinfo1==phone)then begin
 				
 				//WeboutString(SVOr.StatusText);
-				switch(SVOr.OrderStatus)begin
-					case 0:WeboutString("Ваш пристрій знаходиться НА ДІАГНОСТИЦІ. Орієнтовна дата завершення діагностики: " & CalcWorkDate(SVOr.GetItemDate,3,true));//В ожидании
-					case 1:WeboutString("Ваш пристрій знаходится В РЕМОНТІ. Наш менеджер зателефонує Вам, коли пристрій буде готовий.");//В ремонте
-					case 2:WeboutString("РЕМОНТ Вашего пристрою ЗАВЕРШЕНО. Наш менеджер зателефонує Вам, як тільки апарат буде доставлено в пункт видачі");//Готов
-					case 3:WeboutString("Ваше пристрій знаходиться в статусі \"ОЧІКУВАННЯ ДЕТАЛІ\". Наш спеціаліст приступить до виконання ремонту, як тільки деталь будет доставлено");//Ожидает запч.
-					case 4:WeboutString("ДІАГНОСТИКУ Вашего пристрою ЗАВЕРШЕНО. Найближчим часом Вам зателефонує наш менеджер і повідомить несправніть та вартість ремонту.");//На согласовании
-					case 5:WeboutString("Ваш пристрій знаходиться НА ДІАГНОСТИЦІ. Орієнтовна дата завершення діагностики: " & CalcWorkDate(SVOr.GetItemDate,3,true));//На диагностике
-					case 6:WeboutString("Ваш пристрій буде выдано БЕЗ РЕМОНТУ. Наш менеджер зателефонує Вам, як тільки апарат буде доставлено в пункт видачі");//Отказ
-					case 7:WeboutString("Ваш пристрій знаходится В РЕМОНТІ. Наш менеджер зателефонує Вам, коли пристрій буде готовий.");//Согласовано
-					case 8:WeboutString("Ваш пристрій знаходится В РЕМОНТІ. Наш менеджер зателефонує Вам, коли пристрій буде готовий.");//В удал. сервисе
-					case 9:WeboutString("");//Предварит
-					case 10:WeboutString("Ваше пристрій знаходиться в статусі \"ОЧІКУВАННЯ ДЕТАЛІ\". Наш спеціаліст приступить до виконання ремонту, як тільки деталь будет доставлено");//Заказать запч.
-					case 11:WeboutString("Здається, щось пішло не так... Ваш пристрій відправлено НА ДООПРАЦЮВАННЯ. Наш менеджер зателефонує Вам, коли пристрій буде готовий.");//Вернули на дораб.
-					case 12:WeboutString("ДІАГНОСТИКУ Вашего пристрою ЗАВЕРШЕНО, про результат сповіщено. Інженер почне ремонт після Вашего підтверждення");//Клиент думает
+			 if (blankdate(SVOr.RegDate) or SVOr.DoneMark==0) then begin
+          switch(SVOr.OrderStatus)begin
+            case 0:WeboutString("Ваш пристрій знаходиться НА ДІАГНОСТИЦІ. Орієнтовна дата завершення діагностики: " & CalcWorkDate(SVOr.GetItemDate,3,true));//В ожидании
+            case 1:WeboutString("Ваш пристрій знаходится В РЕМОНТІ. Наш менеджер зателефонує Вам, коли пристрій буде готовий.");//В ремонте
+            case 2:WeboutString("РЕМОНТ Вашего пристрою ЗАВЕРШЕНО. Наш менеджер зателефонує Вам, як тільки апарат буде доставлено в пункт видачі");//Готов
+            case 3:WeboutString("Ваше пристрій знаходиться в статусі \"ОЧІКУВАННЯ ДЕТАЛІ\". Наш спеціаліст приступить до виконання ремонту, як тільки деталь будет доставлено");//Ожидает запч.
+            case 4:WeboutString("ДІАГНОСТИКУ Вашего пристрою ЗАВЕРШЕНО. Найближчим часом Вам зателефонує наш менеджер і повідомить несправніть та вартість ремонту.");//На согласовании
+            case 5:WeboutString("Ваш пристрій знаходиться НА ДІАГНОСТИЦІ. Орієнтовна дата завершення діагностики: " & CalcWorkDate(SVOr.GetItemDate,3,true));//На диагностике
+            case 6:WeboutString("Ваш пристрій буде выдано БЕЗ РЕМОНТУ. Наш менеджер зателефонує Вам, як тільки апарат буде доставлено в пункт видачі");//Отказ
+            case 7:WeboutString("Ваш пристрій знаходится В РЕМОНТІ. Наш менеджер зателефонує Вам, коли пристрій буде готовий.");//Согласовано
+            case 8:WeboutString("Ваш пристрій знаходится В РЕМОНТІ. Наш менеджер зателефонує Вам, коли пристрій буде готовий.");//В удал. сервисе
+            case 9:WeboutString("");//Предварит
+            case 10:WeboutString("Ваше пристрій знаходиться в статусі \"ОЧІКУВАННЯ ДЕТАЛІ\". Наш спеціаліст приступить до виконання ремонту, як тільки деталь будет доставлено");//Заказать запч.
+            case 11:WeboutString("Здається, щось пішло не так... Ваш пристрій відправлено НА ДООПРАЦЮВАННЯ. Наш менеджер зателефонує Вам, коли пристрій буде готовий.");//Вернули на дораб.
+            case 12:WeboutString("ДІАГНОСТИКУ Вашего пристрою ЗАВЕРШЕНО, про результат сповіщено. Інженер почне ремонт після Вашего підтверждення");//Клиент думает
+          end;
 				end;
 				/*switch(SVOr.OrderStatus)begin
 					case 0:WeboutString("Ваше устройство принято в ремонт и передано мастеру для проведения диагностики.");
@@ -90,3 +140,4 @@ begin
 	end;
 return;
 end;
+

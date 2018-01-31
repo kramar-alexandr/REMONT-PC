@@ -450,6 +450,7 @@ StrSetText(AllowAddingINtoRet,"Добавлять товары в возвраты");
   StrSetText(ViewDashboardTopCustomers,"Просмотр панели инструментов - топ клиентов"); 
   StrSetText(ViewDashboardTopSalesmen,"Просмотр панели инструментов - топ продавцы"); 
   StrSetText(ViewDashboard,"Просмотр панели инструментов");
+  StrSetText(AllowEditDevice,"Разрешить менять товар после поступления на склад"); // Edit Dima
   StrSetText(AllowSplitItem,"Разделить товар на сч/ф сенсорн. экрана");
   StrSetText(AllowAmendLine,"Разрешить изменение строки на сч/ф (сенсорный экран)");
   StrSetText(AllowChangeAcceptor,"Разрешить изменять приемщика"); //Edit***************************Sasha2,10:50 12.07.2017

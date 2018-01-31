@@ -343,6 +343,27 @@ begin
   EndWindow;
 end;
 
+/*
+*
+*/
+
+// this window will pop up, if Ctrl+Enter combination will be pressed
+// This should be passed as a parameter to the EditField();
+
+window  RejectReason2SClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  WindowBegin("Причина отказа 2", RejectReason2SClass,CGother,HBlRecType);
+  SetWRect(240,80,600,348);
+  StringList(9,9,-19,-19);
+  SearchField("Search");
+  EndWindow;
+end;
+
+/*
+*
+*/
+
 window SVODClass:1
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
@@ -450,8 +471,13 @@ begin
   
   EditField(h3+140,v-40,-20,"Статус оповещения:",Normal,CallStatus,false,CallStatusSClass);
   //vm=vm+20;
-  EditField(h3+140,v-20,-20,"Причина отказа:",Normal,RejectReason,false,RejectReasonSClass);
-  
+
+  //EditField(h3+140,v-20,-20,"Причина отказа:",Normal,RejectReason,false,RejectReasonSClass);
+
+  // changing EditField(); Passing to it as a parameter an SClass
+
+  EditField(h3+140,v-20,-20,"Причина отказа:",Normal,RejectReason,false,RejectReason2SClass);
+
   
   v=vm-20;
   halpushbutton(h2+220,v,h2+325,v+50,"FastPaySVODsm","Быстрая оплата");// Edit ************************** Friday, 25 November 2016 11:32:03 
@@ -7005,6 +7031,8 @@ begin
     EditField(h,v+=vs,100,"SSH Имя пользователя",Normal,SSHUsername,false,0);  
   end;
   EditField(h,v+=vs,100,"Группа вызова",Normal,CallGroup,false,CallGroupSClass);//---------------------------------------dima-f 24.10.17
+  EditField(h,v+=vs,100,"Фильтр",Normal,RsFilter,false,0);
+
 //  EditField(h,v+=vs,100,"Discount Password",Normal,OldPassWord,false,0);
   if (StandardHansa==false) then begin
     ButtonFrame(h2,v=44,165,3,"Ограниченный доступ");

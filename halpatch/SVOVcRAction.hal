@@ -34,6 +34,7 @@ external procedure CutAreaLeft(var area,integer);
 external function LongInt CountWorkingDays(Date,Date,string,string);// Edit ************************** Monday, 18 September 2017 09:50:43
 external function LongInt DateDiff(Date,Date);// Edit ************************** Friday, 6 October 2017 11:19:10
 external external procedure ExtractObj(string,var Integer,var string);
+external function LongInt CountWorkingDays(Date,Date,string,string);
 
 
 SetLangMode(LangRussian,"RUS",0);
@@ -2032,7 +2033,23 @@ BEGIN
 			end;
   	end;
   end;
-  
+
+  /*
+  */
+
+   if (stat==insertmode) then begin
+      if (nonblankdate(SVOr.GetItemDate) and blankdate(SVOr.FinishDate)) then begin
+          SVOr.FinishDate = CalcWorkDate(CurrentDate,5,true);
+      end;
+   end;
+   if (stat==updatemode) then begin
+      if (nonblankdate(SVOr.GetItemDate) and blankdate(SVO2r.GetItemDate) and blankdate(SVOr.FinishDate)) then begin
+          SVOr.FinishDate = CalcWorkDate(CurrentDate,5,true);
+      end;
+   end;
+
+  /*
+  */
   
   if(/*(SVOr.OrderStatus==1 or SVOr.OrderStatus==2 or SVOr.OrderStatus==3) and*/ blankdate(SVOr.EndDiagnDate))then begin //Edit***************************Sasha2,17:32 25.10.2016
   	if (stat==updatemode) then begin

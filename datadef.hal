@@ -410,7 +410,7 @@ begin
     KeySegment(StatusText);
     KeySegment(SerNr);  
     
-    //Љлючи длЯ необработанных заказов без сервисного менеджера длЯ распределЯющего ***************************************************************************************************
+    //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ ***************************************************************************************************
     SubsetKeyBegin2(UnServSerNr);
     StoreInBaseKey;
     AppendFieldToKeyName(SalesGroup);
@@ -550,7 +550,7 @@ begin
     KeySegment(PlanShipDate);
     KeySegment(SerNr);
     
-    //Љлючи длЯ ‚‘ех не закрытых заказов на обслуживание длЯ сервисного менеджера  ****************************************************************************************
+    //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ  ****************************************************************************************
     SubsetKeyBegin2(AllServSerNr);
     StoreInBaseKey;
     AppendFieldToKeyName(SalesGroup);
@@ -690,7 +690,7 @@ begin
     KeySegment(PlanShipDate);
     KeySegment(SerNr);
     
-    //Љлючи длЯ ‚‘ех записей с доп фильтрами  ****************************************************************************************
+    //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ  ****************************************************************************************
     SubsetKeyBegin2(AllSerNr);
     StoreInBaseKey;
     AppendFieldToKeyName(SalesGroup);
@@ -830,7 +830,7 @@ begin
     KeySegment(PlanShipDate);
     KeySegment(SerNr);
     
-     //Љлючи длЯ ‚‘ех не закрытых заказов на обслуживание но отгруженных
+     //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     SubsetKeyBegin2(DolgSerNr);
     StoreInBaseKey;
     AppendFieldToKeyName(SalesGroup);
@@ -920,7 +920,7 @@ begin
     KeySegment(RegDate);
     KeySegment(SerNr);
     
-     //Љлючи длЯ ‚‘ех не предварительных заказов на обслуживание
+     //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     SubsetKeyBegin2(PredSerNr);
     StoreInBaseKey;
     AppendFieldToKeyName(SalesGroup);
@@ -1073,6 +1073,7 @@ begin
     RecordField(PersLocation,M4Code,20,0); //Edit***************************Sasha2,15:51 23.05.2017
     RecordField(PersPhone2,M4Code,20,0);
     RecordField(CallGroup,M4Code,100,0);//-------------------------------- dima-f 23.10.17
+    RecordField(RsFilter,M4Str,100,0); // the filter that will be used for further grep
   EndRecordAdd;
   
   RecordAddBegin(IVVc,"IVVc_Custom");
@@ -1351,6 +1352,7 @@ begin
     //ImpExpLevel(0);
     RecordField(RejectReason,M4Str,255,0);
     RecordField(SerNr,M4Long,0,0);
+    RecordField(RsFilter,m4Str,100,0); // the filter for the further grep
     MainKeyBegin(SerNr,0);
     KeySegment(SerNr);
     KeyBegin(RejectReason);

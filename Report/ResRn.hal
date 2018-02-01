@@ -60,12 +60,14 @@ BEGIN
 		end else begin
 			nru = RepSpec.ObjStr;// Edit ************************** Wednesday, 29 October 2014 13:12:10
 		end;
+	end else begin
+		RepSpec.ObjStr = anru;
 	end;
-  
+
   if (blank(UserDefRepLinesr.CorspAcc)) then begin
     usedf = AccRuPerBal(RepSpec,PLf,Accp.AccNumber,nru,S3b1,Pb1,Eb1,S4b1,S5b1,S6b1,UserDefRepLinesr.DCSide,resUseAccum,AccumStartDate,budsd,buded);
   end else begin
-      recordCopy(RepSpec1,RepSpec);// Edit ************************** Monday, 22 December 2014 13:48:21
+    recordCopy(RepSpec1,RepSpec);// Edit ************************** Monday, 22 December 2014 13:48:21
 
     CorspAccSums(RepSpec,Accp,UserDefRepLinesr.CorspAcc,S3b1,S4b1);
 

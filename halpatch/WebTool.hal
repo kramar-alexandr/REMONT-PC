@@ -82,13 +82,17 @@ begin
                   end;
               end;
               GetVectorTags(artCodeQty,atags);
+              if(atags.length>0)then begin
+								WebOutString("<br>");
+								WebOutString("Виконані роботи:");
+							end;
               for (i=0;i<atags.length;i=i+1) begin
                 if (artCodeQty[atags[i]]>0) then begin
                  	INr.Code = artCodeCode[atags[i]];
                   if(readfirstmain(INr,1,true)) begin
                     if(INr.ItemType==3 or INr.ItemType==0)then begin
                       WebOutString("<br>");
-                      WebOutString(artCodeName[atags[i]]);
+                      WebOutString(" - " & artCodeName[atags[i]]);
                     end;
                   end;
                 end;
@@ -160,13 +164,17 @@ begin
 								end;
 						end;
 						GetVectorTags(artCodeQty,atags);
+						if(atags.length>0)then begin
+							WebOutString("<br>");
+							WebOutString("Виконані роботи:");
+						end;
 						for (i=0;i<atags.length;i=i+1) begin
 							if (artCodeQty[atags[i]]>0) then begin
 								INr.Code = artCodeCode[atags[i]];
 								if(readfirstmain(INr,1,true)) begin
 									if(INr.ItemType==3 or INr.ItemType==0)then begin
 										WebOutString("<br>");
-										WebOutString(artCodeName[atags[i]]);
+										WebOutString(" - " & artCodeName[atags[i]]);
 									end;
 								end;
 							end;

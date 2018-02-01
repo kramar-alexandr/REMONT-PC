@@ -1894,5 +1894,14 @@ begin
 		KeySegment(Name);
 		KeySegment(Code);
   endrecordadd;
+  
+  RecordAddBegin(UserDefRepLinesVc,"UserDRLVc_Custom");
+    RecordField(CustType,M4Int,0,0)// Edit ************************** Tuesday, 21 October 2014 11:58:03
+    RecordField(CurncyCode,M4Code,5,CurncyCodeVc);// Edit ************************** Thursday, 5 March 2015 14:48:11
+    RecordField(ObjDetail,M4Int,0,0);// Edit ************************** Friday, 22 January 2016 10:47:06
+    RecordField(SalesOfGoodsUse,M4Int,0,0);//Edit-------------------Vitalii 17:30 28.08.2017
+    RecordField(SalesOfGoodsUseRetail,M4Int,0,0);//Edit-------------------Vitalii 11:29 15.11.2017
+  EndRecordAdd;
+  
 return;
 end;

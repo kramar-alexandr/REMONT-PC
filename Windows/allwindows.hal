@@ -589,6 +589,9 @@ begin
   SpecialMenu("Создать прибытие товара",' ',8,"OffHireFromSVODsm");
   SpecialMenu("Создать выбытие товара",' ',0,"DispatchFromSVODsm");
   SpecialMenu("Счет клиенту",' ',0,"ORFromSVODsm");
+  if(currentuser=="SA")then begin
+		SpecialMenu("Вотановить эту запись из истории",' ',0,"SVOFromHistHardDsm");
+  end;
 
   
   EndWindow;

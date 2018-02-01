@@ -1506,6 +1506,22 @@ begin
 end;
 
 global
+updating procedure SVOFromHistHardDsm()
+begin
+  record SVOVc SVOr;
+  record DispatchVc Dispr;
+  Integer wn,nwn;
+  
+  wn = CurWindow;
+  if (WindowState(wn)==0) then begin//Rs_normal
+    GetWindowRecord(wn,SVOr);
+    recordstore(SVOr,true);
+  end;
+  return;
+end;
+
+
+global
 updating procedure POFromSVODsm()
 begin
   record SVOVc SVOr;

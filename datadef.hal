@@ -1352,7 +1352,7 @@ begin
     //ImpExpLevel(0);
     RecordField(RejectReason,M4Str,255,0);
     RecordField(SerNr,M4Long,0,0);
-    RecordField(RsFilter,m4Str,100,0); // the filter for the further grep
+    RecordField(RsFilter,M4Str,100,0); // the filter for the further grep
     MainKeyBegin(SerNr,0);
     KeySegment(SerNr);
     KeyBegin(RejectReason);

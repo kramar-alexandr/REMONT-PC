@@ -61,7 +61,7 @@ BEGIN
 			nru = RepSpec.ObjStr;// Edit ************************** Wednesday, 29 October 2014 13:12:10
 		end;
 	end else begin
-		RepSpec.ObjStr = anru;
+		//RepSpec.ObjStr = anru;
 	end;
 
   if (blank(UserDefRepLinesr.CorspAcc)) then begin

@@ -1,0 +1,28 @@
+global
+updating function LongInt ManagerPlanVcRecordCheck(var record ManagerPlanVc Managr,record ManagerPlanVc Manag2r,LongInt stat,LongInt check)
+begin
+	LongInt res;
+	row ManagerPlanVc Mprw_i;
+	row ManagerPlanVc Mprw_j;
+	Integer mtrwc1,i,j;
+
+	res = 0;
+	if (blank(Managr.Code)) then begin
+		RecordCheckError(1058,"",-1,"Code");
+		res = -1;
+	end;
+	mtrwc1 = matrowcnt(Managr);
+	for (i = 0; i < mtrwc1; i = i + 1) begin
+		matrowget(Managr,i,Mprw_i);
+		for (j = 0; j < mtrwc1; j = j + 1) begin
+			matrowget(Managr,j,Mprw_j);
+			if (Mprw_i.PlansDate==Mprw_j.PlansDate and i!=j) then begin
+				RecordCheckError(40001,"",j,"PlansDate");
+				res = -1;
+				goto ManagerPlanVcRecordCheck;
+			end;
+		end;
+	end;
+	ManagerPlanVcRecordCheck = res;
+	return;
+end;

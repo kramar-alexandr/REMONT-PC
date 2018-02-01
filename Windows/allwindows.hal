@@ -7111,7 +7111,9 @@ end;
   EditField(h3,v,120,"Объект",Normal,PersObjx,false,ObjSClass);
   EditField(h,v+=vs,65,"Код сорт.",Normal,SortCode,false,0);  
   EditField(h3,v,120,"Сч. банка",Normal,BankAcc,false,0);  
-  EditField(h3,v+=vs,-20,"Bank Name",Normal,BankName,false,BankSClass);  
+  EditField(h3,v+=vs,-20,"Bank Name",Normal,BankName,false,BankSClass);
+  EditField(h3-160,v+20,-20,"Разр. представительские расходы",Normal,AllowedOutCosts,false,CLCorspSClass);
+  EditField(h3-160,v+40,-20,"Разр. представительские приходы",Normal,AllowedInCosts,false,CLCorspSClass);
 //  EditField(h,v+=vs,65,"Expense A/C",Normal,CostAcc,false,AccSClass);
   if (StandardHansa==false) then begin
     Tile(tilenr,170,true,tilenr,JobGroup);  tilenr = tilenr + 1;

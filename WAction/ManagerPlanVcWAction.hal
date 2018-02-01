@@ -1,0 +1,31 @@
+
+function Boolean ManagerPlanDClassNameEFAfter(Integer wn, Boolean changedf)
+BEGIN
+	Boolean               res;
+	record UserVc         USRr;
+	record ManagerPlanVc  MPr;
+
+	res = true;
+	if (changedf) then begin
+		GetWindowRecord(wn,MPr);
+		USRr.Code = MPr.Code;
+		if (readfirstmain(USRr,1,true)) then begin
+			MPr.Name = USRr.Name;
+			PutWindowRecord(wn,MPr);
+		end;
+	end;
+	ManagerPlanDClassNameEFAfter = res;
+	RETURN;
+END;
+
+global
+function Boolean  ManagerPlanDClassAfterEditField(Integer wn,string fieldname,Integer fn, Integer rownr,Integer changed)
+BEGIN
+	boolean res;
+	switch (fieldname) begin
+		case "Code":
+			res = ManagerPlanDClassNameEFAfter(wn,changed);
+	end;
+	ManagerPlanDClassAfterEditField = res;
+	RETURN;
+END;

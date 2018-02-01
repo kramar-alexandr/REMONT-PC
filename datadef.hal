@@ -1074,6 +1074,8 @@ begin
     RecordField(PersPhone2,M4Code,20,0);
     RecordField(CallGroup,M4Code,100,0);//-------------------------------- dima-f 23.10.17
     RecordField(RsFilter,M4Str,100,0); // the filter that will be used for further grep
+    RecordField(AllowedInCosts,M4UStr,100,0);
+    RecordField(AllowedOutCosts,M4UStr,100,0); // расходы
   EndRecordAdd;
   
   RecordAddBegin(IVVc,"IVVc_Custom");
@@ -1845,7 +1847,20 @@ begin
     KeySegment(SerNr);
   EndRecord;
   
-  
+  RecordBegin(ManagerPlanVc,-,""); // Edit *************** Dima 17:19 31.01.2018
+  RecordField(Code,M4Code,100,0);
+  RecordField(Name,M4Str,60,0);
+  RecordField(Matrix,M4matrix,0,0);
+  ArrayBegin(Matrix,-,1);
+  ArrayField(PlansDate,M4Date,0,0);
+  ArrayField(PlansSales,M4Int,0,0);
+  ArrayField(PlansRepair,M4Int,0,0);
+  ArrayField(PlansComment,M4Str,255,0);
+  EndArray;
+  MainKeyBegin(Code,0);
+  KeySegment(Code);
+  EndRecord;
+
   BlockBegin(BinotelUserBlock,-,"");
     RecordField(Math,M4Matrix,0,0);
     ArrayBegin(Math,-,1);

@@ -1,0 +1,440 @@
+//server-only
+external function Boolean CheckObjType(string,string);
+external function Integer CountObjects(string);
+
+SetLangMode(LangRussian,"RUS",0);
+
+
+global procedure ObjMainRnForResRn(record RcVc RepSpec)
+begin
+	record AccVc Accr;
+	record ObjVc Objr;
+	record MainVc Mainr;
+	date sd,ed;
+	val cbal,dbal,scbal,sdbal;
+	boolean TrHs,testf,foundf;
+	string 200 acccode,objcode,objtype;
+	record TRVc TRr;
+	row TRVc TRrw;
+	record SMVc SMr,SM2r;
+	row SMVc SMrw,SM2rw;
+	integer i,mtrw,objcnt,oi;	
+	record FBVc FBr;
+	row FBVc FBrw;
+	val profit;
+			
+		acccode = RepSpec.f4;
+		objcode = RepSpec.ObjStr;
+		objtype = RepSpec.ObjType;
+		sd = RepSpec.sStartDate;
+		ed = RepSpec.sEndDate;
+		
+		recordNew(SMr);
+		recordNew(SM2r);
+		Objr.OTCode = objtype;
+		TrHs = true;
+		objcnt=0;
+		while(loopkey("OTCode",Objr,1,TrHs))begin
+			if(nonblank(objtype) and objtype!=Objr.OTCode)then begin TrHs = false; end;
+			
+			if(TrHs)then begin
+				if(nonblank(Objr.Code))then begin
+					SMrw.Objects = Objr.Code;
+					SMrw.Comment = Objr.Comment;
+					matrowput(SMr,objcnt,SMrw);
+					matrowput(SM2r,objcnt,SMrw);
+					objcnt=objcnt+1;
+				end;
+			end;
+		end;
+		
+		TrHs = true;
+		FBr.TransDate = "";
+		While(loopkey("TransSerNr",FBr,1,TrHs))begin
+	  	if(FBr.TransDate>ed)then begin TrHs = false; end;
+	  	
+	  	if(TrHs)then begin
+	  		mtrw = matrowcnt(FBr);
+	  		For(i=0;i<mtrw;i=i+1) begin
+	  			matrowget(FBr,i,FBrw);
+	  			
+	  			if(FBrw.AccNumber==acccode)then begin
+	  				For(oi=0;oi<objcnt;oi=oi+1) begin
+							matrowget(SMr,oi,SMrw);
+							if(SMrw.Objects==FBr.Objects)then begin
+								SMrw.AccNumber = FBrw.AccNumber;
+								SMrw.CurDebVal = SMrw.CurDebVal + FBrw.DebVal;
+								SMrw.CurCredVal = SMrw.CurCredVal + FBrw.CredVal;
+								matrowput(SMr,oi,SMrw);
+							end;
+						end;
+	  			end;
+				end; 
+	  	end;
+		end; 
+		
+		
+		TrHs = true;
+		Mainr.TransDate = "";
+		Mainr.AccNumber = acccode;
+		while(loopmain(Mainr,1,TrHs))begin
+			testf = true;
+			if(Mainr.TransDate>ed)then begin TrHs = false; testf = false; end;
+			if(Mainr.AccNumber!=acccode)then begin TrHs = false; testf = false; end;
+
+			if(testf)then begin
+				TRr.IntYc = Mainr.IntYc;
+				TRr.Number = Mainr.TransNr;
+				if(readfirstmain(TRr,2,true))then begin
+					mtrw = matrowcnt(TRr);
+					For(i=0;i<mtrw;i=i+1) begin
+	  				matrowget(TRr,i,TRrw);
+	  				if(TRrw.AccNumber==acccode and TRrw.ovst==0 and TRr.TransDate==Mainr.TransDate)then begin
+							foundf = true;
+							if(nonblank(objcode) and setinset(objcode,TRrw.Objects)==false)then begin foundf = false; end;
+							if(foundf)then begin
+								For(oi=0;oi<objcnt;oi=oi+1) begin
+	  							matrowget(SMr,oi,SMrw);
+	  							if(setinset(SMrw.Objects,TRrw.Objects))then begin
+	  								SMrw.AccNumber = TRrw.AccNumber;
+	  								if(Mainr.TransDate<sd)then begin
+	  									SMrw.CurDebVal = SMrw.CurDebVal + TRrw.DebVal;
+											SMrw.CurCredVal = SMrw.CurCredVal + TRrw.CredVal;
+	  								end else begin
+											SMrw.DebVal = SMrw.DebVal + TRrw.DebVal;
+											SMrw.CredVal = SMrw.CredVal + TRrw.CredVal;
+	  								end;
+	  								matrowput(SMr,oi,SMrw);
+	  							end;
+								end; 
+	  					end;
+	  				end;
+					end; 
+				end;
+			end;
+		end;
+		
+		
+		if(RepSpec.Comparison==1)then begin
+			sd = addyear(sd,-1);
+			ed = addyear(ed,-1);
+			TrHs = true;
+			resetloop(FBr);
+			FBr.TransDate = "";
+			While(loopkey("TransSerNr",FBr,1,TrHs))begin
+				if(FBr.TransDate>ed)then begin TrHs = false; end;
+			
+				if(TrHs)then begin
+					mtrw = matrowcnt(FBr);
+					For(i=0;i<mtrw;i=i+1) begin
+						matrowget(FBr,i,FBrw);
+						if(FBrw.AccNumber==acccode)then begin
+							For(oi=0;oi<objcnt;oi=oi+1) begin
+								matrowget(SM2r,oi,SMrw);
+								if(SMrw.Objects==FBr.Objects)then begin
+									SMrw.AccNumber = FBrw.AccNumber;
+									SMrw.CurDebVal = SMrw.CurDebVal + FBrw.DebVal;
+									SMrw.CurCredVal = SMrw.CurCredVal + FBrw.CredVal;
+									matrowput(SM2r,oi,SMrw);
+								end;
+							end;
+						end;
+					end; 
+				end;
+			end; 
+		
+			TrHs = true;
+			resetloop(Mainr);
+			Mainr.TransDate = "";
+			Mainr.AccNumber = acccode;
+			while(loopmain(Mainr,1,TrHs))begin
+				testf = true;
+				if(Mainr.TransDate>ed)then begin TrHs = false; testf = false; end;
+				if(Mainr.AccNumber!=acccode)then begin TrHs = false; testf = false; end;
+
+				if(testf)then begin
+					TRr.IntYc = Mainr.IntYc;
+					TRr.Number = Mainr.TransNr;
+					if(readfirstmain(TRr,2,true))then begin
+						mtrw = matrowcnt(TRr);
+						For(i=0;i<mtrw;i=i+1) begin
+							matrowget(TRr,i,TRrw);
+							if(TRrw.AccNumber==acccode and TRrw.ovst==0 and TRr.TransDate==Mainr.TransDate)then begin
+								foundf = true;
+								if(nonblank(objcode) and setinset(objcode,TRrw.Objects)==false)then begin foundf = false; end;
+								if(foundf)then begin
+									For(oi=0;oi<objcnt;oi=oi+1) begin
+										matrowget(SM2r,oi,SMrw);
+										if(setinset(SMrw.Objects,TRrw.Objects))then begin
+											SMrw.AccNumber = TRrw.AccNumber;
+											if(Mainr.TransDate<sd)then begin
+												SMrw.CurDebVal = SMrw.CurDebVal + TRrw.DebVal;
+												SMrw.CurCredVal = SMrw.CurCredVal + TRrw.CredVal;
+											end else begin
+												SMrw.DebVal = SMrw.DebVal + TRrw.DebVal;
+												SMrw.CredVal = SMrw.CredVal + TRrw.CredVal;
+											end;
+											matrowput(SM2r,oi,SMrw);
+										end;
+									end; 
+								end;
+							end;
+						end; 
+					end;
+				end;
+			end;
+		
+		end;
+		
+		For(oi=0;oi<objcnt;oi=oi+1) begin
+			matrowget(SMr,oi,SMrw);
+			if(RepSpec.Comparison==0)then begin
+				if(SMrw.CredVal!=0 or SMrw.DebVal!=0)then begin
+					startformat(15);
+						//outstring(0,0,SMrw.Objects,false); //Edit***************************Sasha2,17:10 06.05.2015
+						OutStringID(11,"DblOpenMainRep",SMrw.Objects,false,""); //Edit***************************Sasha2,17:10 06.05.2015
+						outstring(60,0,SMrw.Comment,false);
+						//outstring(150,0,SMrw.CurDebVal - SMrw.CurCredVal,false);
+						//outstring(200,0,SMrw.DebVal,false);
+						//outstring(250,0,SMrw.CredVal,false);
+						outstring(384,0,SMrw.DebVal - SMrw.CredVal,true);
+						outstring(1,0,SMrw.DebVal - SMrw.CredVal,true);
+					endformat;
+				end;
+			end;
+			
+			if(RepSpec.Comparison==1)then begin
+				matrowget(SM2r,oi,SM2rw);
+				if(SMrw.CredVal!=0 or SMrw.DebVal!=0 or SM2rw.CredVal!=0 or SM2rw.DebVal!=0)then begin
+					startformat(15);
+						OutStringID(11,"DblOpenMainRep",SMrw.Objects,false,""); //Edit***************************Sasha2,17:10 06.05.2015
+						outstring(60,0,SMrw.Comment,false);
+						outstring(288,0,SM2rw.DebVal - SM2rw.CredVal,true);
+						outstring(384,0,SMrw.DebVal - SMrw.CredVal,true);
+						profit = ((SMrw.DebVal - SMrw.CredVal - (SM2rw.DebVal - SM2rw.CredVal))/(SM2rw.DebVal - SM2rw.CredVal))*100;
+						if(profit>0)then begin
+							outstring(1,0,"+" & profit & "%",true);
+						end else begin
+							outstring(1,0,profit & "%",true);
+						end;
+					endformat;
+				end;
+			end;
+			
+		end;
+	
+return;
+end;
+
+
+global procedure ObjMainRn(record RcVc RepSpec)
+begin
+	record AccVc Accr;
+	record ObjVc Objr;
+	record MainVc Mainr;
+	date sd,ed;
+	val cbal,dbal,scbal,sdbal;
+	boolean TrHs,testf,foundf;
+	string 200 acccode,objcode,objtype;
+	record TRVc TRr;
+	row TRVc TRrw;
+	record SMVc SMr;
+	row SMVc SMrw;
+	integer i,mtrw,objcnt,oi;	
+	record FBVc FBr;
+	row FBVc FBrw;
+	string 100 tempstr;
+	boolean testf1;
+	
+	startreportjob("ObjBal");
+		
+		
+		
+		acccode = RepSpec.f4;
+		objcode = RepSpec.ObjStr;
+		objtype = RepSpec.ObjType;
+		sd = RepSpec.sStartDate;
+		ed = RepSpec.sEndDate;
+		
+				Header(1,USetStr(3462) & ": " & acccode,1);
+        Header(2,USetStr(5261) & sd & ":" & ed,1);
+        Header(3,USetStr(3383) & ": " & objcode,1);
+        Header(4,USetStr(4037) & objtype,1);
+        EndHeader;
+		
+		recordNew(SMr);
+		Objr.OTCode = objtype;
+		TrHs = true;
+		objcnt=0;
+		while(loopkey("OTCode",Objr,1,TrHs))begin
+			if(nonblank(objtype) and objtype!=Objr.OTCode)then begin TrHs = false; end;
+			
+			if(TrHs)then begin
+				if(nonblank(Objr.Code))then begin
+					SMrw.Objects = Objr.Code;
+					SMrw.Comment = Objr.Comment;
+					matrowput(SMr,objcnt,SMrw);
+					objcnt=objcnt+1;
+				end;
+			end;
+		end;
+		
+		
+		
+		
+		startformat(15);
+			OutString(0,0,USetStr(3462),false);
+			OutString(40,0,USetStr(3471),false);
+		endformat;
+		
+		startformat(15);
+			OutString(0,"DblNL",acccode,false);
+			Accr.AccNumber = acccode;
+			readfirstmain(Accr,1,true);
+			OutString(40,0,Accr.Comment,false);
+		endformat;
+		gray_divider(0,1);
+		startformat(15);
+			
+			OutString(0,0,USetStr(3403),false);
+			OutString(50,0,USetStr(3471),false);
+			OutString(150,0,USetStr(3468),false);
+      OutString(200,0,USetStr(3463),false);
+      OutString(250,0,USetStr(3464),false);
+      OutString(300,0,USetStr(3474),false);
+      OutString(1,0,USetStr(3467),true);
+      //OutString(440,0,USetStr(3467),false);
+		endformat;
+		gray_divider(0,1);
+		
+		TrHs = true;
+		FBr.TransDate = "";
+		While(loopkey("TransSerNr",FBr,1,TrHs))begin
+			testf1 = true;
+	  	if(FBr.TransDate>ed)then begin TrHs = false; testf1 = false; end;
+	  	if(nonblank(objcode) and !setinset(objcode,FBr.Objects))then begin testf1 = false; end;
+	  	
+	  	if(testf1)then begin
+	  		mtrw = matrowcnt(FBr);
+	  		For(i=0;i<mtrw;i=i+1) begin
+	  			matrowget(FBr,i,FBrw);
+	  			
+	  			if(FBrw.AccNumber==acccode)then begin
+	  				For(oi=0;oi<objcnt;oi=oi+1) begin
+							matrowget(SMr,oi,SMrw);
+							testf = true;
+
+							tempstr = "";
+							tempstr = objcode;
+							if(nonblank(tempstr))then begin
+								tempstr = tempstr & "," & SMrw.Objects;
+							end else begin
+								tempstr = SMrw.Objects;
+							end;
+							
+							//if (NonBlank(tempstr) and setinset(FBr.Objects,tempstr)==false) then begin testf = false; end;
+							//if (nonblank(tempstr) and CountObjects(tempstr)!=CountObjects(FBr.Objects)) then begin testf = false; end;
+							
+							//if(!setinset(SMrw.Objects,FBr.Objects))then begin testf = false; end;
+							
+							//if (SMrw.Objects!=FBr.Objects) then begin testf = false; end;
+							//if (NonBlank(objcode) and setinset(FBr.Objects,objcode)==false) then begin testf = false; end;
+							if (nonblank(tempstr) and CountObjects(tempstr)!=CountObjects(FBr.Objects)) then begin testf = false; end;
+							if (NonBlank(tempstr) and setinset(FBr.Objects,tempstr)==false) then begin testf = false; end;
+							
+							
+							
+							if(testf)then begin
+							  SMrw.AccNumber = FBrw.AccNumber;
+							  if (FBr.TransDate<sd) then begin
+  							  SMrw.CurDebVal = SMrw.CurDebVal + FBrw.DebVal;
+  								SMrw.CurCredVal = SMrw.CurCredVal + FBrw.CredVal;
+							  end else begin
+							    SMrw.DebVal = SMrw.DebVal + FBrw.DebVal;
+								  SMrw.CredVal = SMrw.CredVal + FBrw.CredVal;
+							  end;
+								matrowput(SMr,oi,SMrw);
+							end;
+						end;
+	  			end;
+				end; 
+	  	end;
+		end; 
+		
+		
+		TrHs = true;
+		Mainr.TransDate = "";
+		Mainr.AccNumber = acccode;
+		while(loopmain(Mainr,1,TrHs))begin
+			testf = true;
+			if(Mainr.TransDate>ed)then begin TrHs = false; testf = false; end;
+			//if(Mainr.TransDate<sd)then begin TrHs = false; testf = false; end;
+			if(Mainr.AccNumber!=acccode)then begin TrHs = false; testf = false; end;
+			if(Mainr.FileName!="TRVc")then begin testf=false; end;
+
+			if(testf)then begin
+				
+			
+				
+				TRr.IntYc = Mainr.IntYc;
+				TRr.Number = Mainr.TransNr;
+				if(readfirstmain(TRr,2,true))then begin
+					mtrw = matrowcnt(TRr);
+					For(i=0;i<mtrw;i=i+1) begin
+	  				matrowget(TRr,i,TRrw);
+	  				if(TRrw.AccNumber==acccode and TRrw.ovst==0 and TRr.TransDate==Mainr.TransDate)then begin
+							foundf = true;
+							if(nonblank(objcode) and setinset(objcode,TRrw.Objects)==false)then begin foundf = false; end;
+							if(foundf)then begin
+								For(oi=0;oi<objcnt;oi=oi+1) begin
+	  							matrowget(SMr,oi,SMrw);
+	  							if(setinset(SMrw.Objects,TRrw.Objects))then begin
+	  								SMrw.AccNumber = TRrw.AccNumber;
+	  								if(Mainr.TransDate<sd)then begin
+	  									SMrw.CurDebVal = SMrw.CurDebVal + TRrw.DebVal;
+											SMrw.CurCredVal = SMrw.CurCredVal + TRrw.CredVal;
+	  								end else begin
+											SMrw.DebVal = SMrw.DebVal + TRrw.DebVal;
+											SMrw.CredVal = SMrw.CredVal + TRrw.CredVal;
+	  								end;
+	  								matrowput(SMr,oi,SMrw);
+	  							end;
+								end; 
+	  					end;
+	  				end;
+					end; 
+				end;
+			end;
+		end;
+		
+		For(oi=0;oi<objcnt;oi=oi+1) begin
+			matrowget(SMr,oi,SMrw);
+			if(SMrw.CredVal!=0 or SMrw.DebVal!=0)then begin
+				startformat(15);
+					//outstring(0,0,SMrw.Objects,false); //Edit***************************Sasha2,17:10 06.05.2015
+					OutStringID(0,"DblOpenMainRep",SMrw.Objects,false,""); //Edit***************************Sasha2,17:10 06.05.2015
+					outstring(50,0,SMrw.Comment,false);
+					outstring(150,0,SMrw.CurDebVal - SMrw.CurCredVal,false);
+					outstring(200,0,SMrw.DebVal,false);
+					outstring(250,0,SMrw.CredVal,false);
+					outstring(300,0,SMrw.DebVal - SMrw.CredVal,false);
+					outstring(1,0,SMrw.CurDebVal - SMrw.CurCredVal + SMrw.DebVal - SMrw.CredVal,true);
+				endformat;
+				sdbal = sdbal + SMrw.CurDebVal;
+				scbal = scbal + SMrw.CurCredVal;
+				dbal = dbal + SMrw.DebVal;
+				cbal = cbal + SMrw.CredVal;
+			end;
+		end;
+		gray_divider(0,1);
+		startformat(15);
+			outstring(150,0,sdbal-scbal,false);
+			outstring(200,0,dbal,false);
+			outstring(250,0,cbal,false);
+			outstring(300,0,dbal - cbal,false);
+			outstring(1,0,sdbal-scbal + dbal - cbal,true);
+		endformat;
+	endjob;
+	
+return;
+end;

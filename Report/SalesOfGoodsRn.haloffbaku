@@ -1,0 +1,1012 @@
+//server-only
+external function val MulRateToBase1(var string,val,val,val,val,val,val,roundmode);
+external procedure GetFullCurncyRate(var string,Date,var val,var val,var val,var val,var val);
+external outer procedure FindFIFOOrigValAndCurncyIV(longint, integer, var val, var string,var val,boolean,var array string,var vector val,Boolean,var boolean); //Edit***************************Sasha2,14:02 14.09.2017
+external function roundmode SetRoundModeD(Integer);
+external function val AbsoluteVal(val);
+external procedure Base1ToOther(var string,val,val,val,val,val,val,var val,roundmode);
+external procedure CurValToOtherCur(Date,string,val,string,var val,roundmode);
+external function Boolean GetPMRow(string,var row PMBlock);
+external procedure GetObjs(string,string,var string);
+external function val AbsoluteVal(val);
+
+SetLangMode(LangRussian,"RUS",0);
+
+global
+function val IVToBaseMy(record IVVc IVr, row IVVc IVrw, val value)
+begin
+  val res;
+  string 5 tstr;
+  if (nonblank(IVrw.CurncyCode)) then begin
+    tstr = IVrw.CurncyCode;
+    res = MulRateToBase1(tstr,value,IVrw.FrRate,IVrw.ToRateB1,IVrw.ToRateB2,IVrw.BaseRate1,IVrw.BaseRate2,DefaultCurRoundOff);
+  end else begin
+    tstr = IVr.CurncyCode;
+    res = MulRateToBase1(tstr,value,IVr.FrRate,IVr.ToRateB1,IVr.ToRateB2,IVr.BaseRate1,IVr.BaseRate2,DefaultCurRoundOff);
+  end;
+  IVToBaseMy = res;
+  return;
+end;
+
+procedure SalesOfGoodsRn_processIV(record IVVc IVp, val recivedmoneybase, val percent, date transdate, longint cupnr, boolean printf, array integer tabs, var boolean InvoiceRowTypeDownpaymentf,
+                                   var val plantot, var val facttot, var val sumtot,var vector val vplantotcur,var vector val vfacttotcur, var val retailworebatetot, var boolean itemsf)
+begin
+  val aznfr,aznto,fr,to1,to2,br1,br2;
+  record IVVc tIVr;
+  record INVc INr;
+  record BaseCurBlock bcur;
+  record ShopCoef2Vc SCr;
+  record GCSVc GCSr;
+  record PDVc PDr;
+  record IPrsVc IPrsr;
+  record IPVc IPr;
+  record GCRVc GCRr;
+  record ItemStatusVc ISr;
+  record POVc POr;
+  record ORVc ORr;
+  record PLVc PLr;
+  row IVVc IVrw,tIVrw;
+  row PMBlock PMrw;
+  row POVc POrw;
+  row ORVc ORrw;
+  integer i,j,rwcnt,rwcnt2;
+  boolean updst,giftf,found,notprint,nocoef,nopcppr,pofound,TrHs,difbrandcur,fifofound;
+  val recivedmoneybrandcur,sumbase,sumbrandcur,retailbase,retailbrandcur,fifobase,fifobrandcur,printedrm,printedrmb,planfifobase,planfifobrandcur,tmp,tmp2,itemsum,qty;
+  string 10 prevbrandcur,brandcur,tstr,store;
+  vector val currencyBalances; //Edit***************************Sasha2,15:49 13.09.2017
+	array string 10 addCurs; //Edit***************************Sasha2,15:50 13.09.2017
+  
+  BlockLoad(bcur);
+  InvoiceRowTypeDownpaymentf = false;
+  itemsf = false;
+  rwcnt = matrowcnt(IVp);
+  for (i=0;i<rwcnt;i=i+1) begin
+    matrowget(IVp,i,IVrw);
+    if (IVrw.stp==kInvoiceRowTypeDownpayment) then begin
+      InvoiceRowTypeDownpaymentf = true;
+    end;
+    if (IVrw.stp==kInvoiceRowTypeNormal) then begin
+      itemsf = true;
+    end;
+  end;
+  if (!InvoiceRowTypeDownpaymentf) then begin
+    for (i=0;i<rwcnt;i=i+1) begin
+      matrowget(IVp,i,IVrw);
+      sumbase = 0;
+      sumbrandcur = 0;
+      retailbase = 0;
+      retailbrandcur = 0;
+      fifobase = 0;
+      fifobrandcur = 0;
+      planfifobase = 0;
+      planfifobrandcur = 0;
+      if (IVrw.stp==kInvoiceRowTypeNormal) then begin
+        qty = IVrw.Quant;
+        if (IVp.UpdStockFlag>0 and IVp.OrderNr<0) then begin
+          updst = true;
+        end else begin
+          updst = false;
+        end;
+        FindFIFOOrigValAndCurncyIV(IVp.SerNr,i,fifobrandcur,brandcur,fifobase,updst,addCurs,currencyBalances,false,fifofound); //Edit***************************Sasha2,14:03 14.09.2017
+        if ((qty<0) and (fifobase>0)) then begin
+          fifobase = (-1)*fifobase;
+          fifobrandcur = (-1)*fifobrandcur;
+        end;
+        if ((qty>0) and (fifobase<0)) then begin
+          fifobase = (-1)*fifobase;
+          fifobrandcur = (-1)*fifobrandcur;
+        end;
+        if (!fifofound) then begin
+          pofound = false;
+          resetloop(POr);
+          if (IVp.OrderNr!=-1) then begin
+            POr.OrdNr = IVp.OrderNr;
+            TrHs = true;
+            while (loopkey("OrdNr",POr,1,TrHs)) begin
+              if (POr.OrdNr!=IVp.OrderNr) then begin TrHs = false; end;
+              if ((TrHs) and (POr.OKFlag!=0)) then begin
+                rwcnt2 = matrowcnt(POr);
+                for (j=0;j<rwcnt2;j=j+1) begin
+                  matrowget(POr,j,POrw);
+                  if (POrw.ArtCode==IVrw.ArtCode) then begin
+                    pofound = true;
+                    planfifobrandcur = planfifobrandcur + POrw.Sum/POrw.Quant*qty;
+                    planfifobase = planfifobase + MulRateToBase1(POr.CurncyCode,POrw.Sum,POr.FrRate,POr.ToRateB1,POr.ToRateB2,POr.BaseRate1,POr.BaseRate2,DefaultCurRoundOff)/POrw.Quant*qty;
+                    brandcur = POr.CurncyCode;
+                    j = rwcnt2;
+                    TrHs = false;
+                  end;
+                end;
+              end;
+            end;
+          end;
+          if ((!pofound) or (planfifobase==0)) then begin
+            ISr.Code = IVrw.ArtCode;
+            ISr.Location = ";;;";
+            readfirstmain(ISr,2,true);
+            if (ISr.Instock>0) then begin
+              INr.Code = IVrw.ArtCode;
+              readfirstmain(INr,1,true);
+              planfifobase = INr.WeighedAvPrice * qty;
+              planfifobrandcur = INr.LastPurchPrice2 * qty;
+              brandcur = INr.LastPurchCurncyCode;
+             end;
+          end;
+          if (planfifobase==0) then begin
+            nopcppr = true;
+            ORr.SerNr = IVp.OrderNr;
+            ReadFirstMain(ORr,1,true);
+            rwcnt2 = matrowcnt(ORr);
+            for (j=0;j<rwcnt2;j=j+1) begin
+              matrowget(ORr,j,ORrw);
+              if (ORrw.ArtCode==IVrw.ArtCode) then begin
+                if (ORrw.PlanCostVal!=blankval) then begin
+                  planfifobrandcur = ORrw.PlanCostVal*qty;
+                  brandcur = ORrw.PlanCostCur;
+                  GetFullCurncyRate(brandcur,transdate,fr,to1,to2,br1,br2);
+                  if (fr==0 or to1==0) then begin
+                    fr = 1; to1 = 1;
+                  end;
+                  planfifobase = MulRateToBase1(brandcur,planfifobrandcur,fr,to1,to2,br1,br2,DefaultCurRoundOff);
+                  nopcppr = false;
+                end;
+                j = rwcnt2;
+              end;
+            end;
+          end;
+          if (planfifobase==0) then begin
+            PLr.PLCode = "PCP";
+            PLr.ArtCode = IVrw.ArtCode;
+            nopcppr = true;
+            if (ReadFirstMain(PLr,2,true)) then begin
+              planfifobrandcur = PLr.ExVatPrice*qty;
+              brandcur = PLr.CurncyCode;
+              GetFullCurncyRate(brandcur,transdate,fr,to1,to2,br1,br2);
+              if (fr==0 or to1==0) then begin
+                fr = 1; to1 = 1;
+              end;
+              planfifobase = MulRateToBase1(brandcur,planfifobrandcur,fr,to1,to2,br1,br2,DefaultCurRoundOff);
+              nopcppr = false;
+            end;
+          end;
+        end;
+        fifobase = fifobase*percent;
+        fifobrandcur = fifobrandcur*percent;
+        planfifobase = planfifobase*percent;
+        planfifobrandcur = planfifobrandcur*percent;
+        fifobase = round(fifobase,SetRoundModeD(2));
+        fifobrandcur = round(fifobrandcur,SetRoundModeD(2));
+        planfifobase = round(planfifobase,SetRoundModeD(2));
+        planfifobrandcur = round(planfifobrandcur,SetRoundModeD(2));
+        
+        tstr = brandcur;
+        GetFullCurncyRate(tstr,transdate,fr,to1,to2,br1,br2);
+        if (fr==0 or to1==0) then begin
+          fr = 1; to1 = 1;
+        end;
+        Base1ToOther(brandcur,recivedmoneybase,fr,to1,to2,br1,br2,recivedmoneybrandcur,SetRoundModeD(6));
+        if (i==rwcnt-1) then begin
+          sumbase = recivedmoneybase - printedrmb;
+          if (difbrandcur) then begin
+            sumbrandcur = round(IVrw.Sum/IVp.Sum4*recivedmoneybrandcur,SetRoundModeD(2));
+          end else begin
+            sumbrandcur = recivedmoneybrandcur - printedrm;
+          end;
+        end else begin
+          sumbase = round(IVrw.Sum/IVp.Sum4*recivedmoneybase,SetRoundModeD(2));
+          sumbrandcur = round(IVrw.Sum/IVp.Sum4*recivedmoneybrandcur,SetRoundModeD(2));
+          printedrmb = printedrmb + sumbase;
+          printedrm = printedrm + sumbrandcur;
+        end;
+        if (nonblank(IVrw.CurncyCode)) then begin
+          tstr = IVrw.CurncyCode;
+        end else begin
+          tstr = IVp.CurncyCode;
+        end;
+        CurValToOtherCur(transdate,tstr,IVrw.Sum/qty,brandcur,retailbrandcur,DefaultCurRoundOff);
+        retailbase = IVToBaseMy(IVp,IVrw,IVrw.Sum/qty);
+        retailworebatetot = retailworebatetot + IVToBaseMy(IVp,IVrw,IVrw.Price*qty)*percent;
+        plantot = plantot + planfifobase;
+        vplantotcur[brandcur] = vplantotcur[brandcur] + planfifobrandcur;
+        facttot = facttot + fifobase;
+        vfacttotcur[brandcur] = vfacttotcur[brandcur] + fifobrandcur;
+        sumtot = sumtot + sumbase;
+          
+        if ((printf) and ((fifofound) or (planfifobase!=0) or (sumbase!=0))) then begin
+          if (planfifobase==0) and ((!fifofound) and nopcppr) then begin
+            brandcur = bcur.BaseCur1;
+            retailbrandcur = retailbase;
+            planfifobrandcur = planfifobase;
+            fifobrandcur = fifobase;
+            sumbrandcur = sumbase;
+          end;
+          startformat(15);
+            outstring(tabs[1],0,IVrw.ArtCode,false);                               // Код товара
+            if (cupnr==-1) then begin
+              OutStringID(tabs[2],"DblIVVc","СЧ/Ф. " & IVp.SerNr,false,IVp.SerNr); // Докум.
+            end else begin
+              OutStringID(tabs[2],"DblPrHisSL",cupnr,false,"");
+            end;
+            outstring(tabs[3],0,transdate,false);                                  // Дата продажи
+            outstring(tabs[4],0,qty,false);                                        // Кол.
+            outstring(tabs[5],0,brandcur,false);                                   // Вал. бренда
+            outstring(tabs[6],0,retailbase,false);                                 // Ритейл за ед. в осн. вал.
+            outstring(tabs[7],0,retailbrandcur,false);                             // Ритейл за ед. в вал. бренда
+            if (planfifobase!=0) then begin
+              outstring(tabs[8],0,planfifobase,false);                             // План. себест. в осн. вал.
+            end else begin
+              if ((!fifofound) and nopcppr) then begin
+                outstring(tabs[8],0,"План. себест. не найдена",false);
+              end else begin
+                outstring(tabs[8],0,"",false);
+              end;
+            end;
+            if (planfifobrandcur!=0) then begin
+              outstring(tabs[9],0,planfifobrandcur,false);                         // План. себест. в вал. бренда
+            end else begin
+              outstring(tabs[9],0,"",false);
+            end;
+            if (fifofound) then begin
+              outstring(tabs[10],0,fifobase,false);                                // Факт. себест. в осн. вал.
+            end else begin
+              outstring(tabs[10],0,"",false);
+            end;
+            if (fifofound) then begin
+              outstring(tabs[11],0,fifobrandcur,false);                            // Факт. себест. в вал. бренда
+            end else begin
+              outstring(tabs[11],0,"",false);
+            end;
+            outstring(tabs[12],0,sumbase,false);                                   // Сумма прихода в осн. вал.
+            outstring(tabs[13],0,sumbrandcur,false);                               // Сумма прихода в вал. бренда
+          endformat;
+        end;
+      end;
+      if (IVrw.stp==kInvoiceRowTypeGiftVoucherSold) then begin
+        qty = 1;
+        brandcur = bcur.BaseCur1;
+        store = "";
+        GetObjs("STORE",IVp.Objects,store);
+        SCr.Shop = store;
+        SCr.Date = transdate;
+        nocoef = false;
+        if (readlastmain(SCr,2,false)) then begin
+          if ((SCr.Shop==store) and (SCr.Date<=transdate)) then begin
+            planfifobase = IVrw.Sum/SCr.Coef;
+          end else begin
+            nocoef = true;
+          end;
+        end else begin
+          nocoef = true;
+        end;
+        GCRr.GCSSerNr = IVrw.GCNr;
+        if (readfirstkey("GCSSerNr",GCRr,1,true)) then begin
+          planfifobase = 0;
+          tIVr.SerNr = GCRr.InvSerNr;
+          readfirstmain(tIVr,1,true);
+          rwcnt2 = matrowcnt(tIVr);
+          fifobase = 0;
+          itemsum = 0;
+          for (j=0;j<rwcnt2;j=j+1) begin
+            matrowget(tIVr,j,tIVrw);
+            if (tIVrw.stp==kInvoiceRowTypeNormal) then begin
+              itemsum = itemsum + tIVrw.Sum;
+              tmp = 0;
+              tmp2 = 0;
+              if (tIVr.UpdStockFlag>0 and tIVr.OrderNr<0) then begin
+                updst = true;
+              end else begin
+                updst = false;
+              end;
+              FindFIFOOrigValAndCurncyIV(tIVr.SerNr,j,tmp2,brandcur,tmp,updst,addCurs,currencyBalances,false,fifofound); //Edit***************************Sasha2,14:03 14.09.2017
+              if (tIVrw.CurncyCode=="AZN") then begin
+                tmp = tmp*aznfr/aznto;
+              end;
+              tmp = round(tmp,SetRoundModeD(2));
+              fifobase = fifobase + tmp;
+              fifobrandcur = fifobrandcur + tmp2;
+            end;
+          end;
+          if (IVrw.Sum<itemsum) then begin
+            fifobase = round(IVrw.Sum/itemsum*fifobase*qty,SetRoundModeD(2));
+            fifobrandcur = round(IVrw.Sum/itemsum*fifobrandcur*qty,SetRoundModeD(2));
+          end;
+        end;
+        tstr = brandcur;
+        GetFullCurncyRate(tstr,transdate,fr,to1,to2,br1,br2);
+        if (fr==0 or to1==0) then begin
+          fr = 1; to1 = 1;
+        end;
+        Base1ToOther(brandcur,recivedmoneybase,fr,to1,to2,br1,br2,recivedmoneybrandcur,SetRoundModeD(6));
+        if (fifobrandcur==0) then begin
+          Base1ToOther(brandcur,fifobase,fr,to1,to2,br1,br2,fifobrandcur,DefaultCurRoundOff);
+        end;
+        if (brandcur==bcur.BaseCur1) then begin
+          planfifobrandcur = planfifobase;
+        end else begin
+          Base1ToOther(brandcur,planfifobase,fr,to1,to2,br1,br2,planfifobrandcur,DefaultCurRoundOff);
+        end;
+        retailbase = IVToBaseMy(IVp,IVrw,IVrw.Sum/qty);
+        retailworebatetot = retailworebatetot + IVToBaseMy(IVp,IVrw,IVrw.Price*qty)*percent;
+        Base1ToOther(brandcur,retailbase,fr,to1,to2,br1,br2,retailbrandcur,DefaultCurRoundOff);
+        giftf = false;
+        for (j=0;j<rwcnt;j=j+1) begin
+          matrowget(IVp,j,tIVrw);
+          if (tIVrw.PayMode=="G") then begin
+            giftf = true;
+            j = rwcnt;
+          end;
+        end;
+        if (!giftf) then begin
+          if (i==rwcnt-1) then begin
+            sumbase = recivedmoneybase - printedrmb;
+            if (difbrandcur) then begin
+              sumbrandcur = round(IVrw.Sum/IVp.Sum4*recivedmoneybrandcur,SetRoundModeD(2));
+            end else begin
+              sumbrandcur = recivedmoneybrandcur - printedrm;
+            end;
+          end else begin
+            sumbase = round(IVrw.Sum/IVp.Sum4*recivedmoneybase,SetRoundModeD(2));
+            sumbrandcur = round(IVrw.Sum/IVp.Sum4*recivedmoneybrandcur,SetRoundModeD(2));
+            printedrmb = printedrmb + sumbase;
+            printedrm = printedrm + sumbrandcur;
+          end;
+        end else begin
+          sumbase = 0;
+          sumbrandcur = 0;
+        end;
+        plantot = plantot + planfifobase;
+        vplantotcur[brandcur] = vplantotcur[brandcur] + planfifobrandcur;
+        facttot = facttot + fifobase;
+        vfacttotcur[brandcur] = vfacttotcur[brandcur] + fifobrandcur;
+        sumtot = sumtot + sumbase;
+        if ((printf) and ((fifofound) or (planfifobase!=0) or (sumbase!=0))) then begin
+          startformat(15);
+            outstring(tabs[1],0,"ПС " & IVrw.GCNr,false);                        // Код товара
+            OutStringID(tabs[2],"DblIVVc","СЧ/Ф. " & IVp.SerNr,false,IVp.SerNr); // Докум.
+            outstring(tabs[3],0,transdate,false);                                // Дата продажи
+            outstring(tabs[4],0,qty,false);                                      // Кол.
+            outstring(tabs[5],0,brandcur,false);                                 // Вал. бренда
+            outstring(tabs[6],0,retailbase,false);                               // Ритейл за ед. в осн. вал.
+            outstring(tabs[7],0,retailbrandcur,false);                           // Ритейл за ед. в вал. бренда
+            if (planfifobase!=0) then begin
+              outstring(tabs[8],0,planfifobase,false);                           // План. себест. в осн. вал.
+            end else begin
+              if ((nocoef) and (!fifofound)) then begin
+                outstring(tabs[8],0,"Коэф. не найден",false);
+              end else begin
+                outstring(tabs[8],0,"",false);
+              end;
+            end;
+            if (planfifobrandcur!=0) then begin
+              outstring(tabs[9],0,planfifobrandcur,false);                       // План. себест. в вал. бренда
+            end else begin
+              outstring(tabs[9],0,"",false);
+            end;
+            if (fifofound) then begin
+              outstring(tabs[10],0,fifobase,false);                              // Факт. себест. в осн. вал.
+            end else begin
+              outstring(tabs[10],0,"",false);
+            end;
+            if (fifofound) then begin
+              outstring(tabs[11],0,fifobrandcur,false);                          // Факт. себест. в вал. бренда
+            end else begin
+              outstring(tabs[11],0,"",false);
+            end;
+            outstring(tabs[12],0,sumbase,false);                                 // Сумма прихода в осн. вал.
+            outstring(tabs[13],0,sumbrandcur,false);                             // Сумма прихода в вал. бренда
+          endformat;
+        end;
+      end;
+      if (nonblank(prevbrandcur) and (prevbrandcur!=brandcur)) then begin
+        difbrandcur = true;
+      end;
+      prevbrandcur = brandcur;
+    end;
+  end;
+  return;
+end;
+
+procedure SalesOfGoodsRn_processOR(record ORVc ORp, val recivedmoneybase, val percent, date transdate, longint iprsernr, boolean printf, array integer tabs,
+                                   var val plantot, var val facttot, var val sumtot,var vector val vplantotcur,var vector val vfacttotcur, var val retailworebatetot)
+begin
+  string 5 tstr;
+  val aznfr,aznto,fr,to1,to2,br1,br2;
+  record ItemHistVc IHr;
+  record SHVc SHr;
+  record POVc POr;
+  record ItemStatusVc ISr;
+  record INVc INr;
+  record BaseCurBlock bcur;
+  record PLVc PLr;
+  row SHVc SHrw;
+  row POVc POrw;
+  row ORVc ORrw;
+  integer i,rwcnt,rwcnt2,j;
+  boolean updst,shfound,TrHs,TrHs2,pofound,nopcppr,difbrandcur;
+  val recivedmoneybrandcur,sumbase,sumbrandcur,retailbase,retailbrandcur,fifobase,fifobrandcur,printedrm,printedrmb,planfifobase,planfifobrandcur,halt,qty;
+  string 5 brandcur,prevbrandcur;
+  
+  rwcnt = matrowcnt(ORp);
+  for (i=0;i<rwcnt;i=i+1) begin
+    matrowget(ORp,i,ORrw);
+    sumbase = 0;
+    sumbrandcur = 0;
+    retailbase = 0;
+    retailbrandcur = 0;
+    fifobase = 0;
+    fifobrandcur = 0;
+    planfifobase = 0;
+    planfifobrandcur = 0;
+    qty = ORrw.Quant;
+    halt = 0;
+    shfound = false;
+    resetloop(SHr);
+    SHr.OrderNr = ORp.SerNr;
+    TrHs = true;
+    while (loopkey("OrderKey",SHr,1,TrHs)) begin
+      if (SHr.OrderNr!=ORp.SerNr) then begin TrHs = false; end;
+      if (TrHs) then begin
+        shfound = true;
+        rwcnt2 = matrowcnt(SHr);
+        for (j=0;j<rwcnt2;j=j+1) begin
+          matrowget(SHr,j,SHrw);
+          if (SHrw.ArtCode==ORrw.ArtCode) then begin
+            IHr.FileName = "SHVc";
+            IHr.TransNr = SHr.SerNr;
+            IHr.Row = j;
+            TrHs2 = true;
+            resetloop(IHr);
+            while (loopkey("FNTransNr",IHr,3,TrHs2)) begin
+              if (IHr.FileName!="SHVc")then begin TrHs2 = false; end;
+              if (IHr.TransNr!=SHr.SerNr) then begin TrHs2 = false; end;
+              if (IHr.Row!=j) then begin TrHs2 = false; end;
+              if (TrHs2) then begin
+                if (halt<ORrw.Quant) then begin
+                  fifobase = fifobase + IHr.TotCostPrice;
+                  fifobrandcur = fifobrandcur + IHr.TotCostPriceCurncy;
+                  brandcur = IHr.CurncyCode;
+                  halt = halt - IHr.Qty;
+                end else begin
+                  TrHs = false;
+                  TrHs2 = false;
+                end;
+              end;
+            end;
+          end;
+        end;
+      end;
+    end;
+    if (halt==0) then begin
+      shfound = false;
+    end;
+    if ((!shfound) or (halt<ORrw.Quant)) then begin
+      if (!shfound) then begin
+        halt = 0;
+      end;
+      pofound = false;
+      resetloop(POr);
+      POr.OrdNr = ORp.SerNr;
+      TrHs = true;
+      while (loopkey("OrdNr",POr,1,TrHs)) begin
+        if (POr.OrdNr!=ORp.SerNr) then begin TrHs = false; end;
+        if ((TrHs) and (POr.OKFlag!=0)) then begin
+          rwcnt2 = matrowcnt(POr);
+          for (j=0;j<rwcnt2;j=j+1) begin
+            matrowget(POr,j,POrw);
+            if (POrw.ArtCode==ORrw.ArtCode) then begin
+              pofound = true;
+              planfifobrandcur = planfifobrandcur + POrw.Sum/POrw.Quant*(ORrw.Quant - halt);
+              planfifobase = planfifobase + MulRateToBase1(POr.CurncyCode,POrw.Sum,POr.FrRate,POr.ToRateB1,POr.ToRateB2,POr.BaseRate1,POr.BaseRate2,DefaultCurRoundOff)/POrw.Quant*(ORrw.Quant - halt);
+              brandcur = POr.CurncyCode;
+              j = rwcnt2;
+              TrHs = false;
+            end;
+          end;
+        end;
+      end;
+      if ((!pofound) or (planfifobase==0)) then begin
+        ISr.Code = ORrw.ArtCode;
+        ISr.Location = ";;;";
+        readfirstmain(ISr,2,true);
+        if (ISr.Instock>0) then begin
+          INr.Code = ORrw.ArtCode;
+          readfirstmain(INr,1,true);
+          planfifobase = INr.WeighedAvPrice * qty;
+          planfifobrandcur = INr.LastPurchPrice2 * qty;
+          brandcur = INr.LastPurchCurncyCode;
+         end;
+      end;
+      if (planfifobase==0) then begin
+        nopcppr = true;
+        if (ORrw.PlanCostVal!=blankval) then begin
+          planfifobrandcur = ORrw.PlanCostVal*qty;
+          brandcur = ORrw.PlanCostCur;
+          GetFullCurncyRate(brandcur,transdate,fr,to1,to2,br1,br2);
+          if (fr==0 or to1==0) then begin
+            fr = 1; to1 = 1;
+          end;
+          planfifobase = MulRateToBase1(brandcur,planfifobrandcur,fr,to1,to2,br1,br2,DefaultCurRoundOff);
+          nopcppr = false;
+        end;
+      end;
+      if (planfifobase==0) then begin
+        PLr.PLCode = "PCP";
+        PLr.ArtCode = ORrw.ArtCode;
+        nopcppr = true;
+        if (ReadFirstMain(PLr,2,true)) then begin
+          planfifobrandcur = PLr.ExVatPrice*ORrw.Quant;
+          brandcur = PLr.CurncyCode;
+          GetFullCurncyRate(brandcur,transdate,fr,to1,to2,br1,br2);
+          if (fr==0 or to1==0) then begin
+            fr = 1; to1 = 1;
+          end;
+          planfifobase = MulRateToBase1(brandcur,planfifobrandcur,fr,to1,to2,br1,br2,DefaultCurRoundOff);
+          nopcppr = false;
+        end;
+      end;
+    end;
+    fifobase = fifobase*percent;
+    fifobrandcur = fifobrandcur*percent;
+    planfifobase = planfifobase*percent;
+    planfifobrandcur = planfifobrandcur*percent;
+    fifobase = round(fifobase,SetRoundModeD(2));
+    fifobrandcur = round(fifobrandcur,SetRoundModeD(2));
+    planfifobase = round(planfifobase,SetRoundModeD(2));
+    planfifobrandcur = round(planfifobrandcur,SetRoundModeD(2));
+    tstr = brandcur;
+    GetFullCurncyRate(tstr,transdate,fr,to1,to2,br1,br2);
+    if (fr==0 or to1==0) then begin
+      fr = 1; to1 = 1;
+    end;
+    Base1ToOther(brandcur,recivedmoneybase,fr,to1,to2,br1,br2,recivedmoneybrandcur,SetRoundModeD(6));
+    if (i==rwcnt-1) then begin
+      sumbase = recivedmoneybase - printedrmb;
+      if (difbrandcur) then begin
+        sumbrandcur = round(ORrw.Sum/ORp.Sum4*recivedmoneybrandcur,SetRoundModeD(2));
+      end else begin
+        sumbrandcur = recivedmoneybrandcur - printedrm;
+      end;
+    end else begin
+      sumbase = round(ORrw.Sum/ORp.Sum4*recivedmoneybase,SetRoundModeD(2));
+      sumbrandcur = round(ORrw.Sum/ORp.Sum4*recivedmoneybrandcur,SetRoundModeD(2));
+      printedrmb = printedrmb + sumbase;
+      printedrm = printedrm + sumbrandcur;
+    end;
+    CurValToOtherCur(transdate,ORp.CurncyCode,ORrw.Sum/qty,brandcur,retailbrandcur,DefaultCurRoundOff);
+    tstr = ORp.CurncyCode;
+    GetFullCurncyRate(tstr,transdate,fr,to1,to2,br1,br2);
+    if (fr==0 or to1==0) then begin
+      fr = 1; to1 = 1;
+    end;
+    retailbase = MulRateToBase1(ORp.CurncyCode,ORrw.Sum/qty,fr,to1,to2,br1,br2,DefaultCurRoundOff);
+    retailworebatetot = retailworebatetot + MulRateToBase1(ORp.CurncyCode,ORrw.Price*qty,fr,to1,to2,br1,br2,DefaultCurRoundOff)*percent;
+    plantot = plantot + planfifobase;
+    vplantotcur[brandcur] = vplantotcur[brandcur] + planfifobrandcur;
+    facttot = facttot + fifobase;
+    vfacttotcur[brandcur] = vfacttotcur[brandcur] + fifobrandcur;
+    sumtot = sumtot + sumbase;
+    if ((printf) and ((fifobase!=0) or (planfifobase!=0) or (sumbase!=0))) then begin
+      if (planfifobase==0) and ((fifobase==0) and nopcppr) then begin
+        brandcur = bcur.BaseCur1;
+        retailbrandcur = retailbase;
+        planfifobrandcur = planfifobase;
+        fifobrandcur = fifobase;
+        sumbrandcur = sumbase;
+      end;
+      startformat(15);
+        outstring(tabs[1],0,ORrw.ArtCode,false);                                // Код товара
+        OutStringID(tabs[2],"DblIPVcID","ПЛ/КЛ. " & iprsernr,false,iprsernr);   // Докум.
+        outstring(tabs[3],0,transdate,false);                                   // Дата продажи
+        outstring(tabs[4],0,qty,false);                                         // Кол.
+        outstring(tabs[5],0,brandcur,false);                                    // Вал. бренда
+        outstring(tabs[6],0,retailbase,false);                                  // Ритейл за ед. в осн. вал.
+        outstring(tabs[7],0,retailbrandcur,false);                              // Ритейл за ед. в вал. бренда
+        if ((planfifobase!=0) or pofound) then begin
+          outstring(tabs[8],0,planfifobase,false);                              // План. себест. в осн. вал.
+        end else begin
+          if (((fifobase==0) and !shfound) and nopcppr) then begin
+            outstring(tabs[8],0,"План. себест. не найдена",false);
+          end else begin
+            outstring(tabs[8],0,"",false);
+          end;
+        end;
+        if ((planfifobrandcur!=0) or pofound) then begin
+          outstring(tabs[9],0,planfifobrandcur,false);                          // План. себест. в вал. бренда
+        end else begin
+          outstring(tabs[9],0,"",false);
+        end;
+        if ((fifobase!=0) or shfound) then begin
+          outstring(tabs[10],0,fifobase,false);                                 // Факт. себест. в осн. вал.
+        end else begin
+          outstring(tabs[10],0,"",false);
+        end;
+        if ((fifobrandcur!=0) or shfound) then begin
+          outstring(tabs[11],0,fifobrandcur,false);                             // Факт. себест. в вал. бренда
+        end else begin
+          outstring(tabs[11],0,"",false);
+        end;
+        outstring(tabs[12],0,sumbase,false);                                    // Сумма прихода в осн. вал.
+        outstring(tabs[13],0,sumbrandcur,false);                                // Сумма прихода в вал. бренда
+      endformat;
+    end;
+    if (nonblank(prevbrandcur) and (prevbrandcur!=brandcur)) then begin
+      difbrandcur = true;
+    end;
+    prevbrandcur = brandcur;
+  end;
+  
+  return;
+end;
+
+global 
+procedure RunSalesOfGoodsRn(record RcVc RepSpec,boolean printf,
+                            var val resplantot,var val resfacttot,var vector val vplantotcur,var vector val vfacttotcur, var val retailworebatetot)
+begin
+  boolean TrHs,TrHs2,testf,testf2,InvoiceRowTypeDownpaymentf,giftf,found,nocoef,itemsf;
+  date startdate,enddate;
+  integer i,j,k,rwcnt,rwcnt2,rwcnt3,rw;
+  record IVVc IVr,tIVr;
+  record IPVc IPr;
+  record ORVc ORr;
+  record PDVc PDr;
+  record SHVc SHr;
+  record ItemHistVc IHr;
+  record POVc POr;
+  record GCSVc GCSr;
+  record ShopCoef2Vc SCr;
+  record ARPayHistVc ARPayHistr;
+  record TRVc TRr;
+  record CUVc CUr;
+  row PMBlock PMrw;
+  row IVVc IVrw,tIVrw;
+  row IPVc IPrw;
+  row ORVc ORrw;
+  row SHVc SHrw;
+  row POVc POrw;
+  row TRVc TRrw;
+  val sumbase,sumbrandcur,planfifobase,qty,percent;
+  val recivedmoneybase,recivedmoneybrandcur,plantot,facttot,sumtot,prepayment,gifted,giftsertpaym,loyaltypaym,printedprepval,rmbpart;
+  val aznfr,aznto,fr,to1,to2,br1,br2;
+  string 10 tstr,brandcur,store;
+  array integer tabs;
+  
+  if (nonblank(RepSpec.sStartDate)) then begin
+    startdate = RepSpec.sStartDate;
+    enddate = RepSpec.sEndDate;
+  end else begin
+    startdate = StringToDate("01/01/" & getyear(CurrentDate));
+    enddate = StringToDate("31/12/" & getyear(CurrentDate));
+  end;
+  if (printf) then begin
+    tabs[1] =  0;
+    tabs[2] =  tabs[1]  + 40;
+    tabs[3] =  tabs[2]  + 35;
+    tabs[4] =  tabs[3]  + 40;
+    tabs[5] =  tabs[4]  + 15;
+    
+    tabs[6] =  tabs[5]  + 40;
+    tabs[7] =  tabs[6]  + 35;
+    
+    tabs[8] =  tabs[7]  + 44;
+    tabs[9] =  tabs[8]  + 35;
+    
+    tabs[10] = tabs[9]  + 44;
+    tabs[11] = tabs[10] + 35;
+    
+    tabs[12] = tabs[11] + 44;
+    tabs[13] = tabs[12] + 35;
+    
+    tabs[14] = 480;
+    startreportjob("Отчёт реализации товаров");
+    rw = 1;
+    Header(rw,"Период отчета - " & startdate & " : " & enddate,1);
+    rw = rw + 1;
+    if nonblank(RepSpec.ObjStr) then begin
+      Header(rw,"Магазин - " & RepSpec.ObjStr,1);
+      rw = rw + 1;
+    end;
+    EndHeader;
+    startformat(15);
+      outstring(tabs[1],0,"",false);
+      outstring(tabs[2],0,"",false);
+      outstring(tabs[3],0,"",false);
+      outstring(tabs[4],0,"",false);
+      outstring(tabs[5],0,"",false);
+      OutStringCut(tabs[6] + (tabs[8]-tabs[6])/2-15,tabs[6] + (tabs[8]-tabs[6])/2+15,0,"Ритейл за ед.",true,0);
+      outstring(tabs[8]-10,0,"",false);
+      
+      OutStringCut(tabs[8] + (tabs[10]-tabs[8])/2-15,tabs[8] + (tabs[10]-tabs[8])/2+15,0,"План. себест.",true,0);
+      outstring(tabs[10]-10,0,"",false);
+      
+      OutStringCut(tabs[10] + (tabs[12]-tabs[10])/2-15,tabs[10] + (tabs[12]-tabs[10])/2+15,0,"Факт. себест.",true,0);
+      outstring(tabs[12]-10,0,"",false);
+      OutStringCut(tabs[12] + (tabs[14]-tabs[12])/2-15,tabs[12] + (tabs[14]-tabs[12])/2+15,0,"Сумма прихода",true,0);
+      outstring(tabs[14]-10,0,"",false);
+		endformat;
+    Gray_Divider(tabs[6]+2,tabs[8]-2);
+    Gray_Divider(tabs[8]+2,tabs[10]-2);
+    Gray_Divider(tabs[10]+2,tabs[12]-2);
+    Gray_Divider(tabs[12]+2,tabs[14]-2);
+    startformat(15);
+      outstring(tabs[1],0,"Код товара",false);
+      outstring(tabs[2],0,"Докум.",false);
+      outstring(tabs[3],0,"Дата оплаты",false);
+      outstring(tabs[4],0,"Кол.",false);
+      outstring(tabs[5],0,"Вал. бренда",false);
+      outstring(tabs[6],0,"в осн. вал.",false);
+      outstring(tabs[7],0,"в вал. бренда",false);
+      outstring(tabs[8],0,"в осн. вал.",false);
+      outstring(tabs[9],0,"в вал. бренда",false);
+      outstring(tabs[10],0,"в осн. вал.",false);
+      outstring(tabs[11],0,"в вал. бренда",false);
+      outstring(tabs[12],0,"в осн. вал.",false);
+      outstring(tabs[13],0,"в вал. бренда",false);
+		endformat;
+    Black_Divider(0,1);
+
+  end;
+  
+  IVr.InvDate = startdate;
+  TrHs = true;
+  while (loopkey("InvDate",IVr,1,TrHs)) begin
+    testf = true;
+    if (IVr.InvDate>enddate) then begin TrHs = false; testf = false; end;
+    if (IVr.OKFlag==0) then begin testf = false; end;
+    if (IVr.Invalid==1) then begin testf = false; end;
+    if (IVr.InvType==kInvoiceTypeCredit) then begin testf = false; end;
+    if nonblank(RepSpec.ObjStr) then begin
+      store = "";
+      GetObjs("STORE",IVr.Objects,store);
+      if (RepSpec.ObjStr!=store) then begin testf = false; end;
+    end;
+    if (left(IVr.CustCode,3)=="FOB") then begin//Edit-------------------Vitalii 15:52 13.11.2017
+      CUr.Code = IVr.CustCode;
+      readfirstmain(CUr,1,true);
+      if (CUr.CustCat=="STORE") then begin
+        testf = false;
+      end;
+    end;
+    if (testf) then begin
+      recivedmoneybase = 0;
+      prepayment = 0;
+      gifted = 0;
+      giftsertpaym = 0;
+      loyaltypaym = 0;
+      rwcnt = matrowcnt(IVr);
+      for (i=0;i<rwcnt;i=i+1) begin
+        matrowget(IVr,i,IVrw);
+        if (IVrw.stp==kInvoiceRowTypeLoyaltyPointsPayment) then begin
+          loyaltypaym = loyaltypaym + IVToBaseMy(IVr,IVrw,IVrw.Sum);
+          recivedmoneybase = recivedmoneybase + IVToBaseMy(IVr,IVrw,IVrw.Sum);
+        end;
+        if (IVrw.stp==kInvoiceRowTypePrepayment) then begin
+          prepayment = prepayment + IVToBaseMy(IVr,IVrw,IVrw.Sum);
+        end;
+        if (IVrw.stp==kInvoiceRowTypeCashPayment) then begin
+          recivedmoneybase = recivedmoneybase + IVToBaseMy(IVr,IVrw,IVrw.Sum);
+        end;
+        if (IVrw.stp==kInvoiceRowTypeCreditCardPayment) then begin
+          if ((IVrw.PayMode=="G") or (IVrw.PayMode=="D")) then begin
+            gifted = gifted + IVToBaseMy(IVr,IVrw,IVrw.Sum);
+          end;
+          recivedmoneybase = recivedmoneybase + IVToBaseMy(IVr,IVrw,IVrw.Sum);
+        end;
+        if (IVrw.stp==kInvoiceRowTypeGiftVoucherPayment) then begin
+          giftsertpaym = giftsertpaym + IVToBaseMy(IVr,IVrw,IVrw.Sum);
+          //recivedmoneybase = recivedmoneybase + IVToBaseMy(IVr,IVrw,IVrw.Sum);
+        end;
+      end;
+      /*if (recivedmoneybase==0) then begin
+        PDr.Code = IVr.PayDeal;
+        if (readfirstmain(PDr,1,true)) then begin
+          if (PDr.PDType==kInvoiceTypeCash) then begin
+            recivedmoneybase = IVr.BaseSum4 - prepayment;
+          end;
+        end;
+      end;*/
+
+      if ((currentcompany==9) and (IVr.PayDeal=="F")) then begin
+        recivedmoneybase = 0;
+      end;
+      
+      if (recivedmoneybase!=0) then begin
+        recivedmoneybase = recivedmoneybase - loyaltypaym;
+        PDr.Code = IVr.PayDeal;
+        readfirstmain(PDr,1,true);
+        if (PDr.PDType==kInvoiceTypeCash) then begin
+          percent = recivedmoneybase/(recivedmoneybase + giftsertpaym + prepayment + loyaltypaym);
+        end else begin
+          percent = recivedmoneybase/IVr.BaseSum4;
+        end;
+        SalesOfGoodsRn_processIV(IVr,recivedmoneybase,percent,IVr.InvDate,-1,printf,tabs,InvoiceRowTypeDownpaymentf,plantot,facttot,sumtot,vplantotcur,vfacttotcur,retailworebatetot,itemsf);
+      end;
+      
+      
+      
+    end;
+  end;
+  IPr.TransDate = startdate;
+  TrHs = true;
+  while (loopkey("TransDate",IPr,1,TrHs)) begin
+    testf = true;
+    if (IPr.TransDate>enddate) then begin  TrHs = false; testf = false; end;
+    if (IPr.OKFlag==0) then begin testf = false; end;
+    if (testf) then begin
+      GetPMRow(IPr.PayMode,PMrw);
+      if (left(PMrw.AccNr,1)=="5") then begin
+        tstr = "AZN";
+        GetFullCurncyRate(tstr,IPr.TransDate,aznfr,aznto,to2,br1,br2);
+        if (aznfr==0 or aznto==0) then begin
+          aznfr = 1; aznto = 1;
+        end;
+        rwcnt = matrowcnt(IPr);
+        for (i=0;i<rwcnt;i=i+1) begin
+          matrowget(IPr,i,IPrw);
+          testf2 = true;
+          if nonblank(RepSpec.ObjStr) then begin
+            store = "";
+            GetObjs("STORE",IPrw.Objects,store);
+            if (RepSpec.ObjStr!=store) then begin testf2 = false; end;
+          end;
+          if (left(IPrw.CustCode,3)=="FOB") then begin//Edit-------------------Vitalii 15:52 13.11.2017
+            CUr.Code = IPrw.CustCode;
+            readfirstmain(CUr,1,true);
+            if (CUr.CustCat=="STORE") then begin
+              testf2 = false;
+            end;
+          end;
+          if (testf2) then begin
+            TRr.Number = IPr.SerNr;
+            TRr.IntYc = IPYc;
+            if (ReadFirstMain(TRr,2,true)) then begin
+              fr = 1;
+              rwcnt2 = MatRowCnt(TRr);
+              for(j=0;j<rwcnt2;j=j+1) begin
+                MatRowGet(TRr,j,TRrw);
+                if ((left(TRrw.AccNumber,1) == "5") and (TRrw.ovst <> 1) and TRrw.Curncy==IPrw.BankCurncy) then begin
+                  to1 = TRrw.DebVal/TRrw.CurDebVal;
+                  if (to1==0) then begin
+                    to1 = TRrw.CredVal/TRrw.CurCredVal;
+                  end;
+                  j = rwcnt2;
+                end;
+              end;
+            end else begin
+              GetFullCurncyRate(IPrw.BankCurncy,IPr.TransDate,fr,to1,to2,br1,br2);
+            end;
+            if (fr==0 or to1==0) then begin
+              fr = 1; to1 = 1;
+            end;
+            recivedmoneybase = MulRateToBase1(IPrw.BankCurncy,IPrw.BankVal,fr,to1,to2,br1,br2,DefaultCurRoundOff);
+            if (IPrw.InvoiceNr!=-1) then begin
+              IVr.SerNr = IPrw.InvoiceNr;
+              ReadFirstMain(IVr,1,true);
+              SalesOfGoodsRn_processIV(IVr,recivedmoneybase,IPrw.RecVal/IVr.Sum4,IPr.TransDate,-1,printf,tabs,InvoiceRowTypeDownpaymentf,plantot,facttot,sumtot,vplantotcur,vfacttotcur,retailworebatetot,itemsf);
+              if (InvoiceRowTypeDownpaymentf) then begin
+                rwcnt2 = matrowcnt(IVr);
+                for (j=0;j<rwcnt2;j=j+1) begin
+                  matrowget(IVr,j,IVrw);
+                  if (IVrw.stp==kInvoiceRowTypeDownpayment) then begin
+                    ORr.SerNr = IVrw.Spec;
+                    ReadFirstMain(ORr,1,true);
+                    //if ((itemsf) or (IVr.Sum4!=ORr.Sum4)) then begin
+                    if (itemsf)then begin
+                      SalesOfGoodsRn_processOR(ORr,recivedmoneybase,IPrw.RecVal/ORr.Sum4,IPr.TransDate,IPr.SerNr,printf,tabs,plantot,facttot,sumtot,vplantotcur,vfacttotcur,retailworebatetot);
+                    end else begin
+                      SalesOfGoodsRn_processOR(ORr,recivedmoneybase,IPrw.RecVal/IVr.Sum4,IPr.TransDate,IPr.SerNr,printf,tabs,plantot,facttot,sumtot,vplantotcur,vfacttotcur,retailworebatetot);
+                    end;
+                  end;
+                end;
+              end;
+            end else begin
+              if (IPrw.OrderNr!=-1) then begin
+                ORr.SerNr = IPrw.OrderNr;
+                ReadFirstMain(ORr,1,true);
+                SalesOfGoodsRn_processOR(ORr,recivedmoneybase,IPrw.RecVal/ORr.Sum4,IPr.TransDate,IPr.SerNr,printf,tabs,plantot,facttot,sumtot,vplantotcur,vfacttotcur,retailworebatetot);
+              end else begin
+                if (IPrw.CUPNr!=-1) then begin
+                  if (recivedmoneybase>0) then begin
+                    ARPayHistr.FileName = "IVVc";
+                    ARPayHistr.CUPNr = IPrw.CUPNr;
+                    TrHs2 = true;
+                    resetloop(ARPayHistr);
+                    printedprepval = 0;
+                    while (loopmain(ARPayHistr,2,TrHs)) begin
+                      if (ARPayHistr.FileName!="IVVc") then begin TrHs2=false; end;
+                      if (ARPayHistr.CUPNr!=IPrw.CUPNr) then begin TrHs2=false; end;
+                      if (TrHs2) then begin
+                        rmbpart = ARPayHistr.BookVal;
+                        IVr.SerNr = ARPayHistr.SerNr;
+                        ReadFirstMain(IVr,1,true);
+                        SalesOfGoodsRn_processIV(IVr,rmbpart,rmbpart/IVr.BaseSum4,IPr.TransDate,ARPayHistr.CUPNr,printf,tabs,InvoiceRowTypeDownpaymentf,plantot,facttot,sumtot,vplantotcur,vfacttotcur,retailworebatetot,itemsf);
+                        printedprepval = printedprepval + rmbpart;
+                      end;
+                    end;
+                  end;
+                  if (AbsoluteVal(recivedmoneybase)>AbsoluteVal(printedprepval)) then begin
+                    qty = 1;
+                    store = "";
+                    GetObjs("STORE",IPrw.Objects,store);
+                    SCr.Shop = store;
+                    SCr.Date = IPr.TransDate;
+                    nocoef = false;
+                    sumbase = recivedmoneybase - printedprepval;
+                    if (readlastmain(SCr,2,false)) then begin
+                      if ((SCr.Shop==store) and (SCr.Date<=IPr.TransDate)) then begin
+                        planfifobase = sumbase/SCr.Coef;
+                      end else begin
+                        nocoef = true;
+                      end;
+                    end else begin
+                      nocoef = true;
+                    end;
+                    plantot = plantot + planfifobase;
+                    sumtot = sumtot + sumbase;
+                    if (printf) then begin
+                      startformat(15);
+                        outstring(tabs[1],0,"Предопл. № " & IPrw.CUPNr,false);                  // Код товара
+                        OutStringID(tabs[2],"DblIPVcID","ПЛ/КЛ. " & IPr.SerNr,false,IPr.SerNr); // Докум.
+                        outstring(tabs[3],0,IPr.TransDate,false);                               // Дата продажи
+                        outstring(tabs[4],0,qty,false);                                         // Кол.
+                        outstring(tabs[5],0,"",false);
+                        outstring(tabs[6],0,"",false);
+                        outstring(tabs[7],0,"",false);
+                        if (planfifobase!=0) then begin
+                          outstring(tabs[8],0,planfifobase,false);                              // План. себест. в осн. вал.
+                        end else begin
+                          if (nocoef) then begin
+                            outstring(tabs[8],0,"Коэф. не найден",false);
+                          end else begin
+                            outstring(tabs[8],0,"",false);
+                          end;
+                        end;
+                        outstring(tabs[9],0,"",false);
+                        outstring(tabs[10],0,"",false);
+                        outstring(tabs[11],0,"",false);
+                        outstring(tabs[12],0,sumbase,false);                                    // Сумма прихода в осн. вал.
+                        outstring(tabs[13],0,"",false);
+                      endformat;
+                    end;
+                  end;
+                end;
+              end;
+            end;
+          end;
+        end;
+      end;
+    end;
+  end;
+  
+  if (printf) then begin
+    Black_Divider(0,1);
+    startformat(15);
+      outstring(tabs[1],0,"ИТОГО:",false);
+      OutString(tabs[2],0,"",false);
+      outstring(tabs[3],0,"",false);
+      outstring(tabs[4],0,"",false);
+      outstring(tabs[5],0,"",false);
+      outstring(tabs[6],0,"",false);
+      outstring(tabs[7],0,"",false);
+      outstring(tabs[8],0,plantot,false);
+      outstring(tabs[9],0,"",false);
+      outstring(tabs[10],0,facttot,false);
+      outstring(tabs[11],0,"",false);
+      outstring(tabs[12],0,sumtot,false);
+      outstring(tabs[13],0,sumbrandcur,false);
+    endformat;
+    endjob;
+  end;
+  resplantot = plantot;
+  resfacttot = facttot;
+  return;
+end;
+  
+global 
+procedure SalesOfGoodsRn(record RcVc RepSpec)
+begin
+  val v1,v2,v3,tmpval;
+  vector val vv1,vv2;
+  
+  RunSalesOfGoodsRn(RepSpec,true,v1,v2,vv1,vv2,tmpval);
+  return;
+end;

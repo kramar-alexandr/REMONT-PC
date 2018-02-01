@@ -589,6 +589,9 @@ begin
   SpecialMenu("Создать прибытие товара",' ',8,"OffHireFromSVODsm");
   SpecialMenu("Создать выбытие товара",' ',0,"DispatchFromSVODsm");
   SpecialMenu("Счет клиенту",' ',0,"ORFromSVODsm");
+  if(currentuser=="SA")then begin
+		SpecialMenu("Вотановить эту запись из истории",' ',0,"SVOFromHistHardDsm");
+  end;
 
   
   EndWindow;
@@ -10556,6 +10559,73 @@ begin
   end;
     SpecialMenu("Добавить поставщика",' ',0,"AddSupplierPODsm"); 
     SpecialMenu("Добавить товар",' ',0,"AddItemPODsm");     
+  end;
+  EndWindow;
+end;
+
+
+window UserDefRepLinesDClass:2
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,h2,v;
+  WindowBegin("Строка отчета",UserDefRepLinesDClass,CGview,-);
+  BrowseButtons(false);
+  UseView(UserDefRepLinesVc);
+
+
+  SetWRect(20,80,720,760);
+  EditField(h=100,v=6,50,"Номер",Normal,IdKey,false,0);
+  EditField(h2=250,v,150,"Наимен.",ViewOnly,shortname,false,0);
+  EditField(h,v+=20,300,"Комментарий",Normal,Comment,false,0);
+  if (IsEnterprise) then begin
+  EditField(500,v,-40,"Допол. код",Normal,SpecCode,false,0);
+  // Edit Start ---------------------------------------------- Edit Start
+	//Tuesday, 21 October 2014 11:58:43
+	
+  ButtonFrame(430,v+=40,200,4,"Тип строки");
+  RadioButton(430,v,0,0,"Стандарт",CustType);
+  RadioButton(430,v+=16,1,0,"Баланс на начало периода",CustType);
+  RadioButton(430,v+=16,2,0,"Оборот I полугодие",CustType);
+  RadioButton(430,v+=16,3,0,"Оборот II полугодие",CustType);
+  
+	// Edit End ---------------------------------------------- Edit End
+	
+  end;
+  EditField(h,50,300,"Счета",Normal,Desc,false,AccSClass);
+  EditField(h,70,300,"",Normal,Desc2,false,AccSClass);
+  EditField(h,90,300,"",Normal,Desc3,false,AccSClass);
+  if (IsEnterprise) then begin
+  EditField(h,110,80,"Кор. счет",Normal,CorspAcc,false,AccSClass);
+  EditField(h+150,110,50,"Валюта",Normal,CurncyCode,false,CurncyCodeSClass);// Edit ************************** Thursday, 5 March 2015 14:49:32
+  end;
+  ButtonFrame(h=15,v=150,100,4,"Тип");
+  RadioButton(h,v    ,kRsTypeAccounts,0,"счета",RsType);
+  RadioButton(h,v+=16,kRsTypeSum,0,"сумма",RsType);
+  RadioButton(h,v+=16,kRsTypeText,0,"текст",RsType);
+  RadioButton(h,v+=16,kRsTypePageBreak,0,"Разделитель",RsType);
+  ButtonFrame(h=150,v=150,100,5,"Вид счета");
+  RadioButton(h,v    ,0,0,"Актив",AccType);
+  RadioButton(h,v+=16,1,0,"Пассив",AccType);
+  RadioButton(h,v+=16,2,0,"Капитал",AccType);
+  RadioButton(h,v+=16,3,0,"Доходы",AccType);
+  RadioButton(h,v+=16,4,0,"Расходы",AccType);
+  ButtonFrame(h=285,v=150,100,3,"Сторона");
+  RadioButton(h,v    ,0,0,"Нормальный",DCSide);
+  RadioButton(h,v+=16,1,0,"Дебет",DCSide);
+  RadioButton(h,v+=16,2,0,"Кредит",DCSide);
+  
+  CheckBox(h,v+=26,0,"Детализация по объектам",ObjDetail);// Edit ************************** Friday, 22 January 2016 10:47:18
+  CheckBox(h,v+=26,0,"Вывести себестоимость проданного товара",SalesOfGoodsUse);//Edit-------------------Vitalii 17:31 28.08.2017
+	
+  ButtonFrame(h=410,v=150,100,3,"Актив/Пассив");
+  RadioButton(h,v    ,0,0,"Нормальный",DCSaldo);
+  RadioButton(h,v+=16,1,0,"Только дебет",DCSaldo);
+  RadioButton(h,v+=16,2,0,"Только кредит",DCSaldo);
+  if (HasLanguages) then begin
+  MatrixBegin(4,v=276,-32,-20,INTextRowType,99);
+  MatCol(1,24,"Язык",0,LangCode,false,LangSClass);
+  MatCol(1,94,"Текст",0,Text,false,0);
+  EndMatrix;
   end;
   EndWindow;
 end;

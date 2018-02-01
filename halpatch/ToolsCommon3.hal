@@ -862,7 +862,7 @@ BEGIN
   while (TrHs) begin
     if (np>len(ost)) then begin TrHs = false; end;
     nc = Mid(ost,np,1);//  nc = ost[*np];
-    if ((nc==" ") or (nc==";") or (nc==":") or (nc==",") or (nc=="-") or (nc=="+")) then begin 
+    if ((nc==" ") or (nc==";") or (nc==":") or (nc==",") or (nc=="-") or (nc=="+") or (nc==".")) then begin // Edit ************************** BPI Ukraine - KramarAlexandr - Thursday, 1 February 2018 15:34:16
       TrHs = false;
     end;
     if (TrHs) then begin

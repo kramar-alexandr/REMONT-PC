@@ -88,6 +88,8 @@ begin
 	Import("€мпорт BINOTEL1",CUAndSVOInitSystemImportIClass,ImportBinotel1,modDBMain); //Edit***************************Sasha2,13:21 26.05.2017
 
 
+  Export("IVVcExport",IVVcExportEClass,IVVcExportEn,modSL); // Edit *********** Dima 2 February 2018, 10:34
+
 	SString(964,"");
 	 
   SString(31000,"грн.");

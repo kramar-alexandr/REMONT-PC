@@ -1,0 +1,19 @@
+global
+procedure IVVcExportEn(record RcVc RepSpec)
+begin
+
+	record IVVc IVr;
+	string 255  Output;
+
+	while(loopmain(IVr,1,true)) begin
+		Output = "(";
+		Output = (Output & Ivr.SerNr);
+		Output = (Output & ", '");
+		Output = (Output & (DateToString(IVr.InvDate,"YYYY-MM-DD")  & " 00:00:00+02', "));
+		Output = (Output & "'" & IVr.CustCode & "', ");
+		Output = (Output & ("'" & IVr.Addr0 & "'),"));
+		ExportString(Output);
+		NewLine;
+	end;
+
+end;

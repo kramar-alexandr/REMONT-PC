@@ -2130,6 +2130,7 @@ updating procedure MakeDummyFastPrepayment(var record IPVc IPr,record SVOVc SVOr
 begin
   longint error;
   row IPVc IPrw;
+  record SalesGroupVc SGr;
   
     recordnew(IPr);
 		IPr.PayMode = payMode;
@@ -2148,6 +2149,10 @@ begin
 		IPVc_PasteRecVal(IPr,0);
 		MatRowGet(IPr,0,IPrw);
 		IPrw.CUPNr = SVOr.SerNr;
+		SGr.SGroupCode = SVOr.SalesGroup;
+		if (readfirstmain(SGr,1,true)) then begin
+			IPrw.Objects = SGr.Objects;
+		end;
 		matrowput(IPr,0,IPrw);
 		IPr.SerNr = nextsernr("IPVc",currentdate,-1,true,"");
 		recordstore(IPr,true);

@@ -10629,3 +10629,14 @@ begin
   end;
   EndWindow;
 end;
+
+window IVVcExportEClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v;
+  WindowBegin("Определите экспорт для счёт фактуры",IVVcExportEClass,CGEcW,RcType);
+  SetWRect(20,80,460,150);
+  h = 100; v = 30;
+  StaticText(h,v,"Нажмите кнопку Запуск",false);
+  EndWindow;
+end;

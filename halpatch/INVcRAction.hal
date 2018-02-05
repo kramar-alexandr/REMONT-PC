@@ -1040,6 +1040,7 @@ begin
 					if(testf)then begin
 						TrHs = false;
 						chdir = DIr.Code;
+						name = DIr.Name;
 						foundf = true;
 					end;
 				end;
@@ -1049,7 +1050,7 @@ begin
 		if(foundf==false and nonblank(chdir))then begin
 			name = chdir;
 			chdir = StripWrongCharacter(chdir);
-			DI2r.Name = chdir;
+			DI2r.Name = name;
 			DI2r.DispGroups = mdir;
 			DI2r.CType = type;
 			counter = CountRecords("DIVc");

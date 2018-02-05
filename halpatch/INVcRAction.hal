@@ -1017,6 +1017,7 @@ begin
 	record DIVc DIr,DI2r;
 	boolean foundf,testf,TrHs;
 	string 50 itemnr;
+	longint counter;
 	
 	foundf = false;
 		
@@ -1046,8 +1047,25 @@ begin
 		end;
 
 		if(foundf==false and nonblank(chdir))then begin
-
+			name = chdir;
+			chdir = StripWrongCharacter(chdir);
 			DI2r.Name = chdir;
+			DI2r.DispGroups = mdir;
+			DI2r.CType = type;
+			counter = CountRecords("DIVc");
+			DIr.Code = counter;
+			DI2r.Code = counter;
+			
+			while(readfirstmain(DIr,1,true))begin
+				counter = counter + 1;
+				DIr.Code = counter;				
+			end;
+			DI2r.Code = counter;
+			DI2r.Code = uppercase(DI2r.Code);
+			recordstore(DI2r,true);
+			chdir = DI2r.Code;
+			
+			/*DI2r.Name = chdir;
 			name = chdir;
 			chdir = StripWrongCharacter(chdir);		
 			DI2r.DispGroups = mdir;
@@ -1111,7 +1129,7 @@ begin
 				end else begin
 				
 				end;
-			end;
+			end;*/
 		end;
 	
 return;

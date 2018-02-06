@@ -81,8 +81,9 @@ begin
   Maintenance("Close GOGOK Acts",MyVClass,CloseActrCustomMn,modSY);
   
   Maintenance("Fix WS SalesMan",MyVClass,FixWSManagerMn,modDBMain);
-  Maintenance("Конвертировать коды классификаций в цифры",ConvertClassificationVClass,ConvertClassificationMn,modIN);  // Edit ************ Dima 5 February 2018, 10:15
-    
+  Maintenance("Конвертировать коды классификаций в цифры",ConvertClassificationVClass,ConvertClassificationMn,modIN);  	// Edit ************ Dima 5 February 2018, 10:15
+  Maintenance("Нормализация номеров телефона", NormalizeNumberVClass,NormalizeNumberMn,modSL); 							// Edit ************** Dima 6 February 2018, 15:01
+	
   Import("Импорт контактов и заказов, выгруженных из ServiceMY",CUAndSVOInitSystemImportIClass,CUAndSVOInitSystemImportIn,modDBMain); //Edit***************************Sasha2,13:21 26.05.2017
 	Import("Импорт BINOTEL",CUAndSVOInitSystemImportIClass,ImportBinotel,modDBMain); //Edit***************************Sasha2,13:21 26.05.2017
 	Import("Импорт BINOTEL1",CUAndSVOInitSystemImportIClass,ImportBinotel1,modDBMain); //Edit***************************Sasha2,13:21 26.05.2017

@@ -10650,3 +10650,13 @@ begin
 	EditField(200,30,200,"Классификация: ",Normal,f1,false,0);
 	EndWindow;
 end;
+
+window NormalizeNumberVClass:1
+	wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+	WindowBegin("Нормализация номеров", NormalizeNumberVClass,CGMnt,RecType);
+	SetWRect(20,80,640,480);
+	Sizeable(-1,-1,0,0);
+	EditField(200,30,200,"Номер телефона: ",Normal,f1,false,0);
+	EndWindow;
+end;

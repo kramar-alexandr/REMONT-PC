@@ -26,6 +26,39 @@ external procedure ExtractElemFromSet(string,integer,var string);
 
 SetLangMode(LangRussian,"RUS",0);
 
+
+global procedure NormalizeCodeName(var string name)
+begin
+string 200 newclassname,c;
+integer i,lenth,zercnt,char;
+  
+  name = uppercase(name);
+  lenth = len(name);
+  for(i=0;i<lenth;i=i+1)begin
+  	c = mid(name,i,1);
+  	char = asc(c);
+  	if(char>47 and char<58)then begin
+  		newclassname = newclassname & c;
+  	end;
+  	if(char>64 and char<91)then begin
+  		newclassname = newclassname & c;
+  	end;
+  	if(char>96 and char<123)then begin
+  		newclassname = newclassname & c;
+  	end;
+  	if(char>1039 and char<1111)then begin
+  		newclassname = newclassname & c;
+  	end;
+  	/*if((asc(mid(name,i,1))>32 and asc(mid(name,i,1))<127) or (asc(mid(name,i,1))>1039 and asc(mid(name,i,1))<1111))then begin
+  		if((mid(name,i,1)!="\"") and (mid(name,i,1)!=",")and (mid(name,i,1)!=" "))then begin
+  		newclassname = newclassname & "";
+  		end 
+  	end;*/
+  end;
+  name = newclassname;
+return;
+end;
+
 global
 function string 255 StripWrongCharacter(string ostr)
 begin
@@ -984,6 +1017,7 @@ begin
 	record DIVc DIr,DI2r;
 	boolean foundf,testf,TrHs;
 	string 50 itemnr;
+	longint counter;
 	
 	foundf = false;
 		
@@ -1006,6 +1040,7 @@ begin
 					if(testf)then begin
 						TrHs = false;
 						chdir = DIr.Code;
+						name = DIr.Name;
 						foundf = true;
 					end;
 				end;
@@ -1013,8 +1048,25 @@ begin
 		end;
 
 		if(foundf==false and nonblank(chdir))then begin
-
-			DI2r.Name = chdir;
+			name = chdir;
+			chdir = StripWrongCharacter(chdir);
+			DI2r.Name = name;
+			DI2r.DispGroups = mdir;
+			DI2r.CType = type;
+			counter = CountRecords("DIVc");
+			DIr.Code = counter;
+			DI2r.Code = counter;
+			
+			while(readfirstmain(DIr,1,true))begin
+				counter = counter + 1;
+				DIr.Code = counter;				
+			end;
+			DI2r.Code = counter;
+			DI2r.Code = uppercase(DI2r.Code);
+			recordstore(DI2r,true);
+			chdir = DI2r.Code;
+			
+			/*DI2r.Name = chdir;
 			name = chdir;
 			chdir = StripWrongCharacter(chdir);		
 			DI2r.DispGroups = mdir;
@@ -1078,7 +1130,7 @@ begin
 				end else begin
 				
 				end;
-			end;
+			end;*/
 		end;
 	
 return;
@@ -1106,6 +1158,7 @@ begin
   Integer rownr,ind;
   string 10 indstr;
   record DIVc DIr;// Edit ************************** Friday, 20 October 2017 10:32:47
+  string 50 normalcode;
   
   res = 0;
   if ((ProgramType==typFirstOffice) or 
@@ -1440,20 +1493,31 @@ begin
 	end else begin
 		if(stat==Rs_insert)then begin// Edit ************************** Friday, 20 October 2017 10:20:48
 			INr.Name = INr.Disp4Name & " " & INr.Disp5Name & " " & INr.Disp6Name;
-			INoldr.Code = left(INr.Disp5 & INr.Disp6,20);
+			//INoldr.Code = left(INr.Disp5 & INr.Disp6,20);
+			normalcode = left(INr.Disp5Name & INr.Disp6Name,20);
+
+			NormalizeCodeName(normalcode);
+			INoldr.Code = normalcode;
+
 			if(readfirstmain(INoldr,1,true)==false)then begin
-				INr.Code = left(INr.Disp5 & INr.Disp6,20);
+				INr.Code = normalcode;
 			end else begin
 				ind = 1;
 				indstr = ind;
-				INoldr.Code = left(left(INr.Disp5 & INr.Disp6,20-len(indstr)) & indstr,20);
+				normalcode = left(left(INr.Disp5Name & INr.Disp6Name,20-len(indstr)) & indstr,20);
+				//INoldr.Code = left(left(INr.Disp5 & INr.Disp6,20-len(indstr)) & indstr,20);
+				NormalizeCodeName(normalcode);
+				INoldr.Code = normalcode;
 				inloopf = true;
 				INr.Code = INoldr.Code;
 				while(inloopf)begin
 					if(readfirstmain(INoldr,1,true))then begin
 						ind = ind+1;
 						indstr = ind;
-						INoldr.Code = left(left(INr.Disp5 & INr.Disp6,20-len(indstr)) & indstr,20);
+						normalcode = left(left(INr.Disp5Name & INr.Disp6Name,20-len(indstr)) & indstr,20);
+						NormalizeCodeName(normalcode);
+						INoldr.Code = normalcode;
+						//INoldr.Code = left(left(INr.Disp5 & INr.Disp6,20-len(indstr)) & indstr,20);
 						INr.Code = INoldr.Code;
 					end else begin
 						inloopf = false;

@@ -1,0 +1,27 @@
+external procedure FindRepDefHeader(string,string,var string);
+
+procedure DoResRClassReportDefaults(Integer wn)
+begin
+  record RcVc RepSpec;
+  string 255 tstr;
+  
+  DeselectWindow(wn,false);
+  GetWindowRecord(wn,RepSpec);
+  ReportDefaults(RepSpec,"ResRClass");  
+  FindRepDefHeader(RepSpec.repname,RepSpec.shortname,tstr);
+  RepSpec.f1 = tstr;
+  RepSpec.flags[1] = 1;
+  RepSpec.Stext = RepSpec.Period2Str;
+  RepSpec.AccSpec = 2;
+  RepSpec.Comparison = 1;
+  PutWindowRecord(wn,RepSpec);
+  SelectWindow(wn);
+  return;
+end;
+
+global
+procedure ResRClassReportDefaults(Integer wn)
+begin
+  DoResRClassReportDefaults(wn);
+  return;
+end;

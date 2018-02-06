@@ -1,0 +1,121 @@
+
+external procedure ExtractObj(string,var Integer,var string);
+
+global function boolean	IsNumericString(string str)
+begin
+	Integer i;
+	Integer	nb;
+	Boolean	res;
+	
+	res = true;
+	for (i = 0; i < len(str); i = i + 1) begin
+		nb = ASC(mid(str, i, 1));
+		if (nb < 47 or nb > 57) then begin
+			res = false;
+		end;
+	end;
+	IsNumericString = res;
+	return;
+end;
+
+global function string 255 ReplaceSubStr(string input, string to_find,string to_insert)
+begin
+	Integer 	i;
+	string 	255	temp;
+	String	255	res;
+	
+	res = "";
+	i = 0;
+		
+	while (i < len(input)) begin
+		temp = "";
+		ExtractObj(input,i,temp);
+		if (to_find==temp) then begin
+			if (res!="") then begin
+				res = res & ",";
+			end;
+			res = res & to_insert;
+		end else begin
+			if (res!="") then begin
+				res = res & ",";
+			end;
+			res = res & temp;
+		end;
+	end;
+	ReplaceSubStr = res;
+	return;
+end;
+
+global updating procedure ConvertClassificationMn(record RcVc RepSpec)
+begin
+	record INVc	INr;
+	record DIVc	DIr, DI2r;
+	Integer		i;
+	Integer		pos;
+	Boolean 	TrHs, testf;
+	String 255	str, res, OldCode;
+	
+	TrHs = true;
+	i = 1;
+	if (nonblank(RepSpec.f1)) then begin
+		DIr.Code = RepSpec.f1;
+	end;
+	while(LoopMain(DIr,1,TrHs)) begin											
+		INr.Code = "";
+		testf = true;
+		if (nonblank(RepSpec.f1) and RepSpec.f1!=Dir.Code) then begin
+			testf = false;
+			TrHs = false;
+		end;
+		if (DIr.Code=="USER" or DIr.Code=="SERV" or DIr.Code=="SALE" or DIr.Code=="ZASSET" or DIr.Code=="SERS") then begin
+			testf = false;
+		end;
+		if (testf) then begin
+			if (IsNumericString(DIr.Code) == false) then begin
+				DI2r.Code = i;
+				while (ReadFirstMain(DI2r,1,true)) begin
+					i = i + 1;
+					DI2r.Code = i;
+				end;
+				OldCode = DIr.Code;
+				DIr.Code = i;
+				while (loopmain(INr,1,true)) begin
+					if (SetInSet(OldCode,INr.DispGroups)) then begin 				
+						INr.DispGroups = ReplaceSubStr(INr.DispGroups,OldCode,DIr.Code);
+						if (OldCode==INr.Disp1) then begin
+							INr.Disp1 = DIr.Code;
+						end;
+						if (OldCode==INr.Disp2) then begin
+							INr.Disp2 = DIr.Code;
+						end;
+						if (OldCode==INr.Disp3) then begin
+							INr.Disp3 = DIr.Code;
+						end;
+						if (OldCode==INr.Disp4) then begin
+							INr.Disp4 = DIr.Code;
+						end;
+						if (OldCode==INr.Disp5) then begin
+							INr.Disp5 = DIr.Code;
+						end;
+						if (OldCode==INr.Disp6) then begin
+							INr.Disp6 = DIr.Code;
+						end;						
+						RecordStore(INr,1);
+					end;
+				end;
+				DI2r.Code = "";
+				while (LoopMain(DI2r,1,true)) begin
+					if (SetInSet(OldCode,DI2r.DispGroups)) then begin 
+						DI2r.DispGroups = ReplaceSubStr(DI2r.DispGroups,OldCode,DIr.Code);
+						RecordStore(DI2r,1);
+					end;
+				end;
+				resetloop(DI2r);
+				resetloop(INr);
+				RecordDelete(DIr);
+				StepBack(DIr);
+				RecordStore(DIr,1);
+			end;
+		end;
+	end;
+end;

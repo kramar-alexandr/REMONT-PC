@@ -10640,3 +10640,13 @@ begin
   StaticText(h,v,"Нажмите кнопку Запуск",false);
   EndWindow;
 end;
+
+window ConvertClassificationVClass:1
+	wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+	WindowBegin("Конвертация кодов классификаций в цифры",DimaVClass,CGMnt,RecType);
+	SetWRect(20,80,640,460);
+	Sizeable(-1,-1,0,0);
+	EditField(200,30,200,"Классификация: ",Normal,f1,false,0);
+	EndWindow;
+end;

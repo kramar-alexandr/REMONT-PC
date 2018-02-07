@@ -423,6 +423,9 @@ begin
   record ObjectsAccBlock OAb;// Edit ************************** Monday, 21 August 2017 16:03:31 
   row ObjectsAccBlock OArw;// Edit ************************** Monday, 21 August 2017 16:03:31 
   integer mtrw,k;// Edit ************************** Monday, 21 August 2017 16:03:36
+  record SalesGroupVc 	SGr;
+  record UserVc 			USr;
+  String 255				NewObject;
   
   blockload(OAb);// Edit ************************** Monday, 21 August 2017 16:04:42
   
@@ -583,6 +586,21 @@ begin
     end;
   end;
   if (nonblank(WSp.Objects)) then begin
+	SVOr.SerNr = WSp.SVONr;
+	SGr.SGroupCode = SVOr.SalesGroup;
+	if (readfirstmain(SGr,1,true)) then begin
+		USr.Code = WSp.EMCode;
+		if (readfirstmain(USr,1,true)) then begin
+			NewObject = "";
+			WSp.Objects = "";
+			NewObject = NewObject & USr.PersObjx;
+			if (nonblank(NewObject)) then begin
+				NewObject = NewObject & ",";
+			end;
+			NewObject = NewObject & SGr.Objects;
+			WSp.Objects = NewObject;
+		end;
+	end;
     errcode = CheckObjs("",WSp.Objects,errstr);
     if (errcode!=0) then begin
       RecordCheckError(errcode,errstr,-1,"Objects");      

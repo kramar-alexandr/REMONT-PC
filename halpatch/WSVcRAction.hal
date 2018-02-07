@@ -585,22 +585,21 @@ begin
       goto LWSVcRecordCheck;  
     end;
   end;
-  if (nonblank(WSp.Objects)) then begin
-	SVOr.SerNr = WSp.SVONr;
-	SGr.SGroupCode = SVOr.SalesGroup;
-	if (readfirstmain(SGr,1,true)) then begin
-		USr.Code = WSp.EMCode;
-		if (readfirstmain(USr,1,true)) then begin
-			NewObject = "";
-			WSp.Objects = "";
-			NewObject = NewObject & USr.PersObjx;
-			if (nonblank(NewObject)) then begin
-				NewObject = NewObject & ",";
-			end;
-			NewObject = NewObject & SGr.Objects;
-			WSp.Objects = NewObject;
-		end;
+  WSp.Objects = "";
+  NewObject = "";
+  SGr.SGroupCode = SVOr.SalesGroup;
+  if (readfirstmain(SGr,1,true)) then begin
+  	NewObject = NewObject & SGr.Objects;
+  end; 		
+  USr.Code = WSp.EMCode;
+  if (readfirstmain(USr,1,true)) then begin
+  	if (nonblank(NewObject) and nonblank(USr.PersObjx)) then begin
+		NewObject = NewObject & ",";
 	end;
+	NewObject = NewObject & USr.PersObjx;
+  end;
+  WSp.Objects = NewObject;
+  if (nonblank(WSp.Objects)) then begin
     errcode = CheckObjs("",WSp.Objects,errstr);
     if (errcode!=0) then begin
       RecordCheckError(errcode,errstr,-1,"Objects");      

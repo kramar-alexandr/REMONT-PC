@@ -1977,34 +1977,38 @@ BEGIN
   
   
   FixStatusesDateDiff(SVOr,SVO2r,stat);// Edit ************************** Wednesday, 11 October 2017 11:37:39
-  
   if(stat==updatemode)then begin
     	
 		if(SVOr.GetItemFlag>0 and SVO2r.GetItemFlag==0)then begin// Edit ************************** Tuesday, 18 July 2017 15:50:38
 			SVOr.GetItemDate = currentdate;
 			SVOr.GetItemTime = CurrentTime;
 			SVOr.CustomField7 = currentuser;
-  		SVOr.Inspector = currentuser;
-  		if(blank(SVOr.Comment3))then begin
-  			SVOr.Comment3 = "Потертости, царапины";
-  		end;
-  		Userr.Code = CurrentUser;
+			SVOr.Inspector = currentuser;
+			if(blank(SVOr.Comment3))then begin
+				RecordCheckError(31512,"",-1,"Comment3");
+				res = -1;
+				goto LSVOVcRecordCheck;
+  			//SVOr.Comment3 = "Потертости, царапины";
+			end;
+			Userr.Code = CurrentUser;
 			if (ReadFirstMain(Userr,1,true)) then begin end;
 			SVOr.SalesGroup = Userr.SalesGroup;
-  		if(SVOr.OrderStatus==9)then begin
+			if(SVOr.OrderStatus==9)then begin
 				SVOr.OrderStatus = 0;
 			end;
 		end;
 	end;
-  
-  if(stat==insertmode)then begin  	
+  if(stat==insertmode)then begin
   	if(SVOr.GetItemFlag>0)then begin// Edit ************************** Tuesday, 18 July 2017 15:50:38
-			SVOr.GetItemDate = currentdate;
-			SVOr.GetItemTime = CurrentTime;
-			if(blank(SVOr.Comment3))then begin
-  			SVOr.Comment3 = "Потертости, царапины";
-  		end;
+		SVOr.GetItemDate = currentdate;
+		SVOr.GetItemTime = CurrentTime;
+		if(blank(SVOr.Comment3))then begin
+			RecordCheckError(31512,"",-1,"Comment3");
+			res = -1;
+			goto LSVOVcRecordCheck;
+			//SVOr.Comment3 = "Потертости, царапины";
 		end;
+	end;
   	if(SVOr.GetItemFlag==1 and blank(SVOr.CustomField7))then begin
   		SVOr.CustomField7 = currentuser;
   		SVOr.Inspector = currentuser;
@@ -2190,6 +2194,8 @@ BEGIN
 		end;
 	end;
  	
+	// 
+	
  	if(SVOr.GetItemFlag>0)then begin
  		
  		if(stat==Rs_insert)then begin

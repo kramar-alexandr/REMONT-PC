@@ -17,7 +17,7 @@ begin
 		for (j = 0; j < mtrwc1; j = j + 1) begin
 			matrowget(Managr,j,Mprw_j);
 			if (Mprw_i.PlansDate==Mprw_j.PlansDate and i!=j) then begin
-				RecordCheckError(40001,"",j,"PlansDate");
+				RecordCheckError(31513,"",j,"PlansDate");
 				res = -1;
 				goto ManagerPlanVcRecordCheck;
 			end;

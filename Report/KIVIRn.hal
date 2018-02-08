@@ -41,8 +41,8 @@ begin
 	startreportnoheaderjob("Отчет по KIVI");
 	
 	startformat(15);
-		outstring(0,0,"Дата приемки ",false);	
-		outstring(0,0,"Дата запроса детали",false);
+		outstring(0,0,"№ заказа ",false);	
+		outstring(0,0,"Дата приема устройства",false);
 		outstring(0,0,"Дата выдачи",false);
 		outstring(0,0,"Модель аппарата",false);
 		outstring(0,0,"Диагональ",false);

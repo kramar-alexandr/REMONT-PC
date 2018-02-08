@@ -1494,7 +1494,7 @@ L12:;
     if (ReadFirstMain(USr,1,true)) then begin
       if (nonblank(USr.AllowedInCosts)) then begin
 	    if (SetInSet(CLInp.CorspCode,USr.AllowedInCosts)==false) then begin
-		    RecordCheckError(50002," " & CLInp.CorspCode,-1,"CorspCode");
+		    RecordCheckError(31515," " & CLInp.CorspCode,-1,"CorspCode");
 		    res = -1;
             goto L99CLInVcRecordCheck;
 	    end;

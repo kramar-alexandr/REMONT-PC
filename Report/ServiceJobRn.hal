@@ -333,21 +333,33 @@ begin
 														k = k+1;
 														svoexist[IPrw.CUPNr] = true;
 													end;
-													ivretsum[IPrw.CUPNr] = ivretsum[IPrw.CUPNr] - IPrw.RecVal;
+													
 													SVOr.SerNr = IPrw.CUPNr;
 													if(readfirstmain(SVOr,1,true))then begin
-														if(nonblank(SVOr.ServiceManager))then begin
-															ivretsummanag[IPrw.CUPNr & ":" & SVOr.ServiceManager] = ivretsum[IPrw.CUPNr & ":" & SVOr.ServiceManager] - IPrw.RecVal;
-															vIngSum[SVOr.ServiceManager & ":VOZVR:SERV"] = vIngSum[SVOr.ServiceManager & ":VOZVR:SERV"] - IPrw.RecVal;
-														end else begin
-															ivretsummanag[IPrw.CUPNr & ":PREPAY"] = ivretsum[IPrw.CUPNr & ":PREPAY"] - IPrw.RecVal;
-															vIngSum["PREPAY:VOZVR:SERV"] = vIngSum["PREPAY:VOZVR:SERV"] - IPrw.RecVal;
+														filter = true;
+														if(IVr.SalesMan==SVOr.CustomField7)then begin
+															enginer = SVOr.ServiceManager;
 														end;
-														vManSum[SVOr.Inspector & ":VOZVR:SERV"] = vManSum[SVOr.Inspector & ":VOZVR:SERV"] - IPrw.RecVal;
-														if(vManExst[SVOr.Inspector]==false)then begin
-															vManExst[SVOr.Inspector] = true;
-															aman[mancnt] = SVOr.Inspector;
-															mancnt = mancnt + 1;														
+					
+														if(nonblank(RepSpec.f1) and RepSpec.f1!=SVOr.SalesGroup)then begin filter = false; end;
+														if(nonblank(RepSpec.f3) and RepSpec.f3!=enginer)then begin filter = false; end;
+														if(nonblank(RepSpec.f4) and RepSpec.f4!=SVOr.CustomField7)then begin filter = false; end;
+														
+														if(filter)then begin
+															ivretsum[IPrw.CUPNr] = ivretsum[IPrw.CUPNr] - IPrw.RecVal;
+															if(nonblank(SVOr.ServiceManager))then begin
+																ivretsummanag[IPrw.CUPNr & ":" & SVOr.ServiceManager] = ivretsum[IPrw.CUPNr & ":" & SVOr.ServiceManager] - IPrw.RecVal;
+																vIngSum[SVOr.ServiceManager & ":VOZVR:SERV"] = vIngSum[SVOr.ServiceManager & ":VOZVR:SERV"] - IPrw.RecVal;
+															end else begin
+																ivretsummanag[IPrw.CUPNr & ":PREPAY"] = ivretsum[IPrw.CUPNr & ":PREPAY"] - IPrw.RecVal;
+																vIngSum["PREPAY:VOZVR:SERV"] = vIngSum["PREPAY:VOZVR:SERV"] - IPrw.RecVal;
+															end;
+															vManSum[SVOr.Inspector & ":VOZVR:SERV"] = vManSum[SVOr.Inspector & ":VOZVR:SERV"] - IPrw.RecVal;
+															if(vManExst[SVOr.Inspector]==false)then begin
+																vManExst[SVOr.Inspector] = true;
+																aman[mancnt] = SVOr.Inspector;
+																mancnt = mancnt + 1;														
+															end;
 														end;
 													end;
 													
@@ -416,16 +428,30 @@ begin
 													end;
 	  											ivsum[IVr.SVONr] = ivsum[IVr.SVONr] - IPrw.InvVal;
 	  											if(IPrw.InvVal<0)then begin
-	  												ivretsum[IVr.SVONr] = ivretsum[IVr.SVONr] - IPrw.InvVal;
-	  												ivretsummanag[IVr.SVONr & ":" & IVr.SalesMan] = ivretsum[IVr.SVONr & ":" & IVr.SalesMan] - IPrw.RecVal;
-	  												vIngSum[IVr.SalesMan & ":VOZVR:SERV"] = vIngSum[IVr.SalesMan & ":VOZVR:SERV"] - IPrw.RecVal;
+	  												
 														SVOr.SerNr = IVr.SVONr;
 														if(readfirstmain(SVOr,1,true))then begin
-															vManSum[SVOr.Inspector & ":VOZVR:SERV"] = vManSum[SVOr.Inspector & ":VOZVR:SERV"] - IPrw.RecVal;
-															if(vManExst[SVOr.Inspector]==false)then begin
-																vManExst[SVOr.Inspector] = true;
-																aman[mancnt] = SVOr.Inspector;
-																mancnt = mancnt + 1;														
+															filter = true;
+															if(IVr.SalesMan==SVOr.CustomField7)then begin
+																enginer = SVOr.ServiceManager;
+															end else begin
+																enginer = IVr.SalesMan;
+															end;
+						
+															if(nonblank(RepSpec.f1) and RepSpec.f1!=SVOr.SalesGroup)then begin filter = false; end;
+															if(nonblank(RepSpec.f3) and RepSpec.f3!=enginer)then begin filter = false; end;
+															if(nonblank(RepSpec.f4) and RepSpec.f4!=SVOr.CustomField7)then begin filter = false; end;
+															
+															if(filter)then begin
+																ivretsum[IVr.SVONr] = ivretsum[IVr.SVONr] - IPrw.InvVal;
+																ivretsummanag[IVr.SVONr & ":" & IVr.SalesMan] = ivretsum[IVr.SVONr & ":" & IVr.SalesMan] - IPrw.RecVal;
+																vIngSum[IVr.SalesMan & ":VOZVR:SERV"] = vIngSum[IVr.SalesMan & ":VOZVR:SERV"] - IPrw.RecVal;
+																vManSum[SVOr.Inspector & ":VOZVR:SERV"] = vManSum[SVOr.Inspector & ":VOZVR:SERV"] - IPrw.RecVal;
+																if(vManExst[SVOr.Inspector]==false)then begin
+																	vManExst[SVOr.Inspector] = true;
+																	aman[mancnt] = SVOr.Inspector;
+																	mancnt = mancnt + 1;														
+																end;
 															end;
 														end;
 	  											end;

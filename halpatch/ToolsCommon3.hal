@@ -881,6 +881,20 @@ BEGIN
 END;
 
 global
+procedure GetNextTokenCompile(string aost,var Integer np,var string anitem)
+BEGIN
+  Boolean testf;
+  string 255 tempstr;
+  
+  tempstr = anitem;// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 13 February 2018 11:10:13
+  testf = GetNextTokenReturn(aost,np,anitem);
+  if(nonblank(tempstr) and nonblank(anitem))then begin// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 13 February 2018 11:10:56
+  	anitem = anitem & "," & tempstr;
+  end;
+  RETURN;
+END;
+
+global
 procedure GetNextToken(string aost,var Integer np,var string anitem)
 BEGIN
   Boolean testf;

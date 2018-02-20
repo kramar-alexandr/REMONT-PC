@@ -468,12 +468,44 @@ begin
 															if(filter)then begin
 																ivretsum[IVr.SVONr] = ivretsum[IVr.SVONr] - IPrw.InvVal;
 																ivretsummanag[IVr.SVONr & ":" & enginer] = ivretsum[IVr.SVONr & ":" & enginer] - IPrw.RecVal;
-																vIngSum[enginer & ":VOZVR:SERV"] = vIngSum[enginer & ":VOZVR:SERV"] - IPrw.RecVal;
-																vManSum[SVOr.Inspector & ":VOZVR:SERV"] = vManSum[SVOr.Inspector & ":VOZVR:SERV"] - IPrw.RecVal;
-																if(vManExst[SVOr.Inspector]==false)then begin
-																	vManExst[SVOr.Inspector] = true;
-																	aman[mancnt] = SVOr.Inspector;
-																	mancnt = mancnt + 1;														
+																if(IPrw.RecVal==-IVr.Sum4)then begin
+																	mtrw2 = matrowcnt(IVr);
+																	For(j=0;j<mtrw2;j=j+1) begin
+	  																matrowget(IVr,j,IVrw);
+	  																if(IVrw.stp==kInvoiceRowTypeNormal)then begin
+	  																	if(nonblank(IVrw.ArtCode))then begin
+																				INr.Code = IVrw.ArtCode;
+																				if(readfirstmain(INr,1,true))then begin																				
+																					if(INr.ItemType==3 or INr.ItemType==0)then begin
+																						vIngSum[enginer & ":VOZVR:SERV"] = vIngSum[enginer & ":VOZVR:SERV"] + IVrw.Sum;
+																						vManSum[SVOr.Inspector & ":VOZVR:SERV"] = vManSum[SVOr.Inspector & ":VOZVR:SERV"] + IVrw.Sum;
+																						if(vManExst[SVOr.Inspector]==false)then begin
+																							vManExst[SVOr.Inspector] = true;
+																							aman[mancnt] = SVOr.Inspector;
+																							mancnt = mancnt + 1;														
+																						end;
+																					end else begin
+																						vIngSum[enginer & ":VOZVR:DET"] = vIngSum[enginer & ":VOZVR:DET"] + IVrw.Sum;
+																						vManSum[SVOr.Inspector & ":VOZVR:DET"] = vManSum[SVOr.Inspector & ":VOZVR:DET"] + IVrw.Sum;
+																						if(vManExst[SVOr.Inspector]==false)then begin
+																							vManExst[SVOr.Inspector] = true;
+																							aman[mancnt] = SVOr.Inspector;
+																							mancnt = mancnt + 1;														
+																						end;
+																					end;
+																				end;
+																			end;
+	  																end;
+																	end; 
+																	
+																end else begin
+																	vIngSum[enginer & ":VOZVR:SERV"] = vIngSum[enginer & ":VOZVR:SERV"] - IPrw.RecVal;
+																	vManSum[SVOr.Inspector & ":VOZVR:SERV"] = vManSum[SVOr.Inspector & ":VOZVR:SERV"] - IPrw.RecVal;
+																	if(vManExst[SVOr.Inspector]==false)then begin
+																		vManExst[SVOr.Inspector] = true;
+																		aman[mancnt] = SVOr.Inspector;
+																		mancnt = mancnt + 1;														
+																	end;
 																end;
 															end;
 														end;
@@ -1714,10 +1746,12 @@ begin
 	  			outstring(tabs[0],0,aing[i],false);
 					outstring(tabs[2],0,vIngSum[aing[i] & ":GOTOV:DET"],false);
 					outstring(tabs[4],0,vIngSum[aing[i] & ":NOPAY:DET"],false);
+					outstring(tabs[5],0,vIngSum[aing[i] & ":VOZVR:DET"],false);
 					outstring(tabs[6],0,vIngSum[aing[i] & ":DOLG:DET"],false);
 				endformat;
 				tot[1] = tot[1] + vIngSum[aing[i] & ":GOTOV:DET"];
 				tot[2] = tot[2] + vIngSum[aing[i] & ":NOPAY:DET"];
+				tot[4] = tot[4] + vIngSum[aing[i] & ":VOZVR:DET"];
 				tot[3] = tot[3] + vIngSum[aing[i] & ":DOLG:DET"];
 				gray_divider(0,1);
 			end; 
@@ -1725,6 +1759,7 @@ begin
 				outstring(tabs[0],0,"Всего",false);
 				outstring(tabs[2],0,tot[1],false);
 				outstring(tabs[4],0,tot[2],false);
+				outstring(tabs[5],0,tot[4],false);
 				outstring(tabs[6],0,tot[3],false);
 			endformat;
 		end;

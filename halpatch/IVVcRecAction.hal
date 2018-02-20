@@ -2205,6 +2205,7 @@ begin
 				IPrw.Objects = AddObjectToObjectList(IPrw.Objects,ITr.Objects);
 			end;
 		end;
+		matrowput(IPr,0,IPrw);
 		IPr.SerNr = nextsernr("IPVc",currentdate,-1,true,"");
 		recordstore(IPr,true);
 		
@@ -2225,6 +2226,8 @@ begin
 	record SVOVc SVOr;
 	val restSum,paidSum;
 	string 20 customer;
+	record SalesGroupVc SGr;
+  record ITVc ITr;
 	
 	SVOr.SerNr = RepSpec.long1;
 	if(readfirstmain(SVOr,1,true))then begin

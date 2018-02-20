@@ -366,6 +366,11 @@ begin
 															end else begin
 																ivretsummanag[IPrw.CUPNr & ":PREPAY"] = ivretsum[IPrw.CUPNr & ":PREPAY"] - IPrw.RecVal;
 																vIngSum["PREPAY:VOZVR:SERV"] = vIngSum["PREPAY:VOZVR:SERV"] - IPrw.RecVal;
+																if(vManExst["PREPAY"]==false)then begin
+																	vManExst["PREPAY"] = true;
+																	aman[mancnt] = "PREPAY";
+																	mancnt = mancnt + 1;														
+																end;
 															end;
 															vManSum[SVOr.Inspector & ":VOZVR:SERV"] = vManSum[SVOr.Inspector & ":VOZVR:SERV"] - IPrw.RecVal;
 															if(vManExst[SVOr.Inspector]==false)then begin

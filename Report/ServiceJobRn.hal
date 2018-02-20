@@ -51,13 +51,13 @@ end;
 
 procedure PrintHeader(record RcVc RepSpec)
 begin
-	
-	Header(2,"Период: " & RepSpec.sStartDate & ":" & RepSpec.sEndDate,0);
 	if(nonblank(RepSpec.f1))then begin
 		Header(1,"Приемка: " & RepSpec.f1,1);
 	end else begin
 		Header(1,"По всем точкам приемки",1);
 	end;
+	Header(2,"Период: " & RepSpec.sStartDate & ":" & RepSpec.sEndDate,0);
+	
 	if(nonblank(RepSpec.f3))then begin
 		Header(2,"Мастер: " & RepSpec.f3,1);
 	end else begin

@@ -2173,6 +2173,8 @@ begin
   row IPVc IPrw;
   boolean installmentf;
   val chk;
+  record SalesGroupVc SGr;
+  record ITVc ITr;
   
     recordnew(IPr);
 		IPr.PayMode = payMode;
@@ -2195,6 +2197,14 @@ begin
 		IPVc_PasteRecVal(IPr,0);
 		matrowget(IPr,0,IPrw);
 		paidSum = IPrw.RecVal;
+		SGr.SGroupCode = SVOr.SalesGroup;
+		if (readfirstmain(SGr,1,true)) then begin // Edit ***************** Dima 8 February 2018, 14:14
+			IPrw.Objects = SGr.Objects;
+			ITr.Code = SVOr.Region;
+			if (readfirstmain(ITr,1,true)) then begin
+				IPrw.Objects = AddObjectToObjectList(IPrw.Objects,ITr.Objects);
+			end;
+		end;
 		IPr.SerNr = nextsernr("IPVc",currentdate,-1,true,"");
 		recordstore(IPr,true);
 		

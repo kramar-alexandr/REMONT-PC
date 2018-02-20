@@ -1673,7 +1673,7 @@ begin
 				endformat;
 				tot[1] = tot[1] + vIngSum[aing[i] & ":GOTOV:SERV"];
 				tot[2] = tot[2] + vIngSum[aing[i] & ":NOPAY:SERV"];
-				tot[10] = tot[10] + vManSum[aman[i] & ":VOZVR:SERV"];
+				tot[10] = tot[10] + vIngSum[aing[i] & ":VOZVR:SERV"];
 				tot[3] = tot[3] + vIngSum[aing[i] & ":DOLG:SERV"];
 				tot[4] = tot[4] + vIngCanQty[aing[i]];
 				tot[5] = tot[5] + vIngCanQty[aing[i] & "DOR"];

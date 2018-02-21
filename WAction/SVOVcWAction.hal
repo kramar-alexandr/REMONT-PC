@@ -767,7 +767,7 @@ BEGIN
     case "Vlastnik": res = SVODClassVlastnikEFAfter(wn,changed); //Edit***************************Sasha2,16:36 15.12.2015
     case "ItemType": res = SVODClassItemTypeEFAfter(wn,rownr,changed); //Edit***************************Sasha2,16:36 15.12.2015
     case "Kontinfo1": res = SVODClassKontinfo1EFAfter(wn,changed);// Edit ************************** Tuesday, 28 February 2017 15:54:49
-    case "Phone2": res = SVODClassPhone2EFAfter(wn,changed);// Edit ************************** Tuesday, 28 February 2017 15:54:50
+    //case "Phone2": res = SVODClassPhone2EFAfter(wn,changed);// Edit ************************** Tuesday, 28 February 2017 15:54:50
     case "CustomField7": res = SVODClassCustomField7EFAfter(wn,changed); //Edit***************************Sasha2,11:05 12.07.2017
   end;
   SVODClassAfterEditField = res;

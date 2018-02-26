@@ -50,6 +50,7 @@ begin
     chsum = true;
     RoundRowSum(WSr.CurncyCode,"","IVVc",s);// Edit ************************** BPI Ukraine - KramarAlexandr - понедґлок, 26 лютого 2018 р. о 14:44:51
     //WSrw.Sum = round(s,SetRoundModeD(0));// Edit ************************** Thursday, 20 July 2017 11:24:15
+    WSrw.Sum = s;
     RowCalculateTaxMatrix_WSVc(WSr,rownr,WSrw);
     MatRowPut(WSr,rownr,WSrw);
   end;      

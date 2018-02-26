@@ -142,7 +142,9 @@ BEGIN
 		
     
     SVOp.Kontinfo1 = CUr.Phone;
-    SVOp.Kontinfo2 = CUr.eMail;
+    if(nonblank(CUr.eMail))then begin
+			SVOp.Kontinfo2 = CUr.eMail;
+    end;
     SVOp.Kontinfo3 = CUr.InvAddr0; //Edit***************************Sasha2,16:21 15.12.2015 }
     SVOp.CustVATCode = CUr.VATCode;
     if (CUr.TaxTemplateCode!=SVOp.CustTaxTemplateCode) then begin
@@ -150,7 +152,9 @@ BEGIN
       SVOp.CustTaxTemplateCode = CUr.TaxTemplateCode;
     end;
     SVOp.Phone = CUr.Phone;
-    SVOp.Phone2 = CUr.AltPhone;
+    if(nonblank(CUr.AltPhone))then begin
+			SVOp.Phone2 = CUr.AltPhone;
+    end;
     SVOp.Fax = CUr.Fax;
     SVOp.VATNr = CUr.VATNr;
     tstr = CUr.PLCode;

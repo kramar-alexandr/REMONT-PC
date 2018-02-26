@@ -6,6 +6,7 @@ external function Boolean AssignOfficialSerNr();
 external function Boolean LegalRecordNumberInRange(string,string,string);
 external function string 255 GetLegalInvoiceNrString(row LegalInvNrBlock,string);
 external procedure NextM4Number(string,var string);
+external function string 60 AddObjectToObjectList(string,string);
 external function string 255 UpdateOfficialSerNrSerie(Integer,Integer,Integer,string,boolean);
 external function Boolean CheckCreditInvTotOnOrigIV(record IVVc,var string,var LongInt);
 external function Boolean OfficialSerialNrCanBeBlank(string,string,Integer,string,string,string,Date,Integer,Integer);
@@ -2131,7 +2132,7 @@ begin
   longint error;
   row IPVc IPrw;
   record SalesGroupVc SGr;
-  
+  record ITVc		  ITr;
     recordnew(IPr);
 		IPr.PayMode = payMode;
 		IPr.Comment = comment;
@@ -2150,8 +2151,12 @@ begin
 		MatRowGet(IPr,0,IPrw);
 		IPrw.CUPNr = SVOr.SerNr;
 		SGr.SGroupCode = SVOr.SalesGroup;
-		if (readfirstmain(SGr,1,true)) then begin
+		if (readfirstmain(SGr,1,true)) then begin // Edit ***************** Dima 8 February 2018, 14:14
 			IPrw.Objects = SGr.Objects;
+			ITr.Code = SVOr.Region;
+			if (readfirstmain(ITr,1,true)) then begin
+				IPrw.Objects = AddObjectToObjectList(IPrw.Objects,ITr.Objects);
+			end;
 		end;
 		matrowput(IPr,0,IPrw);
 		IPr.SerNr = nextsernr("IPVc",currentdate,-1,true,"");
@@ -2168,6 +2173,8 @@ begin
   row IPVc IPrw;
   boolean installmentf;
   val chk;
+  record SalesGroupVc SGr;
+  record ITVc ITr;
   
     recordnew(IPr);
 		IPr.PayMode = payMode;
@@ -2190,6 +2197,15 @@ begin
 		IPVc_PasteRecVal(IPr,0);
 		matrowget(IPr,0,IPrw);
 		paidSum = IPrw.RecVal;
+		SGr.SGroupCode = SVOr.SalesGroup;
+		if (readfirstmain(SGr,1,true)) then begin // Edit ***************** Dima 8 February 2018, 14:14
+			IPrw.Objects = SGr.Objects;
+			ITr.Code = SVOr.Region;
+			if (readfirstmain(ITr,1,true)) then begin
+				IPrw.Objects = AddObjectToObjectList(IPrw.Objects,ITr.Objects);
+			end;
+		end;
+		matrowput(IPr,0,IPrw);
 		IPr.SerNr = nextsernr("IPVc",currentdate,-1,true,"");
 		recordstore(IPr,true);
 		
@@ -2210,6 +2226,8 @@ begin
 	record SVOVc SVOr;
 	val restSum,paidSum;
 	string 20 customer;
+	record SalesGroupVc SGr;
+  record ITVc ITr;
 	
 	SVOr.SerNr = RepSpec.long1;
 	if(readfirstmain(SVOr,1,true))then begin

@@ -841,7 +841,7 @@ BEGIN
     if (ReadFirstMain(USr,1,true)) then begin
       if (nonblank(USr.AllowedOutCosts)) then begin
         if (SetInSet(CLOutp.CorspCode,USr.AllowedOutCosts)==false) then begin
-          RecordCheckError(50001," " & CLOutp.CorspCode,-1,"CorspCode");
+          RecordCheckError(31514," " & CLOutp.CorspCode,-1,"CorspCode");
           res = -1;
           goto L99CLOutVcRecordCheck;
         end;

@@ -51,10 +51,23 @@ end;
 
 procedure PrintHeader(record RcVc RepSpec)
 begin
+	if(nonblank(RepSpec.f1))then begin
+		Header(1,"Приемка: " & RepSpec.f1,1);
+	end else begin
+		Header(1,"По всем точкам приемки",1);
+	end;
+	Header(2,"Период: " & RepSpec.sStartDate & ":" & RepSpec.sEndDate,0);
 	
-	Header(1,"test0",0);
-	Header(1,"test1",1);
-
+	if(nonblank(RepSpec.f3))then begin
+		Header(2,"Мастер: " & RepSpec.f3,1);
+	end else begin
+		Header(2,"По всем Мастерам",1);
+	end;
+	if(nonblank(RepSpec.f4))then begin
+		Header(3,"Приемщик: " & RepSpec.f4,1);
+	end else begin
+		Header(3,"По всем Приемщикам",1);
+	end;
 	endheader;
 return;
 end;
@@ -215,7 +228,7 @@ begin
 	vector string 50 vSerLoc,vSerInServ;
 	vector boolean vSGExist,vLocExist,vSGLocExist;
 	vector longint vSerSVONr;
-	array string 50 aSerials,aSerials1;
+	array string 50 aSerials,aSerials1,users;
 	integer k,i,mtrw,j,mtrw1;
 	record SalesGroupVc SGr;
 	record LocationVc Locr;
@@ -228,7 +241,7 @@ begin
 	boolean TrHs,testf,filter,svoout,TrHsph;
 	record IVVc IVr,credIVr,IV2r;
 	record IPVc IPr,IP2r;
-	vector val ivsum,svodolg,ivsumserv,ivsumdet,svodolgdet,ivsumservdet;
+	vector val ivsum,svodolg,ivsumserv,ivsumdet,svodolgdet,ivsumservdet,ivretsum;
 	vector boolean svoexist,vPhoneExist,vCuExist,ivexist;
 	vector date paydate;
 	array longint asvonr;
@@ -253,10 +266,15 @@ begin
 	vector val vManSum;
 	vector integer vIngCanQty,vManCanQty,vSVOQty;
 	array string 50 aing,aman,arjct;
-	integer ingcnt,mancnt,irjct;
+	integer ingcnt,mancnt,irjct,userscnt,ui;
 	vector boolean vIngExst,vManExst,vrjct; 
 	record UserVc User;
-	vector val st0;
+	vector val st0,ivretsummanag;
+	
+	while(loopmain(User,1,true))begin
+		users[userscnt] = User.Code;
+		userscnt = userscnt + 1;
+	end;
 	
 	if(usercanaction("ServiceJobsGroupAcces",false)==false)then begin
 		User.Code = currentuser;
@@ -266,6 +284,8 @@ begin
 			end;
 		end;
 	end;
+	
+	
 	
 	tot[0] = blankval;
 	
@@ -319,6 +339,50 @@ begin
 										mtrw = matrowcnt(IPr);
 										For(i=0;i<mtrw;i=i+1) begin
 	  									matrowget(IPr,i,IPrw);
+	  									if(IPrw.CUPNr>0)then begin
+	  										if(IPrw.RecVal<0)then begin
+	  											if(svoexist[IPrw.CUPNr]==false)then begin
+														asvonr[k] = IPrw.CUPNr;
+														k = k+1;
+														svoexist[IPrw.CUPNr] = true;
+													end;
+													
+													SVOr.SerNr = IPrw.CUPNr;
+													if(readfirstmain(SVOr,1,true))then begin
+														filter = true;
+														if(IVr.SalesMan==SVOr.CustomField7)then begin
+															enginer = SVOr.ServiceManager;
+														end;
+					
+														if(nonblank(RepSpec.f1) and RepSpec.f1!=SVOr.SalesGroup)then begin filter = false; end;
+														if(nonblank(RepSpec.f3) and RepSpec.f3!=enginer)then begin filter = false; end;
+														if(nonblank(RepSpec.f4) and RepSpec.f4!=SVOr.CustomField7)then begin filter = false; end;
+														
+														if(filter)then begin
+															ivretsum[IPrw.CUPNr] = ivretsum[IPrw.CUPNr] - IPrw.RecVal;
+															if(nonblank(SVOr.ServiceManager))then begin
+																ivretsummanag[IPrw.CUPNr & ":" & SVOr.ServiceManager] = ivretsum[IPrw.CUPNr & ":" & SVOr.ServiceManager] - IPrw.RecVal;
+																vIngSum[SVOr.ServiceManager & ":VOZVR:SERV"] = vIngSum[SVOr.ServiceManager & ":VOZVR:SERV"] - IPrw.RecVal;
+															end else begin
+																ivretsummanag[IPrw.CUPNr & ":PREPAY"] = ivretsum[IPrw.CUPNr & ":PREPAY"] - IPrw.RecVal;
+																vIngSum["PREPAY:VOZVR:SERV"] = vIngSum["PREPAY:VOZVR:SERV"] - IPrw.RecVal;
+																if(vManExst["PREPAY"]==false)then begin
+																	vManExst["PREPAY"] = true;
+																	aman[mancnt] = "PREPAY";
+																	mancnt = mancnt + 1;														
+																end;
+															end;
+															vManSum[SVOr.Inspector & ":VOZVR:SERV"] = vManSum[SVOr.Inspector & ":VOZVR:SERV"] - IPrw.RecVal;
+															if(vManExst[SVOr.Inspector]==false)then begin
+																vManExst[SVOr.Inspector] = true;
+																aman[mancnt] = SVOr.Inspector;
+																mancnt = mancnt + 1;														
+															end;
+														end;
+													end;
+													
+												end;
+	  									end;
 	  									if(IPrw.InvoiceNr>0 and IPrw.InvoiceNr==IPRsr.IVNr)then begin
 	  										IVr.SerNr = IPrw.InvoiceNr;
 	  										if(readfirstmain(IVr,1,true))then begin
@@ -381,6 +445,76 @@ begin
 														end;
 													end;
 	  											ivsum[IVr.SVONr] = ivsum[IVr.SVONr] - IPrw.InvVal;
+	  											if(IPrw.InvVal<0)then begin
+	  												
+														SVOr.SerNr = IVr.SVONr;
+														if(readfirstmain(SVOr,1,true))then begin
+															filter = true;
+															enginer = "";
+															cnt=1;
+															while(ReadRecordLink(IVr,cnt,WSr,RLr)) begin
+																if(nonblank(WSr.EMCode))then begin
+																	If(WSr.EMCode!=IVr.SalesMan) then begin
+																		IVr.SalesMan = WSr.EMCode;
+																	end; 
+																end;
+																cnt = cnt+1;
+															end;
+															if(IVr.SalesMan==SVOr.CustomField7)then begin
+																enginer = SVOr.ServiceManager;
+															end else begin
+																enginer = IVr.SalesMan;
+															end;
+						
+															if(nonblank(RepSpec.f1) and RepSpec.f1!=SVOr.SalesGroup)then begin filter = false; end;
+															if(nonblank(RepSpec.f3) and RepSpec.f3!=enginer)then begin filter = false; end;
+															if(nonblank(RepSpec.f4) and RepSpec.f4!=SVOr.CustomField7)then begin filter = false; end;
+															
+															if(filter)then begin
+																ivretsum[IVr.SVONr] = ivretsum[IVr.SVONr] - IPrw.InvVal;
+																ivretsummanag[IVr.SVONr & ":" & enginer] = ivretsum[IVr.SVONr & ":" & enginer] - IPrw.RecVal;
+																if(IPrw.RecVal==-IVr.Sum4)then begin
+																	mtrw2 = matrowcnt(IVr);
+																	For(j=0;j<mtrw2;j=j+1) begin
+	  																matrowget(IVr,j,IVrw);
+	  																if(IVrw.stp==kInvoiceRowTypeNormal)then begin
+	  																	if(nonblank(IVrw.ArtCode))then begin
+																				INr.Code = IVrw.ArtCode;
+																				if(readfirstmain(INr,1,true))then begin																				
+																					if(INr.ItemType==3 or INr.ItemType==0)then begin
+																						vIngSum[enginer & ":VOZVR:SERV"] = vIngSum[enginer & ":VOZVR:SERV"] + IVrw.Sum;
+																						vManSum[SVOr.Inspector & ":VOZVR:SERV"] = vManSum[SVOr.Inspector & ":VOZVR:SERV"] + IVrw.Sum;
+																						if(vManExst[SVOr.Inspector]==false)then begin
+																							vManExst[SVOr.Inspector] = true;
+																							aman[mancnt] = SVOr.Inspector;
+																							mancnt = mancnt + 1;														
+																						end;
+																					end else begin
+																						vIngSum[enginer & ":VOZVR:DET"] = vIngSum[enginer & ":VOZVR:DET"] + IVrw.Sum;
+																						vManSum[SVOr.Inspector & ":VOZVR:DET"] = vManSum[SVOr.Inspector & ":VOZVR:DET"] + IVrw.Sum;
+																						if(vManExst[SVOr.Inspector]==false)then begin
+																							vManExst[SVOr.Inspector] = true;
+																							aman[mancnt] = SVOr.Inspector;
+																							mancnt = mancnt + 1;														
+																						end;
+																					end;
+																				end;
+																			end;
+	  																end;
+																	end; 
+																	
+																end else begin
+																	vIngSum[enginer & ":VOZVR:SERV"] = vIngSum[enginer & ":VOZVR:SERV"] - IPrw.RecVal;
+																	vManSum[SVOr.Inspector & ":VOZVR:SERV"] = vManSum[SVOr.Inspector & ":VOZVR:SERV"] - IPrw.RecVal;
+																	if(vManExst[SVOr.Inspector]==false)then begin
+																		vManExst[SVOr.Inspector] = true;
+																		aman[mancnt] = SVOr.Inspector;
+																		mancnt = mancnt + 1;														
+																	end;
+																end;
+															end;
+														end;
+	  											end;
 	  											if(paydate[IVr.SVONr]<IPr.TransDate)then begin
 														paydate[IVr.SVONr] = IPr.TransDate;
 													end;
@@ -674,6 +808,35 @@ begin
 					gray_divider(0,1);
 				end;			
 				resetloop(IVr);
+			end;
+			if(ivretsum[asvonr[i]]>0)then begin
+				startformat(15);
+					outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
+					outstring(tabs[0],0,"Возврат денег",false);
+					outstring(tabs[6],0,ivretsum[asvonr[i]],false);
+					
+					//outstring(tabs[7],0,ivretsummanag[asvonr[i]],false);
+				endformat;
+				if(ivretsummanag[asvonr[i] & ":PREPAY"]>0)then begin
+					startformat(15);
+						outstring(tabs[0],0,"",false);
+						outstring(tabs[0],0,"",false);
+						outstring(tabs[6],0,ivretsum[asvonr[i]],false);
+						outstring(tabs[7],0,"С предоплаты",false);
+					endformat;
+				end;
+				For(ui=0;ui<userscnt;ui=ui+1) begin
+	  			if(ivretsummanag[asvonr[i] & ":" & users[ui]]>0)then begin
+						startformat(15);
+							outstring(tabs[0],0,"",false);
+							outstring(tabs[0],0,"",false);
+							outstring(tabs[6],0,ivretsum[asvonr[i]],false);
+							outstring(tabs[7],0,users[ui],false);
+						endformat;
+					end;
+				end; 
+				
+				gray_divider(0,1);
 			end;
 		end; 
 		black_divider(0,1);
@@ -1489,9 +1652,9 @@ begin
 		tabs[0] = 0;
 		tabs[1] = 40;
 		tabs[2] = 80;
-		tabs[3] = 100;
-		tabs[4] = 130;
-		tabs[5] = 160;
+		tabs[3] = 90;
+		tabs[4] = 120;
+		tabs[5] = 155;
 		tabs[6] = 190;
 		tabs[7] = 210;
 		tabs[8] = 240;
@@ -1512,6 +1675,7 @@ begin
 				outstring(tabs[0],0,"Инженер",false);
 				outstring(tabs[2],0,"Оплачено",false);
 				outstring(tabs[4],0,"Неоплаченно",false);
+				outstring(tabs[5],0,"Возвр.",false);
 				outstring(tabs[6],0,"Долг",false);
 				outstring(tabs[7],0,"Отмена",false);
 				outstring(tabs[8],0,"Возвр. на доработку",false);
@@ -1535,6 +1699,7 @@ begin
 	  			outstring(tabs[0],0,aing[i],false);
 					outstring(tabs[2],0,vIngSum[aing[i] & ":GOTOV:SERV"],false);
 					outstring(tabs[4],0,vIngSum[aing[i] & ":NOPAY:SERV"],false);
+					outstring(tabs[5],0,vIngSum[aing[i] & ":VOZVR:SERV"],false);
 					outstring(tabs[6],0,vIngSum[aing[i] & ":DOLG:SERV"],false);
 					outstring(tabs[7],0,vIngCanQty[aing[i]],false);
 					outstring(tabs[8],0,vIngCanQty[aing[i] & "DOR"],false);
@@ -1545,6 +1710,7 @@ begin
 				endformat;
 				tot[1] = tot[1] + vIngSum[aing[i] & ":GOTOV:SERV"];
 				tot[2] = tot[2] + vIngSum[aing[i] & ":NOPAY:SERV"];
+				tot[10] = tot[10] + vIngSum[aing[i] & ":VOZVR:SERV"];
 				tot[3] = tot[3] + vIngSum[aing[i] & ":DOLG:SERV"];
 				tot[4] = tot[4] + vIngCanQty[aing[i]];
 				tot[5] = tot[5] + vIngCanQty[aing[i] & "DOR"];
@@ -1558,6 +1724,7 @@ begin
 				outstring(tabs[0],0,"Всего",false);
 				outstring(tabs[2],0,tot[1],false);
 				outstring(tabs[4],0,tot[2],false);
+				outstring(tabs[5],0,tot[10],false);
 				outstring(tabs[6],0,tot[3],false);
 				outstring(tabs[7],0,tot[4],false);
 				outstring(tabs[8],0,tot[5],false);
@@ -1578,15 +1745,18 @@ begin
 			tot[7] = blankval;
 			tot[8] = blankval;
 			tot[9] = blankval;
+			tot[10] = blankval;
 			For(i=0;i<ingcnt;i=i+1) begin
 	  		startformat(15);
 	  			outstring(tabs[0],0,aing[i],false);
 					outstring(tabs[2],0,vIngSum[aing[i] & ":GOTOV:DET"],false);
 					outstring(tabs[4],0,vIngSum[aing[i] & ":NOPAY:DET"],false);
+					outstring(tabs[5],0,vIngSum[aing[i] & ":VOZVR:DET"],false);
 					outstring(tabs[6],0,vIngSum[aing[i] & ":DOLG:DET"],false);
 				endformat;
 				tot[1] = tot[1] + vIngSum[aing[i] & ":GOTOV:DET"];
 				tot[2] = tot[2] + vIngSum[aing[i] & ":NOPAY:DET"];
+				tot[4] = tot[4] + vIngSum[aing[i] & ":VOZVR:DET"];
 				tot[3] = tot[3] + vIngSum[aing[i] & ":DOLG:DET"];
 				gray_divider(0,1);
 			end; 
@@ -1594,6 +1764,7 @@ begin
 				outstring(tabs[0],0,"Всего",false);
 				outstring(tabs[2],0,tot[1],false);
 				outstring(tabs[4],0,tot[2],false);
+				outstring(tabs[5],0,tot[4],false);
 				outstring(tabs[6],0,tot[3],false);
 			endformat;
 		end;
@@ -1609,6 +1780,7 @@ begin
 				outstring(tabs[0],0,"Менеджер",false);
 				outstring(tabs[2],0,"Оплачено",false);
 				outstring(tabs[4],0,"Неоплаченно",false);
+				outstring(tabs[5],0,"Возвр.",false);
 				outstring(tabs[6],0,"Долг",false);
 				outstring(tabs[7],0,"Отмена",false);
 				outstring(tabs[8],0,"Возвр. на доработку",false);
@@ -1627,6 +1799,7 @@ begin
 	  			outstring(tabs[0],0,aman[i],false);
 					outstring(tabs[2],0,vManSum[aman[i] & ":GOTOV:SERV"],false);
 					outstring(tabs[4],0,vManSum[aman[i] & ":NOPAY:SERV"],false);
+					outstring(tabs[5],0,vManSum[aman[i] & ":VOZVR:SERV"],false);
 					outstring(tabs[6],0,vManSum[aman[i] & ":DOLG:SERV"],false);
 					outstring(tabs[7],0,vManCanQty[aman[i]],false);
 					outstring(tabs[8],0,vManCanQty[aman[i] & "DOR"],false);
@@ -1637,6 +1810,7 @@ begin
 				endformat;
 				tot[1] = tot[1] + vManSum[aman[i] & ":GOTOV:SERV"];
 				tot[2] = tot[2] + vManSum[aman[i] & ":NOPAY:SERV"];
+				tot[10] = tot[10] + vManSum[aman[i] & ":VOZVR:SERV"];
 				tot[3] = tot[3] + vManSum[aman[i] & ":DOLG:SERV"];
 				tot[4] = tot[4] + vManCanQty[aman[i]];
 				tot[5] = tot[5] + vManCanQty[aman[i] & "DOR"];
@@ -1650,6 +1824,7 @@ begin
 				outstring(tabs[0],0,"Всего",false);
 				outstring(tabs[2],0,tot[1],false);
 				outstring(tabs[4],0,tot[2],false);
+				outstring(tabs[5],0,tot[10],false);
 				outstring(tabs[6],0,tot[3],false);
 				outstring(tabs[7],0,tot[4],false);
 				outstring(tabs[8],0,tot[5],false);

@@ -1918,5 +1918,32 @@ begin
     RecordField(SalesOfGoodsUseRetail,M4Int,0,0);//Edit-------------------Vitalii 11:29 15.11.2017
   EndRecordAdd;
   
+  
+  RecordBegin(KIVIPartnersWorksVc,-,""); // Edit *************** Dima 17:19 31.01.2018
+		RecordField(SerNr,M4Long,0,0);
+		RecordField(User,M4Code,40,0);
+		RecordField(Name,M4Str,255,0);
+		RecordField(CustName,M4Str,255,0);
+		RecordField(CustPhone,M4Str,255,0);
+		RecordField(CustAddr,M4Str,255,0);
+		
+		RecordField(Matrix,M4matrix,0,0);
+		ArrayBegin(Matrix,-,1);
+		ArrayField(ArtCode,M4Code,50,0);
+		ArrayField(Spec,M4Str,255,0);
+		ArrayField(Sum,M4Val,0,0);
+		ArrayField(DepDel,M4Str,255,0);
+		EndArray;
+		MainKeyBegin(SerNr,0);
+		KeySegment(SerNr);
+		SubsetKeyBegin2(User);
+		StoreInBaseKey;
+		AppendListFieldToKeyName(SerNr);
+		KeySegment(User);
+		KeySegment(SerNr);
+		
+  EndRecord;
+  
+  
 return;
 end;

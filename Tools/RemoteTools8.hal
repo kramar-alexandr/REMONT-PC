@@ -127,6 +127,8 @@ begin
   record SVOAccBlock SVOAb;
   record UserVc USr;
   record WSVc WSr; //Edit***************************Sasha2,17:43 31.05.2017
+  record ITVc ITr;	
+  record IPVc IPr;
 
   BlockLoad(SVOAb);
 
@@ -184,6 +186,10 @@ L20MakeInvHeader:;
     IVp.Objects = SVOp.Objects;
     if (NonBlank(WSr.Objects)) then begin //Edit***************************Sasha2,17:45 31.05.2017 {
       IVp.Objects = AddObjectToObjectList(IVp.Objects,WSr.Objects);
+	  ITr.Code = SVOp.Region;		// Edit ****************** Dima 8 February, 13:46
+	  if (readfirstmain(ITr,1,true)) then begin
+		IVp.Objects = AddObjectToObjectList(IVp.Objects,ITr.Objects);
+	  end;
     end; //Edit***************************Sasha2,17:45 31.05.2017 }
   end else begin
     USr.Code = SVOp.SalesMan;

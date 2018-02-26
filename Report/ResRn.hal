@@ -20,6 +20,7 @@ external procedure GetPreviousPeriods(record RcVc,Date,Date,var string,var strin
 external procedure GetNotStr(Integer,var string);
 external procedure GetNext2Sep(string,var Integer,var string);
 external procedure GetNextToken(string,var Integer,var string);
+external procedure GetNextTokenCompile(string,var Integer,var string);
 external function Boolean GetNextTokenReturn(string,var Integer,var string);
 external procedure GetAccountDescription2(string,string,var string);
 external function Boolean AccRuPerBal(record RcVc,Boolean,string,string,var val,var val,var val,var val,var val,var val,
@@ -288,7 +289,7 @@ BEGIN
     end;
     GetNext2Sep(UserDefRepLinesr.Desc,np,nsep);
     if (nsep==".") then begin
-      GetNextToken(UserDefRepLinesr.Desc,np,NRu);
+      GetNextTokenCompile(UserDefRepLinesr.Desc,np,NRu);// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 13 February 2018 11:11:23
       GetNext2Sep(UserDefRepLinesr.Desc,np,nsep);
     end else begin
       NRu = "";
@@ -343,7 +344,7 @@ BEGIN
     end;  
     GetNext2Sep(UserDefRepLinesr.Desc2,np,nsep);
     if (nsep==".") then begin
-      GetNextToken(UserDefRepLinesr.Desc2,np,NRu);
+      GetNextTokenCompile(UserDefRepLinesr.Desc2,np,NRu);// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 13 February 2018 11:11:29
       GetNext2Sep(UserDefRepLinesr.Desc2,np,nsep);
     end else begin
       NRu = "";
@@ -398,7 +399,7 @@ BEGIN
     end;  
     GetNext2Sep(UserDefRepLinesr.Desc3,np,nsep);
     if (nsep==".") then begin
-      GetNextToken(UserDefRepLinesr.Desc3,np,NRu);
+      GetNextTokenCompile(UserDefRepLinesr.Desc3,np,NRu);// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 13 February 2018 11:11:34
       GetNext2Sep(UserDefRepLinesr.Desc3,np,nsep);
     end else begin
       NRu = "";

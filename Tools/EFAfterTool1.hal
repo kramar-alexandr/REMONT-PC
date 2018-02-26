@@ -193,6 +193,9 @@ BEGIN
   record SMVc VATr;/*VATBaseRowType*/
   Integer vatcnt;  
   roundmode roundlines,rndtotal,rndvat;
+	record BaseCurBlock BCb;// Edit ************************** BPI Ukraine - KramarAlexandr - понедґлок, 26 лютого 2018 р. о 15:23:48
+    
+  blockload(BCb);// Edit ************************** BPI Ukraine - KramarAlexandr - понедґлок, 26 лютого 2018 р. о 15:23:51
 
   if (UseTaxTemplatesforTaxCalc) then begin
     WSSumup_TaxTemplate(WSp);
@@ -207,6 +210,10 @@ BEGIN
     MatRowPut(WSp,i,WSrw);
   end;
   CalcVATBaseVAT(VATr,WSp.InclVAT,0,vatcnt,ms,temp);
+  if(blank(WSp.CurncyCode))then begin// Edit ************************** BPI Ukraine - KramarAlexandr - понедґлок, 26 лютого 2018 р. о 15:21:50
+		WSp.CurncyCode = BCb.BaseCur1;
+	end;
+  
   GetCurncyRoundoff(WSp.CurncyCode,"","IVVc",rndtotal,roundlines,rndvat);// Edit ************************** BPI Ukraine - KramarAlexandr - понедґлок, 26 лютого 2018 р. о 09:52:10
   ms = Round(ms,rndvat);
   if ((WSp.ExportFlag==1) or (WSp.ExportFlag==2)) then begin

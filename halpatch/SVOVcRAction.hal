@@ -1003,7 +1003,7 @@ BEGIN
   SVOr.Comment3 = "";
   SVOr.Comment4 = "";  
   
-  SVOr.Region = ""; // Edit ************************** Friday, 16 October 2015 17:41:26
+  //SVOr.Region = ""; // Edit ************************** Friday, 16 October 2015 17:41:26
   SVOr.Garanty = ""; 
   SVOr.GarNo = ""; 
   SVOr.CustomField3 = ""; 

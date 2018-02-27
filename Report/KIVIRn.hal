@@ -154,8 +154,18 @@ begin
 	  									if(worktag[vkey])then begin
 	  										if(IVr.InvType==kInvoiceTypeCredit)then begin
 													workqty[vkey] = workqty[vkey] - IVrw.Quant;
+													for(i=0;i<wokcnt;i=i+1)begin
+														if(worklist[i]==vkey)then begin
+															workprice[i] = workprice[i] - IVrw.Sum;
+														end;
+													end;
 	  										end else begin
 	  											workqty[vkey] = workqty[vkey] + IVrw.Quant;
+	  											for(i=0;i<wokcnt;i=i+1)begin
+														if(worklist[i]==vkey)then begin
+															workprice[i] = workprice[i] + IVrw.Sum;
+														end;
+													end;
 	  										end;
 	  									end else begin
 	  										if(IVr.InvType==kInvoiceTypeCredit)then begin

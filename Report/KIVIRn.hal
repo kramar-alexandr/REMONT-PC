@@ -157,6 +157,7 @@ begin
 													for(i=0;i<wokcnt;i=i+1)begin
 														if(worklist[i]==vkey)then begin
 															workprice[i] = workprice[i] - IVrw.Sum;
+															sumprices = sumprices - IVrw.Sum;
 														end;
 													end;
 	  										end else begin
@@ -164,6 +165,7 @@ begin
 	  											for(i=0;i<wokcnt;i=i+1)begin
 														if(worklist[i]==vkey)then begin
 															workprice[i] = workprice[i] + IVrw.Sum;
+															sumprices = sumprices + IVrw.Sum;
 														end;
 													end;
 	  										end;

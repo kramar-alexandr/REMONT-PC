@@ -255,8 +255,8 @@ begin
   
   switch (RepSpec.ArtMode) begin
     case 0:
-      key = "TransDate";
-      SVOr.TransDate = afr;
+      key = "AllGetItemDate";
+      SVOr.GetItemDate = afr;
     case 1:
       key = "EndDiagnDate";
       SVOr.EndDiagnDate = afr;
@@ -278,7 +278,7 @@ begin
   
     switch (RepSpec.ArtMode) begin
       case 0:
-        compareDate = SVOr.TransDate;
+        compareDate = SVOr.GetItemDate;
       case 1:
         compareDate = SVOr.EndDiagnDate;
       case 2:

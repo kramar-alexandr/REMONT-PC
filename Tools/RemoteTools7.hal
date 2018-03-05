@@ -1245,7 +1245,10 @@ begin
   record MainStockBlock MSb;
   val q;
   record UserVc Userr; //Edit***************************Sasha2,14:00 09.06.2017
-
+	record IntSerBalVc IntSBr;
+	boolean TrHs;
+	string 100 location;
+	
   res = 31500; //1547 //Edit***************************Sasha2,11:12 12.06.2017
   BlockLoad(MSb);  
   RecordNew(Dispr);
@@ -1281,6 +1284,31 @@ begin
   if (blank(Dispr.Location) and NonBlank(Userr.Location)) then begin
     Dispr.Location = Userr.Location;
   end; 
+  
+  
+  if(usercanaction("SVOToDispatchAnyway",false))then begin
+		if (MatRowCnt(SVOp)>0) then begin
+			MatRowGet(SVOp,0,SVOrw);
+			IntSBr.Item = SVOrw.ArtCode;
+			IntSBr.Serial = SVOrw.SerialNr;
+			location = "";
+			TrHs = true;
+			while(loopkey("ItemSerial",IntSBr,2,TrHs))begin
+				if(IntSBr.Item!=SVOrw.ArtCode)then begin TrHs = false; end;
+				if(IntSBr.Serial!=SVOrw.SerialNr)then begin TrHs = false; end;
+				
+				if(TrHs)then begin
+					if(IntSBr.Quant>0)then begin
+						location = IntSBr.Location;
+						Dispr.Location = location;
+						TrHs = false;
+					end;
+				end;
+			end;
+		end;
+	end;
+  
+  
   Dispr.SalesMan = Userr.Code; //Edit***************************Sasha2,14:35 09.06.2017 }
   if (blank(Dispr.Location)) then begin //Edit***************************Sasha2,14:39 09.06.2017
     Dispr.Location = SVOp.ServLocation;  

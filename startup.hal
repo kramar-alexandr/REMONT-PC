@@ -257,7 +257,8 @@ begin
   StrSetText(YodleeData,"Importing Yodlee Data"); //!!TRANSLATE
   StrSetText(InstallHalcust,"Install Halcust & Halpatch");  
   StrSetText(SVOToOffHire,"Items In from Service Order");
-  StrSetText(SVOToDispatch,"Items Out from Service Order");
+  StrSetText(SVOToDispatch,"Выдавать технику");
+  StrSetText(SVOToDispatchAnyway,"Выдавать технику с любого склада");// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 5 March 2018 10:22:35
   StrSetText(AllowNegativePriceonIV,"Negative Unit Price on an SL Invoice");  
   StrSetText(DAOK,"OK Суточные возмещения");
   StrSetText(LeaveApplicationOK,"OKing Leave Applications");

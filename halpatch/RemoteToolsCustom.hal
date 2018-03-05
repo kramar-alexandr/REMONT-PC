@@ -3718,7 +3718,7 @@ begin
   row SVOVc SVOrw;
   Integer err,i,rwcnt;
   string 20 location;
-  Boolean anyAvailableItemsF;
+  Boolean anyAvailableItemsF,TrHs;
   record IntSerBalVc IntSBr;
   record IntISVc IntISp;
   record INVc INr;
@@ -3726,16 +3726,54 @@ begin
     errMes = "";
     if (UserCanAction("SVOToDispatch",true)) then begin
       //GetCurUser(Userr);
-      Userr.Code = CurrentUser;
-      ReadFirstMain(Userr,1,true);
-      if (Blank(LocMachBl.DefLocation) and Blank(Userr.Location)) then begin
-        err = 31098;
+      if(usercanaction("SVOToDispatchAnyway",false))then begin
+      	rwcnt = MatRowCnt(SVOr);
+      	if (rwcnt>0) then begin
+					MatRowGet(SVOr,0,SVOrw);
+					IntSBr.Item = SVOrw.ArtCode;
+          IntSBr.Serial = SVOrw.SerialNr;
+          location = "";
+          TrHs = true;
+          while(loopkey("ItemSerial",IntSBr,2,TrHs))begin
+          	if(IntSBr.Item!=SVOrw.ArtCode)then begin TrHs = false; end;
+          	if(IntSBr.Serial!=SVOrw.SerialNr)then begin TrHs = false; end;
+          	
+          	if(TrHs)then begin
+          		if(IntSBr.Quant>0)then begin
+          			location = IntSBr.Location;
+          			TrHs = false;
+          		end;
+          	end;
+          end;
+					
+					if(blank(location))then begin
+						Userr.Code = CurrentUser;
+						ReadFirstMain(Userr,1,true);
+						if (Blank(LocMachBl.DefLocation) and Blank(Userr.Location)) then begin
+							err = 31098;
+						end else begin
+							location = LocMachBl.DefLocation;
+							if (Blank(location)) then begin
+								location = Userr.Location;
+							end;
+						end;
+					end;
+      	end;
       end else begin
-        location = LocMachBl.DefLocation;
-        if (Blank(location)) then begin
-          location = Userr.Location;
-        end;
-      end; 
+				Userr.Code = CurrentUser;
+				ReadFirstMain(Userr,1,true);
+				if (Blank(LocMachBl.DefLocation) and Blank(Userr.Location)) then begin
+					err = 31098;
+				end else begin
+					location = LocMachBl.DefLocation;
+					if (Blank(location)) then begin
+						location = Userr.Location;
+					end;
+				end; 
+      end;
+      
+      
+      
       if (err==0) then begin
         rwcnt = MatRowCnt(SVOr);
         if (rwcnt>0) then begin

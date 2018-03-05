@@ -1923,14 +1923,21 @@ begin
 		RecordField(SerNr,M4Long,0,0);
 		RecordField(User,M4Code,40,0);
 		RecordField(Name,M4Str,255,0);
+		RecordField(CustCode,M4Code,50,0);
 		RecordField(CustName,M4Str,255,0);
 		RecordField(CustPhone,M4Str,255,0);
 		RecordField(CustAddr,M4Str,255,0);
-		
+		RecordField(CustCity,M4Str,255,0);
+		RecordField(OKFlag,M4Mark,0,0);
+		RecordField(SumWork,M4Val,0,0);
+		RecordField(SumDet,M4Val,0,0);
+		RecordField(TransDate,M4Date,0,0);
 		RecordField(Matrix,M4matrix,0,0);
 		ArrayBegin(Matrix,-,1);
 		ArrayField(ArtCode,M4Code,50,0);
 		ArrayField(Spec,M4Str,255,0);
+		ArrayField(Qty,M4Val,0,0);
+		ArrayField(Price,M4Val,0,0);
 		ArrayField(Sum,M4Val,0,0);
 		ArrayField(DepDel,M4Str,255,0);
 		EndArray;
@@ -1941,6 +1948,9 @@ begin
 		AppendListFieldToKeyName(SerNr);
 		KeySegment(User);
 		KeySegment(SerNr);
+		KeyBegin(TransDate);
+    KeySegment(TransDate);
+    KeySegment(SerNr);
 		
   EndRecord;
   

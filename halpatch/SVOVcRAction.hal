@@ -554,10 +554,10 @@ begin
 
         if (SVOr.OrderStatus==4 and SVO2r.OrderStatus!=4) then begin
             if(nonblank(SVOr.Inspector))begin
-                CreateCustomActivityFromSVO(SVOr,"СОГЛ",SVOr.Inspector,currentdate,"Согласовать ремонт!","");//----------------- dima-f 22.09.17
+                CreateCustomActivityFromSVO(SVOr,"СОГЛ",SVOr.Inspector,currentdate,"Согласовать ремонт!","ХАНТЕ");//----------------- dima-f 22.09.17
             end else begin
                 if (NonBlank(SVOr.CustomField7)) then begin
-                    CreateCustomActivityFromSVO(SVOr,"СОГЛ",SVOr.Inspector,currentdate,"Согласовать ремонт!","");//----------------- dima-f 22.09.17
+                    CreateCustomActivityFromSVO(SVOr,"СОГЛ",SVOr.CustomField7,currentdate,"Согласовать ремонт!","ХАНТЕ");//----------------- dima-f 22.09.17
                 end;
             end;
         end;
@@ -1003,7 +1003,7 @@ BEGIN
   SVOr.Comment3 = "";
   SVOr.Comment4 = "";  
   
-  SVOr.Region = ""; // Edit ************************** Friday, 16 October 2015 17:41:26
+  //SVOr.Region = ""; // Edit ************************** Friday, 16 October 2015 17:41:26
   SVOr.Garanty = ""; 
   SVOr.GarNo = ""; 
   SVOr.CustomField3 = ""; 

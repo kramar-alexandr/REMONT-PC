@@ -420,10 +420,12 @@ BEGIN
 
   outobj = "";
   pos = 0;
-  ExtractObj(inobj,pos,ostr);
-  while (nonblank(ostr)) begin
-    Add3Objs(outobj,ostr);
-    ExtractObj(inobj,pos,ostr);
+  if(nonblank(inobj))then begin// Edit ************************** BPI Ukraine - KramarAlexandr - вґвторок, 27 лютого 2018 р. о 17:59:58
+		ExtractObj(inobj,pos,ostr);
+		while (nonblank(ostr)) begin
+			Add3Objs(outobj,ostr);
+			ExtractObj(inobj,pos,ostr);
+		end;
   end;
   RETURN;
 END;

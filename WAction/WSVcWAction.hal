@@ -43,13 +43,20 @@ begin
   Boolean chsum;
   row WSVc WSrw;
   val s,v,nilv;
+  record BaseCurBlock BCb;// Edit ************************** BPI Ukraine - KramarAlexandr - понедґлок, 26 лютого 2018 р. о 15:23:48
+    
+  blockload(BCb);// Edit ************************** BPI Ukraine - KramarAlexandr - понедґлок, 26 лютого 2018 р. о 15:23:51
 
   MatRowGet(WSr,rownr,WSrw);
   CalcSum(WSrw.Quant,WSrw.Price,nilv,WSrw.vRebate,s,UseDiscount);
   if (s!=WSrw.Sum) or ((s==0.00) and (blank(WSrw.Sum))) then begin
     chsum = true;
-    RoundRowSum(WSr.CurncyCode,"","WSVc",s);
-    WSrw.Sum = round(s,SetRoundModeD(0));// Edit ************************** Thursday, 20 July 2017 11:24:15
+    if(blank(WSr.CurncyCode))then begin// Edit ************************** BPI Ukraine - KramarAlexandr - понедґлок, 26 лютого 2018 р. о 15:21:50
+    	WSr.CurncyCode = BCb.BaseCur1;
+    end;
+    RoundRowSum(WSr.CurncyCode,"","IVVc",s);// Edit ************************** BPI Ukraine - KramarAlexandr - понедґлок, 26 лютого 2018 р. о 14:44:51
+    //WSrw.Sum = round(s,SetRoundModeD(0));// Edit ************************** Thursday, 20 July 2017 11:24:15
+    WSrw.Sum = s;
     RowCalculateTaxMatrix_WSVc(WSr,rownr,WSrw);
     MatRowPut(WSr,rownr,WSrw);
   end;      

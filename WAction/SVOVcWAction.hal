@@ -2238,8 +2238,31 @@ global procedure UpdateToDoWclass()
     beep;
 end;
 
-global procedure AsyncUpdateToDo()
+global updating procedure AsyncUpdateToDo()
 	begin
+		record PeriodBlock Pb;
+		row PeriodBlock Prw;
+	
+		if(getminute(currenttime)==30)then begin
+			blockload(Pb);
+			matrowget(Pb,0,Prw);
+			if(Prw.FromDate!=currentdate)then begin
+				if(Prw.FromDate!=addday(currentdate,-1))then begin
+					Prw.FromDate = currentdate;
+					Prw.ToDate = currentdate;
+					Prw.CodeStr = "CC";
+					Prw.Comment = currentdate;
+					matrowinsert(Pb,0,Prw);
+					blockstore(Pb);
+				end else begin
+					Prw.FromDate = currentdate;
+					Prw.ToDate = currentdate;
+					matrowput(Pb,0,Prw);
+					blockstore(Pb);
+				end;
+			end;
+		end;
+		
     AllClientsRemoteAsync.UpdateMasterWClassOnKPIs("");
 end;
 

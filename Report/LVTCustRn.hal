@@ -1,4 +1,4 @@
-external inner function LongInt DateDiff(Date,Date);
+external function LongInt DateDiff(Date,Date);
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -7,7 +7,7 @@ global procedure LVTCustRn(record RcVc RepSpec)
 begin
 	record CUVc CUr;
 	record SVOVc SVOr;
-	boolean testf,TrHs;
+	boolean testf,TrHs,TrHs1;
 	date fdat,edat,bdat;
 	integer totsvo,totdonesvo;
 	val sum,paysum;
@@ -28,9 +28,14 @@ begin
 		outstring(400,0,"Статус",false);
 	endformat;
 	
-	while(loopmain(CUr,1,true))begin
+	//CUr.Code = "0442016405";
+TrHs1 = true;
+	
+	while(loopmain(CUr,1,TrHs1))begin
 		testf = true;
 		if(CUr.CUType==0)then begin testf = false; end;
+		//if(CUr.Code!="0442016405")then begin TrHs1 = false; testf = false; end;
+		
 		
 		if(testf)then begin
 			
@@ -47,9 +52,6 @@ begin
 				if(SVOr.CustCode!=CUr.Code)then begin TrHs = false; end;
 				
 				if(TrHs)then begin
-				
-					
-				
 					sum = sum + SVOr.WSCost;
 					paysum = paysum + SVOr.FastCash + SVOr.PrepaySum + SVOr.FastPMBN + SVOr.FastTerm;
 					totsvo = totsvo + 1;
@@ -91,16 +93,17 @@ begin
 						end;
 					end;
 					if(SVOr.OrderStatus!=9)then begin
-						if(datediff(fdat,currentdate)<90 or totsvo==1)then begin
+						
+						if(datediff(currentdate,fdat)<90 or totsvo==1)then begin
 							status = "Новый";
 						end;
-						if(datediff(fdat,currentdate)<270 and totsvo>1)then begin
+						if(datediff(currentdate,fdat)<270 and totsvo>1)then begin
 							status = "Постоянный";
 						end;
-						if(datediff(edat,currentdate)>270)then begin
+						if(datediff(currentdate,edat)>270)then begin
 							status = "Спящий";
 						end;
-						if(datediff(edat,currentdate)>360)then begin
+						if(datediff(currentdate,edat)>360)then begin
 							status = "Умерший";
 						end;
 					end;

@@ -484,6 +484,14 @@ begin
 	  																matrowget(IVr,j,IVrw);
 	  																if(IVrw.stp==kInvoiceRowTypeNormal)then begin
 	  																	if(nonblank(IVrw.ArtCode))then begin
+	  																		if(vManExst["PREPAY"]==false)then begin
+																					vManExst["PREPAY"] = true;
+																					aman[mancnt] = "PREPAY";
+																					mancnt = mancnt + 1;														
+																				end;
+																				if(blank(SVOr.Inspector))then begin
+																					SVOr.Inspector = "PREPAY";
+																				end;
 																				INr.Code = IVrw.ArtCode;
 																				if(readfirstmain(INr,1,true))then begin																				
 																					if(INr.ItemType==3 or INr.ItemType==0)then begin
@@ -509,6 +517,14 @@ begin
 																	end; 
 																	
 																end else begin
+																	if(vManExst["PREPAY"]==false)then begin
+																		vManExst["PREPAY"] = true;
+																		aman[mancnt] = "PREPAY";
+																		mancnt = mancnt + 1;														
+																	end;
+																	if(blank(SVOr.Inspector))then begin
+																		SVOr.Inspector = "PREPAY";
+																	end;
 																	vIngSum[enginer & ":VOZVR:SERV"] = vIngSum[enginer & ":VOZVR:SERV"] - IPrw.RecVal;
 																	vManSum[SVOr.Inspector & ":VOZVR:SERV"] = vManSum[SVOr.Inspector & ":VOZVR:SERV"] - IPrw.RecVal;
 																	if(vManExst[SVOr.Inspector]==false)then begin

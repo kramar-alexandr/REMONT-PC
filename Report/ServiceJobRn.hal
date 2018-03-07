@@ -363,20 +363,24 @@ begin
 															if(nonblank(SVOr.ServiceManager))then begin
 																ivretsummanag[IPrw.CUPNr & ":" & SVOr.ServiceManager] = ivretsum[IPrw.CUPNr & ":" & SVOr.ServiceManager] - IPrw.RecVal;
 																vIngSum[SVOr.ServiceManager & ":VOZVR:SERV"] = vIngSum[SVOr.ServiceManager & ":VOZVR:SERV"] - IPrw.RecVal;
-																if(vManExst[SVOr.ServiceManager]==false)then begin
-																	vManExst[SVOr.ServiceManager] = true;
-																	aman[mancnt] = SVOr.ServiceManager;
-																	mancnt = mancnt + 1;														
+																if(vIngExst[SVOr.ServiceManager]==false)then begin
+																	vIngExst[SVOr.ServiceManager] = true;
+																	aing[ingcnt] = SVOr.ServiceManager;
+																	ingcnt = ingcnt + 1;														
 																end;
 															end else begin
 																ivretsummanag[IPrw.CUPNr & ":PREPAY"] = ivretsum[IPrw.CUPNr & ":PREPAY"] - IPrw.RecVal;
 																vIngSum["PREPAY:VOZVR:SERV"] = vIngSum["PREPAY:VOZVR:SERV"] - IPrw.RecVal;
-																
 															end;
 															if(vManExst["PREPAY"]==false)then begin
 																vManExst["PREPAY"] = true;
 																aman[mancnt] = "PREPAY";
 																mancnt = mancnt + 1;														
+															end;
+															if(vIngExst["PREPAY"]==false)then begin
+																vIngExst["PREPAY"] = true;
+																aing[ingcnt] = "PREPAY";
+																ingcnt = ingcnt + 1;														
 															end;
 															
 															if(blank(SVOr.Inspector))then begin
@@ -489,32 +493,31 @@ begin
 	  																matrowget(IVr,j,IVrw);
 	  																if(IVrw.stp==kInvoiceRowTypeNormal)then begin
 	  																	if(nonblank(IVrw.ArtCode))then begin
-	  																		if(vManExst["PREPAY"]==false)then begin
-																					vManExst["PREPAY"] = true;
-																					aman[mancnt] = "PREPAY";
-																					mancnt = mancnt + 1;														
-																				end;
+	  			
 																				if(blank(SVOr.Inspector))then begin
 																					SVOr.Inspector = "PREPAY";
+																				end;
+																				if(blank(enginer))then begin
+																					enginer = "PREPAY";
+																				end;
+																				if(vManExst[SVOr.Inspector]==false)then begin
+																					vManExst[SVOr.Inspector] = true;
+																					aman[mancnt] = SVOr.Inspector;
+																					mancnt = mancnt + 1;														
+																				end;
+																				if(vIngExst[enginer]==false)then begin
+																					vIngExst[enginer] = true;
+																					aing[ingcnt] = enginer;
+																					ingcnt = ingcnt + 1;														
 																				end;
 																				INr.Code = IVrw.ArtCode;
 																				if(readfirstmain(INr,1,true))then begin																				
 																					if(INr.ItemType==3 or INr.ItemType==0)then begin
 																						vIngSum[enginer & ":VOZVR:SERV"] = vIngSum[enginer & ":VOZVR:SERV"] + IVrw.Sum;
 																						vManSum[SVOr.Inspector & ":VOZVR:SERV"] = vManSum[SVOr.Inspector & ":VOZVR:SERV"] + IVrw.Sum;
-																						if(vManExst[SVOr.Inspector]==false)then begin
-																							vManExst[SVOr.Inspector] = true;
-																							aman[mancnt] = SVOr.Inspector;
-																							mancnt = mancnt + 1;														
-																						end;
 																					end else begin
 																						vIngSum[enginer & ":VOZVR:DET"] = vIngSum[enginer & ":VOZVR:DET"] + IVrw.Sum;
 																						vManSum[SVOr.Inspector & ":VOZVR:DET"] = vManSum[SVOr.Inspector & ":VOZVR:DET"] + IVrw.Sum;
-																						if(vManExst[SVOr.Inspector]==false)then begin
-																							vManExst[SVOr.Inspector] = true;
-																							aman[mancnt] = SVOr.Inspector;
-																							mancnt = mancnt + 1;														
-																						end;
 																					end;
 																				end;
 																			end;
@@ -527,11 +530,21 @@ begin
 																		aman[mancnt] = "PREPAY";
 																		mancnt = mancnt + 1;														
 																	end;
+																	if(vIngExst["PREPAY"]==false)then begin
+																		vIngExst["PREPAY"] = true;
+																		aing[ingcnt] = "PREPAY";
+																		ingcnt = ingcnt + 1;														
+																	end;
 																	if(blank(SVOr.Inspector))then begin
 																		SVOr.Inspector = "PREPAY";
 																	end;
 																	vIngSum[enginer & ":VOZVR:SERV"] = vIngSum[enginer & ":VOZVR:SERV"] - IPrw.RecVal;
 																	vManSum[SVOr.Inspector & ":VOZVR:SERV"] = vManSum[SVOr.Inspector & ":VOZVR:SERV"] - IPrw.RecVal;
+																	if(vIngExst[enginer]==false)then begin
+																		vIngExst[enginer] = true;
+																		aing[ingcnt] = enginer;
+																		ingcnt = ingcnt + 1;														
+																	end;																	
 																	if(vManExst[SVOr.Inspector]==false)then begin
 																		vManExst[SVOr.Inspector] = true;
 																		aman[mancnt] = SVOr.Inspector;

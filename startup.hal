@@ -45,26 +45,7 @@ begin
 	Report("Отчет-сравнение истории товаров и транзакций",CostDiffRClass,CostDiffRn,0,modNL);//Edit----------------------Dima  16.02.2016
 	Report("Расхождение склада с балансом",StockBalDiffRClass,StockBalDiffRn,0,modIN); //Edit***************************Sasha2,11:21 17.02.2017
 	Report("Расхождение склада с балансом",StockBalDiffRClass,StockBalDiffRn,0,modNL); //Edit***************************Sasha2,11:21 17.02.2017
-  //Report("Відомість розрахунків з клієнтами (новий)",CuPer2RClass,MyCuPerRn,0,modSL); //Edit***************************Sasha2,11:25 09.09.2014 
-	//Report("Відомість розрахунків з клієнтами (новий)",CuPer2RClass,MyCuPerRn,0,modSO); //Edit***************************Sasha2,11:25 09.09.2014
-	//Report("История продаж по клиентам ",CUSalesRepRClass,CustSalesReportRn,0,modSO);
-	//Report("Звіт по складу (модифікований)",NewINRClass,NewInvValRn,0,modIN); //Edit***************************Sasha2,11:25 03.09.2014
-	//Report("Звіт по продажах Retail Sales",RetailSalesRClass,RetailSalesRn,0,modSL); //Edit***************************Sasha2,12:10 29.01.2015
-	//Report("CHECK",RetailSalesRClass,InvShpdRn,0,modSO); //Edit***************************Sasha2,12:10 29.01.2015
-	//Report("CHECK UpdItemHist",RetailSalesRClass,InvUpdStoRn,0,modSO); //Edit***************************Sasha2,12:10 29.01.2015//
-	//Report("Резерв по рахункам",MyReservStatRClass,MyReservStstRn,0,modSO);
-	//Report("Віртуальні товари у Веб магазині",WebSyncRegRClass,WebSyncRegRn,0,modDBMain);
-	//Report("Інвентаризація (нова)",InventMyRClass,InventMyRn,0,modIN);// Edit ************************** Friday, 8 May 2015 11:48:41
-	//Report("Проведенные таблицы работ",WSVcOKReportRClass,WSVcOKReportRn,0,modSVO);	
-	//Report("Прострочені переміщення для сервісу",ExpiredMoveForServRClass,ExpiredMoveForServRn,0,modIN); //Edit-------------------Vitalii 15:36 25.08.2016
-  //Report("Клиенты с карточками",POSClientRClass,POSClientRn,0,modSL);
-	//Report("Клиенты с карточками",POSClientRClass,POSClientRn,0,modSO);
-	//Report("Клиенты с карточками",POSClientRClass,POSClientRn,0,modPOS);
-	//Report("Аналiз оборотностi товарiв",ItemTurnoverRClass,ItemTurnoverRn,0,modSO);
-	//Report("Рух готівки",MyCashFlowRClass,MyNewCashFlowRn,0,modNL);
-	//Report("Рух готівки - прямий метод",MyCashFlowRClass,MyNewCashFlowDirectRn,0,modNL);	
-	//Report("Переміщення по складу користувача",CurUserStockMovsRClass,CurrentUserStockMovsRn,0,modIN);//Edit----------------------Dima  08.12.2015	
-	//Report("Звіт по дисбалансу проводок",TRDiffRClass,TRDiffRn,0,modNL); //Увше***************************Ыфырф2б15:27 21.12.2015
+	Report("LVT Статус клиента",LVTCustRClass,LVTCustRn,0,modSVO);// Edit ************************** BPI Ukraine - KramarAlexandr - Wednesday, 7 March 2018 10:19:48
   
   Maintenance("Git HAL Files",MyVClass,GitHALFilesMn,modTC);
   Maintenance("Удалить все записи",CustomRegisterRemoveVClass,CustomRegisterRemoveMn,modDBMain); //Edit***************************Sasha2,11:11 26.05.2017

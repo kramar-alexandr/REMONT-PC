@@ -375,6 +375,11 @@ begin
     SetWRect(20,120,350,300);
     EditFieldTL(h,v+=20,80,"На дату",M4Date,Normal,0,d1,false,PasteCurDate);
   EndWindow;
+  
+  WindowBegin("LTV Статус клиента",LVTCustRClass,CGRcW,RcType);
+    SetWRect(20,120,350,300);
+    //EditFieldTL(h,v+=20,80,"На дату",M4Date,Normal,0,d1,false,PasteCurDate);
+  EndWindow;
 
   WindowBegin("Перемещения пользователя",CurUserStockMovsRClass,CGRcW,RcType);
     SetWRect(20,120,350,300);

@@ -91,16 +91,16 @@ begin
 						end;
 					end;
 					if(SVOr.OrderStatus!=9)then begin
-						if(datediff(currentdate,fdat)<90 or totsvo==1)then begin
+						if(datediff(fdat,currentdate)<90 or totsvo==1)then begin
 							status = "Новый";
 						end;
-						if(datediff(currentdate,fdat)<270 and totsvo>1)then begin
+						if(datediff(fdat,currentdate)<270 and totsvo>1)then begin
 							status = "Постоянный";
 						end;
-						if(datediff(currentdate,edat)>270)then begin
+						if(datediff(edat,currentdate)>270)then begin
 							status = "Спящий";
 						end;
-						if(datediff(currentdate,edat)>360)then begin
+						if(datediff(edat,currentdate)>360)then begin
 							status = "Умерший";
 						end;
 					end;

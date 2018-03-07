@@ -363,6 +363,11 @@ begin
 															if(nonblank(SVOr.ServiceManager))then begin
 																ivretsummanag[IPrw.CUPNr & ":" & SVOr.ServiceManager] = ivretsum[IPrw.CUPNr & ":" & SVOr.ServiceManager] - IPrw.RecVal;
 																vIngSum[SVOr.ServiceManager & ":VOZVR:SERV"] = vIngSum[SVOr.ServiceManager & ":VOZVR:SERV"] - IPrw.RecVal;
+																if(vManExst[SVOr.ServiceManager]==false)then begin
+																	vManExst[SVOr.ServiceManager] = true;
+																	aman[mancnt] = SVOr.ServiceManager;
+																	mancnt = mancnt + 1;														
+																end;
 															end else begin
 																ivretsummanag[IPrw.CUPNr & ":PREPAY"] = ivretsum[IPrw.CUPNr & ":PREPAY"] - IPrw.RecVal;
 																vIngSum["PREPAY:VOZVR:SERV"] = vIngSum["PREPAY:VOZVR:SERV"] - IPrw.RecVal;

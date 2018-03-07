@@ -1839,22 +1839,26 @@ begin
 			tot[1] = blankval;
 			tot[2] = blankval;
 			tot[3] = blankval;
+			tot[4] = blankval;
 			For(i=0;i<mancnt;i=i+1) begin
 	  		startformat(15);
 	  			outstring(tabs[0],0,aman[i],false);
 					outstring(tabs[2],0,vManSum[aman[i] & ":GOTOV:DET"],false);
 					outstring(tabs[4],0,vManSum[aman[i] & ":NOPAY:DET"],false);
+					outstring(tabs[5],0,vManSum[aman[i] & ":VOZVR:DET"],false);
 					outstring(tabs[6],0,vManSum[aman[i] & ":DOLG:DET"],false);
 				endformat;
 				tot[1] = tot[1] + vManSum[aman[i] & ":GOTOV:DET"];
 				tot[2] = tot[2] + vManSum[aman[i] & ":NOPAY:DET"];
 				tot[3] = tot[3] + vManSum[aman[i] & ":DOLG:DET"];
+				tot[4] = tot[4] + vManSum[aman[i] & ":VOZVR:DET"];
 				gray_divider(0,1);
 			end; 
 			startformat(15);
 				outstring(tabs[0],0,"Всего",false);
 				outstring(tabs[2],0,tot[1],false);
 				outstring(tabs[4],0,tot[2],false);
+				outstring(tabs[5],0,tot[4],false);
 				outstring(tabs[6],0,tot[3],false);
 			endformat;
 		end;

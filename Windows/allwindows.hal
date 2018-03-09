@@ -10666,7 +10666,18 @@ end;
 window CreateLoyaltyCardsVClass:1
 	wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
-	WindowBegin("Нормализация номеров", CreateLoyaltyCardsVClass,CGMnt,RecType);
+	WindowBegin("Создание карт лояльности", CreateLoyaltyCardsVClass,CGMnt,RecType);
+	SetWRect(20,80,640,480);
+	Sizeable(-1,-1,0,0);
+	EndWindow;
+end;
+
+// Edit Dima ************* 2018-03-09 03:17 PM
+
+window ClientStatusVClass:1
+	wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+	WindowBegin("Статус клиента", ClientStatusVClass,CGMnt,RecType);
 	SetWRect(20,80,640,480);
 	Sizeable(-1,-1,0,0);
 	EndWindow;

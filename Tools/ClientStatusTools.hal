@@ -1,0 +1,160 @@
+external function LongInt DateDiff(Date,Date);
+external procedure ExtractObj(string,var Integer,var string);
+
+updating
+global procedure SetStatus(var record CUVc CUr, string to_chage)
+begin
+	string 255 status;
+	string 255 temp;
+	Integer pos;
+	boolean TrHs2, testf1, found;
+	record CClassVc CClassr;
+
+
+	status = "";
+	if (nonblank(CUr.Classification)) then begin
+		pos = 0;
+		ExtractObj(CUr.Classification,pos,temp);
+		while (nonblank(temp)) begin
+									
+			found = false;
+			TrHs2 = true;
+									
+			CClassr.CType = "ACTIVE";
+			while (loopkey("CType",CClassr,1,TrHs2)) begin										
+				testf1 = true;
+										
+				if (CClassr.CType!="ACTIVE") then begin
+					testf1 = false;
+					TrHs2 = false;
+				end;
+										
+				if (testf1) then begin
+					if (SetInSet(CClassr.Code, temp)) then begin
+						if (status != "") then begin
+							status = status & ",";
+						end;
+						status = status & to_chage;
+						TrHs2 = false;
+						found = true;
+					end;
+				end;
+			end;
+			if (found==false) then begin
+				if (status != "") then begin
+					status = status & ",";
+				end;
+				status = status & temp;
+			end;
+			ExtractObj(CUr.Classification,pos,temp);
+			resetloop(CClassr);
+		end;
+	end else begin
+		status = to_chage;
+	end;
+	logtext(0, "STATUS " & status);
+	CUr.Classification = status;
+	recordstore(CUr, true);
+	return;
+end;
+
+global updating procedure ClientStatusMn(record RcVc RepSpec)
+begin
+	record CUVc CUr;
+	record SVOVc SVOr;
+	boolean testf,TrHs,TrHs1, TrHs2, testf1, found;
+	date fdat,edat,bdat;
+	integer totsvo,totdonesvo;
+	val sum,paysum;
+	string 255 status, temp;
+	Integer pos;
+	record CClassVc CClassr;
+	
+	TrHs1 = true;
+	
+	while(loopmain(CUr,1,TrHs1))begin
+		testf = true;
+		if(CUr.CUType==0)then begin testf = false; end;
+		if(testf)then begin
+			
+			fdat = bdat;
+			edat = bdat;
+			sum = blankval;
+			paysum = blankval;
+			status = "";
+			SVOr.CustCode = CUr.Code;
+			totsvo = blankval;
+			totdonesvo = blankval;
+			TrHs = true;
+			while(loopkey("CustCode",SVOr,1,TrHs))begin
+				if(SVOr.CustCode!=CUr.Code)then begin TrHs = false; end;
+				
+				if(TrHs)then begin
+					sum = sum + SVOr.WSCost;
+					paysum = paysum + SVOr.FastCash + SVOr.PrepaySum + SVOr.FastPMBN + SVOr.FastTerm;
+					totsvo = totsvo + 1;
+					if(SVOr.OrderStatus==2)then begin
+						totdonesvo = totdonesvo + 1;
+					end;
+					if(blankdate(edat))then begin
+						edat = SVOr.TransDate;
+						if(nonblankdate(SVOr.GetItemDate))then begin
+							edat = SVOr.GetItemDate;
+						end;
+					end else begin
+						if(nonblankdate(SVOr.GetItemDate) and SVOr.GetItemDate>edat)then begin
+							edat = SVOr.GetItemDate;
+						end else begin
+							if(SVOr.TransDate>edat)then begin
+								edat = SVOr.TransDate;
+							end;
+						end;	
+					end;
+					if(blankdate(fdat))then begin
+						fdat = SVOr.TransDate;
+						if(nonblankdate(SVOr.GetItemDate))then begin
+							fdat = SVOr.GetItemDate;
+						end;
+					end else begin
+						if(nonblankdate(SVOr.GetItemDate) and SVOr.GetItemDate<fdat)then begin
+							fdat = SVOr.GetItemDate;
+						end else begin
+							if(SVOr.TransDate<fdat)then begin
+								fdat = SVOr.TransDate;
+							end;
+						end;	
+					end;
+					
+					if(blank(status))then begin
+						if(SVOr.OrderStatus==9)then begin
+							status = "Потенциальный";
+						end;
+					end;
+					if(SVOr.OrderStatus!=9)then begin
+						if(datediff(currentdate,fdat)<90 or totsvo==1)then begin
+							SetStatus(CUr,"NEW");
+						end;
+						if(datediff(currentdate,fdat)<270 and totsvo>1)then begin
+							SetStatus(CUr,"SLEEP");						
+						end;
+						if(datediff(currentdate,edat)>270)then begin
+							SetStatus(CUr,"ACTIVE");						
+						end;
+						if(datediff(currentdate,edat)>360)then begin
+							SetStatus(CUr,"DEAD");						
+						end;
+					end;
+					
+				end;
+			end;
+			resetloop(SVOr);
+		end;
+	end;
+return;
+end;
+
+updating global procedure DailyProcedure()
+begin
+	record RcVc RepSpec;
+	ClientStatusMn(RepSpec);
+end;

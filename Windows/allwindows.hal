@@ -10660,3 +10660,14 @@ begin
 	EditField(200,30,200,"Номер телефона: ",Normal,f1,false,0);
 	EndWindow;
 end;
+
+// Edit Dima ************* 2018-03-09 01:26 PM
+
+window CreateLoyaltyCardsVClass:1
+	wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+	WindowBegin("Нормализация номеров", CreateLoyaltyCardsVClass,CGMnt,RecType);
+	SetWRect(20,80,640,480);
+	Sizeable(-1,-1,0,0);
+	EndWindow;
+end;

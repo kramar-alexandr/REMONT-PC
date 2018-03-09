@@ -342,6 +342,8 @@ begin
   record CYBlock CYb;
   Boolean TouchScreenFinishButtonf;
   row TRVc TRrw;// Edit ************************** Thursday, 15 October 2015 18:11:40
+  record LoyaltyCardVc LoyaltyCardr2; // my added
+  record LoyaltyCardVc NewLoyaltyCard;
 
   if (long4==3) then begin TouchScreenFinishButtonf = true; end;
   res = 0;
@@ -400,6 +402,20 @@ begin
   BlockLoad(Ob);
   BlockLoad(CDb);
   BlockLoad(CYb);
+  
+  // here my code will be insetred
+
+  LoyaltyCardr2.CustCode = IVp.CustCode;
+  
+  // Edit Dima ************* 2018-03-09 12:02 PM
+  if (!readfirstkey("ActCustCode",LoyaltyCardr2,1,true)) then begin
+	recordnew(NewLoyaltyCard);
+	NewLoyaltyCard.CustCode = IVp.CustCode;
+	NewLoyaltyCard.SerNr = IVp.CustCode;
+	NewLoyaltyCard.LCMLevel = "1";	
+	recordstore(NewLoyaltyCard,true);
+  end;
+  
   if (check) then begin  
     switch (stat) begin
       case Rs_update:

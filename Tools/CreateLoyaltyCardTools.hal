@@ -1,0 +1,45 @@
+global updating procedure CreateLoyaltyCardsMn(record RcVc RepSpec)
+begin
+  record CUVc CUr;
+  record LoyaltyCardVc LoyaltyCardr;
+  record IVVc IVr;
+  Boolean TrHs,TrHs1,testf1;
+  val sum;
+
+  TrHs = true;
+  while (LoopKey("Code",CUr,1,TrHs)) begin
+        LoyaltyCardr.SerNr = CUr.Code;
+        if (!ReadFirstMain(LoyaltyCardr,1,true)) then begin
+          RECORDNEW(LoyaltyCardr);
+          LoyaltyCardr.SerNr = CUr.Code;
+          LoyaltyCardr.CustCode = CUr.Code;
+          LoyaltyCardr.CustName = CUr.Name;
+          LoyaltyCardr.LCMLevel = "1";
+          IVr.CustCode = CUr.Code;
+          TrHs1 = true;
+          sum = 0;
+          while (LoopKey("CustCode",IVr,1,TrHs1)) begin
+            testf1 = true;
+			IVr.LoyaltyCardNr =  LoyaltyCardr.SerNr;
+			IVr.LCMLevel =  LoyaltyCardr.LCMLevel;
+			
+            if (IVr.CustCode!=CUr.Code) then begin TrHs1 = false; testf1 = false; end;
+            if (IVr.OKFlag==0 or IVr.Invalid!=0) then begin testf1 = false; end;
+            if (testf1) then begin
+              if (IVr.InvType==kInvoiceTypeCredit or IVr.InvType==kInvoiceTypeCreditSpecialSales) then begin
+                sum = sum - IVr.Sum4;
+              end else begin
+                sum = sum + IVr.Sum4;
+              end;
+            end;
+			IVr.Points = IVr.Sum4;
+			RECORDSTORE(IVr,true);
+          end;
+		  RESETLOOP(IVr);
+          RECORDSTORE(LoyaltyCardr,true);
+          LoyaltyCardr.PointsBalance = LoyaltyCardr.PointsBalance + sum;
+          RECORDSTORE(LoyaltyCardr,true);
+        end;
+  end;
+  return;
+end;

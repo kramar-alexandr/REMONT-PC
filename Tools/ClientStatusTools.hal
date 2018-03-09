@@ -131,21 +131,26 @@ begin
 					end;
 					if(SVOr.OrderStatus!=9)then begin
 						if(datediff(currentdate,fdat)<90 or totsvo==1)then begin
-							SetStatus(CUr,"NEW");
+							status = "NEW";
+							//SetStatus(CUr,"NEW", status);
 						end;
 						if(datediff(currentdate,fdat)<270 and totsvo>1)then begin
-							SetStatus(CUr,"SLEEP");						
+							status = "SLEEP";
+							//SetStatus(CUr,"SLEEP", status);						
 						end;
 						if(datediff(currentdate,edat)>270)then begin
+							status = "ACTIVE";
 							SetStatus(CUr,"ACTIVE");						
 						end;
 						if(datediff(currentdate,edat)>360)then begin
-							SetStatus(CUr,"DEAD");						
+							status = "DEAD";
+							//SetStatus(CUr,"DEAD", status);						
 						end;
 					end;
 					
 				end;
 			end;
+			SetStatus(CUr,status);
 			resetloop(SVOr);
 		end;
 	end;

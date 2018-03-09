@@ -690,11 +690,11 @@ begin
 															aing[ingcnt] = enginer;
 															ingcnt = ingcnt + 1;														
 														end;*/
-														akey = enginer & ":GOTOV:STRAH";
+														akey = IVr.SalesMan & ":GOTOV:STRAH";
 														vManSum[akey] = vManSum[akey] + IVrw.Sum;
-														if(vManExst[enginer]==false)then begin
-															vManExst[enginer] = true;
-															aman[mancnt] = enginer;
+														if(vManExst[IVr.SalesMan]==false)then begin
+															vManExst[IVr.SalesMan] = true;
+															aman[mancnt] = IVr.SalesMan;
 															mancnt = mancnt + 1;														
 														end;
 													end;
@@ -726,11 +726,11 @@ begin
 															aing[ingcnt] = enginer;
 															ingcnt = ingcnt + 1;														
 														end;*/
-														akey = enginer & ":GOTOV:STRAH";
+														akey = IVr.SalesMan & ":GOTOV:STRAH";
 														vManSum[akey] = vManSum[akey] - IVrw.Sum;
-														if(vManExst[enginer]==false)then begin
-															vManExst[enginer] = true;
-															aman[mancnt] = enginer;
+														if(vManExst[IVr.SalesMan]==false)then begin
+															vManExst[IVr.SalesMan] = true;
+															aman[mancnt] = IVr.SalesMan;
 															mancnt = mancnt + 1;														
 														end;
 													end;

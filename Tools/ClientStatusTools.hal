@@ -52,7 +52,6 @@ begin
 	end else begin
 		status = to_chage;
 	end;
-	logtext(0, "STATUS " & status);
 	CUr.Classification = status;
 	recordstore(CUr, true);
 	return;

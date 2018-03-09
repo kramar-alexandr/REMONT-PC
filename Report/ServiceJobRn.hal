@@ -682,19 +682,19 @@ begin
 															mancnt = mancnt + 1;														
 														end;
 													end else begin
-														supertotdolg = supertotdolg + IVrw.Sum;
+														/*supertotdolg = supertotdolg + IVrw.Sum;
 														akey = enginer & ":GOTOV:STRAH";
 														vIngSum[akey] = vIngSum[akey] + IVrw.Sum;
 														if(vIngExst[enginer]==false)then begin
 															vIngExst[enginer] = true;
 															aing[ingcnt] = enginer;
 															ingcnt = ingcnt + 1;														
-														end;
-														akey = SVOr.Inspector & ":GOTOV:STRAH";
+														end;*/
+														akey = enginer & ":GOTOV:STRAH";
 														vManSum[akey] = vManSum[akey] + IVrw.Sum;
-														if(vManExst[SVOr.Inspector]==false)then begin
-															vManExst[SVOr.Inspector] = true;
-															aman[mancnt] = SVOr.Inspector;
+														if(vManExst[enginer]==false)then begin
+															vManExst[enginer] = true;
+															aman[mancnt] = enginer;
 															mancnt = mancnt + 1;														
 														end;
 													end;
@@ -718,19 +718,19 @@ begin
 															mancnt = mancnt + 1;														
 														end;
 													end else begin
-														supertotdolg = supertotdolg - IVrw.Sum;
+														/*supertotdolg = supertotdolg - IVrw.Sum;
 														akey = enginer & ":GOTOV:STRAH";
 														vIngSum[akey] = vIngSum[akey] - IVrw.Sum;
 														if(vIngExst[enginer]==false)then begin
 															vIngExst[enginer] = true;
 															aing[ingcnt] = enginer;
 															ingcnt = ingcnt + 1;														
-														end;
-														akey = SVOr.Inspector & ":GOTOV:STRAH";
+														end;*/
+														akey = enginer & ":GOTOV:STRAH";
 														vManSum[akey] = vManSum[akey] - IVrw.Sum;
-														if(vManExst[SVOr.Inspector]==false)then begin
-															vManExst[SVOr.Inspector] = true;
-															aman[mancnt] = SVOr.Inspector;
+														if(vManExst[enginer]==false)then begin
+															vManExst[enginer] = true;
+															aman[mancnt] = enginer;
 															mancnt = mancnt + 1;														
 														end;
 													end;

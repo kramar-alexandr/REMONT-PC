@@ -363,14 +363,28 @@ begin
 															if(nonblank(SVOr.ServiceManager))then begin
 																ivretsummanag[IPrw.CUPNr & ":" & SVOr.ServiceManager] = ivretsum[IPrw.CUPNr & ":" & SVOr.ServiceManager] - IPrw.RecVal;
 																vIngSum[SVOr.ServiceManager & ":VOZVR:SERV"] = vIngSum[SVOr.ServiceManager & ":VOZVR:SERV"] - IPrw.RecVal;
+																if(vIngExst[SVOr.ServiceManager]==false)then begin
+																	vIngExst[SVOr.ServiceManager] = true;
+																	aing[ingcnt] = SVOr.ServiceManager;
+																	ingcnt = ingcnt + 1;														
+																end;
 															end else begin
 																ivretsummanag[IPrw.CUPNr & ":PREPAY"] = ivretsum[IPrw.CUPNr & ":PREPAY"] - IPrw.RecVal;
 																vIngSum["PREPAY:VOZVR:SERV"] = vIngSum["PREPAY:VOZVR:SERV"] - IPrw.RecVal;
-																if(vManExst["PREPAY"]==false)then begin
-																	vManExst["PREPAY"] = true;
-																	aman[mancnt] = "PREPAY";
-																	mancnt = mancnt + 1;														
-																end;
+															end;
+															if(vManExst["PREPAY"]==false)then begin
+																vManExst["PREPAY"] = true;
+																aman[mancnt] = "PREPAY";
+																mancnt = mancnt + 1;														
+															end;
+															if(vIngExst["PREPAY"]==false)then begin
+																vIngExst["PREPAY"] = true;
+																aing[ingcnt] = "PREPAY";
+																ingcnt = ingcnt + 1;														
+															end;
+															
+															if(blank(SVOr.Inspector))then begin
+																SVOr.Inspector = "PREPAY";
 															end;
 															vManSum[SVOr.Inspector & ":VOZVR:SERV"] = vManSum[SVOr.Inspector & ":VOZVR:SERV"] - IPrw.RecVal;
 															if(vManExst[SVOr.Inspector]==false)then begin
@@ -479,24 +493,31 @@ begin
 	  																matrowget(IVr,j,IVrw);
 	  																if(IVrw.stp==kInvoiceRowTypeNormal)then begin
 	  																	if(nonblank(IVrw.ArtCode))then begin
+	  			
+																				if(blank(SVOr.Inspector))then begin
+																					SVOr.Inspector = "PREPAY";
+																				end;
+																				if(blank(enginer))then begin
+																					enginer = "PREPAY";
+																				end;
+																				if(vManExst[SVOr.Inspector]==false)then begin
+																					vManExst[SVOr.Inspector] = true;
+																					aman[mancnt] = SVOr.Inspector;
+																					mancnt = mancnt + 1;														
+																				end;
+																				if(vIngExst[enginer]==false)then begin
+																					vIngExst[enginer] = true;
+																					aing[ingcnt] = enginer;
+																					ingcnt = ingcnt + 1;														
+																				end;
 																				INr.Code = IVrw.ArtCode;
 																				if(readfirstmain(INr,1,true))then begin																				
 																					if(INr.ItemType==3 or INr.ItemType==0)then begin
 																						vIngSum[enginer & ":VOZVR:SERV"] = vIngSum[enginer & ":VOZVR:SERV"] + IVrw.Sum;
 																						vManSum[SVOr.Inspector & ":VOZVR:SERV"] = vManSum[SVOr.Inspector & ":VOZVR:SERV"] + IVrw.Sum;
-																						if(vManExst[SVOr.Inspector]==false)then begin
-																							vManExst[SVOr.Inspector] = true;
-																							aman[mancnt] = SVOr.Inspector;
-																							mancnt = mancnt + 1;														
-																						end;
 																					end else begin
 																						vIngSum[enginer & ":VOZVR:DET"] = vIngSum[enginer & ":VOZVR:DET"] + IVrw.Sum;
 																						vManSum[SVOr.Inspector & ":VOZVR:DET"] = vManSum[SVOr.Inspector & ":VOZVR:DET"] + IVrw.Sum;
-																						if(vManExst[SVOr.Inspector]==false)then begin
-																							vManExst[SVOr.Inspector] = true;
-																							aman[mancnt] = SVOr.Inspector;
-																							mancnt = mancnt + 1;														
-																						end;
 																					end;
 																				end;
 																			end;
@@ -504,8 +525,26 @@ begin
 																	end; 
 																	
 																end else begin
+																	if(vManExst["PREPAY"]==false)then begin
+																		vManExst["PREPAY"] = true;
+																		aman[mancnt] = "PREPAY";
+																		mancnt = mancnt + 1;														
+																	end;
+																	if(vIngExst["PREPAY"]==false)then begin
+																		vIngExst["PREPAY"] = true;
+																		aing[ingcnt] = "PREPAY";
+																		ingcnt = ingcnt + 1;														
+																	end;
+																	if(blank(SVOr.Inspector))then begin
+																		SVOr.Inspector = "PREPAY";
+																	end;
 																	vIngSum[enginer & ":VOZVR:SERV"] = vIngSum[enginer & ":VOZVR:SERV"] - IPrw.RecVal;
 																	vManSum[SVOr.Inspector & ":VOZVR:SERV"] = vManSum[SVOr.Inspector & ":VOZVR:SERV"] - IPrw.RecVal;
+																	if(vIngExst[enginer]==false)then begin
+																		vIngExst[enginer] = true;
+																		aing[ingcnt] = enginer;
+																		ingcnt = ingcnt + 1;														
+																	end;																	
 																	if(vManExst[SVOr.Inspector]==false)then begin
 																		vManExst[SVOr.Inspector] = true;
 																		aman[mancnt] = SVOr.Inspector;
@@ -624,41 +663,76 @@ begin
 	  									if(filter)then begin
 	  										
 												if(IVr.InvType!=kInvoiceTypeCredit)then begin
-													ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] + IVrw.Sum;
-													totserv = totserv + ivsumserv[asvonr[i]];
-													supertotdolg = supertotdolg + IVrw.Sum;
-													akey = enginer & ":GOTOV:SERV";
-													vIngSum[akey] = vIngSum[akey] + IVrw.Sum;
-													if(vIngExst[enginer]==false)then begin
-														vIngExst[enginer] = true;
-														aing[ingcnt] = enginer;
-														ingcnt = ingcnt + 1;														
+													if(INr.Code!="СТРАХОВКА")then begin
+														ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] + IVrw.Sum;
+														totserv = totserv + ivsumserv[asvonr[i]];
+														supertotdolg = supertotdolg + IVrw.Sum;
+														akey = enginer & ":GOTOV:SERV";
+														vIngSum[akey] = vIngSum[akey] + IVrw.Sum;
+														if(vIngExst[enginer]==false)then begin
+															vIngExst[enginer] = true;
+															aing[ingcnt] = enginer;
+															ingcnt = ingcnt + 1;														
+														end;
+														akey = SVOr.Inspector & ":GOTOV:SERV";
+														vManSum[akey] = vManSum[akey] + IVrw.Sum;
+														if(vManExst[SVOr.Inspector]==false)then begin
+															vManExst[SVOr.Inspector] = true;
+															aman[mancnt] = SVOr.Inspector;
+															mancnt = mancnt + 1;														
+														end;
+													end else begin
+														/*supertotdolg = supertotdolg + IVrw.Sum;
+														akey = enginer & ":GOTOV:STRAH";
+														vIngSum[akey] = vIngSum[akey] + IVrw.Sum;
+														if(vIngExst[enginer]==false)then begin
+															vIngExst[enginer] = true;
+															aing[ingcnt] = enginer;
+															ingcnt = ingcnt + 1;														
+														end;*/
+														akey = IVr.SalesMan & ":GOTOV:STRAH";
+														vManSum[akey] = vManSum[akey] + IVrw.Sum;
+														if(vManExst[IVr.SalesMan]==false)then begin
+															vManExst[IVr.SalesMan] = true;
+															aman[mancnt] = IVr.SalesMan;
+															mancnt = mancnt + 1;														
+														end;
 													end;
-													akey = SVOr.Inspector & ":GOTOV:SERV";
-													vManSum[akey] = vManSum[akey] + IVrw.Sum;
-													if(vManExst[SVOr.Inspector]==false)then begin
-														vManExst[SVOr.Inspector] = true;
-														aman[mancnt] = SVOr.Inspector;
-														mancnt = mancnt + 1;														
-													end;
-													
 												end else begin
-													ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] - IVrw.Sum;
-													totserv = totserv - ivsumserv[asvonr[i]];
-													supertotdolg = supertotdolg - IVrw.Sum;
-													akey = enginer & ":GOTOV:SERV";
-													vIngSum[akey] = vIngSum[akey] - IVrw.Sum;
-													if(vIngExst[enginer]==false)then begin
-														vIngExst[enginer] = true;
-														aing[ingcnt] = enginer;
-														ingcnt = ingcnt + 1;														
-													end;
-													akey = SVOr.Inspector & ":GOTOV:SERV";
-													vManSum[akey] = vManSum[akey] - IVrw.Sum;
-													if(vManExst[SVOr.Inspector]==false)then begin
-														vManExst[SVOr.Inspector] = true;
-														aman[mancnt] = SVOr.Inspector;
-														mancnt = mancnt + 1;														
+													if(INr.Code!="СТРАХОВКА")then begin
+														ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] - IVrw.Sum;
+														totserv = totserv - ivsumserv[asvonr[i]];
+														supertotdolg = supertotdolg - IVrw.Sum;
+														akey = enginer & ":GOTOV:SERV";
+														vIngSum[akey] = vIngSum[akey] - IVrw.Sum;
+														if(vIngExst[enginer]==false)then begin
+															vIngExst[enginer] = true;
+															aing[ingcnt] = enginer;
+															ingcnt = ingcnt + 1;														
+														end;
+														akey = SVOr.Inspector & ":GOTOV:SERV";
+														vManSum[akey] = vManSum[akey] - IVrw.Sum;
+														if(vManExst[SVOr.Inspector]==false)then begin
+															vManExst[SVOr.Inspector] = true;
+															aman[mancnt] = SVOr.Inspector;
+															mancnt = mancnt + 1;														
+														end;
+													end else begin
+														/*supertotdolg = supertotdolg - IVrw.Sum;
+														akey = enginer & ":GOTOV:STRAH";
+														vIngSum[akey] = vIngSum[akey] - IVrw.Sum;
+														if(vIngExst[enginer]==false)then begin
+															vIngExst[enginer] = true;
+															aing[ingcnt] = enginer;
+															ingcnt = ingcnt + 1;														
+														end;*/
+														akey = IVr.SalesMan & ":GOTOV:STRAH";
+														vManSum[akey] = vManSum[akey] - IVrw.Sum;
+														if(vManExst[IVr.SalesMan]==false)then begin
+															vManExst[IVr.SalesMan] = true;
+															aman[mancnt] = IVr.SalesMan;
+															mancnt = mancnt + 1;														
+														end;
 													end;
 												end;
 	  									end;
@@ -1780,7 +1854,7 @@ begin
 				outstring(tabs[0],0,"Менеджер",false);
 				outstring(tabs[2],0,"Оплачено",false);
 				outstring(tabs[4],0,"Неоплаченно",false);
-				outstring(tabs[5],0,"Возвр.",false);
+				outstring(tabs[5],0,"Страховка",false);
 				outstring(tabs[6],0,"Долг",false);
 				outstring(tabs[7],0,"Отмена",false);
 				outstring(tabs[8],0,"Возвр. на доработку",false);
@@ -1799,7 +1873,7 @@ begin
 	  			outstring(tabs[0],0,aman[i],false);
 					outstring(tabs[2],0,vManSum[aman[i] & ":GOTOV:SERV"],false);
 					outstring(tabs[4],0,vManSum[aman[i] & ":NOPAY:SERV"],false);
-					outstring(tabs[5],0,vManSum[aman[i] & ":VOZVR:SERV"],false);
+					outstring(tabs[5],0,vManSum[aman[i] & ":GOTOV:STRAH"],false);
 					outstring(tabs[6],0,vManSum[aman[i] & ":DOLG:SERV"],false);
 					outstring(tabs[7],0,vManCanQty[aman[i]],false);
 					outstring(tabs[8],0,vManCanQty[aman[i] & "DOR"],false);
@@ -1810,7 +1884,7 @@ begin
 				endformat;
 				tot[1] = tot[1] + vManSum[aman[i] & ":GOTOV:SERV"];
 				tot[2] = tot[2] + vManSum[aman[i] & ":NOPAY:SERV"];
-				tot[10] = tot[10] + vManSum[aman[i] & ":VOZVR:SERV"];
+				tot[10] = tot[10] + vManSum[aman[i] & ":GOTOV:STRAH"];
 				tot[3] = tot[3] + vManSum[aman[i] & ":DOLG:SERV"];
 				tot[4] = tot[4] + vManCanQty[aman[i]];
 				tot[5] = tot[5] + vManCanQty[aman[i] & "DOR"];
@@ -1839,22 +1913,26 @@ begin
 			tot[1] = blankval;
 			tot[2] = blankval;
 			tot[3] = blankval;
+			tot[4] = blankval;
 			For(i=0;i<mancnt;i=i+1) begin
 	  		startformat(15);
 	  			outstring(tabs[0],0,aman[i],false);
 					outstring(tabs[2],0,vManSum[aman[i] & ":GOTOV:DET"],false);
 					outstring(tabs[4],0,vManSum[aman[i] & ":NOPAY:DET"],false);
+					//outstring(tabs[5],0,vManSum[aman[i] & ":VOZVR:DET"],false);
 					outstring(tabs[6],0,vManSum[aman[i] & ":DOLG:DET"],false);
 				endformat;
 				tot[1] = tot[1] + vManSum[aman[i] & ":GOTOV:DET"];
 				tot[2] = tot[2] + vManSum[aman[i] & ":NOPAY:DET"];
 				tot[3] = tot[3] + vManSum[aman[i] & ":DOLG:DET"];
+				//tot[4] = tot[4] + vManSum[aman[i] & ":VOZVR:DET"];
 				gray_divider(0,1);
 			end; 
 			startformat(15);
 				outstring(tabs[0],0,"Всего",false);
 				outstring(tabs[2],0,tot[1],false);
 				outstring(tabs[4],0,tot[2],false);
+				//outstring(tabs[5],0,tot[4],false);
 				outstring(tabs[6],0,tot[3],false);
 			endformat;
 		end;

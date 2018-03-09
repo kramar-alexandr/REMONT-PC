@@ -1,0 +1,134 @@
+external function LongInt DateDiff(Date,Date);
+
+SetLangMode(LangRussian,"RUS",0);
+
+
+global procedure LVTCustRn(record RcVc RepSpec)
+begin
+	record CUVc CUr;
+	record SVOVc SVOr;
+	boolean testf,TrHs,TrHs1;
+	date fdat,edat,bdat;
+	integer totsvo,totdonesvo;
+	val sum,paysum;
+	string 100 status;
+	
+	
+	startreportnoheaderjob("LTV Клиента");
+	
+	startformat(15);
+		outstring(0,0,"Клиент",false);
+		outstring(50,0,"Имя",false);
+		outstring(100,0,"Дата первого обращения",false);
+		outstring(150,0,"Дата последнего обращения",false);
+		outstring(200,0,"Кол-во ремонтов",false);
+		outstring(250,0,"Кол-во готовых ремонтов",false);
+		outstring(300,0,"Сумма",false);
+		outstring(350,0,"Оплачено",false);
+		outstring(400,0,"Статус",false);
+	endformat;
+	
+	//CUr.Code = "0442016405";
+TrHs1 = true;
+	
+	while(loopmain(CUr,1,TrHs1))begin
+		testf = true;
+		if(CUr.CUType==0)then begin testf = false; end;
+		//if(CUr.Code!="0442016405")then begin TrHs1 = false; testf = false; end;
+		
+		
+		if(testf)then begin
+			
+			fdat = bdat;
+			edat = bdat;
+			sum = blankval;
+			paysum = blankval;
+			status = "";
+			SVOr.CustCode = CUr.Code;
+			totsvo = blankval;
+			totdonesvo = blankval;
+			TrHs = true;
+			while(loopkey("CustCode",SVOr,1,TrHs))begin
+				if(SVOr.CustCode!=CUr.Code)then begin TrHs = false; end;
+				
+				if(TrHs)then begin
+					sum = sum + SVOr.WSCost;
+					paysum = paysum + SVOr.FastCash + SVOr.PrepaySum + SVOr.FastPMBN + SVOr.FastTerm;
+					totsvo = totsvo + 1;
+					if(SVOr.OrderStatus==2)then begin
+						totdonesvo = totdonesvo + 1;
+					end;
+					if(blankdate(edat))then begin
+						edat = SVOr.TransDate;
+						if(nonblankdate(SVOr.GetItemDate))then begin
+							edat = SVOr.GetItemDate;
+						end;
+					end else begin
+						if(nonblankdate(SVOr.GetItemDate) and SVOr.GetItemDate>edat)then begin
+							edat = SVOr.GetItemDate;
+						end else begin
+							if(SVOr.TransDate>edat)then begin
+								edat = SVOr.TransDate;
+							end;
+						end;	
+					end;
+					if(blankdate(fdat))then begin
+						fdat = SVOr.TransDate;
+						if(nonblankdate(SVOr.GetItemDate))then begin
+							fdat = SVOr.GetItemDate;
+						end;
+					end else begin
+						if(nonblankdate(SVOr.GetItemDate) and SVOr.GetItemDate<fdat)then begin
+							fdat = SVOr.GetItemDate;
+						end else begin
+							if(SVOr.TransDate<fdat)then begin
+								fdat = SVOr.TransDate;
+							end;
+						end;	
+					end;
+					
+					if(blank(status))then begin
+						if(SVOr.OrderStatus==9)then begin
+							status = "Потенциальный";
+						end;
+					end;
+					if(SVOr.OrderStatus!=9)then begin
+						
+						if(datediff(currentdate,fdat)<90 or totsvo==1)then begin
+							status = "Новый";
+						end;
+						if(datediff(currentdate,fdat)<270 and totsvo>1)then begin
+							status = "Постоянный";
+						end;
+						if(datediff(currentdate,edat)>270)then begin
+							status = "Спящий";
+						end;
+						if(datediff(currentdate,edat)>360)then begin
+							status = "Умерший";
+						end;
+					end;
+					
+				end;
+			end;
+			resetloop(SVOr);
+			
+			
+			startformat(15);
+				outstring(0,0,CUr.Code,false);
+				outstring(50,0,CUr.Name,false);
+				outstring(100,0,fdat,false);
+				outstring(150,0,edat,false);
+				outstring(200,0,totsvo,false);
+				outstring(250,0,totsvo,false);
+				outstring(300,0,sum,false);
+				outstring(350,0,paysum,false);
+				outstring(400,0,status,false);
+			endformat;
+		end;
+		
+	end;
+	
+	
+	endjob;
+return;
+end;

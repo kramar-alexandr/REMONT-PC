@@ -41,7 +41,7 @@ begin
 				end;
 			end;
 			if (found==false) then begin
-				if (status != "") then begin
+				if (nonblank(status)) then begin
 					status = status & ",";
 				end;
 				status = status & temp;
@@ -126,7 +126,7 @@ begin
 					
 					if(blank(status))then begin
 						if(SVOr.OrderStatus==9)then begin
-							status = "Потенциальный";
+							status = "POTENCIAL";
 						end;
 					end;
 					if(SVOr.OrderStatus!=9)then begin

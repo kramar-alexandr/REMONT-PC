@@ -946,7 +946,7 @@ begin
 					testf = true;
 					if(IVr.SVONr!=SVOr.SerNr)then begin TrHs = false; testf = false; end;
 					if(IVr.OKFlag==0)then begin testf = false; end;
-					if(nonblankdate(SVOr.RegDate))then begin testf = false; end;
+					if(nonblankdate(SVOr.RegDate) and SVOr.RegDate<=ed and SVOr.RegDate>=sd)then begin testf = false; end;					
 					
 					enginer = "";
 					cnt=1;
@@ -1231,6 +1231,7 @@ begin
 					if(IVr.SVONr!=SVOr.SerNr)then begin TrHs = false; testf = false; end;
 					if(IVr.OKFlag==0)then begin testf = false; end;
 					if(blankdate(SVOr.RegDate))then begin testf = false; end;
+					if(SVOr.RegDate>ed)then begin testf = false; end;
 					
 					enginer = "";
 					cnt=1;

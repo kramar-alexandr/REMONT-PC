@@ -140,18 +140,23 @@ BEGIN
 			end;
 		end;
 		
-    
-    SVOp.Kontinfo1 = CUr.Phone;
+    if(nonblank(CUr.Phone))then begin
+			SVOp.Kontinfo1 = CUr.Phone;
+    end;
     if(nonblank(CUr.eMail))then begin
 			SVOp.Kontinfo2 = CUr.eMail;
     end;
-    SVOp.Kontinfo3 = CUr.InvAddr0; //Edit***************************Sasha2,16:21 15.12.2015 }
+    if(nonblank(CUr.InvAddr0))then begin
+			SVOp.Kontinfo3 = CUr.InvAddr0; //Edit***************************Sasha2,16:21 15.12.2015 }
+    end;
     SVOp.CustVATCode = CUr.VATCode;
     if (CUr.TaxTemplateCode!=SVOp.CustTaxTemplateCode) then begin
       SVOVc_FillupTaxTemplate(SVOp);
       SVOp.CustTaxTemplateCode = CUr.TaxTemplateCode;
     end;
-    SVOp.Phone = CUr.Phone;
+    if(nonblank(CUr.Phone))then begin
+			SVOp.Phone = CUr.Phone;
+    end;
     if(nonblank(CUr.AltPhone))then begin
 			SVOp.Phone2 = CUr.AltPhone;
     end;

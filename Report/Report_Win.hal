@@ -396,5 +396,11 @@ begin
     EditFieldTL(h,v+=20,80,"На дату",M4Date,Normal,0,d1,false,PasteCurDate);
   EndWindow;
   
+  WindowBegin("Insurance window",InsuranceReportRClass,CGRcW,RcType);
+	UseView(RcVc);
+    SetWRect(20,120,550,600);
+	PeriodField(60,20,"Период");
+  EndWindow;
+  
   return;
   end;

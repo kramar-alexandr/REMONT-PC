@@ -952,3 +952,15 @@ begin
 	GetMotherDIName = res;
 return;
 end;
+
+// Edit Dima ************* 2018-03-13 12:06 PM
+
+global procedure InsuranceReportRClassReportDefaults(Integer wn)
+begin
+	record RcVc RepSpec;
+	 
+	GetWindowRecord(wn,RepSpec);
+	RepSpec.flags[26]=1;
+	PutWindowRecord(wn,RepSpec);
+	return;
+end;

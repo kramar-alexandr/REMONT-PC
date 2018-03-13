@@ -443,7 +443,15 @@ begin
 					end;
 					
 					
-					
+					if(SVO2r.OrderStatus!=6 and SVOr.OrderStatus==6)then begin//çàêðûòü îáçâîíû ïðè îòìåíå
+							testf1 = true;
+							if(Actr.ActType!="Ž‡‚")then begin testf1 = false; end;
+							testf1 = (testf1 and testf);
+							if(testf1)then begin
+									CloseActivity(Actr,"Ž’Š€‡");
+							end;
+					end;
+										
 					//closing ENGNR Acts
 					if(((SVOr.OrderStatus>0 and SVOr.OrderStatus!=9) or SVOr.DoneMark>0))then begin
 							if(Actr.ActType=="ENGNR") then begin

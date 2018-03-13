@@ -946,7 +946,7 @@ begin
 					testf = true;
 					if(IVr.SVONr!=SVOr.SerNr)then begin TrHs = false; testf = false; end;
 					if(IVr.OKFlag==0)then begin testf = false; end;
-					if(nonblankdate(SVOr.RegDate))then begin testf = false; end;
+					if(nonblankdate(SVOr.RegDate) and SVOr.RegDate<=ed and SVOr.RegDate>=sd)then begin testf = false; end;					
 					
 					enginer = "";
 					cnt=1;
@@ -1231,6 +1231,7 @@ begin
 					if(IVr.SVONr!=SVOr.SerNr)then begin TrHs = false; testf = false; end;
 					if(IVr.OKFlag==0)then begin testf = false; end;
 					if(blankdate(SVOr.RegDate))then begin testf = false; end;
+					if(SVOr.RegDate>ed)then begin testf = false; end;
 					
 					enginer = "";
 					cnt=1;
@@ -1854,7 +1855,7 @@ begin
 				outstring(tabs[0],0,"Менеджер",false);
 				outstring(tabs[2],0,"Оплачено",false);
 				outstring(tabs[4],0,"Неоплаченно",false);
-				outstring(tabs[5],0,"Страховка",false);
+				outstring(tabs[5],0,"Возврат",false);
 				outstring(tabs[6],0,"Долг",false);
 				outstring(tabs[7],0,"Отмена",false);
 				outstring(tabs[8],0,"Возвр. на доработку",false);
@@ -1873,7 +1874,7 @@ begin
 	  			outstring(tabs[0],0,aman[i],false);
 					outstring(tabs[2],0,vManSum[aman[i] & ":GOTOV:SERV"],false);
 					outstring(tabs[4],0,vManSum[aman[i] & ":NOPAY:SERV"],false);
-					outstring(tabs[5],0,vManSum[aman[i] & ":GOTOV:STRAH"],false);
+					outstring(tabs[5],0,vManSum[aman[i] & ":VOZVR:SERV"],false);
 					outstring(tabs[6],0,vManSum[aman[i] & ":DOLG:SERV"],false);
 					outstring(tabs[7],0,vManCanQty[aman[i]],false);
 					outstring(tabs[8],0,vManCanQty[aman[i] & "DOR"],false);
@@ -1884,7 +1885,7 @@ begin
 				endformat;
 				tot[1] = tot[1] + vManSum[aman[i] & ":GOTOV:SERV"];
 				tot[2] = tot[2] + vManSum[aman[i] & ":NOPAY:SERV"];
-				tot[10] = tot[10] + vManSum[aman[i] & ":GOTOV:STRAH"];
+				tot[10] = tot[10] + vManSum[aman[i] & ":VOZVR:SERV"];
 				tot[3] = tot[3] + vManSum[aman[i] & ":DOLG:SERV"];
 				tot[4] = tot[4] + vManCanQty[aman[i]];
 				tot[5] = tot[5] + vManCanQty[aman[i] & "DOR"];
@@ -1919,20 +1920,20 @@ begin
 	  			outstring(tabs[0],0,aman[i],false);
 					outstring(tabs[2],0,vManSum[aman[i] & ":GOTOV:DET"],false);
 					outstring(tabs[4],0,vManSum[aman[i] & ":NOPAY:DET"],false);
-					//outstring(tabs[5],0,vManSum[aman[i] & ":VOZVR:DET"],false);
+					outstring(tabs[5],0,vManSum[aman[i] & ":VOZVR:DET"],false);
 					outstring(tabs[6],0,vManSum[aman[i] & ":DOLG:DET"],false);
 				endformat;
 				tot[1] = tot[1] + vManSum[aman[i] & ":GOTOV:DET"];
 				tot[2] = tot[2] + vManSum[aman[i] & ":NOPAY:DET"];
 				tot[3] = tot[3] + vManSum[aman[i] & ":DOLG:DET"];
-				//tot[4] = tot[4] + vManSum[aman[i] & ":VOZVR:DET"];
+				tot[4] = tot[4] + vManSum[aman[i] & ":VOZVR:DET"];
 				gray_divider(0,1);
 			end; 
 			startformat(15);
 				outstring(tabs[0],0,"Всего",false);
 				outstring(tabs[2],0,tot[1],false);
 				outstring(tabs[4],0,tot[2],false);
-				//outstring(tabs[5],0,tot[4],false);
+				outstring(tabs[5],0,tot[4],false);
 				outstring(tabs[6],0,tot[3],false);
 			endformat;
 		end;

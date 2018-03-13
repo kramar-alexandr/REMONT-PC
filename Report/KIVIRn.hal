@@ -33,7 +33,7 @@ begin
 	integer sumworkscnt;
 	vector boolean vbsumworks;
 	record INVc INr;
-	val sumprices;
+	val sumprices,sumpricescur,sumpricesold;
 	
 	sd = RepSpec.sStartDate;
 	ed = RepSpec.sEndDate;
@@ -158,6 +158,11 @@ begin
 														if(worklist[i]==vkey)then begin
 															workprice[i] = workprice[i] - IVrw.Sum;
 															sumprices = sumprices - IVrw.Sum;
+															if(DateInRange(IVr.InvDate,sd,ed))then begin
+																sumpricescur = sumpricescur - IVrw.Sum;
+															end else begin
+																sumpricesold = sumpricesold - IVrw.Sum;
+															end;
 														end;
 													end;
 	  										end else begin
@@ -166,6 +171,11 @@ begin
 														if(worklist[i]==vkey)then begin
 															workprice[i] = workprice[i] + IVrw.Sum;
 															sumprices = sumprices + IVrw.Sum;
+															if(DateInRange(IVr.InvDate,sd,ed))then begin
+																sumpricescur = sumpricescur + IVrw.Sum;
+															end else begin
+																sumpricesold = sumpricesold + IVrw.Sum;
+															end;
 														end;
 													end;
 	  										end;
@@ -180,6 +190,11 @@ begin
 	  										workname[wokcnt] = IVrw.Spec;
 	  										workprice[wokcnt] = IVrw.Sum;
 	  										sumprices = sumprices + IVrw.Sum;
+	  										if(DateInRange(IVr.InvDate,sd,ed))then begin
+													sumpricescur = sumpricescur + IVrw.Sum;
+												end else begin
+													sumpricesold = sumpricesold + IVrw.Sum;
+												end;
 	  										wokcnt = wokcnt + 1;
 	  									end;
 	  								end;
@@ -362,6 +377,44 @@ begin
 		outstring(0,0,"",false);
 		outstring(0,0,"Всего",false);
 		outstring(0,0,sumprices,false);
+		outstring(0,0,"",false);
+		//outstring(0,0,"Сумма",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+	endformat;
+	startformat(15);
+		outstring(0,0,"",false);	
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"В этом периоде",false);
+		outstring(0,0,"Всего",false);
+		outstring(0,0,sumpricescur,false);
+		outstring(0,0,"",false);
+		//outstring(0,0,"Сумма",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+	endformat;
+	startformat(15);
+		outstring(0,0,"",false);	
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"Раньше",false);
+		outstring(0,0,"Всего",false);
+		outstring(0,0,sumpricesold,false);
 		outstring(0,0,"",false);
 		//outstring(0,0,"Сумма",false);
 		outstring(0,0,"",false);

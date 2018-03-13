@@ -753,7 +753,7 @@ begin
 		
 		while(loopkey("AllServGetItemDate",SVOr,1,true))begin
 			testf = true;	
-			if(USr.AccessGroup!="ADM_V")then begin
+			if(!setinset("ADM_V",USr.AccessGroup))then begin
 				if(nonblank(USr.SalesGroup))then begin
 					if(USr.SalesGroup!=SVOr.SalesGroup)then begin testf = false; end;
 				end;

@@ -450,6 +450,11 @@ begin
   if (IN2r.UPrice1!=INr.UPrice1) then begin
     INr.LastBasePriceChange = CurrentDate;
   end;
+  if(INr.Disp1=="SERV")then begin// Edit ************************** BPI Ukraine - KramarAlexandr - Wednesday, 14 March 2018 15:21:20
+  	INr.UPrice1 = INr.InPrice;
+  	INr.LastBasePriceChange = currentdate;
+  end;
+  
   INVcRecordUpdate = res; 
   return;
 end;

@@ -1226,7 +1226,14 @@ begin
 						black_divider(tabs[6],tabs[7]);
 						startformat(15);
 							outstring(tabs[0],0,"Итого по заказу",false);
-							outstring(tabs[6],0,ivsumserv[asvonr[i]],false);
+							//outstring(tabs[6],0,ivsumserv[asvonr[i]],false);
+							
+							outstring(150,0,"Услуги:",false);
+							outstring(200,0,ivsumserv[asvonr[i]],false);
+							outstring(250,0,"Детали:",false);
+							outstring(300,0,ivsumservdet[asvonr[i]],false);
+							outstring(350,0,"Всего:",false);
+							outstring(400,0,ivsumserv[asvonr[i]]+ivsumservdet[asvonr[i]],false);
 						endformat;
 					end;
 					if(nonblank(vCuDomain[SVOr.CustCode]))then begin
@@ -1544,7 +1551,14 @@ begin
 						black_divider(tabs[6],tabs[7]);
 						startformat(15);
 							outstring(tabs[0],0,"Итого по заказу",false);
-							outstring(tabs[6],0,ivsumserv[asvonr[i]],false);
+							//outstring(tabs[6],0,ivsumserv[asvonr[i]],false);
+							
+							outstring(150,0,"Услуги:",false);
+							outstring(200,0,ivsumserv[asvonr[i]],false);
+							outstring(250,0,"Детали:",false);
+							outstring(300,0,ivsumservdet[asvonr[i]],false);
+							outstring(350,0,"Всего:",false);
+							outstring(400,0,ivsumserv[asvonr[i]]+ivsumservdet[asvonr[i]],false);
 						endformat;
 					end;
 					if(nonblank(vCuDomain[SVOr.CustCode]))then begin

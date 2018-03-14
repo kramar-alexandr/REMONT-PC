@@ -26,6 +26,7 @@ begin
 return;
 end;
 
+global
 procedure MySortLngIntArray(var array longint astr,integer cnt)
 begin
 	integer i,j;
@@ -270,6 +271,7 @@ begin
 	vector boolean vIngExst,vManExst,vrjct; 
 	record UserVc User;
 	vector val st0,ivretsummanag;
+	array string 255 atags;
 	
 	while(loopmain(User,1,true))begin
 		users[userscnt] = User.Code;
@@ -298,9 +300,13 @@ begin
 	tabs[6] = 240;
 	tabs[7] = 280;
 	tabs[8] = 340;
-	StartReportJob("Выполненые ремонты");
-		PrintHeader(RepSpec);
-		
+		if (RepSpec.flags[26]==0) then begin
+			StartReportJob("Выполеные ремонты");
+			PrintHeader(RepSpec);
+		end else begin
+			StartReportNoHeaderJob("Продажи страховки");
+		end;
+	
 		sd = RepSpec.sStartDate;
 		ed = RepSpec.sEndDate;
 
@@ -567,19 +573,20 @@ begin
 		
 		MySortLngIntArray(asvonr,k);
 		
-		startformat(15);
-			outstring(tabs[0],0,"Заказ",false);
-			outstring(tabs[1],0,"Дата",false);
-			outstring(tabs[2],0,"Кол-во",false);
-			outstring(tabs[3],0,"Выдано за деньги",false);
-			outstring(tabs[4],0,"Отказ",false);
-			outstring(tabs[5],0,"Отказ по нашей вине",false);
-			outstring(tabs[6],0,"Сумма по вып. рем.",false);
-			outstring(tabs[7],0,"Мастер",false);
-			outstring(tabs[8],0,"Статус",false);
-			//outstring(tabs[7],0,SVOr.StatusText,false);
-		endformat;
-		
+		if (RepSpec.flags[26]==0) then begin
+			startformat(15);
+				outstring(tabs[0],0,"Заказ",false);
+				outstring(tabs[1],0,"Дата",false);
+				outstring(tabs[2],0,"Кол-во",false);
+				outstring(tabs[3],0,"Выдано за деньги",false);
+				outstring(tabs[4],0,"Отказ",false);
+				outstring(tabs[5],0,"Отказ по нашей вине",false);
+				outstring(tabs[6],0,"Сумма по вып. рем.",false);
+				outstring(tabs[7],0,"Мастер",false);
+				outstring(tabs[8],0,"Статус",false);
+				//outstring(tabs[7],0,SVOr.StatusText,false);
+			endformat;
+		end;
 		For(i=0;i<k;i=i+1) begin
 			SVOr.SerNr = asvonr[i];
 			readfirstmain(SVOr,1,true);
@@ -644,21 +651,33 @@ begin
 	  							INr.Code = IVrw.ArtCode;
 	  							if(readfirstmain(INr,1,true))then begin
 	  								svoout = true;
-										startformat(15);
-											outstring(tabs[2],0,IVrw.Spec,false);
+										if (RepSpec.flags[26]==0) then begin
+												startformat(15);
+													outstring(tabs[2],0,IVrw.Spec,false);
+										end;
 											if(IVr.InvType!=kInvoiceTypeCredit)then begin
-												outstring(tabs[6],0,IVrw.Sum,false);
+												if (RepSpec.flags[26]==0) then begin
+													outstring(tabs[6],0,IVrw.Sum,false);
+												end;
 											end else begin
-												outstring(tabs[6],0,-IVrw.Sum,false);
+												if (RepSpec.flags[26]==0) then begin
+													outstring(tabs[6],0,-IVrw.Sum,false);
+												end;
 											end;
 											if(IVr.SalesMan==SVOr.CustomField7)then begin
-												outstring(tabs[7],0,SVOr.ServiceManager,false);
+												if (RepSpec.flags[26]==0) then begin
+													outstring(tabs[7],0,SVOr.ServiceManager,false);
+												end;
 												enginer = SVOr.ServiceManager;
 											end else begin
-												outstring(tabs[7],0,IVr.SalesMan,false);
+												if (RepSpec.flags[26]==0) then begin
+													outstring(tabs[7],0,IVr.SalesMan,false);
+												end;
 												enginer = IVr.SalesMan;
-											end;													
+											end;
+									if (RepSpec.flags[26]==0) then begin
 										endformat;
+									end;
 	  								if(INr.ItemType==3 or INr.ItemType==0)then begin  									
 	  									if(filter)then begin
 	  										
@@ -682,14 +701,6 @@ begin
 															mancnt = mancnt + 1;														
 														end;
 													end else begin
-														/*supertotdolg = supertotdolg + IVrw.Sum;
-														akey = enginer & ":GOTOV:STRAH";
-														vIngSum[akey] = vIngSum[akey] + IVrw.Sum;
-														if(vIngExst[enginer]==false)then begin
-															vIngExst[enginer] = true;
-															aing[ingcnt] = enginer;
-															ingcnt = ingcnt + 1;														
-														end;*/
 														akey = IVr.SalesMan & ":GOTOV:STRAH";
 														vManSum[akey] = vManSum[akey] + IVrw.Sum;
 														if(vManExst[IVr.SalesMan]==false)then begin
@@ -718,14 +729,6 @@ begin
 															mancnt = mancnt + 1;														
 														end;
 													end else begin
-														/*supertotdolg = supertotdolg - IVrw.Sum;
-														akey = enginer & ":GOTOV:STRAH";
-														vIngSum[akey] = vIngSum[akey] - IVrw.Sum;
-														if(vIngExst[enginer]==false)then begin
-															vIngExst[enginer] = true;
-															aing[ingcnt] = enginer;
-															ingcnt = ingcnt + 1;														
-														end;*/
 														akey = IVr.SalesMan & ":GOTOV:STRAH";
 														vManSum[akey] = vManSum[akey] - IVrw.Sum;
 														if(vManExst[IVr.SalesMan]==false)then begin
@@ -799,74 +802,79 @@ begin
 					st0[SVOr.SerNr & ":10"] = CountWorkingDays(SVOr.Status10Sd,SVOr.Status10Ed,"","UA");
 					st0[SVOr.SerNr & ":11"] = CountWorkingDays(SVOr.Status11Sd,SVOr.Status11Ed,"","UA");
 					
-					startformat(15);
-						outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
-						outstring(tabs[1],0,SVOr.TransDate,false);
-						outstring(tabs[2],0,1,false);
-						outstring(tabs[3],0,1,false);
-						outstring(tabs[4],0,blankval,false);
-						outstring(tabs[5],0,blankval,false);
-						outstring(tabs[8],0,SVOr.StatusText,false);
-						//outstring(tabs[6],0,SVOr.WSCost,false);
-					endformat;
+					if (RepSpec.flags[26]==0) then begin
+						startformat(15);
+							outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
+							outstring(tabs[1],0,SVOr.TransDate,false);
+							outstring(tabs[2],0,1,false);
+							outstring(tabs[3],0,1,false);
+							outstring(tabs[4],0,blankval,false);
+							outstring(tabs[5],0,blankval,false);
+							outstring(tabs[8],0,SVOr.StatusText,false);
+							//outstring(tabs[6],0,SVOr.WSCost,false);
+						endformat;
+					end;
 					
 					
 					if(SVOr.StatusReturnCnt>0)then begin
 						vManCanQty[SVOr.Inspector & "DOR"] = vManCanQty[SVOr.Inspector & "DOR"] + SVOr.StatusReturnCnt;
 						vIngCanQty[SVOr.ServiceManager & "DOR"] = vIngCanQty[SVOr.ServiceManager & "DOR"] + SVOr.StatusReturnCnt;
-						startformat(15);
-							outstring(tabs[0],0,"Возвратов на доработку",false);
-							outstring(tabs[2],0,SVOr.StatusReturnCnt,false);
-						endformat;
+						if(RepSpec.flags[26]==0) then begin
+							startformat(15);
+								outstring(tabs[0],0,"Возвратов на доработку",false);
+								outstring(tabs[2],0,SVOr.StatusReturnCnt,false);
+							endformat;
+						end;
 					end;
 					
-					OutDaysInStatus(st0,SVOr.SerNr,SVOr.Inspector,SVOr.ServiceManager,vManCanQty,vIngCanQty);
-										
-					if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+					if (RepSpec.flags[26]==0) then begin
+						OutDaysInStatus(st0,SVOr.SerNr,SVOr.Inspector,SVOr.ServiceManager,vManCanQty,vIngCanQty);
 						if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+							if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+								startformat(15);
+									outstring(tabs[0],0,"Звонок с домена",false);
+									outstring(tabs[2],0,vCuDomain[SVOr.CustCode],false);
+								endformat;
+							end;
+							if(nonblank(vUTMSource[SVOr.CustCode]))then begin
+								startformat(15);
+									outstring(tabs[0],0,"Переход с ресурса",false);
+									outstring(tabs[2],0,vUTMSource[SVOr.CustCode],false);
+								endformat;
+							end;
+							if(nonblank(vUTMCampaign[SVOr.CustCode]))then begin
+								startformat(15);
+									outstring(tabs[0],0,"Кампания",false);
+									outstring(tabs[2],0,vUTMCampaign[SVOr.CustCode],false);
+								endformat;
+							end;
+							if(nonblank(vUTMTerm[SVOr.CustCode]))then begin
+								startformat(15);
+									outstring(tabs[0],0,"Условия",false);
+									outstring(tabs[2],0,vUTMTerm[SVOr.CustCode],false);
+								endformat;
+							end;
+						
+							if(nonblank(SVOr.GarNo))then begin
+								oldSVOr.InnerOrderNr = SVOr.GarNo;
+								if(readfirstkey("InnerOrderNr",oldSVOr,1,true))then begin
+									povtorsum = povtorsum + ivsumserv[asvonr[i]];
+									povtorqty = povtorqty + 1;						
+									startformat(15);
+										outstring(tabs[0],0,"Повторный ремонт",false);
+										outstring(tabs[6],"DblSVOVcSer",SVOr.GarNo,false);
+									endformat;
+									vPovtor[SVOr.SerNr] = true;
+								end;
+							end;
+					
+							black_divider(tabs[6],tabs[7]);
 							startformat(15);
-								outstring(tabs[0],0,"Звонок с домена",false);
-								outstring(tabs[2],0,vCuDomain[SVOr.CustCode],false);
-							endformat;
-						end;
-						if(nonblank(vUTMSource[SVOr.CustCode]))then begin
-							startformat(15);
-								outstring(tabs[0],0,"Переход с ресурса",false);
-								outstring(tabs[2],0,vUTMSource[SVOr.CustCode],false);
-							endformat;
-						end;
-						if(nonblank(vUTMCampaign[SVOr.CustCode]))then begin
-							startformat(15);
-								outstring(tabs[0],0,"Кампания",false);
-								outstring(tabs[2],0,vUTMCampaign[SVOr.CustCode],false);
-							endformat;
-						end;
-						if(nonblank(vUTMTerm[SVOr.CustCode]))then begin
-							startformat(15);
-								outstring(tabs[0],0,"Условия",false);
-								outstring(tabs[2],0,vUTMTerm[SVOr.CustCode],false);
+								outstring(tabs[0],0,"Итого по заказу",false);
+								outstring(tabs[6],0,ivsumserv[asvonr[i]],false);
 							endformat;
 						end;
 					end;
-					
-					if(nonblank(SVOr.GarNo))then begin
-						oldSVOr.InnerOrderNr = SVOr.GarNo;
-						if(readfirstkey("InnerOrderNr",oldSVOr,1,true))then begin
-							povtorsum = povtorsum + ivsumserv[asvonr[i]];
-							povtorqty = povtorqty + 1;						
-							startformat(15);
-								outstring(tabs[0],0,"Повторный ремонт",false);
-								outstring(tabs[6],"DblSVOVcSer",SVOr.GarNo,false);
-							endformat;
-							vPovtor[SVOr.SerNr] = true;
-						end;
-					end;
-					
-					black_divider(tabs[6],tabs[7]);
-					startformat(15);
-						outstring(tabs[0],0,"Итого по заказу",false);
-						outstring(tabs[6],0,ivsumserv[asvonr[i]],false);
-					endformat;
 					if(nonblank(vCuDomain[SVOr.CustCode]))then begin
 						tstr = "Оплаченные:" & vUTMSource[SVOr.CustCode] & "->" & vCuDomain[SVOr.CustCode] & "("  & vUTMCampaign[SVOr.CustCode] & "|" & vUTMTerm[SVOr.CustCode] & ")";
 						if(vTrackFlag[tstr])then begin
@@ -878,62 +886,68 @@ begin
 							TrackCnt = TrackCnt +1;
 						end;
 					end;
-					
-					gray_divider(0,1);
+					if (RepSpec.flags[26]==0) then begin
+						gray_divider(0,1);
+					end;
 				end;			
 				resetloop(IVr);
 			end;
 			if(ivretsum[asvonr[i]]>0)then begin
-				startformat(15);
-					outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
-					outstring(tabs[0],0,"Возврат денег",false);
-					outstring(tabs[6],0,ivretsum[asvonr[i]],false);
-					
-					//outstring(tabs[7],0,ivretsummanag[asvonr[i]],false);
-				endformat;
-				if(ivretsummanag[asvonr[i] & ":PREPAY"]>0)then begin
+				if (RepSpec.flags[26]==0) then begin
 					startformat(15);
-						outstring(tabs[0],0,"",false);
-						outstring(tabs[0],0,"",false);
+						outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
+						outstring(tabs[0],0,"Возврат денег",false);
 						outstring(tabs[6],0,ivretsum[asvonr[i]],false);
-						outstring(tabs[7],0,"С предоплаты",false);
 					endformat;
-				end;
-				For(ui=0;ui<userscnt;ui=ui+1) begin
-	  			if(ivretsummanag[asvonr[i] & ":" & users[ui]]>0)then begin
+					if(ivretsummanag[asvonr[i] & ":PREPAY"]>0)then begin
 						startformat(15);
 							outstring(tabs[0],0,"",false);
 							outstring(tabs[0],0,"",false);
 							outstring(tabs[6],0,ivretsum[asvonr[i]],false);
-							outstring(tabs[7],0,users[ui],false);
+							outstring(tabs[7],0,"С предоплаты",false);
 						endformat;
 					end;
-				end; 
-				
-				gray_divider(0,1);
+					For(ui=0;ui<userscnt;ui=ui+1) begin
+						if(ivretsummanag[asvonr[i] & ":" & users[ui]]>0)then begin
+							startformat(15);
+								outstring(tabs[0],0,"",false);
+								outstring(tabs[0],0,"",false);
+								outstring(tabs[6],0,ivretsum[asvonr[i]],false);
+								outstring(tabs[7],0,users[ui],false);
+							endformat;
+						end;
+					end; 
+				end;
+				if (RepSpec.flags[26]==0) then begin
+					gray_divider(0,1);
+				end;
 			end;
-		end; 
-		black_divider(0,1);
-		startformat(15);
-			outstring(0,0,"Итого по оплаченным ремонтам",false);
-			outstring(50,0,"Количество:",false);
-			outstring(100,0,totpayremqty,false);
-			outstring(150,0,"Услуги:",false);
-			outstring(200,0,supertotdolg,false);
-			outstring(250,0,"Детали:",false);
-			outstring(300,0,supertotdolgdet,false);
-			outstring(350,0,"Всего:",false);
-			outstring(400,0,supertotdolg+supertotdolgdet,false);
-		endformat;
+		end;
+		if (RepSpec.flags[26]==0) then begin
+			black_divider(0,1);
+			startformat(15);
+				outstring(0,0,"Итого по оплаченным ремонтам",false);
+				outstring(50,0,"Количество:",false);
+				outstring(100,0,totpayremqty,false);
+				outstring(150,0,"Услуги:",false);
+				outstring(200,0,supertotdolg,false);
+				outstring(250,0,"Детали:",false);
+				outstring(300,0,supertotdolgdet,false);
+				outstring(350,0,"Всего:",false);
+				outstring(400,0,supertotdolg+supertotdolgdet,false);
+			endformat;
+		end;
 		totpayrem = supertotdolg;
 		totpayremdet = supertotdolgdet;
 		
 		supertotdolg = blankval;
 		supertotdolgdet = blankval;
-		black_divider(0,1);
-		startformat(15);
-			outstring(0,0,"Неоплаченные заказы ",false);
-		endformat;
+		if (RepSpec.flags[26]==0) then begin
+			black_divider(0,1);
+			startformat(15);
+				outstring(0,0,"Неоплаченные заказы ",false);
+			endformat;
+		end;
 		For(i=0;i<k;i=i+1) begin
 			SVOr.SerNr = asvonr[i];
 			readfirstmain(SVOr,1,true);
@@ -1001,6 +1015,7 @@ begin
 	  							if(readfirstmain(INr,1,true))then begin
 	  								
 	  								svoout = true;
+									if (RepSpec.flags[26]==0) then begin
 										startformat(15);
 											outstring(tabs[2],0,IVrw.Spec,false);
 											if(IVr.InvType!=kInvoiceTypeCredit)then begin
@@ -1015,43 +1030,64 @@ begin
 											end;
 											outstring(tabs[8],0,SVOr.StatusText,false);
 										endformat;
+									end;
 	  								if(INr.ItemType==3 or INr.ItemType==0)then begin
 	  									if(filter)then begin
 												if(IVr.InvType!=kInvoiceTypeCredit)then begin
-													ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] + IVrw.Sum;
-													totserv = totserv + ivsumserv[asvonr[i]];
-													supertotdolg = supertotdolg + IVrw.Sum;
-													akey = enginer & ":NOPAY:SERV";
-													vIngSum[akey] = vIngSum[akey] + IVrw.Sum;
-													if(vIngExst[enginer]==false)then begin
-														vIngExst[enginer] = true;
-														aing[ingcnt] = enginer;
-														ingcnt = ingcnt + 1;														
-													end;
-													akey = SVOr.Inspector & ":NOPAY:SERV";
-													vManSum[akey] = vManSum[akey] + IVrw.Sum;
-													if(vManExst[SVOr.Inspector]==false)then begin
-														vManExst[SVOr.Inspector] = true;
-														aman[mancnt] = SVOr.Inspector;
-														mancnt = mancnt + 1;														
+													if(INr.Code!="СТРАХОВКА")then begin
+														ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] + IVrw.Sum;
+														totserv = totserv + ivsumserv[asvonr[i]];
+														supertotdolg = supertotdolg + IVrw.Sum;
+														akey = enginer & ":NOPAY:SERV";
+														vIngSum[akey] = vIngSum[akey] + IVrw.Sum;
+														if(vIngExst[enginer]==false)then begin
+															vIngExst[enginer] = true;
+															aing[ingcnt] = enginer;
+															ingcnt = ingcnt + 1;														
+														end;
+														akey = SVOr.Inspector & ":NOPAY:SERV";
+														vManSum[akey] = vManSum[akey] + IVrw.Sum;
+														if(vManExst[SVOr.Inspector]==false)then begin
+															vManExst[SVOr.Inspector] = true;
+															aman[mancnt] = SVOr.Inspector;
+															mancnt = mancnt + 1;														
+														end;
+													end else begin
+														akey = IVr.SalesMan & ":NOPAY:STRAH";
+														vManSum[akey] = vManSum[akey] + IVrw.Sum;
+														if(vManExst[IVr.SalesMan]==false)then begin
+															vManExst[IVr.SalesMan] = true;
+															aman[mancnt] = IVr.SalesMan;
+															mancnt = mancnt + 1;														
+														end;
 													end;
 												end else begin
-													ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] - IVrw.Sum;
-													totserv = totserv - ivsumserv[asvonr[i]];
-													supertotdolg = supertotdolg - IVrw.Sum;
-													akey = enginer & ":NOPAY:SERV";
-													vIngSum[akey] = vIngSum[akey] - IVrw.Sum;
-													if(vIngExst[enginer]==false)then begin
-														vIngExst[enginer] = true;
-														aing[ingcnt] = enginer;
-														ingcnt = ingcnt + 1;														
-													end;
-													akey = SVOr.Inspector & ":NOPAY:SERV";
-													vManSum[akey] = vManSum[akey] - IVrw.Sum;
-													if(vManExst[SVOr.Inspector]==false)then begin
-														vManExst[SVOr.Inspector] = true;
-														aman[mancnt] = SVOr.Inspector;
-														mancnt = mancnt + 1;														
+													if(INr.Code!="СТРАХОВКА")then begin
+														ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] - IVrw.Sum;
+														totserv = totserv - ivsumserv[asvonr[i]];
+														supertotdolg = supertotdolg - IVrw.Sum;
+														akey = enginer & ":NOPAY:SERV";
+														vIngSum[akey] = vIngSum[akey] - IVrw.Sum;
+														if(vIngExst[enginer]==false)then begin
+															vIngExst[enginer] = true;
+															aing[ingcnt] = enginer;
+															ingcnt = ingcnt + 1;														
+														end;
+														akey = SVOr.Inspector & ":NOPAY:SERV";
+														vManSum[akey] = vManSum[akey] - IVrw.Sum;
+														if(vManExst[SVOr.Inspector]==false)then begin
+															vManExst[SVOr.Inspector] = true;
+															aman[mancnt] = SVOr.Inspector;
+															mancnt = mancnt + 1;														
+														end;
+													end else begin
+														akey = IVr.SalesMan & ":NOPAY:STRAH";
+														vManSum[akey] = vManSum[akey] - IVrw.Sum;
+														if(vManExst[IVr.SalesMan]==false)then begin
+															vManExst[IVr.SalesMan] = true;
+															aman[mancnt] = IVr.SalesMan;
+															mancnt = mancnt + 1;	
+														end;
 													end;
 												end;
 	  									end;
@@ -1118,71 +1154,82 @@ begin
 					st0[SVOr.SerNr & ":10"] = CountWorkingDays(SVOr.Status10Sd,SVOr.Status10Ed,"","UA");
 					st0[SVOr.SerNr & ":11"] = CountWorkingDays(SVOr.Status11Sd,SVOr.Status11Ed,"","UA");
 					
-					startformat(15);
-						outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
-						outstring(tabs[1],0,SVOr.TransDate,false);
-						outstring(tabs[2],0,1,false);
-						outstring(tabs[3],0,blankval,false);
-						outstring(tabs[4],0,blankval,false);
-						outstring(tabs[5],0,blankval,false);
-						//outstring(tabs[6],0,SVOr.WSCost,false);
-					endformat;
+					if (RepSpec.flags[26]==0) then begin
+						startformat(15);
+							outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
+							outstring(tabs[1],0,SVOr.TransDate,false);
+							outstring(tabs[2],0,1,false);
+							outstring(tabs[3],0,blankval,false);
+							outstring(tabs[4],0,blankval,false);
+							outstring(tabs[5],0,blankval,false);
+							//outstring(tabs[6],0,SVOr.WSCost,false);
+						endformat;
+					end;
 					if(SVOr.StatusReturnCnt>0)then begin
 						vManCanQty[SVOr.Inspector & "DOR"] = vManCanQty[SVOr.Inspector & "DOR"] + SVOr.StatusReturnCnt;
 						vIngCanQty[SVOr.ServiceManager & "DOR"] = vIngCanQty[SVOr.ServiceManager & "DOR"] + SVOr.StatusReturnCnt;
-						startformat(15);
-							outstring(tabs[0],0,"Возвратов на доработку",false);
-							outstring(tabs[2],0,SVOr.StatusReturnCnt,false);
-						endformat;
+						if (RepSpec.flags[26]==0) then begin
+							startformat(15);
+								outstring(tabs[0],0,"Возвратов на доработку",false);
+								outstring(tabs[2],0,SVOr.StatusReturnCnt,false);
+							endformat;
+						end;
 					end;
 					
-					OutDaysInStatus(st0,SVOr.SerNr,SVOr.Inspector,SVOr.ServiceManager,vManCanQty,vIngCanQty);
-					
-					if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+					if (RepSpec.flags[26]==0) then begin
+						OutDaysInStatus(st0,SVOr.SerNr,SVOr.Inspector,SVOr.ServiceManager,vManCanQty,vIngCanQty);
+
 						if(nonblank(vCuDomain[SVOr.CustCode]))then begin
-							startformat(15);
-								outstring(tabs[0],0,"Звонок с домена",false);
-								outstring(tabs[2],0,vCuDomain[SVOr.CustCode],false);
-							endformat;
-						end;
-						if(nonblank(vUTMSource[SVOr.CustCode]))then begin
-							startformat(15);
-								outstring(tabs[0],0,"Переход с ресурса",false);
-								outstring(tabs[2],0,vUTMSource[SVOr.CustCode],false);
-							endformat;
-						end;
-						if(nonblank(vUTMCampaign[SVOr.CustCode]))then begin
-							startformat(15);
-								outstring(tabs[0],0,"Кампания",false);
-								outstring(tabs[2],0,vUTMCampaign[SVOr.CustCode],false);
-							endformat;
-						end;
-						if(nonblank(vUTMTerm[SVOr.CustCode]))then begin
-							startformat(15);
-								outstring(tabs[0],0,"Условия",false);
-								outstring(tabs[2],0,vUTMTerm[SVOr.CustCode],false);
-							endformat;
+							if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+								startformat(15);
+									outstring(tabs[0],0,"Звонок с домена",false);
+									outstring(tabs[2],0,vCuDomain[SVOr.CustCode],false);
+								endformat;
+							end;
+							if(nonblank(vUTMSource[SVOr.CustCode]))then begin
+								startformat(15);
+									outstring(tabs[0],0,"Переход с ресурса",false);
+									outstring(tabs[2],0,vUTMSource[SVOr.CustCode],false);
+								endformat;
+							end;
+							if(nonblank(vUTMCampaign[SVOr.CustCode]))then begin
+								startformat(15);
+									outstring(tabs[0],0,"Кампания",false);
+									outstring(tabs[2],0,vUTMCampaign[SVOr.CustCode],false);
+								endformat;
+							end;
+							if(nonblank(vUTMTerm[SVOr.CustCode]))then begin
+								startformat(15);
+									outstring(tabs[0],0,"Условия",false);
+									outstring(tabs[2],0,vUTMTerm[SVOr.CustCode],false);
+								endformat;
+							end;
 						end;
 					end;
+					
 					
 					if(nonblank(SVOr.GarNo))then begin
 						oldSVOr.InnerOrderNr = SVOr.GarNo;
 						if(readfirstkey("InnerOrderNr",oldSVOr,1,true))then begin
 							povtorsumneoplat = povtorsumneoplat + ivsumserv[asvonr[i]];
 							povtorqtyneoplat = povtorqtyneoplat +1;
-							startformat(15);
-								outstring(tabs[0],0,"Повторный ремонт",false);
-								outstring(tabs[6],"DblSVOVcSer",SVOr.GarNo,false);
-							endformat;
+							if (RepSpec.flags[26]==0) then begin
+								startformat(15);
+									outstring(tabs[0],0,"Повторный ремонт",false);
+									outstring(tabs[6],"DblSVOVcSer",SVOr.GarNo,false);
+								endformat;
+							end;
 							vPovtor[SVOr.SerNr] = true;
 						end;
 					end;
 					
-					black_divider(tabs[6],tabs[7]);
-					startformat(15);
-						outstring(tabs[0],0,"Итого по заказу",false);
-						outstring(tabs[6],0,ivsumserv[asvonr[i]],false);
-					endformat;
+					if (RepSpec.flags[26]==0) then begin
+						black_divider(tabs[6],tabs[7]);
+						startformat(15);
+							outstring(tabs[0],0,"Итого по заказу",false);
+							outstring(tabs[6],0,ivsumserv[asvonr[i]],false);
+						endformat;
+					end;
 					if(nonblank(vCuDomain[SVOr.CustCode]))then begin
 						tstr = "Неоплаченные:" & vUTMSource[SVOr.CustCode] & "->" & vCuDomain[SVOr.CustCode] & "("  & vUTMCampaign[SVOr.CustCode] & "|" & vUTMTerm[SVOr.CustCode] & ")";
 						if(vTrackFlag[tstr])then begin
@@ -1194,30 +1241,35 @@ begin
 							TrackCnt = TrackCnt +1;
 						end;
 					end;
-					gray_divider(0,1);
+					if (RepSpec.flags[26]==0) then begin
+						gray_divider(0,1);
+					end;
 				end;			
 				resetloop(IVr);
 			end;
-		end; 
-		black_divider(0,1);
-		startformat(15);
-			outstring(0,0,"Итого по НЕ завершенным ремонтам",false);
-			outstring(50,0,"Количество:",false);
-			outstring(100,0,totnopayremqty,false);
-			outstring(150,0,"Услуги:",false);
-			outstring(200,0,supertotdolg,false);
-			outstring(250,0,"Детали:",false);
-			outstring(300,0,supertotdolgdet,false);
-			outstring(350,0,"Всего:",false);
-			outstring(400,0,supertotdolg+supertotdolgdet,false);
-		endformat;
-		
+		end;
+		if (RepSpec.flags[26]==0) then begin
+			black_divider(0,1);
+			startformat(15);
+				outstring(0,0,"Итого по НЕ завершенным ремонтам",false);
+				outstring(50,0,"Количество:",false);
+				outstring(100,0,totnopayremqty,false);
+				outstring(150,0,"Услуги:",false);
+				outstring(200,0,supertotdolg,false);
+				outstring(250,0,"Детали:",false);
+				outstring(300,0,supertotdolgdet,false);
+				outstring(350,0,"Всего:",false);
+				outstring(400,0,supertotdolg+supertotdolgdet,false);
+			endformat;
+		end;
 		totdolgsum = blankval;
 		totdolgqty = blankval;
-		black_divider(0,1);
-		startformat(15);
-			outstring(0,0,"Выданные в долг ремонты ",false);
-		endformat;
+		if (RepSpec.flags[26]==0) then begin
+			black_divider(0,1);
+			startformat(15);
+				outstring(0,0,"Выданные в долг ремонты ",false);
+			endformat;
+		end;
 		For(i=0;i<k;i=i+1) begin
 			SVOr.SerNr = asvonr[i];
 			readfirstmain(SVOr,1,true);
@@ -1286,56 +1338,78 @@ begin
 	  							if(readfirstmain(INr,1,true))then begin
 	  							
 	  								svoout = true;
-										startformat(15);
-											outstring(tabs[2],0,IVrw.Spec,false);
-											if(IVr.InvType!=kInvoiceTypeCredit)then begin
-												outstring(tabs[6],0,IVrw.Sum,false);
-											end else begin
-												outstring(tabs[6],0,-IVrw.Sum,false);
-											end;
-											if(IVr.SalesMan==SVOr.CustomField7)then begin
-												outstring(tabs[7],0,SVOr.ServiceManager,false);
-											end else begin
-												outstring(tabs[7],0,IVr.SalesMan,false);
-											end;
-											outstring(tabs[8],0,SVOr.StatusText,false);
-										endformat;
+										if (RepSpec.flags[26]==0) then begin
+											startformat(15);
+												outstring(tabs[2],0,IVrw.Spec,false);
+												if(IVr.InvType!=kInvoiceTypeCredit)then begin
+													outstring(tabs[6],0,IVrw.Sum,false);
+												end else begin
+													outstring(tabs[6],0,-IVrw.Sum,false);
+												end;
+												if(IVr.SalesMan==SVOr.CustomField7)then begin
+													outstring(tabs[7],0,SVOr.ServiceManager,false);
+												end else begin
+													outstring(tabs[7],0,IVr.SalesMan,false);
+												end;
+												outstring(tabs[8],0,SVOr.StatusText,false);
+											endformat;
+										end;
 	  								if(INr.ItemType==3 or INr.ItemType==0)then begin
 											if(IVr.InvType!=kInvoiceTypeCredit)then begin
-												ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] + IVrw.Sum;
-												totserv = totserv + ivsumserv[asvonr[i]];
-												totdolgsum = totdolgsum + IVrw.Sum;
-												akey = enginer & ":DOLG:SERV";
-												vIngSum[akey] = vIngSum[akey] + IVrw.Sum;
-												if(vIngExst[enginer]==false)then begin
-													vIngExst[enginer] = true;
-													aing[ingcnt] = enginer;
-													ingcnt = ingcnt + 1;														
-												end;
-												akey = SVOr.Inspector & ":DOLG:SERV";
-												vManSum[akey] = vManSum[akey] + IVrw.Sum;
-												if(vManExst[SVOr.Inspector]==false)then begin
-													vManExst[SVOr.Inspector] = true;
-													aman[mancnt] = SVOr.Inspector;
-													mancnt = mancnt + 1;														
+												if(INr.Code!="СТРАХОВКА")then begin
+													ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] + IVrw.Sum;
+													totserv = totserv + ivsumserv[asvonr[i]];
+													totdolgsum = totdolgsum + IVrw.Sum;
+													akey = enginer & ":DOLG:SERV";
+													vIngSum[akey] = vIngSum[akey] + IVrw.Sum;
+													if(vIngExst[enginer]==false)then begin
+														vIngExst[enginer] = true;
+														aing[ingcnt] = enginer;
+														ingcnt = ingcnt + 1;														
+													end;
+													akey = SVOr.Inspector & ":DOLG:SERV";
+													vManSum[akey] = vManSum[akey] + IVrw.Sum;
+													if(vManExst[SVOr.Inspector]==false)then begin
+														vManExst[SVOr.Inspector] = true;
+														aman[mancnt] = SVOr.Inspector;
+														mancnt = mancnt + 1;														
+													end;
+												end else begin
+													akey = IVr.SalesMan & ":DOLG:STRAH";
+													vManSum[akey] = vManSum[akey] + IVrw.Sum;
+													if(vManExst[IVr.SalesMan]==false)then begin
+														vManExst[IVr.SalesMan] = true;
+														aman[mancnt] = IVr.SalesMan;
+														mancnt = mancnt + 1;														
+													end;
 												end;
 											end else begin
-												ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] - IVrw.Sum;
-												totserv = totserv - ivsumserv[asvonr[i]];
-												totdolgsum = totdolgsum - IVrw.Sum;
-												akey = enginer & ":DOLG:SERV";
-												vIngSum[akey] = vIngSum[akey] - IVrw.Sum;
-												if(vIngExst[enginer]==false)then begin
-													vIngExst[enginer] = true;
-													aing[ingcnt] = enginer;
-													ingcnt = ingcnt + 1;														
-												end;
-												akey = SVOr.Inspector & ":DOLG:SERV";
-												vManSum[akey] = vManSum[akey] - IVrw.Sum;
-												if(vManExst[SVOr.Inspector]==false)then begin
-													vManExst[SVOr.Inspector] = true;
-													aman[mancnt] = SVOr.Inspector;
-													mancnt = mancnt + 1;														
+												if(INr.Code!="СТРАХОВКА")then begin
+													ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] - IVrw.Sum;
+													totserv = totserv - ivsumserv[asvonr[i]];
+													totdolgsum = totdolgsum - IVrw.Sum;
+													akey = enginer & ":DOLG:SERV";
+													vIngSum[akey] = vIngSum[akey] - IVrw.Sum;
+													if(vIngExst[enginer]==false)then begin
+														vIngExst[enginer] = true;
+														aing[ingcnt] = enginer;
+														ingcnt = ingcnt + 1;														
+													end;
+													akey = SVOr.Inspector & ":DOLG:SERV";
+													vManSum[akey] = vManSum[akey] - IVrw.Sum;
+													if(vManExst[SVOr.Inspector]==false)then begin
+														vManExst[SVOr.Inspector] = true;
+														aman[mancnt] = SVOr.Inspector;
+														mancnt = mancnt + 1;														
+													end;
+												end else begin
+													akey = IVr.SalesMan & ":DOLG:STRAH";
+													vManSum[akey] = vManSum[akey] - IVrw.Sum;
+													if(vManExst[IVr.SalesMan]==false)then begin
+														vManExst[IVr.SalesMan] = true;
+														aman[mancnt] = IVr.SalesMan;
+														mancnt = mancnt + 1;														
+													end;
 												end;
 											end;
 	  								end;
@@ -1399,49 +1473,56 @@ begin
 					st0[SVOr.SerNr & ":10"] = CountWorkingDays(SVOr.Status10Sd,SVOr.Status10Ed,"","UA");
 					st0[SVOr.SerNr & ":11"] = CountWorkingDays(SVOr.Status11Sd,SVOr.Status11Ed,"","UA");
 					
-					startformat(15);
-						outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
-						outstring(tabs[1],0,SVOr.TransDate,false);
-						outstring(tabs[2],0,1,false);
-						outstring(tabs[3],0,blankval,false);
-						outstring(tabs[4],0,blankval,false);
-						outstring(tabs[5],0,blankval,false);
-						//outstring(tabs[6],0,SVOr.WSCost,false);
-					endformat;
+					if (RepSpec.flags[26]==0) then begin
+						startformat(15);
+							outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
+							outstring(tabs[1],0,SVOr.TransDate,false);
+							outstring(tabs[2],0,1,false);
+							outstring(tabs[3],0,blankval,false);
+							outstring(tabs[4],0,blankval,false);
+							outstring(tabs[5],0,blankval,false);
+							//outstring(tabs[6],0,SVOr.WSCost,false);
+						endformat;
+					end;
 					if(SVOr.StatusReturnCnt>0)then begin
 						vManCanQty[SVOr.Inspector & "DOR"] = vManCanQty[SVOr.Inspector & "DOR"] + SVOr.StatusReturnCnt;
 						vIngCanQty[SVOr.ServiceManager & "DOR"] = vIngCanQty[SVOr.ServiceManager & "DOR"] + SVOr.StatusReturnCnt;
-						startformat(15);
-							outstring(tabs[0],0,"Возвратов на доработку",false);
-							outstring(tabs[2],0,SVOr.StatusReturnCnt,false);
-						endformat;
+						if (RepSpec.flags[26]==0) then begin
+							startformat(15);
+								outstring(tabs[0],0,"Возвратов на доработку",false);
+								outstring(tabs[2],0,SVOr.StatusReturnCnt,false);
+							endformat;
+						end;
 					end;
-					OutDaysInStatus(st0,SVOr.SerNr,SVOr.Inspector,SVOr.ServiceManager,vManCanQty,vIngCanQty);
 					
-					if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+					if (RepSpec.flags[26]==0) then begin
+						OutDaysInStatus(st0,SVOr.SerNr,SVOr.Inspector,SVOr.ServiceManager,vManCanQty,vIngCanQty);
+					
 						if(nonblank(vCuDomain[SVOr.CustCode]))then begin
-							startformat(15);
-								outstring(tabs[0],0,"Звонок с домена",false);
-								outstring(tabs[2],0,vCuDomain[SVOr.CustCode],false);
-							endformat;
-						end;
-						if(nonblank(vUTMSource[SVOr.CustCode]))then begin
-							startformat(15);
-								outstring(tabs[0],0,"Переход с ресурса",false);
-								outstring(tabs[2],0,vUTMSource[SVOr.CustCode],false);
-							endformat;
-						end;
-						if(nonblank(vUTMCampaign[SVOr.CustCode]))then begin
-							startformat(15);
-								outstring(tabs[0],0,"Кампания",false);
-								outstring(tabs[2],0,vUTMCampaign[SVOr.CustCode],false);
-							endformat;
-						end;
-						if(nonblank(vUTMTerm[SVOr.CustCode]))then begin
-							startformat(15);
-								outstring(tabs[0],0,"Условия",false);
-								outstring(tabs[2],0,vUTMTerm[SVOr.CustCode],false);
-							endformat;
+							if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+								startformat(15);
+									outstring(tabs[0],0,"Звонок с домена",false);
+									outstring(tabs[2],0,vCuDomain[SVOr.CustCode],false);
+								endformat;
+							end;
+							if(nonblank(vUTMSource[SVOr.CustCode]))then begin
+								startformat(15);
+									outstring(tabs[0],0,"Переход с ресурса",false);
+									outstring(tabs[2],0,vUTMSource[SVOr.CustCode],false);
+								endformat;
+							end;
+							if(nonblank(vUTMCampaign[SVOr.CustCode]))then begin
+								startformat(15);
+									outstring(tabs[0],0,"Кампания",false);
+									outstring(tabs[2],0,vUTMCampaign[SVOr.CustCode],false);
+								endformat;
+							end;
+							if(nonblank(vUTMTerm[SVOr.CustCode]))then begin
+								startformat(15);
+									outstring(tabs[0],0,"Условия",false);
+									outstring(tabs[2],0,vUTMTerm[SVOr.CustCode],false);
+								endformat;
+							end;
 						end;
 					end;
 					
@@ -1451,19 +1532,23 @@ begin
 							povtorsumdolg = povtorsumdolg + ivsumserv[asvonr[i]];
 							povtorqtydolg = povtorqtydolg + 1;
 						
-							startformat(15);
-								outstring(tabs[0],0,"Повторный ремонт",false);
-								outstring(tabs[6],"DblSVOVcSer",SVOr.GarNo,false);
-							endformat;
+							if (RepSpec.flags[26]==0) then begin
+								startformat(15);
+									outstring(tabs[0],0,"Повторный ремонт",false);
+									outstring(tabs[6],"DblSVOVcSer",SVOr.GarNo,false);
+								endformat;
+							end;
 							vPovtor[SVOr.SerNr] = true;
 						end;
 					end;
 					
-					black_divider(tabs[6],tabs[7]);
-					startformat(15);
-						outstring(tabs[0],0,"Итого по заказу",false);
-						outstring(tabs[6],0,ivsumserv[asvonr[i]],false);
-					endformat;
+					if (RepSpec.flags[26]==0) then begin
+						black_divider(tabs[6],tabs[7]);
+						startformat(15);
+							outstring(tabs[0],0,"Итого по заказу",false);
+							outstring(tabs[6],0,ivsumserv[asvonr[i]],false);
+						endformat;
+					end;
 					if(nonblank(vCuDomain[SVOr.CustCode]))then begin
 						tstr = "Вдолг:" & vUTMSource[SVOr.CustCode] & "->" & vCuDomain[SVOr.CustCode] & "("  & vUTMCampaign[SVOr.CustCode] & "|" & vUTMTerm[SVOr.CustCode] & ")";
 						if(vTrackFlag[tstr])then begin
@@ -1475,29 +1560,33 @@ begin
 							TrackCnt = TrackCnt +1;
 						end;
 					end;
-					gray_divider(0,1);
+					if (RepSpec.flags[26]==0) then begin
+						gray_divider(0,1);
+					end;
 				end;			
 				resetloop(IVr);
 			end;
 		end; 
-		black_divider(0,1);		
-		startformat(15);
-			outstring(0,0,"Итого по ремонтам в долг",false);
-			outstring(50,0,"Количество:",false);
-			outstring(100,0,totdolgqty,false);
-			outstring(150,0,"Услуги:",false);
-			outstring(200,0,totdolgsum,false);
-			outstring(250,0,"Детали:",false);
-			outstring(300,0,totdolgsumdet,false);
-			outstring(350,0,"Всего:",false);
-			outstring(400,0,totdolgsum+totdolgsumdet,false);
-		endformat;
+		if (RepSpec.flags[26]==0) then begin
+			black_divider(0,1);		
+			startformat(15);
+				outstring(0,0,"Итого по ремонтам в долг",false);
+				outstring(50,0,"Количество:",false);
+				outstring(100,0,totdolgqty,false);
+				outstring(150,0,"Услуги:",false);
+				outstring(200,0,totdolgsum,false);
+				outstring(250,0,"Детали:",false);
+				outstring(300,0,totdolgsumdet,false);
+				outstring(350,0,"Всего:",false);
+				outstring(400,0,totdolgsum+totdolgsumdet,false);
+			endformat;
 		
-		black_divider(0,1);
-		startformat(15);
-			outstring(3,0,"Отмененные ремонты",false);
+			black_divider(0,1);
+			startformat(15);
+				outstring(3,0,"Отмененные ремонты",false);
 
-		endformat;
+			endformat;
+		end;
 		resetloop(SVOr);
 		SVOr.RegDate = sd;
 		TrHs = true;
@@ -1523,38 +1612,50 @@ begin
 					st0[SVOr.SerNr & ":10"] = CountWorkingDays(SVOr.Status10Sd,SVOr.Status10Ed,"","UA");
 					st0[SVOr.SerNr & ":11"] =CountWorkingDays(SVOr.Status11Sd,SVOr.Status11Ed,"","UA");
 					
-					startformat(15);
-					outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
-					outstring(tabs[1],0,SVOr.TransDate,false);
-					outstring(tabs[2],0,1,false);
-					outstring(tabs[3],0,blankval,false);
-					outstring(tabs[4],0,1,false);
+					if (RepSpec.flags[26]==0) then begin
+						startformat(15);
+						outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
+						outstring(tabs[1],0,SVOr.TransDate,false);
+						outstring(tabs[2],0,1,false);
+						outstring(tabs[3],0,blankval,false);
+						outstring(tabs[4],0,1,false);
+					end;
 					if(SVOr.StatusReturnCnt>0)then begin
 						vManCanQty[SVOr.Inspector & "DOR"] = vManCanQty[SVOr.Inspector & "DOR"] + SVOr.StatusReturnCnt;
 						vIngCanQty[SVOr.ServiceManager & "DOR"] = vIngCanQty[SVOr.ServiceManager & "DOR"] + SVOr.StatusReturnCnt;
-						startformat(15);
-							outstring(tabs[0],0,"Возвратов на доработку",false);
-							outstring(tabs[2],0,SVOr.StatusReturnCnt,false);
-						endformat;
+						if (RepSpec.flags[26]==0) then begin
+							startformat(15);
+								outstring(tabs[0],0,"Возвратов на доработку",false);
+								outstring(tabs[2],0,SVOr.StatusReturnCnt,false);
+							endformat;
+						end;
 					end;
 					if(SVOr.RejectReason=="Не смог сделать")then begin
 						totourcan = totourcan + 1;
-						outstring(tabs[5],0,1,false);
+						if (RepSpec.flags[26]==0) then begin
+							outstring(tabs[5],0,1,false);
+						end;
 						vManCanQty[SVOr.Inspector] = vManCanQty[SVOr.Inspector] + 1;
 						vIngCanQty[SVOr.ServiceManager] = vIngCanQty[SVOr.ServiceManager] + 1;
 					end else begin
-						outstring(tabs[5],0,blankval,false);
+						if (RepSpec.flags[26]==0) then begin
+							outstring(tabs[5],0,blankval,false);
+						end;
 						if(SVOr.RejectReason=="КЛИЕНТ НЕ ПРИШЕЛ")then begin
 							totcanceled = totcanceled + 1;
 						end;
 					end;
 					
-					OutDaysInStatus(st0,SVOr.SerNr,SVOr.Inspector,SVOr.ServiceManager,vManCanQty,vIngCanQty);
+					if (RepSpec.flags[26]==0) then begin
+						OutDaysInStatus(st0,SVOr.SerNr,SVOr.Inspector,SVOr.ServiceManager,vManCanQty,vIngCanQty);
+					end;
 					
 					totcanceled = totcanceled + 1;
-					outstring(tabs[6],0,blankval,false);
-					outstring(tabs[7],0,SVOr.RejectReason,false);
-					outstring(tabs[8],0,SVOr.StatusText,false);
+					if (RepSpec.flags[26]==0) then begin
+						outstring(tabs[6],0,blankval,false);
+						outstring(tabs[7],0,SVOr.RejectReason,false);
+						outstring(tabs[8],0,SVOr.StatusText,false);
+					end;
 					if(vCuExist[SVOr.CustCode]==false)then begin
 						vCuExist[SVOr.CustCode] = true;
 						CUr.Code = SVOr.CustCode;
@@ -1581,38 +1682,48 @@ begin
 					if(readfirstkey("InnerOrderNr",oldSVOr,1,true))then begin
 						povtorsumotkaz = povtorsumotkaz + ivsumserv[asvonr[i]];
 						povtorqtyotkaz = povtorqtyotkaz + 1;
-						startformat(15);
-							outstring(tabs[0],0,"Повторный ремонт",false);
-							outstring(tabs[6],"DblSVOVcSer",SVOr.GarNo,false);
-						endformat;
+						if (RepSpec.flags[26]==0) then begin
+							startformat(15);
+								outstring(tabs[0],0,"Повторный ремонт",false);
+								outstring(tabs[6],"DblSVOVcSer",SVOr.GarNo,false);
+							endformat;
+						end;
 						vPovtor[SVOr.SerNr] = true;
 					end;
 				end;
 				
 				if(nonblank(vCuDomain[SVOr.CustCode]))then begin
 					if(nonblank(vCuDomain[SVOr.CustCode]))then begin
-						startformat(15);
-							outstring(tabs[0],0,"Звонок с домена",false);
-							outstring(tabs[2],0,vCuDomain[SVOr.CustCode],false);
-						endformat;
+						if (RepSpec.flags[26]==0) then begin
+							startformat(15);
+								outstring(tabs[0],0,"Звонок с домена",false);
+								outstring(tabs[2],0,vCuDomain[SVOr.CustCode],false);
+							endformat;
+						end;
 					end;
 					if(nonblank(vUTMSource[SVOr.CustCode]))then begin
-						startformat(15);
-							outstring(tabs[0],0,"Переход с ресурса",false);
-							outstring(tabs[2],0,vUTMSource[SVOr.CustCode],false);
-						endformat;
+						if (RepSpec.flags[26]==0) then begin
+							startformat(15);
+								outstring(tabs[0],0,"Переход с ресурса",false);
+								outstring(tabs[2],0,vUTMSource[SVOr.CustCode],false);
+							endformat;
+						end;
 					end;
 					if(nonblank(vUTMCampaign[SVOr.CustCode]))then begin
-						startformat(15);
-							outstring(tabs[0],0,"Кампания",false);
-							outstring(tabs[2],0,vUTMCampaign[SVOr.CustCode],false);
-						endformat;
+						if (RepSpec.flags[26]==0) then begin
+							startformat(15);
+								outstring(tabs[0],0,"Кампания",false);
+								outstring(tabs[2],0,vUTMCampaign[SVOr.CustCode],false);
+							endformat;
+						end;
 					end;
 					if(nonblank(vUTMTerm[SVOr.CustCode]))then begin
-						startformat(15);
-							outstring(tabs[0],0,"Условия",false);
-							outstring(tabs[2],0,vUTMTerm[SVOr.CustCode],false);
-						endformat;
+						if (RepSpec.flags[26]==0) then begin
+							startformat(15);
+								outstring(tabs[0],0,"Условия",false);
+								outstring(tabs[2],0,vUTMTerm[SVOr.CustCode],false);
+							endformat;
+						end;
 					end;
 					tstr = "Отмененные:" & vUTMSource[SVOr.CustCode] & "->" & vCuDomain[SVOr.CustCode] & "("  & vUTMCampaign[SVOr.CustCode] & "|" & vUTMTerm[SVOr.CustCode] & ")";
 					if(vTrackFlag[tstr])then begin
@@ -1628,93 +1739,93 @@ begin
 			end;
 		end;
 		
+		if (RepSpec.flags[26]==0) then begin
+			black_divider(0,1);		
+			startformat(15);
+				outstring(0,0,"Итого отмененных",false);
+				outstring(50,0,"Количество:",false);
+				outstring(100,0,totcanceled,false);
+			endformat;
 		
-		black_divider(0,1);		
-		startformat(15);
-			outstring(0,0,"Итого отмененных",false);
-			outstring(50,0,"Количество:",false);
-			outstring(100,0,totcanceled,false);
-		endformat;
 		
+			black_divider(0,1);
 		
-		black_divider(0,1);
+			Gray_divider(0,300);
+			startformat(15);
+				outstring(tabs[0],0,"Повт. ремонты выполненые",false);
+				outstring(tabs[3],0,povtorqty,false);
+				outstring(tabs[4],0,povtorsum,false);
+			endformat;
+			startformat(15);
+				outstring(tabs[0],0,"Повт. ремонты неоплаченные",false);
+				outstring(tabs[3],0,povtorqtyneoplat,false);
+				outstring(tabs[4],0,povtorsumneoplat,false);
+			endformat;
+			startformat(15);
+				outstring(tabs[0],0,"Повт. ремонты в долг",false);
+				outstring(tabs[3],0,povtorqtydolg,false);
+				outstring(tabs[4],0,povtorsumdolg,false);
+			endformat;
+			startformat(15);
+				outstring(tabs[0],0,"Повт. ремонты отмененные",false);
+				outstring(tabs[3],0,povtorqtyotkaz,false);
+				outstring(tabs[4],0,povtorsumotkaz,false);
+			endformat;
 		
-		Gray_divider(0,300);
-		startformat(15);
-			outstring(tabs[0],0,"Повт. ремонты выполненые",false);
-			outstring(tabs[3],0,povtorqty,false);
-			outstring(tabs[4],0,povtorsum,false);
-		endformat;
-		startformat(15);
-			outstring(tabs[0],0,"Повт. ремонты неоплаченные",false);
-			outstring(tabs[3],0,povtorqtyneoplat,false);
-			outstring(tabs[4],0,povtorsumneoplat,false);
-		endformat;
-		startformat(15);
-			outstring(tabs[0],0,"Повт. ремонты в долг",false);
-			outstring(tabs[3],0,povtorqtydolg,false);
-			outstring(tabs[4],0,povtorsumdolg,false);
-		endformat;
-		startformat(15);
-			outstring(tabs[0],0,"Повт. ремонты отмененные",false);
-			outstring(tabs[3],0,povtorqtyotkaz,false);
-			outstring(tabs[4],0,povtorsumotkaz,false);
-		endformat;
-		
-		Gray_divider(0,300);
-		startformat(15);
-			outstring(tabs[0],0,"Всего оплаченных ремонтов",false);
-			outstring(tabs[3],0,totpayremqty,false);
-		endformat;
-		startformat(15);
-			outstring(tabs[0],0,"Услуги",false);
-			outstring(tabs[3],0,totpayrem,false);
-			outstring(tabs[4],0,"Детали",false);
-			outstring(tabs[5],0,totpayremdet,false);
-			outstring(tabs[6],0,"Итого",false);
-			outstring(tabs[7],0,totpayrem + totpayremdet,false);
-		endformat;
-		Gray_divider(0,300);
-		startformat(15);
-			outstring(tabs[0],0,"Неоплаченных ремонтов",false);
-			outstring(tabs[3],0,totnopayremqty,false);
-		endformat;
-		startformat(15);
-			outstring(tabs[0],0,"Услуги",false);
-			outstring(tabs[3],0,supertotdolg,false);
-			outstring(tabs[4],0,"Детали",false);
-			outstring(tabs[5],0,supertotdolgdet,false);
-			outstring(tabs[6],0,"Итого",false);
-			outstring(tabs[7],0,supertotdolg + supertotdolgdet,false);
-		endformat;
+			Gray_divider(0,300);
+			startformat(15);
+				outstring(tabs[0],0,"Всего оплаченных ремонтов",false);
+				outstring(tabs[3],0,totpayremqty,false);
+			endformat;
+			startformat(15);
+				outstring(tabs[0],0,"Услуги",false);
+				outstring(tabs[3],0,totpayrem,false);
+				outstring(tabs[4],0,"Детали",false);
+				outstring(tabs[5],0,totpayremdet,false);
+				outstring(tabs[6],0,"Итого",false);
+				outstring(tabs[7],0,totpayrem + totpayremdet,false);
+			endformat;
+			Gray_divider(0,300);
+			startformat(15);
+				outstring(tabs[0],0,"Неоплаченных ремонтов",false);
+				outstring(tabs[3],0,totnopayremqty,false);
+			endformat;
+			startformat(15);
+				outstring(tabs[0],0,"Услуги",false);
+				outstring(tabs[3],0,supertotdolg,false);
+				outstring(tabs[4],0,"Детали",false);
+				outstring(tabs[5],0,supertotdolgdet,false);
+				outstring(tabs[6],0,"Итого",false);
+				outstring(tabs[7],0,supertotdolg + supertotdolgdet,false);
+			endformat;
 
-		Gray_divider(0,300);
-		startformat(15);
-			outstring(tabs[0],0,"Ремонтов в долг",false);
-			outstring(tabs[3],0,totdolgqty,false);
-		endformat;
-		startformat(15);
-			outstring(tabs[0],0,"Услуги",false);
-			outstring(tabs[3],0,totdolgsum,false);
-			outstring(tabs[4],0,"Детали",false);
-			outstring(tabs[5],0,totdolgsumdet,false);
-			outstring(tabs[6],0,"Итого",false);
-			outstring(tabs[7],0,totdolgsum + totdolgsumdet,false);
-		endformat;
+			Gray_divider(0,300);
+			startformat(15);
+				outstring(tabs[0],0,"Ремонтов в долг",false);
+				outstring(tabs[3],0,totdolgqty,false);
+			endformat;
+			startformat(15);
+				outstring(tabs[0],0,"Услуги",false);
+				outstring(tabs[3],0,totdolgsum,false);
+				outstring(tabs[4],0,"Детали",false);
+				outstring(tabs[5],0,totdolgsumdet,false);
+				outstring(tabs[6],0,"Итого",false);
+				outstring(tabs[7],0,totdolgsum + totdolgsumdet,false);
+			endformat;
 
-		Gray_divider(0,300);
-		startformat(15);
-			outstring(tabs[0],0,"Отмен",false);
-			outstring(tabs[3],0,totcan,false);
-		endformat;
+			Gray_divider(0,300);
+			startformat(15);
+				outstring(tabs[0],0,"Отмен",false);
+				outstring(tabs[3],0,totcan,false);
+			endformat;
 		
-		For(i=0;i<irjct;i=i+1) begin
-	  	startformat(15);
-				outstring(tabs[0],0,arjct[i],false);
-				outstring(tabs[3],0,vIngCanQty[arjct[i]],false);
-			endformat;	
-		end; 
-		
+			For(i=0;i<irjct;i=i+1) begin
+				startformat(15);
+					outstring(tabs[0],0,arjct[i],false);
+					outstring(tabs[3],0,vIngCanQty[arjct[i]],false);
+				endformat;	
+			end; 
+		end;
 		/*startformat(15);
 			outstring(tabs[0],0,"Отмен по нашей вине",false);
 			outstring(tabs[3],0,totourcan,false);
@@ -1738,27 +1849,31 @@ begin
 		tabs[11] = 420;
 		tabs[12] = 470;
 		
-		gray_divider(0,1);
+		if (RepSpec.flags[26]==0) then begin
+			gray_divider(0,1);
+		end;
 		if(blank(RepSpec.f2))then begin
-			startformat(15);
-				outstring(tabs[0],0,"-==Статистика по инженерам==-",false);
-			endformat;
-			startformat(15);
-				outstring(tabs[0],0,"Услуги",false);
-			endformat;
-			startformat(15);
-				outstring(tabs[0],0,"Инженер",false);
-				outstring(tabs[2],0,"Оплачено",false);
-				outstring(tabs[4],0,"Неоплаченно",false);
-				outstring(tabs[5],0,"Возвр.",false);
-				outstring(tabs[6],0,"Долг",false);
-				outstring(tabs[7],0,"Отмена",false);
-				outstring(tabs[8],0,"Возвр. на доработку",false);
-				outstring(tabs[9],0,"Проср. диагн.",false);
-				outstring(tabs[10],0,"Проср. заказ запч.",false);
-				outstring(tabs[11],0,"Проср. ремонт.",false);
-				outstring(tabs[12],0,"Проср. всего",false);
-			endformat;
+			if (RepSpec.flags[26]==0) then begin
+				startformat(15);
+					outstring(tabs[0],0,"-==Статистика по инженерам==-",false);
+				endformat;
+				startformat(15);
+					outstring(tabs[0],0,"Услуги",false);
+				endformat;
+				startformat(15);
+					outstring(tabs[0],0,"Инженер",false);
+					outstring(tabs[2],0,"Оплачено",false);
+					outstring(tabs[4],0,"Неоплаченно",false);
+					outstring(tabs[5],0,"Возвр.",false);
+					outstring(tabs[6],0,"Долг",false);
+					outstring(tabs[7],0,"Отмена",false);
+					outstring(tabs[8],0,"Возвр. на доработку",false);
+					outstring(tabs[9],0,"Проср. диагн.",false);
+					outstring(tabs[10],0,"Проср. заказ запч.",false);
+					outstring(tabs[11],0,"Проср. ремонт.",false);
+					outstring(tabs[12],0,"Проср. всего",false);
+				endformat;
+			end;
 			tot[1] = blankval;
 			tot[2] = blankval;
 			tot[3] = blankval;
@@ -1769,20 +1884,21 @@ begin
 			tot[8] = blankval;
 			tot[9] = blankval;
 			For(i=0;i<ingcnt;i=i+1) begin
-				
-	  		startformat(15);
-	  			outstring(tabs[0],0,aing[i],false);
-					outstring(tabs[2],0,vIngSum[aing[i] & ":GOTOV:SERV"],false);
-					outstring(tabs[4],0,vIngSum[aing[i] & ":NOPAY:SERV"],false);
-					outstring(tabs[5],0,vIngSum[aing[i] & ":VOZVR:SERV"],false);
-					outstring(tabs[6],0,vIngSum[aing[i] & ":DOLG:SERV"],false);
-					outstring(tabs[7],0,vIngCanQty[aing[i]],false);
-					outstring(tabs[8],0,vIngCanQty[aing[i] & "DOR"],false);
-					outstring(tabs[9],0,vIngCanQty[aing[i] & ":5"],false);
-					outstring(tabs[10],0,vIngCanQty[aing[i] & ":10"],false);
-					outstring(tabs[11],0,vIngCanQty[aing[i] & ":1"],false);
-					outstring(tabs[12],0,vIngCanQty[aing[i] & ":T"],false);
-				endformat;
+				if (RepSpec.flags[26]==0) then begin
+					startformat(15);
+						outstring(tabs[0],0,aing[i],false);
+							outstring(tabs[2],0,vIngSum[aing[i] & ":GOTOV:SERV"],false);
+							outstring(tabs[4],0,vIngSum[aing[i] & ":NOPAY:SERV"],false);
+							outstring(tabs[5],0,vIngSum[aing[i] & ":VOZVR:SERV"],false);
+							outstring(tabs[6],0,vIngSum[aing[i] & ":DOLG:SERV"],false);
+							outstring(tabs[7],0,vIngCanQty[aing[i]],false);
+							outstring(tabs[8],0,vIngCanQty[aing[i] & "DOR"],false);
+							outstring(tabs[9],0,vIngCanQty[aing[i] & ":5"],false);
+							outstring(tabs[10],0,vIngCanQty[aing[i] & ":10"],false);
+							outstring(tabs[11],0,vIngCanQty[aing[i] & ":1"],false);
+							outstring(tabs[12],0,vIngCanQty[aing[i] & ":T"],false);
+						endformat;
+				end;
 				tot[1] = tot[1] + vIngSum[aing[i] & ":GOTOV:SERV"];
 				tot[2] = tot[2] + vIngSum[aing[i] & ":NOPAY:SERV"];
 				tot[10] = tot[10] + vIngSum[aing[i] & ":VOZVR:SERV"];
@@ -1792,25 +1908,29 @@ begin
 				tot[6] = tot[6] + vIngCanQty[aing[i] & ":5"];
 				tot[7] = tot[7] + vIngCanQty[aing[i] & ":10"];
 				tot[8] = tot[8] + vIngCanQty[aing[i] & ":1"];
-				tot[9] = tot[9] + vIngCanQty[aing[i] & ":T"];				
-				gray_divider(0,1);
-			end; 
-			startformat(15);
-				outstring(tabs[0],0,"Всего",false);
-				outstring(tabs[2],0,tot[1],false);
-				outstring(tabs[4],0,tot[2],false);
-				outstring(tabs[5],0,tot[10],false);
-				outstring(tabs[6],0,tot[3],false);
-				outstring(tabs[7],0,tot[4],false);
-				outstring(tabs[8],0,tot[5],false);
-				outstring(tabs[9],0,tot[6],false);
-				outstring(tabs[10],0,tot[7],false);
-				outstring(tabs[11],0,tot[8],false);
-				outstring(tabs[12],0,tot[9],false);
-			endformat;
-			startformat(15);
-				outstring(tabs[0],0,"Детали",false);
-			endformat;
+				tot[9] = tot[9] + vIngCanQty[aing[i] & ":T"];
+				if (RepSpec.flags[26]==0) then begin				
+					gray_divider(0,1);
+				end;
+			end;
+			if (RepSpec.flags[26]==0) then begin
+				startformat(15);
+					outstring(tabs[0],0,"Всего",false);
+					outstring(tabs[2],0,tot[1],false);
+					outstring(tabs[4],0,tot[2],false);
+					outstring(tabs[5],0,tot[10],false);
+					outstring(tabs[6],0,tot[3],false);
+					outstring(tabs[7],0,tot[4],false);
+					outstring(tabs[8],0,tot[5],false);
+					outstring(tabs[9],0,tot[6],false);
+					outstring(tabs[10],0,tot[7],false);
+					outstring(tabs[11],0,tot[8],false);
+					outstring(tabs[12],0,tot[9],false);
+				endformat;
+				startformat(15);
+					outstring(tabs[0],0,"Детали",false);
+				endformat;
+			end;
 			tot[1] = blankval;
 			tot[2] = blankval;
 			tot[3] = blankval;
@@ -1822,67 +1942,91 @@ begin
 			tot[9] = blankval;
 			tot[10] = blankval;
 			For(i=0;i<ingcnt;i=i+1) begin
-	  		startformat(15);
-	  			outstring(tabs[0],0,aing[i],false);
-					outstring(tabs[2],0,vIngSum[aing[i] & ":GOTOV:DET"],false);
-					outstring(tabs[4],0,vIngSum[aing[i] & ":NOPAY:DET"],false);
-					outstring(tabs[5],0,vIngSum[aing[i] & ":VOZVR:DET"],false);
-					outstring(tabs[6],0,vIngSum[aing[i] & ":DOLG:DET"],false);
-				endformat;
+				if (RepSpec.flags[26]==0) then begin
+					startformat(15);
+						outstring(tabs[0],0,aing[i],false);
+							outstring(tabs[2],0,vIngSum[aing[i] & ":GOTOV:DET"],false);
+							outstring(tabs[4],0,vIngSum[aing[i] & ":NOPAY:DET"],false);
+							outstring(tabs[5],0,vIngSum[aing[i] & ":VOZVR:DET"],false);
+							outstring(tabs[6],0,vIngSum[aing[i] & ":DOLG:DET"],false);
+					endformat;
+				end;
 				tot[1] = tot[1] + vIngSum[aing[i] & ":GOTOV:DET"];
 				tot[2] = tot[2] + vIngSum[aing[i] & ":NOPAY:DET"];
 				tot[4] = tot[4] + vIngSum[aing[i] & ":VOZVR:DET"];
 				tot[3] = tot[3] + vIngSum[aing[i] & ":DOLG:DET"];
-				gray_divider(0,1);
-			end; 
-			startformat(15);
-				outstring(tabs[0],0,"Всего",false);
-				outstring(tabs[2],0,tot[1],false);
-				outstring(tabs[4],0,tot[2],false);
-				outstring(tabs[5],0,tot[4],false);
-				outstring(tabs[6],0,tot[3],false);
-			endformat;
+				if (RepSpec.flags[26]==0) then begin
+					gray_divider(0,1);
+				end;
+			end;
+			if (RepSpec.flags[26]==0) then begin
+				startformat(15);
+					outstring(tabs[0],0,"Всего",false);
+					outstring(tabs[2],0,tot[1],false);
+					outstring(tabs[4],0,tot[2],false);
+					outstring(tabs[5],0,tot[4],false);
+					outstring(tabs[6],0,tot[3],false);
+				endformat;
+			end;
 		end;
 		if(blank(RepSpec.f3))then begin
-			startformat(15);
-				outstring(tabs[0],0,"-==Статистика по менеджерам==-",false);
-			endformat;
-			gray_divider(0,1);
-			startformat(15);
-				outstring(tabs[0],0,"Услуги",false);
-			endformat;
-			startformat(15);
-				outstring(tabs[0],0,"Менеджер",false);
-				outstring(tabs[2],0,"Оплачено",false);
-				outstring(tabs[4],0,"Неоплаченно",false);
-				outstring(tabs[5],0,"Возврат",false);
-				outstring(tabs[6],0,"Долг",false);
-				outstring(tabs[7],0,"Отмена",false);
-				outstring(tabs[8],0,"Возвр. на доработку",false);
-				outstring(tabs[9],0,"Проср. диагн.",false);
-				outstring(tabs[10],0,"Проср. заказ запч.",false);
-				outstring(tabs[11],0,"Проср. ремонт.",false);
-				outstring(tabs[12],0,"Проср. всего",false);
+			if (RepSpec.flags[26]==0) then begin
+				startformat(15);
+					outstring(tabs[0],0,"-==Статистика по менеджерам==-",false);
+				endformat;
+				gray_divider(0,1);
+				startformat(15);
+					outstring(tabs[0],0,"Услуги",false);
+				endformat;
+				startformat(15);
+					outstring(tabs[0],0,"Менеджер",false);
+					outstring(tabs[2],0,"Оплачено",false);
+					outstring(tabs[4],0,"Неоплаченно",false);
+					outstring(tabs[5],0,"Возврат",false);
+					outstring(tabs[6],0,"Долг",false);
+					outstring(tabs[7],0,"Отмена",false);
+					outstring(tabs[8],0,"Возвр. на доработку",false);
+					outstring(tabs[9],0,"Проср. диагн.",false);
+					outstring(tabs[10],0,"Проср. заказ запч.",false);
+					outstring(tabs[11],0,"Проср. ремонт.",false);
+					outstring(tabs[12],0,"Проср. всего",false);
 				
-			endformat;
+				endformat;
+			end else begin
+				startformat(15);
+				outstring(tabs[0],0,"-==Статистика по менеджерам==-",false);
+				endformat;
+				gray_divider(0,1);
+				startformat(15);
+				outstring(tabs[0],0,"Страховка",false);
+				endformat;
+				startformat(15);
+					outstring(tabs[0],0,"Менеджер",false);
+					outstring(tabs[3],0,"Оплачено",false);
+					outstring(tabs[6],0,"Неоплаченно",false);
+					outstring(tabs[9],0,"Долг",false);
+				endformat;
+			end;
 			tot[1] = blankval;
 			tot[2] = blankval;
 			tot[3] = blankval;
 			tot[4] = blankval;
 			For(i=0;i<mancnt;i=i+1) begin
-	  		startformat(15);
-	  			outstring(tabs[0],0,aman[i],false);
-					outstring(tabs[2],0,vManSum[aman[i] & ":GOTOV:SERV"],false);
-					outstring(tabs[4],0,vManSum[aman[i] & ":NOPAY:SERV"],false);
-					outstring(tabs[5],0,vManSum[aman[i] & ":VOZVR:SERV"],false);
-					outstring(tabs[6],0,vManSum[aman[i] & ":DOLG:SERV"],false);
-					outstring(tabs[7],0,vManCanQty[aman[i]],false);
-					outstring(tabs[8],0,vManCanQty[aman[i] & "DOR"],false);
-					outstring(tabs[9],0,vManCanQty[aman[i] & ":5"],false);
-					outstring(tabs[10],0,vManCanQty[aman[i] & ":10"],false);
-					outstring(tabs[11],0,vManCanQty[aman[i] & ":1"],false);
-					outstring(tabs[12],0,vManCanQty[aman[i] & ":T"],false);
-				endformat;
+				if (RepSpec.flags[26]==0) then begin
+					startformat(15);
+						outstring(tabs[0],0,aman[i],false);
+						outstring(tabs[2],0,vManSum[aman[i] & ":GOTOV:SERV"],false);
+						outstring(tabs[4],0,vManSum[aman[i] & ":NOPAY:SERV"],false);
+						outstring(tabs[5],0,vManSum[aman[i] & ":VOZVR:SERV"],false);
+						outstring(tabs[6],0,vManSum[aman[i] & ":DOLG:SERV"],false);
+						outstring(tabs[7],0,vManCanQty[aman[i]],false);
+						outstring(tabs[8],0,vManCanQty[aman[i] & "DOR"],false);
+						outstring(tabs[9],0,vManCanQty[aman[i] & ":5"],false);
+						outstring(tabs[10],0,vManCanQty[aman[i] & ":10"],false);
+						outstring(tabs[11],0,vManCanQty[aman[i] & ":1"],false);
+						outstring(tabs[12],0,vManCanQty[aman[i] & ":T"],false);
+					endformat;
+				end;
 				tot[1] = tot[1] + vManSum[aman[i] & ":GOTOV:SERV"];
 				tot[2] = tot[2] + vManSum[aman[i] & ":NOPAY:SERV"];
 				tot[10] = tot[10] + vManSum[aman[i] & ":VOZVR:SERV"];
@@ -1892,63 +2036,75 @@ begin
 				tot[6] = tot[6] + vManCanQty[aman[i] & ":5"];
 				tot[7] = tot[7] + vManCanQty[aman[i] & ":10"];
 				tot[8] = tot[8] + vManCanQty[aman[i] & ":1"];
-				tot[9] = tot[9] + vManCanQty[aman[i] & ":T"];	
-				gray_divider(0,1);
+				tot[9] = tot[9] + vManCanQty[aman[i] & ":T"];
+				if (RepSpec.flags[26]==0) then begin
+					gray_divider(0,1);
+				end;
 			end; 
-			startformat(15);
-				outstring(tabs[0],0,"Всего",false);
-				outstring(tabs[2],0,tot[1],false);
-				outstring(tabs[4],0,tot[2],false);
-				outstring(tabs[5],0,tot[10],false);
-				outstring(tabs[6],0,tot[3],false);
-				outstring(tabs[7],0,tot[4],false);
-				outstring(tabs[8],0,tot[5],false);
-				outstring(tabs[9],0,tot[6],false);
-				outstring(tabs[10],0,tot[7],false);
-				outstring(tabs[11],0,tot[8],false);
-				outstring(tabs[12],0,tot[9],false);
-			endformat;
-			startformat(15);
-				outstring(tabs[0],0,"Детали",false);
-			endformat;
+			if (RepSpec.flags[26]==0) then begin
+				startformat(15);
+					outstring(tabs[0],0,"Всего",false);
+					outstring(tabs[2],0,tot[1],false);
+					outstring(tabs[4],0,tot[2],false);
+					outstring(tabs[5],0,tot[10],false);
+					outstring(tabs[6],0,tot[3],false);
+					outstring(tabs[7],0,tot[4],false);
+					outstring(tabs[8],0,tot[5],false);
+					outstring(tabs[9],0,tot[6],false);
+					outstring(tabs[10],0,tot[7],false);
+					outstring(tabs[11],0,tot[8],false);
+					outstring(tabs[12],0,tot[9],false);
+				endformat;
+				startformat(15);
+					outstring(tabs[0],0,"Детали",false);
+				endformat;
+			end;
 			tot[1] = blankval;
 			tot[2] = blankval;
 			tot[3] = blankval;
 			tot[4] = blankval;
 			For(i=0;i<mancnt;i=i+1) begin
-	  		startformat(15);
-	  			outstring(tabs[0],0,aman[i],false);
-					outstring(tabs[2],0,vManSum[aman[i] & ":GOTOV:DET"],false);
-					outstring(tabs[4],0,vManSum[aman[i] & ":NOPAY:DET"],false);
-					outstring(tabs[5],0,vManSum[aman[i] & ":VOZVR:DET"],false);
-					outstring(tabs[6],0,vManSum[aman[i] & ":DOLG:DET"],false);
-				endformat;
+				if (RepSpec.flags[26]==0) then begin
+					startformat(15);
+						outstring(tabs[0],0,aman[i],false);
+						outstring(tabs[2],0,vManSum[aman[i] & ":GOTOV:DET"],false);
+						outstring(tabs[4],0,vManSum[aman[i] & ":NOPAY:DET"],false);
+						outstring(tabs[5],0,vManSum[aman[i] & ":VOZVR:DET"],false);
+						outstring(tabs[6],0,vManSum[aman[i] & ":DOLG:DET"],false);
+					endformat;
+				end;
 				tot[1] = tot[1] + vManSum[aman[i] & ":GOTOV:DET"];
 				tot[2] = tot[2] + vManSum[aman[i] & ":NOPAY:DET"];
 				tot[3] = tot[3] + vManSum[aman[i] & ":DOLG:DET"];
 				tot[4] = tot[4] + vManSum[aman[i] & ":VOZVR:DET"];
-				gray_divider(0,1);
+				if (RepSpec.flags[26]==0) then begin
+					gray_divider(0,1);
+				end;
 			end; 
-			startformat(15);
-				outstring(tabs[0],0,"Всего",false);
-				outstring(tabs[2],0,tot[1],false);
-				outstring(tabs[4],0,tot[2],false);
-				outstring(tabs[5],0,tot[4],false);
-				outstring(tabs[6],0,tot[3],false);
-			endformat;
+			if (RepSpec.flags[26]==0) then begin
+				startformat(15);
+					outstring(tabs[0],0,"Всего",false);
+					outstring(tabs[2],0,tot[1],false);
+					outstring(tabs[4],0,tot[2],false);
+					outstring(tabs[5],0,tot[4],false);
+					outstring(tabs[6],0,tot[3],false);
+				endformat;
+			end;
 		end;
-		gray_divider(0,1);
-		startformat(15);
-			outstring(tabs[0],0,"Статистика Binotel:",false);
-			outstring(tabs[6],0,"Сумма",false);
-		endformat;
-		MySortStringArray(TrackSumKey,TrackCnt);
-
-		for(i=0;i<TrackCnt;i=i+1)begin
+		if (RepSpec.flags[26]==0) then begin
+			gray_divider(0,1);
 			startformat(15);
-				outstring(tabs[0],0,TrackSumKey[i],false);
-				outstring(tabs[6],0,vTrackSum[TrackSumKey[i]],false);
+				outstring(tabs[0],0,"Статистика Binotel:",false);
+				outstring(tabs[6],0,"Сумма",false);
 			endformat;
+			MySortStringArray(TrackSumKey,TrackCnt);
+
+			for(i=0;i<TrackCnt;i=i+1)begin
+				startformat(15);
+					outstring(tabs[0],0,TrackSumKey[i],false);
+					outstring(tabs[6],0,vTrackSum[TrackSumKey[i]],false);
+				endformat;
+			end;
 		end;
 	endjob;
 

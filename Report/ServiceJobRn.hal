@@ -1015,22 +1015,22 @@ begin
 	  							if(readfirstmain(INr,1,true))then begin
 	  								
 	  								svoout = true;
-									if (RepSpec.flags[26]==0) then begin
-										startformat(15);
-											outstring(tabs[2],0,IVrw.Spec,false);
-											if(IVr.InvType!=kInvoiceTypeCredit)then begin
-												outstring(tabs[6],0,IVrw.Sum,false);
-											end else begin
-												outstring(tabs[6],0,-IVrw.Sum,false);
-											end;
-											if(IVr.SalesMan==SVOr.CustomField7)then begin
-												outstring(tabs[7],0,SVOr.ServiceManager,false);
-											end else begin
-												outstring(tabs[7],0,IVr.SalesMan,false);
-											end;
-											outstring(tabs[8],0,SVOr.StatusText,false);
-										endformat;
-									end;
+										if (RepSpec.flags[26]==0) then begin
+											startformat(15);
+												outstring(tabs[2],0,IVrw.Spec,false);
+												if(IVr.InvType!=kInvoiceTypeCredit)then begin
+													outstring(tabs[6],0,IVrw.Sum,false);
+												end else begin
+													outstring(tabs[6],0,-IVrw.Sum,false);
+												end;
+												if(IVr.SalesMan==SVOr.CustomField7)then begin
+													outstring(tabs[7],0,SVOr.ServiceManager,false);
+												end else begin
+													outstring(tabs[7],0,IVr.SalesMan,false);
+												end;
+												outstring(tabs[8],0,SVOr.StatusText,false);
+											endformat;
+										end;
 	  								if(INr.ItemType==3 or INr.ItemType==0)then begin
 	  									if(filter)then begin
 												if(IVr.InvType!=kInvoiceTypeCredit)then begin
@@ -1162,7 +1162,6 @@ begin
 							outstring(tabs[3],0,blankval,false);
 							outstring(tabs[4],0,blankval,false);
 							outstring(tabs[5],0,blankval,false);
-							//outstring(tabs[6],0,SVOr.WSCost,false);
 						endformat;
 					end;
 					if(SVOr.StatusReturnCnt>0)then begin
@@ -1481,7 +1480,6 @@ begin
 							outstring(tabs[3],0,blankval,false);
 							outstring(tabs[4],0,blankval,false);
 							outstring(tabs[5],0,blankval,false);
-							//outstring(tabs[6],0,SVOr.WSCost,false);
 						endformat;
 					end;
 					if(SVOr.StatusReturnCnt>0)then begin
@@ -1532,7 +1530,7 @@ begin
 							povtorsumdolg = povtorsumdolg + ivsumserv[asvonr[i]];
 							povtorqtydolg = povtorqtydolg + 1;
 						
-							if (RepSpec.flags[26]==0) then begin
+							if(RepSpec.flags[26]==0)then begin
 								startformat(15);
 									outstring(tabs[0],0,"Повторный ремонт",false);
 									outstring(tabs[6],"DblSVOVcSer",SVOr.GarNo,false);
@@ -1584,7 +1582,6 @@ begin
 			black_divider(0,1);
 			startformat(15);
 				outstring(3,0,"Отмененные ремонты",false);
-
 			endformat;
 		end;
 		resetloop(SVOr);
@@ -1668,7 +1665,9 @@ begin
 							FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
 						end;
 					end;
-				endformat;
+					if (RepSpec.flags[26]==0) then begin
+						endformat;
+					end;
 				
 				if(vrjct[SVOr.RejectReason]==false)then begin
 					vrjct[SVOr.RejectReason]=true;

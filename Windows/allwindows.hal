@@ -406,9 +406,10 @@ begin
   EditField(h2=240,v,180,"ФИО",Normal,Addr0,false,0);
   EditField(h2+250,v,70,"Создал",ViewOnly,SalesMan,false,0);
   EditField(h,vm=(v+=vs),82, "Клиент (телефон)",Normal,CustCode,false,CUSClass);
+  EditField(h,vm+50,100,"Карта лояльности",Normal,LoyCardCode,false,MyLoyCardSClass);
   
   halpushbutton(h-45,vm+17,h+80,vm+50,"ChangeSVOSalesGroup","Перенести ремонт"); 
-  HalPushButton(h-45,vm+55,h+80,vm+80,"PrintAndSetRegDateInSVODsm","Выдать");//Edit-------------------Vitalii 13:51 27.10.2016
+  HalPushButton(h-45,vm+75,h+80,vm+100,"PrintAndSetRegDateInSVODsm","Выдать");//Edit-------------------Vitalii 13:51 27.10.2016
   EditField(260,vm,80, "Принял",Normal,CustomField7,false,UserSClass);// Edit ************************** Monday, 31 May 2010 9:22:11 AM
   CheckBox(360,vm,0,"Устройство принял",GetItemFlag);
   EditField(260,vm+=20,80,"Гр.Пр.",Normal,SalesGroup,false,SalesGroupSClass);
@@ -418,7 +419,7 @@ begin
 
   EditField(260,vm+=20,100,"Сер. мастер",Normal,ServiceManager,false,UserSClass);// Edit ************************** Monday, 31 May 2010 9:22:11 AM
   EditField(460,vm,100,"К оплате",ViewOnly,WSCost,false,0);
-  EditField(260,vm+=20,100,"Ответственный менеджер",Normal,Inspector,false,UserSClass);
+  EditField(260,vm+=20,100,"Ответственный",Normal,Inspector,false,UserSClass);
   EditField(500,vm,60,"Запланированый визит",Normal,PlanVisitDate,false,PasteCurDate); //Edit***************************Sasha2,16:52 09.06.2017
 
   vm = 8;
@@ -10681,4 +10682,87 @@ begin
 	SetWRect(20,80,640,480);
 	Sizeable(-1,-1,0,0);
 	EndWindow;
+end;
+
+
+/*window MyLoyCardSClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  WindowBegin("Карты лояльности",MyLoyCardSClass,CGslist,-);
+  UseView(MyLoyCardVc);
+  SpawnClass(MyLoyCardDClass);
+  SetWRect(100,80,500,398);
+  RecordList(4,17,-21,-39);
+	RlColKey(4,4,"Номер",Code,false,Code);
+	RlColKey(144,144,"Дата выдачи",SDate,false,SDate);
+  SearchField("Поиск");
+end;*/
+
+window MyLoyCardSClass:4
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real v;
+  
+  WindowBegin("Выберите товар",MyLoyCardSClass,CGslist,-);
+  Sizeable(-1,-1,0,0);
+  UseView(MyLoyCardVc);
+  SpawnClass(MyLoyCardDClass);
+      v = 0;
+      SetWRect(210,80,850,298);// Edit ************************** Tuesday, July 15, 2014 at 9:58:01
+      RecordList(4,v+17,-21,-39);
+      RlColKey(4,4,"Номер",Code,false,Code);
+			RlColKey(105,105,"Дата выдачи",SDate,false,SDate);
+      SearchField("Поиск");
+  EndWindow;
+end;
+
+window MyLoyCardLClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  WindowBegin("Карты лояльности",MyLoyCardLClass,CGmlist,-);
+  SetWRect(20,80,600,298);
+  SpawnClass(MyLoyCardDClass);
+  Sizeable(-1,-1,0,0);
+  UseView(MyLoyCardVc);
+  RecordList(4,17,-21,-39);
+  RlColKey(4,4,"Номер",Code,false,Code);
+  RlColKey(134,134,"Дата выдачи.",SDate,false,SDate);
+  SearchField("Поиск");
+  EndWindow;
+end;
+
+
+window MyLoyCardDClass:2
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,h2,v;
+  WindowBegin("Карта лояльности",MyLoyCardDClass,CGview,-);
+  BrowseButtons(false);
+  UseView(MyLoyCardVc);
+  SetWRect(20,80,300,300);
+  EditField(h=100,v=6,150,"Номер",Normal,Code,false,0);
+  EditField(h,v+=20,80,"Дата выдачи",Normal,SDate,false,0);
+  EditField(h,v+=20,50,"Баланс",ViewOnly,Bal,false,0);
+  EditField(h,v+=20,50,"Скидка",ViewOnly,RebCode,false,RebSCLass);
+  
+  EndWindow;
+end;
+
+window MyLCMLevelSetTClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v;
+  WindowBegin("Структура программы лояльности накопительной карты",MyLCMLevelSetTClass,CGHbl,HBlRecType);
+  SetBlid(MyLCMLevelSetBlock);
+  SetWRect(20,80,600,357);
+  Sizeable(-1,-1,0,0);
+  h = 8; v = 20;
+  MatrixBegin(h,v,-31,-20,-,99);
+  MatCol(1,24,"Начиная с баллов",0,FromPoints,false,0);
+  MatCol(1,104,"Заканчив. баллами",0,ToPoints,false,0);
+  //MatCol(1,188,"Уровень",0,LCMLevel,false,LCMemberLevelSClass);
+  MatCol(1,276,"Табл. скидок",0,RebCode,false,RebSClass);
+  //MatCol(1,366,"Прейскурант",0,PLCode,false,PLDefSClass);
+  EndMatrix;
+  EndWindow;
 end;

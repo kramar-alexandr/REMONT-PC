@@ -81,7 +81,6 @@ external updating function Boolean DoXMLExport_IVVc(var record IVVc);
 external function Boolean PasteInvIn2IPr(var record IPVc,Integer,Date,var val,Boolean,var Boolean);// Edit ************************** Friday, 25 November 2016 14:08:15
 external procedure IPVc_PasteRecVal(var record IPVc,Integer);// Edit ************************** Thursday, 13 July 2017 15:34:11
 external function Boolean IPVc_PasteCustCode(var record IPVc,Integer,var LongInt); //Edit***************************Sasha2,14:55 18.02.2015
-
 SetLangMode(LangRussian,"RUS",0);
 
 function Boolean CheckIfNextLegalSerNr(LongInt curivnr,string OfficialSerNr,Date invdate,record CUVc CUr)
@@ -2239,14 +2238,17 @@ begin
 	record ARVc ARr;
 	val sum;
 	record IPVc IPr,oldIPr;
-	record SVOVc SVOr;
+	record SVOVc SVOr,SVO2r;
 	val restSum,paidSum;
 	string 20 customer;
 	record SalesGroupVc SGr;
   record ITVc ITr;
 	
+	
+	
 	SVOr.SerNr = RepSpec.long1;
 	if(readfirstmain(SVOr,1,true))then begin
+		recordcopy(SVO2r,SVOr);
 		TrHs = true;
 		IVr.SVONr = SVOr.SerNr;
 		while(loopkey("SVONr",IVr,1,TrHs)) begin

@@ -22,6 +22,7 @@ remote function Boolean IntORVc_PasteArtCode(var record IntORVc,Integer,Boolean)
 remote function Boolean IntORchrsum(record IntORVc,Integer);
 remote procedure SumupIntOR(var record IntORVc,var val);
 external function string 255 StrReplace(string,string,string);
+external updating procedure UpdateLoyCard(record SVOVc,record SVOVc);// Edit ************************** BPI Ukraine - KramarAlexandr - 04, 15 03 2018 y. î 19:51:40
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -4230,7 +4231,7 @@ end; //Edit***************************Sasha2,15:12 15.08.2017 }
 global //Edit***************************Sasha2,14:33 15.08.2017 {
 updating procedure IPUpdateSVO(record IPVc IPr,Boolean wasUnOkedF)
 begin
-  record SVOVc SVOr;
+  record SVOVc SVOr,SVO2r;
   record IVVc IVr;
   row IPVc IPrw;
   Integer i,rwcnt;
@@ -4256,6 +4257,7 @@ begin
       end;
     end;
     if (SVOr.SerNr>-1 and ReadFirstMain(SVOr,1,true)) then begin
+    	recordcopy(SVO2r,SVOr);
       sumToSVO = IPrw.RecVal;
       if (wasUnOkedF) then begin
         sumToSVO = -sumToSVO;
@@ -4277,6 +4279,7 @@ begin
         saveF = true;
       end;
       if (saveF) then begin
+      	UpdateLoyCard(SVOr,SVO2r);// Edit ************************** BPI Ukraine - KramarAlexandr - 04, 15 03 2018 y. î 19:51:40
         RecordStore(SVOr,true);
       end;
     end;

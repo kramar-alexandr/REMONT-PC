@@ -1,0 +1,64 @@
+global
+updating function LongInt MyLoyCardVcRecordCheck(var record MyLoyCardVc MLCr,record MyLoyCardVc MLC2r,LongInt stat,LongInt long4)
+BEGIN
+	longint res;
+	res = 0;
+	
+	if (blank(MLCr.Code)) then begin
+		RecordCheckError(20108,"",-1,"Code");      
+		res = -1; 
+		goto LMyLoyCardVcRecordCheck;
+	end;
+	
+	if(blankdate(MLCr.SDate))then begin
+		MLCr.SDate = currentdate;
+	end;
+		
+LMyLoyCardVcRecordCheck:;
+	
+	MyLoyCardVcRecordCheck = res;
+return;
+end;
+
+global
+updating function LongInt MyLoyCardVcRecordUpdate(var record MyLoyCardVc MLCr,record MyLoyCardVc MLC2r,LongInt stat,LongInt long4)
+BEGIN
+	longint res;
+	record MyLCMLevelSetBlock MLCMLb;
+	row MyLCMLevelSetBlock MLCMLrw;
+	integer i,mtrw;
+	
+	blockload(MLCMLb);
+	mtrw = matrowcnt(MLCMLb);
+	for(i=0;i<mtrw;i=i+1)begin
+		matrowget(MLCMLb,i,MLCMLrw);
+		if(MLCr.Bal>MLCMLrw.ToPoints)then begin
+			MLCr.RebCode = MLCMLrw.RebCode;
+		end;
+		if(MLCr.Bal>=MLCMLrw.FromPoints and MLCr.Bal<=MLCMLrw.ToPoints)then begin
+			MLCr.RebCode = MLCMLrw.RebCode;
+		end;
+	end;
+	
+	MyLoyCardVcRecordUpdate = res;
+return;
+end;
+
+
+global
+function LongInt MyLoyCardVcRecordRemoveTest(var record MyLoyCardVc MLCr,record MyLoyCardVc MLC2r,LongInt stat,LongInt long4)
+BEGIN
+  LongInt res;
+
+  res = 1;
+  
+  if(MLCr.Bal!=0)then begin
+  	res = 0;
+  	goto LMyLoyCardVcRecordRemoveTest;
+  end;
+  
+  
+LMyLoyCardVcRecordRemoveTest:;
+  MyLoyCardVcRecordRemoveTest = res;
+  RETURN;
+END;

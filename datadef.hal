@@ -358,6 +358,8 @@ begin
     RecordField(KIVIPhone,M4Str,255,0);
     RecordField(KIVIName,M4Str,255,0);
     RecordField(KIVIAddr,M4Str,255,0);
+    RecordField(LoyCardCode,M4Code,50,0);// Edit ************************** BPI Ukraine - KramarAlexandr - 04, 15 03 2018 y. о 18:45:39
+    
 	RecordField(FinishDate,M4Date,0,0); // Edit ************************ Tuesday, 30 January 2018 11:55
     ArrayField(NewSerialNr,M4Str,60,0);// Edit ************************** Friday, 9 June 2017 09:29:41
     
@@ -1954,6 +1956,29 @@ begin
 		
   EndRecord;
   
+  
+  RecordBegin(MyLoyCardVc,-,""); // Edit ************************** BPI Ukraine - KramarAlexandr - 04, 15 03 2018 y. о 18:43:31
+		RecordField(Code,M4Code,50,0);
+		RecordField(Bal,M4Val,0,0);
+		RecordField(SDate,M4Date,0,0);
+		RecordField(RebCode,M4Code,50,0);
+		MainKeyBegin(Code,0);
+		KeySegment(Code);	
+		KeyBegin(SDate);
+    KeySegment(SDate);
+    KeySegment(Code);	
+  EndRecord;
+  
+  BlockBegin(MyLCMLevelSetBlock,-,"");
+  RecordField(Math,M4Matrix,0,0);
+  ArrayBegin(Math,-,1);
+  ArrayField(FromPoints,M4Val,0,0);
+  ArrayField(ToPoints,M4Val,0,0);
+  ArrayField(LCMLevel,M4Code,10,0);
+  ArrayField(PLCode,M4Code,5,0);
+  ArrayField(RebCode,M4Code,5,0);
+  EndArray;
+  EndBlock;
   
 return;
 end;

@@ -1,4 +1,5 @@
 external function LongInt DateDiff(Date,Date);
+external function Time TimeDiff(Time,Time);// Edit ************************** Tuesday, 29 August 2017 14:21:47
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -8,112 +9,229 @@ begin
 	record CUVc CUr;
 	record SVOVc SVOr;
 	boolean testf,TrHs,TrHs1;
-	date fdat,edat,bdat;
-	integer totsvo,totdonesvo;
+	date bdat,sd,ed,ssd;
+	vector date fdat,edat;
+	integer totdonesvo;
+	vector integer totsvo,totsvoall,totsvoallcu,totsvopot;
 	val sum,paysum;
-	string 100 status;
+	vector string 20 status,statuspot;
+	integer months,i,k,acnt;
+	vector date vdate;
+	vector integer vnew,vactive,vdead,vsleep,vpotencial,vpotencialn;
+	array date adate;
 	
+	
+	sd = RepSpec.sStartDate;
+	ed = RepSpec.sEndDate;
+	
+	if(sd.year==ed.year)then begin
+		months = ed.month - sd.month;
+	end else begin
+		if((ed.year-sd.year)==1)then begin
+			months = ed.month + 12 - sd.month;
+		end else begin
+			months = ed.month + 12 - sd.month + (ed.year-sd.year-1)*12;
+		end;
+	end;
 	
 	startreportnoheaderjob("LTV Клиента");
-	
+	ssd.day = 1;
+	ssd.month = sd.month;
+	ssd.year = sd.year;
+	k = 40;
 	startformat(15);
-		outstring(0,0,"Клиент",false);
-		outstring(50,0,"Имя",false);
-		outstring(100,0,"Дата первого обращения",false);
-		outstring(150,0,"Дата последнего обращения",false);
-		outstring(200,0,"Кол-во ремонтов",false);
-		outstring(250,0,"Кол-во готовых ремонтов",false);
-		outstring(300,0,"Сумма",false);
-		outstring(350,0,"Оплачено",false);
-		outstring(400,0,"Статус",false);
+		outstring(0,0,"Статус",false);
+		for(i=0;i<months;i=i+1)begin
+			outstring(k,0,ssd,false);
+			vdate[ssd] = ssd;
+			adate[acnt] = ssd;
+			acnt = acnt + 1;
+			ssd = addmonth(ssd,1);
+			k = k + 30;
+		end;
 	endformat;
 	
-	//CUr.Code = "0442016405";
-TrHs1 = true;
+	CUr.Code = "";
+	if(nonblank(RepSpec.f1))then begin
+		CUr.Code = firstinrange(RepSpec.f1,20);
+	end;
 	
+	TrHs1 = true;
+	for(i=0;i<acnt;i=i+1)begin
+		totsvoall[adate[i]] = blankval;
+	end;
 	while(loopmain(CUr,1,TrHs1))begin
 		testf = true;
 		if(CUr.CUType==0)then begin testf = false; end;
-		//if(CUr.Code!="0442016405")then begin TrHs1 = false; testf = false; end;
+		if(nonblank(RepSpec.f1))then begin
+			if(CUr.Code>lastinrange(RepSpec.f1,20))begin
+				TrHs1 = false;
+				testf = false;
+			end;
+		end;
 		
 		
 		if(testf)then begin
 			
-			fdat = bdat;
-			edat = bdat;
+			
 			sum = blankval;
 			paysum = blankval;
-			status = "";
+			
 			SVOr.CustCode = CUr.Code;
-			totsvo = blankval;
+			for(i=0;i<acnt;i=i+1)begin
+				totsvo[adate[i]] = blankval;
+				totsvoallcu[adate[i]] = blankval;
+				totsvopot[adate[i]] =  blankval;
+				fdat[adate[i]] = bdat;
+				edat[adate[i]] = CUr.DateCreated;
+				status[adate[i]] = "";
+				statuspot[adate[i]] = "";
+			end;
 			totdonesvo = blankval;
 			TrHs = true;
 			while(loopkey("CustCode",SVOr,1,TrHs))begin
 				if(SVOr.CustCode!=CUr.Code)then begin TrHs = false; end;
 				
 				if(TrHs)then begin
-					sum = sum + SVOr.WSCost;
-					paysum = paysum + SVOr.FastCash + SVOr.PrepaySum + SVOr.FastPMBN + SVOr.FastTerm;
-					totsvo = totsvo + 1;
-					if(SVOr.OrderStatus==2)then begin
-						totdonesvo = totdonesvo + 1;
+				
+					if(blankdate(SVOr.GetItemDate) and SVOr.OrderStatus!=9)then begin
+						SVOr.GetItemDate = SVOr.TransDate;
+						SVOr.GetItemTime = SVOr.RegTime;
 					end;
-					if(blankdate(edat))then begin
-						edat = SVOr.TransDate;
-						if(nonblankdate(SVOr.GetItemDate))then begin
-							edat = SVOr.GetItemDate;
-						end;
-					end else begin
-						if(nonblankdate(SVOr.GetItemDate) and SVOr.GetItemDate>edat)then begin
-							edat = SVOr.GetItemDate;
-						end else begin
-							if(SVOr.TransDate>edat)then begin
-								edat = SVOr.TransDate;
+				
+					for(i=0;i<acnt;i=i+1)begin
+						if(SVOr.OrderStatus!=9)then begin
+							if(SVOr.GetItemDate<adate[i] and SVOr.GetItemDate>=addmonth(adate[i],-1))then begin
+								if(SVOr.TransDate!=SVOr.GetItemDate)then begin
+									totsvopot[adate[i]] = totsvopot[adate[i]] + 1;
+								end else begin
+									if(SVOr.TransDate==SVOr.GetItemDate and TimeDiff(SVOr.RegTime,SVOr.GetItemTime)>stringtotime("1:0:0"))then begin
+										totsvopot[adate[i]] = totsvopot[adate[i]] + 1;
+									end;
+								end;
 							end;
-						end;	
+							if(SVOr.GetItemDate<adate[i] and SVOr.GetItemDate>=addmonth(adate[i],-1))then begin
+								totsvo[adate[i]] = totsvo[adate[i]] + 1;
+							end;
+							if(SVOr.GetItemDate<adate[i])then begin
+								totsvoall[adate[i]] = totsvoall[adate[i]] + 1;
+								totsvoallcu[adate[i]] = totsvoallcu[adate[i]] + 1;
+							end;
+						
+							if(SVOr.GetItemDate<adate[i])then begin
+								if(blankdate(edat[adate[i]]))then begin
+									edat[adate[i]] = SVOr.TransDate;
+								end else begin
+									if(SVOr.TransDate>edat[adate[i]])then begin
+										edat[adate[i]] = SVOr.TransDate;
+									end;
+								end;
+							end;
+						end else begin
+							if(SVOr.TransDate<adate[i] and SVOr.TransDate>=addmonth(adate[i],-1))then begin
+								totsvopot[adate[i]] = totsvopot[adate[i]] + 1;
+							end;
+						end;
 					end;
-					if(blankdate(fdat))then begin
-						fdat = SVOr.TransDate;
-						if(nonblankdate(SVOr.GetItemDate))then begin
-							fdat = SVOr.GetItemDate;
-						end;
-					end else begin
-						if(nonblankdate(SVOr.GetItemDate) and SVOr.GetItemDate<fdat)then begin
-							fdat = SVOr.GetItemDate;
-						end else begin
-							if(SVOr.TransDate<fdat)then begin
-								fdat = SVOr.TransDate;
+						
+						/*if(SVOr.TransDate<=adate[i] and SVOr.GetItemDate<=adate[i])then begin
+							if(blankdate(edat[adate[i]]))then begin
+								edat[adate[i]] = SVOr.TransDate;
+								if(nonblankdate(SVOr.GetItemDate))then begin
+									edat[adate[i]] = SVOr.GetItemDate;
+								end;
+							end else begin
+								if(nonblankdate(SVOr.GetItemDate) and SVOr.GetItemDate>edat[adate[i]])then begin
+									edat[adate[i]] = SVOr.GetItemDate;
+								end else begin
+									if(SVOr.TransDate>edat[adate[i]])then begin
+										edat[adate[i]] = SVOr.TransDate;
+									end;
+								end;	
 							end;
-						end;	
+						end;
+						if(SVOr.TransDate<=adate[i] and SVOr.GetItemDate<=adate[i])then begin
+							if(blankdate(fdat[adate[i]]))then begin
+								fdat[adate[i]] = SVOr.TransDate;
+								if(nonblankdate(SVOr.GetItemDate))then begin
+									fdat[adate[i]] = SVOr.GetItemDate;
+								end;
+							end else begin
+								if(nonblankdate(SVOr.GetItemDate) and SVOr.GetItemDate<fdat[adate[i]])then begin
+									fdat[adate[i]] = SVOr.GetItemDate;
+								end else begin
+									if(SVOr.TransDate<fdat[adate[i]])then begin
+										fdat[adate[i]] = SVOr.TransDate;
+									end;
+								end;	
+							end;
+						end;
 					end;
 					
-					if(blank(status))then begin
-						if(SVOr.OrderStatus==9)then begin
-							status = "Потенциальный";
+					for(i=0;i<acnt;i=i+1)begin	
+						if(blank(status[adate[i]]))then begin
+							if(SVOr.TransDate<=fdat[adate[i]] and SVOr.TransDate>addmonth(fdat[adate[i]],1))then begin
+								status[adate[i]] = "POTENCIAL";
+							end;
 						end;
-					end;
-					if(SVOr.OrderStatus!=9)then begin
-						
-						if(datediff(currentdate,fdat)<90 or totsvo==1)then begin
-							status = "Новый";
-						end;
-						if(datediff(currentdate,fdat)<270 and totsvo>1)then begin
-							status = "Постоянный";
-						end;
-						if(datediff(currentdate,edat)>270)then begin
-							status = "Спящий";
-						end;
-						if(datediff(currentdate,edat)>360)then begin
-							status = "Умерший";
-						end;
-					end;
+						//if(SVOr.OrderStatus!=9)then begin						
+							if(datediff(adate[i],fdat[adate[i]])<90 and totsvo[adate[i]]==1)then begin
+								status[adate[i]] = "NEW";
+							end;
+							if(datediff(adate[i],fdat[adate[i]])<270 and totsvo[adate[i]]>1)then begin
+								status[adate[i]] = "ACTIVE";
+							end;
+							if(datediff(adate[i],edat[adate[i]])>270)then begin
+								status[adate[i]] = "SLEEP";
+							end;
+							if(datediff(adate[i],edat[adate[i]])>360)then begin
+								status[adate[i]] = "DEAD";
+							end;
+						//end;
+					end;*/
 					
 				end;
 			end;
 			resetloop(SVOr);
 			
+			for(i=0;i<acnt;i=i+1)begin
+				if(datediff(adate[i],edat[adate[i]])>270)then begin
+					status[adate[i]] = "SLEEP";
+				end;
+				if(datediff(adate[i],edat[adate[i]])>360)then begin
+					status[adate[i]] = "DEAD";
+				end;
+				if(totsvopot[adate[i]]>0 and totsvoallcu[adate[i]]<=totsvopot[adate[i]])then begin
+					statuspot[adate[i]] = "POTENCIAL";
+				end;
+				if(totsvo[adate[i]]>0 and totsvoallcu[adate[i]]==totsvo[adate[i]])then begin
+					status[adate[i]] = "NEW";
+				end;
+				if(totsvoallcu[adate[i]]>1 and datediff(adate[i],edat[adate[i]])<270)then begin
+					status[adate[i]] = "ACTIVE";
+				end;
+			end;
 			
-			startformat(15);
+			for(i=0;i<acnt;i=i+1)begin	
+				switch(statuspot[adate[i]]) begin
+					case "POTENCIAL":vpotencial[adate[i]] = vpotencial[adate[i]] + 1;
+														/*startformat(15);
+															outstring((i+1)*30,0,CUr.Code,false);
+														endformat;*/
+				end;
+				switch(status[adate[i]]) begin
+					case "NEW":vnew[adate[i]] = vnew[adate[i]] + 1;
+											if(statuspot[adate[i]]=="POTENCIAL")then begin
+												vpotencialn[adate[i]] = vpotencialn[adate[i]] + 1;
+												
+											end;
+					case "ACTIVE":vactive[adate[i]] = vactive[adate[i]] + 1;
+					case "SLEEP":vsleep[adate[i]] = vsleep[adate[i]] + 1;
+					case "DEAD":vdead[adate[i]] = vdead[adate[i]] + 1;
+				end;
+			end;
+			
+			/*startformat(15);
 				outstring(0,0,CUr.Code,false);
 				outstring(50,0,CUr.Name,false);
 				outstring(100,0,fdat,false);
@@ -123,10 +241,67 @@ TrHs1 = true;
 				outstring(300,0,sum,false);
 				outstring(350,0,paysum,false);
 				outstring(400,0,status,false);
-			endformat;
+			endformat;*/
 		end;
 		
 	end;
+	
+	startformat(15);
+		outstring(0,0,"Потенциальный",false);
+		k=40;
+		for(i=0;i<acnt;i=i+1)begin
+			outstring(k,0,vpotencial[adate[i]] & "(" & vpotencialn[adate[i]] & ")",false);
+			k = k + 30;
+		end;
+	endformat;
+	startformat(15);
+		outstring(0,0,"Новый",false);
+		k=40;
+		for(i=0;i<acnt;i=i+1)begin
+			outstring(k,0,vnew[adate[i]],false);
+			k = k + 30;
+		end;
+	endformat;
+	startformat(15);
+		outstring(0,0,"Активный",false);
+		k=40;
+		for(i=0;i<acnt;i=i+1)begin
+			outstring(k,0,vactive[adate[i]],false);
+			k = k + 30;
+		end;
+	endformat;
+	startformat(15);
+		outstring(0,0,"Спящий",false);
+		k=40;
+		for(i=0;i<acnt;i=i+1)begin
+			outstring(k,0,vsleep[adate[i]],false);
+			k = k + 30;
+		end;
+	endformat;
+	startformat(15);
+		outstring(0,0,"Умерший",false);
+		k=40;
+		for(i=0;i<acnt;i=i+1)begin
+			outstring(k,0,vdead[adate[i]],false);
+			k = k + 30;
+		end;
+	endformat;
+	startformat(15);
+		outstring(0,0,"Ремонтов",false);
+		k=40;
+		for(i=0;i<acnt;i=i+1)begin
+			outstring(k,0,totsvoall[adate[i]],false);
+			k = k + 30;
+		end;
+	endformat;
+	/*startformat(15);
+		outstring(0,0,"Ремонтов пр.",false);
+		k=40;
+		for(i=0;i<acnt;i=i+1)begin
+			outstring(k,0,totsvo[adate[i]],false);
+			k = k + 30;
+		end;
+	endformat;*/
 	
 	
 	endjob;

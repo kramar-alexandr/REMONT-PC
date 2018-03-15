@@ -378,6 +378,8 @@ begin
   
   WindowBegin("LTV Статус клиента",LVTCustRClass,CGRcW,RcType);
     SetWRect(20,120,350,300);
+    PeriodField(h,20,"Период");
+    EditField(h,40,200,"Клиенты",Normal,f1,false,CUSClass);
     //EditFieldTL(h,v+=20,80,"На дату",M4Date,Normal,0,d1,false,PasteCurDate);
   EndWindow;
 

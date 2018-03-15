@@ -1576,7 +1576,7 @@ rs is already with Price factor included
             INr.LastPriceChange = CurrentDate;
         end;
         
-        if(INr.Disp1=="SERV")then begin// Edit ************************** BPI Ukraine - KramarAlexandr - Wednesday, 14 March 2018 15:21:20
+        if(setinset("SERV",INr.DispGroups))then begin// Edit ************************** BPI Ukraine - KramarAlexandr - Wednesday, 14 March 2018 15:21:20
 					INr.UPrice1 = INr.InPrice;
 					INr.LastBasePriceChange = currentdate;
 				end;

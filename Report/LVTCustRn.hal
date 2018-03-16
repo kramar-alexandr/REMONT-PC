@@ -11,13 +11,13 @@ begin
 	boolean testf,TrHs,TrHs1;
 	date bdat,sd,ed,ssd;
 	vector date fdat,edat;
-	integer totdonesvo;
-	vector integer totsvo,totsvoall,totsvoallcu,totsvopot;
+	longint totdonesvo;
+	vector longint totsvo,totsvoall,totsvoallcu,totsvopot;
 	val sum,paysum;
 	vector string 20 status,statuspot;
-	integer months,i,k,acnt;
+	longint months,i,k,acnt;
 	vector date vdate;
-	vector integer vnew,vactive,vdead,vsleep,vpotencial,vpotencialn;
+	vector longint vnew,vactive,vdead,vsleep,vpotencial,vpotencialn;
 	array date adate;
 	
 	logtext(0,"1");

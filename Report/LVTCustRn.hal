@@ -288,7 +288,7 @@ begin
 		outstring(0,0,"Потенциальный",false);
 		k=40;
 		for(i=0;i<acnt;i=i+1)begin
-			outstring(k,0,vpotencial[adate[i]] & "(" & vpotencialn[adate[i]] & ")",false);
+			outstring(k,0,valtostring(vpotencial[adate[i]],M40Val,"",".",0) & "(" & valtostring(vpotencialn[adate[i]],M40Val,"",".",0) & ")",false);
 			k = k + 30;
 		end;
 	endformat;

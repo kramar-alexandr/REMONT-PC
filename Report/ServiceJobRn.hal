@@ -2087,7 +2087,9 @@ begin
 				tot[11] = tot[11] + vManSum[aman[i] & ":GOTOV:STRAH"];
 				tot[12] = tot[12] + vManSum[aman[i] & ":NOPAY:STRAH"];
 				tot[13] = tot[13] + vManSum[aman[i] & ":DOLG:STRAH"];
-				gray_divider(0,1);
+				if (RepSpec.flags[26]==0) then begin
+					gray_divider(0,1);
+				end;
 			end; 
 			if (RepSpec.flags[26]==0) then begin
 				startformat(15);
@@ -2107,6 +2109,7 @@ begin
 					outstring(tabs[0],0,"Детали",false);
 				endformat;
 			end else begin//страховка
+				gray_divider(0,1);
 				startformat(15);
 					outstring(tabs[0],0,"Всего",false);
 					outstring(tabs[3],0,tot[11],false);

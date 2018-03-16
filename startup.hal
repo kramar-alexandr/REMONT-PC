@@ -46,7 +46,7 @@ begin
 	Report("Расхождение склада с балансом",StockBalDiffRClass,StockBalDiffRn,0,modIN); //Edit***************************Sasha2,11:21 17.02.2017
 	Report("Расхождение склада с балансом",StockBalDiffRClass,StockBalDiffRn,0,modNL); //Edit***************************Sasha2,11:21 17.02.2017
 	Report("LVT Статус клиента",LVTCustRClass,LVTCustRn,0,modSVO);// Edit ************************** BPI Ukraine - KramarAlexandr - Wednesday, 7 March 2018 10:19:48
-	Report("Ensurance",InsuranceReportRClass,ServiceJobsRn,0,modSVO); // Edit Dima ************* 2018-03-12 12:32 PM
+	Report("Отчет по продаже Страховки",InsuranceReportRClass,ServiceJobsRn,0,modSVO); // Edit Dima ************* 2018-03-12 12:32 PM
   
   Maintenance("Git HAL Files",MyVClass,GitHALFilesMn,modTC);
   Maintenance("Удалить все записи",CustomRegisterRemoveVClass,CustomRegisterRemoveMn,modDBMain); //Edit***************************Sasha2,11:11 26.05.2017

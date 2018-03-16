@@ -1886,6 +1886,20 @@ begin
 					outstring(tabs[11],0,"Проср. ремонт.",false);
 					outstring(tabs[12],0,"Проср. всего",false);
 				endformat;
+			end else begin
+				/*startformat(15);
+				outstring(tabs[0],0,"-==Статистика по инженерам==-",false);
+				endformat;
+				gray_divider(0,1);
+				startformat(15);
+				outstring(tabs[0],0,"Страховка",false);
+				endformat;
+				startformat(15);
+					outstring(tabs[0],0,"Менеджер",false);
+					outstring(tabs[3],0,"Оплачено",false);
+					outstring(tabs[6],0,"Неоплаченно",false);
+					outstring(tabs[9],0,"Долг",false);
+				endformat;	*/		
 			end;
 			tot[1] = blankval;
 			tot[2] = blankval;
@@ -1911,6 +1925,15 @@ begin
 							outstring(tabs[11],0,vIngCanQty[aing[i] & ":1"],false);
 							outstring(tabs[12],0,vIngCanQty[aing[i] & ":T"],false);
 						endformat;
+				end else begin
+					/*if(vIngSum[aman[i] & ":GOTOV:STRAH"]!=0 or vIngSum[aman[i] & ":NOPAY:STRAH"]!=0 or vIngSum[aman[i] & ":DOLG:STRAH"]!=0)then begin
+						startformat(15);
+							outstring(tabs[0],0,aing[i],false);
+							outstring(tabs[3],0,vIngSum[aing[i] & ":GOTOV:STRAH"],false);
+							outstring(tabs[6],0,vIngSum[aing[i] & ":NOPAY:STRAH"],false);
+							outstring(tabs[9],0,vIngSum[aing[i] & ":DOLG:STRAH"],false);
+						endformat;
+					end;*/
 				end;
 				tot[1] = tot[1] + vIngSum[aing[i] & ":GOTOV:SERV"];
 				tot[2] = tot[2] + vIngSum[aing[i] & ":NOPAY:SERV"];
@@ -2007,7 +2030,7 @@ begin
 				endformat;
 			end else begin
 				startformat(15);
-				outstring(tabs[0],0,"-==Статистика по менеджерам==-",false);
+				outstring(tabs[0],0,"-==Статистика по продавцу==-",false);
 				endformat;
 				gray_divider(0,1);
 				startformat(15);
@@ -2018,6 +2041,7 @@ begin
 					outstring(tabs[3],0,"Оплачено",false);
 					outstring(tabs[6],0,"Неоплаченно",false);
 					outstring(tabs[9],0,"Долг",false);
+					outstring(tabs[11],0,"Всего",false);
 				endformat;
 			end;
 			tot[1] = blankval;
@@ -2039,6 +2063,16 @@ begin
 						outstring(tabs[11],0,vManCanQty[aman[i] & ":1"],false);
 						outstring(tabs[12],0,vManCanQty[aman[i] & ":T"],false);
 					endformat;
+				end else begin
+					if(vManSum[aman[i] & ":GOTOV:STRAH"]!=0 or vManSum[aman[i] & ":NOPAY:STRAH"]!=0 or vManSum[aman[i] & ":DOLG:STRAH"]!=0)then begin
+						startformat(15);
+							outstring(tabs[0],0,aman[i],false);
+							outstring(tabs[3],0,vManSum[aman[i] & ":GOTOV:STRAH"],false);
+							outstring(tabs[6],0,vManSum[aman[i] & ":NOPAY:STRAH"],false);
+							outstring(tabs[9],0,vManSum[aman[i] & ":DOLG:STRAH"],false);
+							outstring(tabs[11],0,vManSum[aman[i] & ":GOTOV:STRAH"] + vManSum[aman[i] & ":NOPAY:STRAH"] + vManSum[aman[i] & ":DOLG:STRAH"],false);
+						endformat;
+					end;
 				end;
 				tot[1] = tot[1] + vManSum[aman[i] & ":GOTOV:SERV"];
 				tot[2] = tot[2] + vManSum[aman[i] & ":NOPAY:SERV"];
@@ -2050,9 +2084,10 @@ begin
 				tot[7] = tot[7] + vManCanQty[aman[i] & ":10"];
 				tot[8] = tot[8] + vManCanQty[aman[i] & ":1"];
 				tot[9] = tot[9] + vManCanQty[aman[i] & ":T"];
-				if (RepSpec.flags[26]==0) then begin
-					gray_divider(0,1);
-				end;
+				tot[11] = tot[11] + vManSum[aman[i] & ":GOTOV:STRAH"];
+				tot[12] = tot[12] + vManSum[aman[i] & ":NOPAY:STRAH"];
+				tot[13] = tot[13] + vManSum[aman[i] & ":DOLG:STRAH"];
+				gray_divider(0,1);
 			end; 
 			if (RepSpec.flags[26]==0) then begin
 				startformat(15);
@@ -2070,6 +2105,14 @@ begin
 				endformat;
 				startformat(15);
 					outstring(tabs[0],0,"Детали",false);
+				endformat;
+			end else begin//страховка
+				startformat(15);
+					outstring(tabs[0],0,"Всего",false);
+					outstring(tabs[3],0,tot[11],false);
+					outstring(tabs[6],0,tot[12],false);
+					outstring(tabs[9],0,tot[13],false);
+					outstring(tabs[11],0,tot[11] + tot[12] + tot[13],false);
 				endformat;
 			end;
 			tot[1] = blankval;

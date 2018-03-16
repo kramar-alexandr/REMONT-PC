@@ -11,13 +11,13 @@ begin
 	boolean testf,TrHs,TrHs1;
 	date bdat,sd,ed,ssd;
 	vector date fdat,edat;
-	integer totdonesvo;
-	vector integer totsvo,totsvoall,totsvoallcu,totsvopot;
+	val totdonesvo;
+	vector val totsvo,totsvoallcu,totsvopot;
 	val sum,paysum;
 	vector string 20 status,statuspot;
 	integer months,i,k,acnt;
 	vector date vdate;
-	vector integer vnew,vactive,vdead,vsleep,vpotencial,vpotencialn;
+	vector val vnew,vactive,vdead,vsleep,vpotencial,vpotencialn,totsvoall;
 	array date adate;
 	
 	
@@ -39,6 +39,44 @@ begin
 	ssd.month = sd.month;
 	ssd.year = sd.year;
 	k = 40;
+	
+	startformat(15);
+		outstring(0,0,"Потенциальные клиенты - лиенты которые в предыдущий месяц создали предварительные заказы.",false);
+	endformat;
+	startformat(15);
+		outstring(0,0,"При этом они не делали заказов до этого.",false);
+	endformat;
+	startformat(15);
+		outstring(0,0,"В скобочках количество потенциальных клиентов превратившихся в новых",false);
+	endformat;
+	startformat(15);
+	endformat;
+	startformat(15);
+		outstring(0,0,"Новый клиент - клиент впервые сдавший технику на ремонт в предыдущем периоде. Незавиимо от резальтатов ремонта.",false);
+	endformat;
+	startformat(15);
+	endformat;
+	startformat(15);
+		outstring(0,0,"Активный клиент - клиент который за последние 270 дней оформил больше 1 заявки на ремонт и сдав технику",false);
+	endformat;
+	startformat(15);
+	endformat;
+	startformat(15);
+		outstring(0,0,"Спящий клиент - клиент не проявлявший активности больше 270 дней",false);
+	endformat;
+	startformat(15);
+	endformat;
+	startformat(15);
+		outstring(0,0,"Умерший клиент - клиент не проявлявший активности больше 360 дней",false);
+	endformat;
+	startformat(15);
+	endformat;
+	startformat(15);
+		outstring(0,0,"Ремонтов - количество ремонтов с принятием техники на данный момент (дату столбика)",false);
+	endformat;
+	
+	black_divider(0,1);
+	
 	startformat(15);
 		outstring(0,0,"Статус",false);
 		for(i=0;i<months;i=i+1)begin
@@ -47,7 +85,7 @@ begin
 			adate[acnt] = ssd;
 			acnt = acnt + 1;
 			ssd = addmonth(ssd,1);
-			k = k + 30;
+			k = k + 30;			
 		end;
 	endformat;
 	
@@ -258,7 +296,7 @@ begin
 		outstring(0,0,"Новый",false);
 		k=40;
 		for(i=0;i<acnt;i=i+1)begin
-			outstring(k,0,vnew[adate[i]],false);
+			outval(k,0,vnew[adate[i]],M40Val,false);
 			k = k + 30;
 		end;
 	endformat;
@@ -266,7 +304,7 @@ begin
 		outstring(0,0,"Активный",false);
 		k=40;
 		for(i=0;i<acnt;i=i+1)begin
-			outstring(k,0,vactive[adate[i]],false);
+			outval(k,0,vactive[adate[i]],M40Val,false);
 			k = k + 30;
 		end;
 	endformat;
@@ -274,7 +312,7 @@ begin
 		outstring(0,0,"Спящий",false);
 		k=40;
 		for(i=0;i<acnt;i=i+1)begin
-			outstring(k,0,vsleep[adate[i]],false);
+			outval(k,0,vsleep[adate[i]],M40Val,false);
 			k = k + 30;
 		end;
 	endformat;
@@ -282,7 +320,7 @@ begin
 		outstring(0,0,"Умерший",false);
 		k=40;
 		for(i=0;i<acnt;i=i+1)begin
-			outstring(k,0,vdead[adate[i]],false);
+			outval(k,0,vdead[adate[i]],M40Val,false);
 			k = k + 30;
 		end;
 	endformat;
@@ -290,7 +328,7 @@ begin
 		outstring(0,0,"Ремонтов",false);
 		k=40;
 		for(i=0;i<acnt;i=i+1)begin
-			outstring(k,0,totsvoall[adate[i]],false);
+			outval(k,0,totsvoall[adate[i]],M40Val,false);
 			k = k + 30;
 		end;
 	endformat;

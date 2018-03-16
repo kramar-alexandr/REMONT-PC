@@ -11,16 +11,16 @@ begin
 	boolean testf,TrHs,TrHs1;
 	date bdat,sd,ed,ssd;
 	vector date fdat,edat;
-	longint totdonesvo;
-	vector longint totsvo,totsvoall,totsvoallcu,totsvopot;
+	integer totdonesvo;
+	vector integer totsvo,totsvoall,totsvoallcu,totsvopot;
 	val sum,paysum;
 	vector string 20 status,statuspot;
-	longint months,i,k,acnt;
+	integer months,i,k,acnt;
 	vector date vdate;
-	vector longint vnew,vactive,vdead,vsleep,vpotencial,vpotencialn;
+	vector integer vnew,vactive,vdead,vsleep,vpotencial,vpotencialn;
 	array date adate;
 	
-	logtext(0,"1");
+	
 	sd = RepSpec.sStartDate;
 	ed = RepSpec.sEndDate;
 	
@@ -33,7 +33,7 @@ begin
 			months = ed.month + 12 - sd.month + (ed.year-sd.year-1)*12;
 		end;
 	end;
-	logtext(0,"2");
+	
 	startreportnoheaderjob("LTV Клиента");
 	ssd.day = 1;
 	ssd.month = sd.month;
@@ -50,17 +50,16 @@ begin
 			k = k + 30;
 		end;
 	endformat;
-	logtext(0,"3");
+	
 	CUr.Code = "";
 	if(nonblank(RepSpec.f1))then begin
 		CUr.Code = firstinrange(RepSpec.f1,20);
 	end;
-	logtext(0,"4");
+	
 	TrHs1 = true;
 	for(i=0;i<acnt;i=i+1)begin
 		totsvoall[adate[i]] = blankval;
 	end;
-	logtext(0,"5");
 	while(loopmain(CUr,1,TrHs1))begin
 		testf = true;
 		if(CUr.CUType==0)then begin testf = false; end;
@@ -70,7 +69,7 @@ begin
 				testf = false;
 			end;
 		end;
-		logtext(0,"6");
+		
 		
 		if(testf)then begin
 			
@@ -90,12 +89,11 @@ begin
 			end;
 			totdonesvo = blankval;
 			TrHs = true;
-			logtext(0,"7");
 			while(loopkey("CustCode",SVOr,1,TrHs))begin
 				if(SVOr.CustCode!=CUr.Code)then begin TrHs = false; end;
 				
 				if(TrHs)then begin
-					logtext(0,"8");
+				
 					if(blankdate(SVOr.GetItemDate) and SVOr.OrderStatus!=9)then begin
 						SVOr.GetItemDate = SVOr.TransDate;
 						SVOr.GetItemTime = SVOr.RegTime;
@@ -135,7 +133,7 @@ begin
 							end;
 						end;
 					end;
-						logtext(0,"9");
+						
 						/*if(SVOr.TransDate<=adate[i] and SVOr.GetItemDate<=adate[i])then begin
 							if(blankdate(edat[adate[i]]))then begin
 								edat[adate[i]] = SVOr.TransDate;
@@ -195,7 +193,7 @@ begin
 				end;
 			end;
 			resetloop(SVOr);
-			logtext(0,"11");
+			
 			for(i=0;i<acnt;i=i+1)begin
 				if(datediff(adate[i],edat[adate[i]])>270)then begin
 					status[adate[i]] = "SLEEP";
@@ -213,7 +211,7 @@ begin
 					status[adate[i]] = "ACTIVE";
 				end;
 			end;
-			logtext(0,"12");
+			
 			for(i=0;i<acnt;i=i+1)begin	
 				switch(statuspot[adate[i]]) begin
 					case "POTENCIAL":vpotencial[adate[i]] = vpotencial[adate[i]] + 1;
@@ -232,7 +230,7 @@ begin
 					case "DEAD":vdead[adate[i]] = vdead[adate[i]] + 1;
 				end;
 			end;
-			logtext(0,"13");
+			
 			/*startformat(15);
 				outstring(0,0,CUr.Code,false);
 				outstring(50,0,CUr.Name,false);
@@ -247,7 +245,7 @@ begin
 		end;
 		
 	end;
-	logtext(0,"14");
+	
 	startformat(15);
 		outstring(0,0,"Потенциальный",false);
 		k=40;
@@ -296,7 +294,6 @@ begin
 			k = k + 30;
 		end;
 	endformat;
-	logtext(0,"15");
 	/*startformat(15);
 		outstring(0,0,"Ремонтов пр.",false);
 		k=40;

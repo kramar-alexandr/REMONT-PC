@@ -239,10 +239,10 @@ begin
 	val dolgdet,totdolgdet,supertotdolgdet,totservdet;
 	record IPRsVc IPRsr,IPRs2r;
 	date sd,ed;
-	boolean TrHs,testf,filter,svoout,TrHsph;
+	boolean TrHs,testf,filter,svoout;
 	record IVVc IVr,credIVr,IV2r;
 	record IPVc IPr,IP2r;
-	vector val ivsum,svodolg,ivsumserv,ivsumdet,svodolgdet,ivsumservdet,ivretsum;
+	vector val ivsum,svodolg,ivsumserv,ivsumdet,svodolgdet,ivsumservdet,ivretsum,ivsumservstrah;
 	vector boolean svoexist,vPhoneExist,vCuExist,ivexist;
 	vector date paydate;
 	array longint asvonr;
@@ -701,6 +701,7 @@ begin
 															mancnt = mancnt + 1;														
 														end;
 													end else begin
+														ivsumservstrah[asvonr[i]] = ivsumservstrah[asvonr[i]] + IVrw.Sum;
 														akey = IVr.SalesMan & ":GOTOV:STRAH";
 														vManSum[akey] = vManSum[akey] + IVrw.Sum;
 														if(vManExst[IVr.SalesMan]==false)then begin
@@ -729,6 +730,7 @@ begin
 															mancnt = mancnt + 1;														
 														end;
 													end else begin
+														ivsumservstrah[asvonr[i]] = ivsumservstrah[asvonr[i]] - IVrw.Sum;
 														akey = IVr.SalesMan & ":GOTOV:STRAH";
 														vManSum[akey] = vManSum[akey] - IVrw.Sum;
 														if(vManExst[IVr.SalesMan]==false)then begin
@@ -813,6 +815,15 @@ begin
 							outstring(tabs[8],0,SVOr.StatusText,false);
 							//outstring(tabs[6],0,SVOr.WSCost,false);
 						endformat;
+					end else begin
+						if(ivsumservstrah[asvonr[i]]!=0)then begin
+							startformat(15);
+								outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
+								outstring(tabs[3],0,SVOr.TransDate,false);
+								outstring(tabs[5],0,ivsumservstrah[asvonr[i]],false);
+								outstring(tabs[7],0,"Оплачено",false);
+							endformat;
+						end;
 					end;
 					
 					
@@ -1053,6 +1064,7 @@ begin
 															mancnt = mancnt + 1;														
 														end;
 													end else begin
+														ivsumservstrah[asvonr[i]] = ivsumservstrah[asvonr[i]] + IVrw.Sum;
 														akey = IVr.SalesMan & ":NOPAY:STRAH";
 														vManSum[akey] = vManSum[akey] + IVrw.Sum;
 														if(vManExst[IVr.SalesMan]==false)then begin
@@ -1081,6 +1093,7 @@ begin
 															mancnt = mancnt + 1;														
 														end;
 													end else begin
+														ivsumservstrah[asvonr[i]] = ivsumservstrah[asvonr[i]] - IVrw.Sum;
 														akey = IVr.SalesMan & ":NOPAY:STRAH";
 														vManSum[akey] = vManSum[akey] - IVrw.Sum;
 														if(vManExst[IVr.SalesMan]==false)then begin
@@ -1163,6 +1176,15 @@ begin
 							outstring(tabs[4],0,blankval,false);
 							outstring(tabs[5],0,blankval,false);
 						endformat;
+					end else begin
+						if(ivsumservstrah[asvonr[i]]!=0)then begin
+							startformat(15);
+								outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
+								outstring(tabs[3],0,SVOr.TransDate,false);
+								outstring(tabs[5],0,ivsumservstrah[asvonr[i]],false);
+								outstring(tabs[7],0,"Неоплачено",false);
+							endformat;
+						end;
 					end;
 					if(SVOr.StatusReturnCnt>0)then begin
 						vManCanQty[SVOr.Inspector & "DOR"] = vManCanQty[SVOr.Inspector & "DOR"] + SVOr.StatusReturnCnt;
@@ -1225,9 +1247,7 @@ begin
 					if (RepSpec.flags[26]==0) then begin
 						black_divider(tabs[6],tabs[7]);
 						startformat(15);
-							outstring(tabs[0],0,"Итого по заказу",false);
-							//outstring(tabs[6],0,ivsumserv[asvonr[i]],false);
-							
+							outstring(tabs[0],0,"Итого по заказу",false);							
 							outstring(150,0,"Услуги:",false);
 							outstring(200,0,ivsumserv[asvonr[i]],false);
 							outstring(250,0,"Детали:",false);
@@ -1381,6 +1401,7 @@ begin
 														mancnt = mancnt + 1;														
 													end;
 												end else begin
+													ivsumservstrah[asvonr[i]] = ivsumservstrah[asvonr[i]] + IVrw.Sum;
 													akey = IVr.SalesMan & ":DOLG:STRAH";
 													vManSum[akey] = vManSum[akey] + IVrw.Sum;
 													if(vManExst[IVr.SalesMan]==false)then begin
@@ -1409,6 +1430,7 @@ begin
 														mancnt = mancnt + 1;														
 													end;
 												end else begin
+													ivsumservstrah[asvonr[i]] = ivsumservstrah[asvonr[i]] - IVrw.Sum;
 													akey = IVr.SalesMan & ":DOLG:STRAH";
 													vManSum[akey] = vManSum[akey] - IVrw.Sum;
 													if(vManExst[IVr.SalesMan]==false)then begin
@@ -1488,6 +1510,15 @@ begin
 							outstring(tabs[4],0,blankval,false);
 							outstring(tabs[5],0,blankval,false);
 						endformat;
+					end else begin
+						if(ivsumservstrah[asvonr[i]]!=0)then begin
+							startformat(15);
+								outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
+								outstring(tabs[3],0,SVOr.TransDate,false);
+								outstring(tabs[5],0,ivsumservstrah[asvonr[i]],false);
+								outstring(tabs[7],0,"Вдолг",false);
+							endformat;
+						end;
 					end;
 					if(SVOr.StatusReturnCnt>0)then begin
 						vManCanQty[SVOr.Inspector & "DOR"] = vManCanQty[SVOr.Inspector & "DOR"] + SVOr.StatusReturnCnt;

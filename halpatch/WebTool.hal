@@ -5,6 +5,7 @@ external procedure MySortLngIntArray(var array longint ,integer );
 external function LongInt DateDiff(Date,Date);
 external function LongInt CountWorkingDays(Date,Date,string,string);
 external procedure MySortStringArray(var array string ,integer );
+external procedure ExtractObj(string,var Integer,var string);
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -632,63 +633,134 @@ begin
 return;
 end;
 
-Global webpublic procedure WebHW()
+// пройти все счёт фактуры, в которых поле SalesMan == код менеджера
+// сумма товаров с типом свобойдный или работа
+
+// IVVc - счет-фактура
+// INVc - товар, 
+// ItemType - тип товара | kItemTypePlain - свободный
+// ItemType = kItemTypeService
+// страховка не добавлять
+
+// 4320
+
+global
+procedure count_fact(string SalesManName, date StartDate, date EndDate, var val res,  var val today_res)
 begin
-	record KIVIPartnersWorksVc 	KIVIPWr;
+	record IVVc	IVr; 			// счет-фактура
+	record INVc INr; 			// товар
+	boolean 	TrHS, testf;
+	row IVVc	IVrw;
+	integer		i, mtrw;
+	
+	res = 0.0;
+	today_res = 0.0;
+	TrHS = true;
+	IVr.SalesMan = SalesManName;
+	while (loopkey("SalesMan",IVr,1,TrHS)) begin
+		testf = true;
+		if (IVr.SalesMan!=SalesManName) then begin
+			TrHS = false;
+			testf = false;
+		end;
+		if (testf) then begin
+			if (IVr.InvDate >= StartDate and IVr.InvDate <= EndDate) then begin
+				mtrw = matrowcnt(IVr);
+				for (i=0;i<mtrw;i=i+1) begin
+					matrowget(IVr,i,IVrw);
+					INr.Code = IVrw.ArtCode;
+					if (readfirstkey("Code",INr,1,true)) then begin
+						if (INr.ItemType==kItemTypePlain or INr.ItemType==kItemTypeService) then begin
+							res = res + IVrw.Sum;
+							if (IVr.InvDate == EndDate) then begin
+								today_res = today_res + IVrw.Sum;
+							end;
+						end;
+					end;
+				end;
+			end;
+		end;
+	end;
+	return;
+end;
+
+global webpublic procedure WebHW()
+begin
+	record ManagerPlanVc 		MPr;
+	row    ManagerPlanVc		MPrw;
 	record RcVc					RepSpec;
 	vector string 255 			Name;
-	vector val					SumWork;
-	vector val 					PartWork;
+	vector val					PlanWork, FactWork, TodWork;
 	array string 255 			atags;
 	string 	255					temp;
-	integer 					i;
+	integer 					i, k, mtrw;
+	string 255					usrs, tmp;
+	date						PrevDate;
+	vector date					Start;
+	vector date					endDate;
+	val							res;
+	val 						today_res;
 	
-	logtext(0, "Hello from web procedure");
-	resetloop(KIVIPWr);
-	KIVIPWr.SerNr = 0;
-	while (loopmain(KIVIPWr,1,true)) begin
-		Name[KIVIPWr.User] = KIVIPWr.Name;
-		SumWork[KIVIPWr.User] = KIVIPWr.SumWork;
-		RepSpec.sStartDate = "1/1/2018";
-		RepSpec.sEndDate = "10/1/2018";
-		RepSpec.f3 = KIVIPWr.User;
-		PartWork[KIVIPWr.User] = CountSum(RepSpec);
+	usrs = webgetarg("users");
+	
+	if (nonblank(usrs)) then begin
+		k = 0;
+		ExtractObj(usrs,k,tmp);
+		while (nonblank(tmp)) begin
+			MPr.Code = tmp;
+			if (readfirstmain(MPr,1,true)) then begin
+				mtrw = matrowcnt(MPr);
+				matrowget(MPr,0,MPrw)
+				PrevDate = MPrw.PlansDate;
+				PlanWork[tmp] = 0;
+				for (i=0;i<mtrw;i=i+1) begin
+					matrowget(MPr,i,MPrw)
+					if (currentdate > MPrw.PlansDate and MPrw.PlansDate >= PrevDate) then begin
+						Start[tmp] = MPrw.PlansDate;
+						PlanWork[tmp] = MPrw.PlansRepair;
+					end;
+					PrevDate = MPrw.PlansDate;
+				end;
+				endDate[tmp] = currentdate;
+				count_fact(tmp, Start[tmp], endDate[tmp], res, today_res);
+				FactWork[tmp] = res;
+				TodWork[tmp] = today_res;
+			end;
+			ExtractObj(usrs,k,tmp);
+		end;
+		GetVectorTags(PlanWork,atags);
+	end else begin
+		while (loopmain(MPr,1,true)) begin
+			mtrw = matrowcnt(MPr);
+			matrowget(MPr,0,MPrw)
+			PrevDate = MPrw.PlansDate;
+			PlanWork[MPr.Code] = MPrw.PlansRepair;
+			for (i=0;i<mtrw;i=i+1) begin
+				matrowget(MPr,i,MPrw)
+				if (currentdate > MPrw.PlansDate and MPrw.PlansDate >= PrevDate) then begin
+					Start[MPr.Code] = MPrw.PlansDate;
+					PlanWork[MPr.Code] = MPrw.PlansRepair;
+				end;
+				PrevDate = MPrw.PlansDate;
+			end;
+			endDate[MPr.Code] = currentdate;
+			count_fact(MPr.Code, Start[MPr.Code], endDate[MPr.Code], res, today_res);
+			FactWork[MPr.Code] = res;
+			TodWork[MPr.Code] = today_res;
+		end;
 	end;
-	GetVectorTags(Name, atags);
+	GetVectorTags(Start, atags);
 	WebOutString("{");
-	//WebOutString("{ \"items\":[");
 	for (i = 0; i < atags.length; i = i + 1) begin
 		//WebOutString("{");
-		temp = "\"" & Name[atags[i]] & "\": {" & "\"fact\":" & PartWork[atags[i]] & ",\"plan\":" & SumWork[atags[i]] & "}";
-		//temp = "\"name\":" & "\"" & Name[atags[i]] & "\"" & ",\"fact\":" & PartWork[atags[i]] & ",\"plan\":" & SumWork[atags[i]];
+		temp = "\"" & atags[i] & "\": {" & "\"fact\":" & FactWork[atags[i]] & ",\"plan\":" & PlanWork[atags[i]] & ",\"today_res\":" & TodWork[atags[i]] & "}";
 		WebOutString(temp);
-		//WebOutString("}");
 		if (i < atags.length - 1) then begin
 			WebOutString(",");
 		end;
+		temp = "";
 	end;
 	WebOutString("}");
-	//WebOutString("]}");
-	//WebOutString("]");
 	return;
-	
-	/*
-
-{	
-			  "items": [
-				{
-				  "name": "Marion",
-				  "integer1": 30,
-				  "integer2": 16
-				},
-				{
-				  "name": "Bob",
-				  "integer1": 44,
-				  "integer2": 15
-				}]
-}
-
-*/
-	
 end;
 

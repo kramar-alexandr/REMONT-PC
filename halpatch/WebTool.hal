@@ -712,11 +712,11 @@ begin
 				mtrw = matrowcnt(MPr);
 				matrowget(MPr,0,MPrw)
 				PrevDate = MPrw.PlansDate;
-				PlanWork[tmp] = 0;
+				PlanWork[tmp] = MPrw.PlansRepair;
 				for (i=0;i<mtrw;i=i+1) begin
 					matrowget(MPr,i,MPrw)
-					if (currentdate > MPrw.PlansDate and MPrw.PlansDate >= PrevDate) then begin
-						Start[tmp] = MPrw.PlansDate;
+					if (currentdate <= MPrw.PlansDate and MPrw.PlansDate > PrevDate) then begin
+						Start[tmp] = addDay(PrevDate, 1); //MPrw.PlansDate;
 						PlanWork[tmp] = MPrw.PlansRepair;
 					end;
 					PrevDate = MPrw.PlansDate;
@@ -737,8 +737,8 @@ begin
 			PlanWork[MPr.Code] = MPrw.PlansRepair;
 			for (i=0;i<mtrw;i=i+1) begin
 				matrowget(MPr,i,MPrw)
-				if (currentdate > MPrw.PlansDate and MPrw.PlansDate >= PrevDate) then begin
-					Start[MPr.Code] = MPrw.PlansDate;
+				if (currentdate <= MPrw.PlansDate and MPrw.PlansDate > PrevDate) then begin
+					Start[MPr.Code] = addDay(PrevDate, 1); //MPrw.PlansDate;
 					PlanWork[MPr.Code] = MPrw.PlansRepair;
 				end;
 				PrevDate = MPrw.PlansDate;

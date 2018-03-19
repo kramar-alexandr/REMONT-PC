@@ -1855,8 +1855,8 @@ begin
   RecordField(Matrix,M4matrix,0,0);
   ArrayBegin(Matrix,-,1);
   ArrayField(PlansDate,M4Date,0,0);
-  ArrayField(PlansSales,M4Int,0,0);
-  ArrayField(PlansRepair,M4Int,0,0);
+  ArrayField(PlansSales,M4Val,0,0);
+  ArrayField(PlansRepair,M4Val,0,0);
   ArrayField(PlansComment,M4Str,255,0);
   EndArray;
   MainKeyBegin(Code,0);

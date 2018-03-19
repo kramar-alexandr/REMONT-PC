@@ -722,6 +722,7 @@ begin
 					PrevDate = MPrw.PlansDate;
 				end;
 				endDate[tmp] = currentdate;
+				logtext(0,MPr.Code & " sd " & Start[MPr.Code] & " ed " & endDate[MPr.Code]);
 				count_fact(tmp, Start[tmp], endDate[tmp], res, today_res);
 				FactWork[tmp] = res;
 				TodWork[tmp] = today_res;
@@ -744,6 +745,7 @@ begin
 				PrevDate = MPrw.PlansDate;
 			end;
 			endDate[MPr.Code] = currentdate;
+			logtext(0,MPr.Code & " sd " & Start[MPr.Code] & " ed " & endDate[MPr.Code]);
 			count_fact(MPr.Code, Start[MPr.Code], endDate[MPr.Code], res, today_res);
 			FactWork[MPr.Code] = res;
 			TodWork[MPr.Code] = today_res;

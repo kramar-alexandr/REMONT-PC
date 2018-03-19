@@ -105,7 +105,7 @@ external updating procedure AddTTrans_IVVc(record TRVc,record IVVc); //Edit*****
 external function string 255 CheckTrans(var record TRVc,Integer,Boolean); //Edit***************************Sasha2,14:06 31.08.2015
 external updating procedure UpdateTrans_Stock(record TRVc); //Edit***************************Sasha2,14:14 31.08.2015
 external function Integer MakeTransFromIVAfterFIFO(var record TRVc,var record SMVc,record IVVc,Boolean,Boolean); //Edit***************************Sasha2,14:10 31.08.2015
-external updating function val ChangeCostOfIVsInSVO(Longint);//Edit-------------------Vitalii 10:20 25.11.2016
+external updating function val ChangeCostOfIVsInSVO(Longint,boolean);//Edit-------------------Vitalii 10:20 25.11.2016
 remote function string 50 GetPhone1SerNrByPhone(string); //Edit***************************Sasha2,13:52 10.03.2017
 
 updating procedure AddToCustomerAccount(record IVVc IVr)
@@ -625,7 +625,7 @@ begin
   end;
   if (IVr.OKFlag!=0) then begin //Edit-------------------Vitalii 10:19 25.11.2016 {
     if (IVr.SVONr!=-1) then begin
-      ChangeCostOfIVsInSVO(IVr.SVONr);//Edit-------------------Vitalii 10:19 25.11.2016
+      ChangeCostOfIVsInSVO(IVr.SVONr,true);//Edit-------------------Vitalii 10:19 25.11.2016
     end;
     if (IVr.InvType==kInvoiceTypeCredit) then begin
       rwcnt = MatRowCnt(IVr);
@@ -634,7 +634,7 @@ begin
         if (IVrw.stp==kInvoiceRowTypeCredit) then begin
           svoIVr.SerNr = IVrw.OrdRow;
           readfirstmain(svoIVr,1,true);
-          ChangeCostOfIVsInSVO(svoIVr.SVONr);
+          ChangeCostOfIVsInSVO(svoIVr.SVONr,true);
         end;
       end;
     end;
@@ -1318,7 +1318,7 @@ BEGIN
     end;   
   end;
   if (IVr.SVONr!=-1) then begin //Edit-------------------Vitalii 10:19 25.11.2016 {
-		ChangeCostOfIVsInSVO(IVr.SVONr);//Edit-------------------Vitalii 10:19 25.11.2016
+		ChangeCostOfIVsInSVO(IVr.SVONr,true);//Edit-------------------Vitalii 10:19 25.11.2016
 	end;
 	if (IVr.InvType==kInvoiceTypeCredit) then begin
 		rwcnt = MatRowCnt(IVr);
@@ -1327,7 +1327,7 @@ BEGIN
 			if (IVrw.stp==kInvoiceRowTypeCredit) then begin
 				svoIVr.SerNr = IVrw.OrdRow;
 				readfirstmain(svoIVr,1,true);
-				ChangeCostOfIVsInSVO(svoIVr.SVONr);
+				ChangeCostOfIVsInSVO(svoIVr.SVONr,true);
 			end;
 		end;
 	end; //Edit-------------------Vitalii 10:19 25.11.2016 }

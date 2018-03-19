@@ -10742,8 +10742,13 @@ begin
   SetWRect(20,80,300,300);
   EditField(h=100,v=6,150,"Номер",Normal,Code,false,0);
   EditField(h,v+=20,80,"Дата выдачи",Normal,SDate,false,0);
-  EditField(h,v+=20,50,"Баланс",ViewOnly,Bal,false,0);
-  EditField(h,v+=20,50,"Скидка",ViewOnly,RebCode,false,RebSCLass);
+  if(left(currentuser,2)=="SA")then begin
+		EditField(h,v+=20,50,"Баланс",Normal,Bal,false,0);
+		EditField(h,v+=20,50,"Скидка",Normal,RebCode,false,RebSCLass);
+  end else begin
+  	EditField(h,v+=20,50,"Баланс",ViewOnly,Bal,false,0);
+		EditField(h,v+=20,50,"Скидка",ViewOnly,RebCode,false,RebSCLass);
+  end;
   
   EndWindow;
 end;

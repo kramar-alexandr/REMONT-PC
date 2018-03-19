@@ -21,7 +21,7 @@ external function Boolean FindStringInString(string,string);// Edit ************
 remote procedure CountNumberRepeatPhone(string,var array longint,var integer );
 //external updating procedure CreateActFromSVOToEnginer(record SVOVc,string);----------------- dima-f 25.09.17
 //external updating procedure CreateActFromSVOForInspectorIfItemIssued(record SVOVc);------------- dima-f 25.09.17
-external updating function val ChangeCostOfIVsInSVO(longint);//Edit-------------------Vitalii 10:13 25.11.2016
+external updating function val ChangeCostOfIVsInSVO(longint,boolean);//Edit-------------------Vitalii 10:13 25.11.2016
 external updating procedure PhonesFromSVO(longint);//Edit-------------------Vitalii 17:10 03.11.2016
 //remote procedure SENDSECONDSMS(longint);// Edit ************************** Friday, 18 November 2016 14:48:29
 remote updating procedure FastPayInvoicesSVO(record RcVc);// Edit ************************** Friday, 25 November 2016 13:09:52
@@ -35,10 +35,79 @@ external function LongInt CountWorkingDays(Date,Date,string,string);// Edit ****
 external function LongInt DateDiff(Date,Date);// Edit ************************** Friday, 6 October 2017 11:19:10
 external external procedure ExtractObj(string,var Integer,var string);
 external function LongInt CountWorkingDays(Date,Date,string,string);
+external procedure IVDUpdatePrices(var record IVVc,Boolean);// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 19 March 2018 12:38:33
+external procedure IVDchsum(var record IVVc,Integer);// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 19 March 2018 14:44:41
+external function Boolean IVDchrsum(var record IVVc,Integer);
+external function Boolean GetItemPriceDiscount3(string,val,var record INVc,string,val,val,val,val,val,string,string,string,string,
+                                                var val,var string,var val,var string,var val,var string,Integer,var Boolean,Date,Time,
+                                                string,Boolean,var Boolean,string,var string,var val,string,string,var string);
+external procedure IVSumup(var record IVVc,Boolean);
 
 
 SetLangMode(LangRussian,"RUS",0);
 
+
+
+global
+procedure IVDUpdateRebates(var record IVVc IVr,Boolean readf)
+begin
+  Integer i,rwcnt;
+  row IVVc IVrw;
+  record INVc INr;
+  Boolean calcprice;
+  string 255 tstr;
+  val t,s,price,vreb,baseprice,temp,tax2prc;
+  string 255 curitemname,salesacc,vatcode,tax2code,location,taxtemplatecode;
+  val oldprice;
+  Boolean dummyf;
+
+  if (readf) then begin
+    if (ReadFirstMain(IVr,0,true)) then begin end;  
+  end;
+  rwcnt = MatRowCnt(IVr);
+  for (i=0;i<rwcnt;i=i+1) begin
+    MatRowGet(IVr,i,IVrw);
+    if (IVrw.stp!=kInvoiceRowTypeStructuredItemComponent) then begin
+    if (nonblank(IVrw.ArtCode)) then begin
+      oldprice = IVrw.Price;
+      vreb = blankval;
+      baseprice = blankval;
+      vatcode = "";
+      salesacc = "";
+      location = IVrw.Location;
+      if (blank(location)) then begin
+        location = IVr.Location;
+      end;
+      if (GetItemPriceDiscount3(IVrw.ArtCode,IVrw.Quant,INr,IVr.CurncyCode,
+                              IVr.FrRate,IVr.ToRateB1,IVr.ToRateB2,IVr.BaseRate1,IVr.BaseRate2,
+                              IVr.LangCode,IVr.CustCat,IVr.PriceList,IVr.RebCode,
+                              price,curitemname,vreb,vatcode,baseprice,salesacc,
+                              IVr.ExportFlag,calcprice,IVr.TransDate,IVr.TransTime,IVr.CustCode,true,dummyf,IVr.PayDeal,tax2code,tax2prc,IVr.Region,location,taxtemplatecode)) then begin
+        IVrw.ArtCode = INr.Code;
+        IVrw.Price = oldprice;
+//        IVrw.Spec = curitemname;//why item name?
+        IVrw.vRebate = vreb;
+        IVrw.SalesAcc = salesacc;
+        IVrw.VATCode = vatcode;
+        if (INr.ItemType==kItemTypeStructured and blank(IVr.PriceList)) then begin
+          IVrw.BasePrice = blankval;
+        end else begin
+          IVrw.BasePrice = baseprice;
+        end;
+        if (nonblank(IVr.CustVATCode)) then begin
+          IVrw.VATCode = IVr.CustVATCode;
+        end;
+        MatRowPut(IVr,i,IVrw);
+        if (IVDchrsum(IVr,i)) then begin
+        end;
+        IVDchsum(IVr,i);
+      end;
+    end;
+    end;
+  end;
+  IVSumup(IVr,true);
+  RETURN;
+END;
 
 global function date CalcWorkDate(date curdate,integer days,boolean work)
 begin
@@ -1245,6 +1314,7 @@ BEGIN
   if (SVO2r.OrderStatus!=11 and SVOr.OrderStatus==11) then begin //Вернули на доработку
     SVOr.StatusReturnCnt = SVOr.StatusReturnCnt + 1;
   end;
+  SVOr.WSCost = ChangeCostOfIVsInSVO(SVOr.SerNr,false);//Edit-------------------Vitalii 10:13 25.11.2016
 
   SVOVcRecordUpdate = res; 
   RETURN;
@@ -1478,7 +1548,6 @@ BEGIN
     SVOInspection(SVOr);
   end;
   
-  SVOr.WSCost = ChangeCostOfIVsInSVO(SVOr.SerNr);//Edit-------------------Vitalii 10:13 25.11.2016
   // Edit Start ---------------------------------------------- Edit Start
 	//Thursday, 14 July 2011 12:30:47
 	mtrw = matrowcnt(SVOr);
@@ -1991,7 +2060,7 @@ BEGIN
   LongInt res;
   Integer rwcnt,i,errcode;
   LongInt oldnr;
-  Boolean found,gentrans,MainItemFound,transf,TrHs;
+  Boolean found,gentrans,MainItemFound,transf,TrHs,testf;
   record COVc COr;
   string 255 tstr,errstr;
   record CUVc CUr;
@@ -2007,6 +2076,9 @@ BEGIN
   record DispatchVc Dispatchr; //Edit***************************Sasha2,14:12 01.08.2017
   longint lastnm;
   record MyLoyCardVc MLCr;
+  record IVVc IVr,oldIVr;// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 19 March 2018 11:58:49
+  record ARVc ARr;// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 19 March 2018 11:58:49
+  val ivdolg,ivsum;// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 19 March 2018 11:58:47
 
   res = 0;
   
@@ -2164,7 +2236,134 @@ BEGIN
   		end;
   	end;
   end;
+  // Edit Start ---------------------------------------------- Edit Start
+	//Monday, 19 March 2018 11:52:27
+	
+  if(stat==Rs_update)then begin
+  	if(nonblank(SVOr.LoyCardCode) and blank(SVO2r.LoyCardCode))then begin
+  		IVr.SVONr = SVOr.SerNr;
+  		TrHs = true;
+  		while(loopkey("SVONr",IVr,1,TrHs))begin
+  			testf = true;
+  			if(IVr.SVONr!=SVOr.SerNr)then begin TrHs = false; testf = false; end;
+  			if(IVr.OKFlag==0)then begin testf = false; end;
+  			if(IVr.Invalid>0)then begin testf = false; end;
+  			
+  			ivdolg = blankval;
+  			ivsum = blankval;
+  			
+  			if(testf)then begin
+  				if(IVr.InvType==kInvoiceTypeCredit)then begin
+						ivsum = ivsum - IVr.Sum4;
+  				end else begin
+  					ivsum = ivsum + IVr.Sum4;
+  				end;
+  				ARr.InvoiceNr = IVr.SerNr;
+  				if(readfirstmain(ARr,1,true))then begin
+  					ivdolg = ivdolg + ARr.RVal;
+  				end;
+  				
+  			end;
+  			
+  			if(ivdolg!=ivsum)then begin
+  				RecordCheckError(31516,"",-1,"LoyCardCode");
+					res = -1;
+					goto LSVOVcRecordCheck;
+  			end;
+  		end;
+  		resetloop(IVr);
+  		if(nonblank(MLCr.RebCode))then begin
+  			IVr.SVONr = SVOr.SerNr;
+				TrHs = true;
+				while(loopkey("SVONr",IVr,1,TrHs))begin
+					testf = true;
+					if(IVr.SVONr!=SVOr.SerNr)then begin TrHs = false; testf = false; end;
+					if(IVr.Invalid>0)then begin testf = false; end;
+				
+					ivdolg = blankval;
+					ivsum = blankval;
+				
+					if(testf)then begin
+						if(IVr.InvType==kInvoiceTypeCredit)then begin
+							ivsum = ivsum - IVr.Sum4;
+						end else begin
+							ivsum = ivsum + IVr.Sum4;
+						end;
+						ARr.InvoiceNr = IVr.SerNr;
+						if(readfirstmain(ARr,1,true))then begin
+							ivdolg = ivdolg + ARr.RVal;
+						end;
+					
+						if(ivdolg==ivsum and IVr.RebCode!=MLCr.RebCode)then begin
+							if(IVr.OKFlag==1)then begin
+								recordcopy(oldIVr,IVr);
+									IVr.OKFlag = 0;
+								recordupdate(oldIVr,IVr,true);
+								recordcopy(oldIVr,IVr);
+									IVr.RebCode = MLCr.RebCode;
+									IVDUpdateRebates(IVr,false);
+									IVr.OKFlag = 1;
+								recordupdate(oldIVr,IVr,true);
+							end else begin
+								recordcopy(oldIVr,IVr);
+									IVr.RebCode = MLCr.RebCode;
+									IVDUpdateRebates(IVr,false);
+								recordupdate(oldIVr,IVr,true);
+
+							end;
+						end;
+					end;
+				end;
+				resetloop(IVr);
+  		end;
+  	end;
+  	if(blank(SVOr.LoyCardCode) and nonblank(SVO2r.LoyCardCode))then begin
+			IVr.SVONr = SVOr.SerNr;
+			TrHs = true;
+			while(loopkey("SVONr",IVr,1,TrHs))begin
+				testf = true;
+				if(IVr.SVONr!=SVOr.SerNr)then begin TrHs = false; testf = false; end;
+				if(IVr.Invalid>0)then begin testf = false; end;
+			
+				ivdolg = blankval;
+				ivsum = blankval;
+			
+				if(testf)then begin
+					if(IVr.InvType==kInvoiceTypeCredit)then begin
+						ivsum = ivsum - IVr.Sum4;
+					end else begin
+						ivsum = ivsum + IVr.Sum4;
+					end;
+					ARr.InvoiceNr = IVr.SerNr;
+					if(readfirstmain(ARr,1,true))then begin
+						ivdolg = ivdolg + ARr.RVal;
+					end;
+				
+					if(ivdolg==ivsum and nonblank(IVr.RebCode))then begin
+						if(IVr.OKFlag==1)then begin
+							recordcopy(oldIVr,IVr);
+								IVr.OKFlag = 0;
+							recordupdate(oldIVr,IVr,true);
+							recordcopy(oldIVr,IVr);
+								IVr.RebCode = "";
+								IVDUpdateRebates(IVr,false);
+								IVr.OKFlag = 1;
+							recordupdate(oldIVr,IVr,true);
+						end else begin
+							recordcopy(oldIVr,IVr);
+								IVr.RebCode = "";
+								IVDUpdateRebates(IVr,false);
+							recordupdate(oldIVr,IVr,true);
+
+						end;
+					end;
+				end;
+  		end;
+  	end;
+  end;
   
+	// Edit End ---------------------------------------------- Edit End
+	
   BlockLoad(SVOAccRec);
   oldnr = SVOr.SerNr;
   if (SVOr.DoneMark!=0) and (SVO2r.DoneMark==0) then begin

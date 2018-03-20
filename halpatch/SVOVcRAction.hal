@@ -1356,8 +1356,9 @@ begin
 		if(bal2>0)then begin
 			MLCr.Code = SVO2r.LoyCardCode;
 			if(readfirstmain(MLCr,1,true))then begin
+				recordcopy(MLC2r,MLCr);
 				MLCr.Bal = MLCr.Bal - bal2;
-				recordstore(MLCr,true);
+				recordupdate(MLC2r,MLCr,true);
 			end;
 		end;
 	end;

@@ -139,10 +139,10 @@ begin
 										StartFormat(15);
 											outstring(tabs[4],0,"Оплачено",false);
 											//outstring(tabs[5],0,SVOr.PlanShipDate,false);
-											outstring(tabs[6],0,SVOr.FastCash + SVOr.PrepaySum + SVOr.FastPMBN + SVOr.FastTerm,false);
+											outstring(tabs[6],0,SVOr.FastCash + SVOr.FastPMBN + SVOr.FastTerm,false);
 										endformat;
 										dolg = blankval;
-										dolg = SVOr.WSCost - (SVOr.FastCash + SVOr.PrepaySum + SVOr.FastPMBN + SVOr.FastTerm);
+										dolg = SVOr.WSCost - (SVOr.FastCash + SVOr.FastPMBN + SVOr.FastTerm);
 										totdolg = totdolg + dolg;
 										StartFormat(15);
 											outstring(tabs[4],0,"Долг",false);

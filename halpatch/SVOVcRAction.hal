@@ -1349,8 +1349,8 @@ begin
 	record MyLoyCardVc MLCr,MLC2r;
 	val bal2,bal;
 	
-	bal2 = SVO2r.FastCash + SVO2r.PrepaySum + SVO2r.FastPMBN + SVO2r.FastTerm;
-	bal = SVOr.FastCash + SVOr.PrepaySum + SVOr.FastPMBN + SVOr.FastTerm;
+	bal2 = SVO2r.FastCash + SVO2r.FastPMBN + SVO2r.FastTerm;
+	bal = SVOr.FastCash + SVOr.FastPMBN + SVOr.FastTerm;
 	
 	if(nonblank(SVO2r.LoyCardCode))then begin
 		if(bal2>0)then begin

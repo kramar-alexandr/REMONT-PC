@@ -657,19 +657,21 @@ begin
 	today_res = 0.0;
 	TrHS = true;
 	IVr.SalesMan = SalesManName;
-	while (loopkey("SalesMan",IVr,1,TrHS)) begin
+	IVr.InvDate = StartDate;
+	while (loopkey("InvDate",IVr,1,TrHS)) begin
 		testf = true;
-		if (IVr.SalesMan!=SalesManName) then begin
-			TrHS = false;
-			testf = false;
-		end;
+		if (IVr.SalesMan!=SalesManName) then begin testf = false; end;
+		if (IVr.InvDate>EndDate) then begin testf = false; TrHS = false; end;
+		if (IVr.OKFlag==0) then begin testf = false; end;
+		if (IVr.Invalid>0) then begin testf = false; end;
+		
 		if (testf) then begin
-			if (IVr.InvDate >= StartDate and IVr.InvDate <= EndDate) then begin
-				mtrw = matrowcnt(IVr);
-				for (i=0;i<mtrw;i=i+1) begin
-					matrowget(IVr,i,IVrw);
+			mtrw = matrowcnt(IVr);
+			for (i=0;i<mtrw;i=i+1) begin
+				matrowget(IVr,i,IVrw);
+				if(IVrw.stp==kInvoiceRowTypeNormal and nonblank(IVrw.ArtCode))then begin
 					INr.Code = IVrw.ArtCode;
-					if (readfirstkey("Code",INr,1,true)) then begin
+					if (readfirstmain(INr,1,true)) then begin
 						if (INr.ItemType==kItemTypePlain or INr.ItemType==kItemTypeService) then begin
 							res = res + IVrw.Sum;
 							if (IVr.InvDate == EndDate) then begin
@@ -712,16 +714,18 @@ begin
 				mtrw = matrowcnt(MPr);
 				matrowget(MPr,0,MPrw)
 				PrevDate = MPrw.PlansDate;
+				PrevDate.day = 1;
 				PlanWork[tmp] = MPrw.PlansRepair;
 				for (i=0;i<mtrw;i=i+1) begin
 					matrowget(MPr,i,MPrw)
-					if (currentdate <= MPrw.PlansDate and MPrw.PlansDate > PrevDate) then begin
+					if (currentdate <= MPrw.PlansDate and currentdate > PrevDate) then begin
 						Start[tmp] = addDay(PrevDate, 1); //MPrw.PlansDate;
 						PlanWork[tmp] = MPrw.PlansRepair;
 					end;
 					PrevDate = MPrw.PlansDate;
 				end;
 				endDate[tmp] = currentdate;
+				logtext(0,MPr.Code & " sd " & Start[MPr.Code] & " ed " & endDate[MPr.Code]);
 				count_fact(tmp, Start[tmp], endDate[tmp], res, today_res);
 				FactWork[tmp] = res;
 				TodWork[tmp] = today_res;
@@ -734,16 +738,18 @@ begin
 			mtrw = matrowcnt(MPr);
 			matrowget(MPr,0,MPrw)
 			PrevDate = MPrw.PlansDate;
+			PrevDate.day = 1;
 			PlanWork[MPr.Code] = MPrw.PlansRepair;
 			for (i=0;i<mtrw;i=i+1) begin
 				matrowget(MPr,i,MPrw)
-				if (currentdate <= MPrw.PlansDate and MPrw.PlansDate > PrevDate) then begin
+				if (currentdate <= MPrw.PlansDate and currentdate > PrevDate) then begin
 					Start[MPr.Code] = addDay(PrevDate, 1); //MPrw.PlansDate;
 					PlanWork[MPr.Code] = MPrw.PlansRepair;
 				end;
 				PrevDate = MPrw.PlansDate;
 			end;
 			endDate[MPr.Code] = currentdate;
+			logtext(0,MPr.Code & " sd " & Start[MPr.Code] & " ed " & endDate[MPr.Code]);
 			count_fact(MPr.Code, Start[MPr.Code], endDate[MPr.Code], res, today_res);
 			FactWork[MPr.Code] = res;
 			TodWork[MPr.Code] = today_res;

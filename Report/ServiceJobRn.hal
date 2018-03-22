@@ -1,5 +1,6 @@
 external function LongInt DateDiff(Date,Date);
 external function LongInt CountWorkingDays(Date,Date,string,string);
+external function boolean KIVIFound(record SVOVc);
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -225,16 +226,10 @@ begin
 	record INVc INr;
 	record SVOVc SVOr,oldSVOr;
 	row SVOVc SVOrw;
-	record IntSerBalVc SBr;
-	vector string 50 vSerLoc,vSerInServ;
-	vector boolean vSGExist,vLocExist,vSGLocExist;
 	vector longint vSerSVONr;
-	array string 50 aSerials,aSerials1,users;
+	array string 50 users;
 	integer k,i,mtrw,j,mtrw1;
-	record SalesGroupVc SGr;
-	record LocationVc Locr;
 	array integer tabs;
-	boolean testfsg,testfloc,testfsvo;
 	val dolg,totdolg,supertotdolg,totserv;
 	val dolgdet,totdolgdet,supertotdolgdet,totservdet;
 	record IPRsVc IPRsr,IPRs2r;
@@ -268,10 +263,12 @@ begin
 	vector integer vIngCanQty,vManCanQty,vSVOQty;
 	array string 50 aing,aman,arjct;
 	integer ingcnt,mancnt,irjct,userscnt,ui;
-	vector boolean vIngExst,vManExst,vrjct; 
+	vector boolean vIngExst,vManExst,vrjct,vsvodolg; 
 	record UserVc User;
 	vector val st0,ivretsummanag;
 	array string 255 atags;
+	vector string 50 asvosg,svocf7,svoserman,svoinsp; 
+	vector val svowscost;
 	
 	while(loopmain(User,1,true))begin
 		users[userscnt] = User.Code;
@@ -286,11 +283,8 @@ begin
 			end;
 		end;
 	end;
-	
-	
-	
+		
 	tot[0] = blankval;
-	
 	tabs[0] = 0;
 	tabs[1] = 40;
 	tabs[2] = 80;
@@ -300,6 +294,7 @@ begin
 	tabs[6] = 240;
 	tabs[7] = 280;
 	tabs[8] = 340;
+	
 		if (RepSpec.flags[26]==0) then begin
 			StartReportJob("Выполеные ремонты");
 			PrintHeader(RepSpec);
@@ -323,6 +318,17 @@ begin
 											asvonr[k] = IVr.SVONr;
 											k = k+1;
 											svoexist[IVr.SVONr] = true;
+											SVOr.SerNr = IVr.SVONr;
+											if(readfirstmain(SVOr,1,true))then begin
+												svocf7[IVr.SVONr] = SVOr.CustomField7;
+												asvosg[IVr.SVONr] = SVOr.SalesGroup;
+												svoserman[IVr.SVONr] = SVOr.ServiceManager;
+												svoinsp[IVr.SVONr] = SVOr.Inspector;
+												svowscost[IVr.SVONr] = SVOr.WSCost;
+												IF(nonblankdate(SVOr.RegDate) and SVOr.RegDate<=ed and SVOr.RegDate>=sd)THEN BEGIN
+													vsvodolg[IVr.SVONr] = TRUE;
+												END;
+											end;
 										end;
 										if(IVr.InvType!=kInvoiceTypeCredit)then begin
 											if(paydate[IVr.SVONr]<IVr.InvDate)then begin
@@ -348,29 +354,40 @@ begin
 	  									if(IPrw.CUPNr>0)then begin
 	  										if(IPrw.RecVal<0)then begin
 	  											if(svoexist[IPrw.CUPNr]==false)then begin
-														asvonr[k] = IPrw.CUPNr;
-														k = k+1;
-														svoexist[IPrw.CUPNr] = true;
+	  												SVOr.SerNr = IPrw.CUPNr;
+														if(readfirstmain(SVOr,1,true))then begin
+															asvonr[k] = IPrw.CUPNr;
+															k = k+1;
+															svoexist[IPrw.CUPNr] = true;
+															svocf7[IPrw.CUPNr] = SVOr.CustomField7;
+															asvosg[IPrw.CUPNr] = SVOr.SalesGroup;
+															svoserman[IPrw.CUPNr] = SVOr.ServiceManager;
+															svoinsp[IPrw.CUPNr] = SVOr.Inspector;
+															svowscost[IPrw.CUPNr] = SVOr.WSCost;
+															IF(nonblankdate(SVOr.RegDate) and SVOr.RegDate<=ed and SVOr.RegDate>=sd)THEN BEGIN
+																vsvodolg[IPrw.CUPNr] = TRUE;
+															END;
+														end;
 													end;
 													
-													SVOr.SerNr = IPrw.CUPNr;
-													if(readfirstmain(SVOr,1,true))then begin
+													//SVOr.SerNr = IPrw.CUPNr;
+													if(svoexist[IPrw.CUPNr])then begin
 														filter = true;
-														if(IVr.SalesMan==SVOr.CustomField7)then begin
-															enginer = SVOr.ServiceManager;
+														if(IVr.SalesMan==svocf7[IPrw.CUPNr])then begin
+															enginer = svoserman[IPrw.CUPNr];
 														end;
 					
-														if(nonblank(RepSpec.f1) and RepSpec.f1!=SVOr.SalesGroup)then begin filter = false; end;
+														if(nonblank(RepSpec.f1) and RepSpec.f1!=asvosg[IPrw.CUPNr])then begin filter = false; end;
 														if(nonblank(RepSpec.f3) and RepSpec.f3!=enginer)then begin filter = false; end;
-														if(nonblank(RepSpec.f4) and RepSpec.f4!=SVOr.CustomField7)then begin filter = false; end;
+														if(nonblank(RepSpec.f4) and RepSpec.f4!=svocf7[IPrw.CUPNr])then begin filter = false; end;
 														
 														if(filter)then begin
 															ivretsum[IPrw.CUPNr] = ivretsum[IPrw.CUPNr] - IPrw.RecVal;
-															if(nonblank(SVOr.ServiceManager))then begin
-																ivretsummanag[IPrw.CUPNr & ":" & SVOr.ServiceManager] = ivretsum[IPrw.CUPNr & ":" & SVOr.ServiceManager] - IPrw.RecVal;
-																vIngSum[SVOr.ServiceManager & ":VOZVR:SERV"] = vIngSum[SVOr.ServiceManager & ":VOZVR:SERV"] - IPrw.RecVal;
-																if(vIngExst[SVOr.ServiceManager]==false)then begin
-																	vIngExst[SVOr.ServiceManager] = true;
+															if(nonblank(svoserman[IPrw.CUPNr]))then begin
+																ivretsummanag[IPrw.CUPNr & ":" & svoserman[IPrw.CUPNr]] = ivretsum[IPrw.CUPNr & ":" & svoserman[IPrw.CUPNr]] - IPrw.RecVal;
+																vIngSum[svoserman[IPrw.CUPNr] & ":VOZVR:SERV"] = vIngSum[svoserman[IPrw.CUPNr] & ":VOZVR:SERV"] - IPrw.RecVal;
+																if(vIngExst[svoserman[IPrw.CUPNr]]==false)then begin
+																	vIngExst[svoserman[IPrw.CUPNr]] = true;
 																	aing[ingcnt] = SVOr.ServiceManager;
 																	ingcnt = ingcnt + 1;														
 																end;
@@ -389,13 +406,13 @@ begin
 																ingcnt = ingcnt + 1;														
 															end;
 															
-															if(blank(SVOr.Inspector))then begin
-																SVOr.Inspector = "PREPAY";
+															if(blank(svoinsp[IPrw.CUPNr]))then begin
+																svoinsp[IPrw.CUPNr] = "PREPAY";
 															end;
-															vManSum[SVOr.Inspector & ":VOZVR:SERV"] = vManSum[SVOr.Inspector & ":VOZVR:SERV"] - IPrw.RecVal;
-															if(vManExst[SVOr.Inspector]==false)then begin
-																vManExst[SVOr.Inspector] = true;
-																aman[mancnt] = SVOr.Inspector;
+															vManSum[svoinsp[IPrw.CUPNr] & ":VOZVR:SERV"] = vManSum[svoinsp[IPrw.CUPNr] & ":VOZVR:SERV"] - IPrw.RecVal;
+															if(vManExst[svoinsp[IPrw.CUPNr]]==false)then begin
+																vManExst[svoinsp[IPrw.CUPNr]] = true;
+																aman[mancnt] = svoinsp[IPrw.CUPNr];
 																mancnt = mancnt + 1;														
 															end;
 														end;
@@ -410,6 +427,17 @@ begin
 														asvonr[k] = IVr.SVONr;
 														k = k+1;
 														svoexist[IVr.SVONr] = true;
+														SVOr.SerNr = IVr.SVONr;
+														if(readfirstmain(SVOr,1,true))then begin
+															svocf7[IVr.SVONr] = SVOr.CustomField7;
+															asvosg[IVr.SVONr] = SVOr.SalesGroup;
+															svoserman[IVr.SVONr] = SVOr.ServiceManager;
+															svoinsp[IVr.SVONr] = SVOr.Inspector;
+															svowscost[IVr.SVONr] = SVOr.WSCost;
+															IF(nonblankdate(SVOr.RegDate) and SVOr.RegDate<=ed and SVOr.RegDate>=sd)THEN BEGIN
+																vsvodolg[IVr.SVONr] = TRUE;
+															END;
+														end;
 													end;
 													
 													if(IVr.InvDate<sd)then begin
@@ -589,111 +617,184 @@ begin
 		end;
 		For(i=0;i<k;i=i+1) begin
 			SVOr.SerNr = asvonr[i];
-			readfirstmain(SVOr,1,true);
-			if(SVOr.WSCost!=0 and ivsum[asvonr[i]]<=0)then begin
+			if(svowscost[asvonr[i]]!=0 and ivsum[asvonr[i]]<=0)then begin
+				readfirstmain(SVOr,1,true);
+				filter = true;
+			
+				if(RepSpec.flags[1]==0)then begin
+					if(KIVIFound(SVOr))then begin
+						filter = false;
+					end;
+				end;
+			end else begin
+				filter = false;
+			end;
+			if(filter)then begin
+				if(SVOr.WSCost!=0 and ivsum[asvonr[i]]<=0)then begin
+					svoout = false;
+					IVr.SVONr = SVOr.SerNr;
+					TrHs = true;
+					while(loopkey("SVONr",IVr,1,TrHs))begin	
+						testf = true;
+						if(IVr.SVONr!=SVOr.SerNr)then begin TrHs = false; testf = false; end;
+						if(IVr.OKFlag==0)then begin testf = false; end;
 					
-				svoout = false;
-				IVr.SVONr = SVOr.SerNr;
-				TrHs = true;
-				while(loopkey("SVONr",IVr,1,TrHs))begin	
-					testf = true;
-					if(IVr.SVONr!=SVOr.SerNr)then begin TrHs = false; testf = false; end;
-					if(IVr.OKFlag==0)then begin testf = false; end;
-					
-					filter = true;
-					if(testf)then begin
-						enginer = "";
-						cnt=1;
-						while(ReadRecordLink(IVr,cnt,WSr,RLr)) begin
-							if(nonblank(WSr.EMCode))then begin
-								If(WSr.EMCode!=IVr.SalesMan) then begin
-									IVr.SalesMan = WSr.EMCode;
-								end; 
-							end;
-							cnt = cnt+1;
-						end;
-						
-						if(IVr.SalesMan==SVOr.CustomField7)then begin
-							enginer = SVOr.ServiceManager;
-						end else begin
-							enginer = IVr.SalesMan;
-						end;
-						
-						if(nonblank(RepSpec.f1) and RepSpec.f1!=SVOr.SalesGroup)then begin filter = false; end;
-						if(nonblank(RepSpec.f3) and RepSpec.f3!=enginer)then begin filter = false; end;
-						if(nonblank(RepSpec.f4) and RepSpec.f4!=SVOr.CustomField7)then begin filter = false; end;
-						testf = filter;
-						
+						filter = true;
 						if(testf)then begin
-							if(vCuExist[SVOr.CustCode]==false)then begin
-								vCuExist[SVOr.CustCode] = true;
-								CUr.Code = SVOr.CustCode;
+							enginer = "";
+							cnt=1;
+							while(ReadRecordLink(IVr,cnt,WSr,RLr)) begin
+								if(nonblank(WSr.EMCode))then begin
+									If(WSr.EMCode!=IVr.SalesMan) then begin
+										IVr.SalesMan = WSr.EMCode;
+									end; 
+								end;
+								cnt = cnt+1;
+							end;
+						
+							if(IVr.SalesMan==SVOr.CustomField7)then begin
+								enginer = SVOr.ServiceManager;
+							end else begin
+								enginer = IVr.SalesMan;
+							end;
+						
+							if(nonblank(RepSpec.f1) and RepSpec.f1!=SVOr.SalesGroup)then begin filter = false; end;
+							if(nonblank(RepSpec.f3) and RepSpec.f3!=enginer)then begin filter = false; end;
+							if(nonblank(RepSpec.f4) and RepSpec.f4!=SVOr.CustomField7)then begin filter = false; end;
+							testf = filter;
+						
+							if(testf)then begin
+								if(vCuExist[SVOr.CustCode]==false)then begin
+									vCuExist[SVOr.CustCode] = true;
+									CUr.Code = SVOr.CustCode;
 								
-								if(readfirstmain(CUr,1,true))then begin
-									tphone = CUr.Phone;
-									FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
-									tphone = CUr.Mobile;
-									FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
-									tphone = CUr.AltPhone;
-									FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+									if(readfirstmain(CUr,1,true))then begin
+										tphone = CUr.Phone;
+										FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+										tphone = CUr.Mobile;
+										FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+										tphone = CUr.AltPhone;
+										FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+									end;
 								end;
 							end;
-						end;
 						
-					end;
+						end;
 					
-					if(testf)then begin
-						mtrw = matrowcnt(IVr);
-						For(j=0;j<mtrw;j=j+1) begin
-	  					matrowget(IVr,j,IVrw);
-	  					if(IVrw.stp==kInvoiceRowTypeNormal)then begin
-	  						if(nonblank(IVrw.ArtCode))then begin
-	  							INr.Code = IVrw.ArtCode;
-	  							if(readfirstmain(INr,1,true))then begin
-	  								svoout = true;
-										if (RepSpec.flags[26]==0) then begin
-												startformat(15);
-													outstring(tabs[2],0,IVrw.Spec,false);
-										end;
-											if(IVr.InvType!=kInvoiceTypeCredit)then begin
-												if (RepSpec.flags[26]==0) then begin
-													outstring(tabs[6],0,IVrw.Sum,false);
-												end;
-											end else begin
-												if (RepSpec.flags[26]==0) then begin
-													outstring(tabs[6],0,-IVrw.Sum,false);
-												end;
+						if(testf)then begin
+							mtrw = matrowcnt(IVr);
+							For(j=0;j<mtrw;j=j+1) begin
+								matrowget(IVr,j,IVrw);
+								if(IVrw.stp==kInvoiceRowTypeNormal)then begin
+									if(nonblank(IVrw.ArtCode))then begin
+										INr.Code = IVrw.ArtCode;
+										if(readfirstmain(INr,1,true))then begin
+											svoout = true;
+											if (RepSpec.flags[26]==0) then begin
+													startformat(15);
+														outstring(tabs[2],0,IVrw.Spec,false);
 											end;
-											if(IVr.SalesMan==SVOr.CustomField7)then begin
-												if (RepSpec.flags[26]==0) then begin
-													outstring(tabs[7],0,SVOr.ServiceManager,false);
-												end;
-												enginer = SVOr.ServiceManager;
-											end else begin
-												if (RepSpec.flags[26]==0) then begin
-													outstring(tabs[7],0,IVr.SalesMan,false);
-												end;
-												enginer = IVr.SalesMan;
-											end;
-									if (RepSpec.flags[26]==0) then begin
-										endformat;
-									end;
-	  								if(INr.ItemType==3 or INr.ItemType==0)then begin  									
-	  									if(filter)then begin
-	  										
 												if(IVr.InvType!=kInvoiceTypeCredit)then begin
-													if(INr.Code!="СТРАХОВКА")then begin
-														ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] + IVrw.Sum;
-														totserv = totserv + ivsumserv[asvonr[i]];
-														supertotdolg = supertotdolg + IVrw.Sum;
-														akey = enginer & ":GOTOV:SERV";
+													if (RepSpec.flags[26]==0) then begin
+														outstring(tabs[6],0,IVrw.Sum,false);
+													end;
+												end else begin
+													if (RepSpec.flags[26]==0) then begin
+														outstring(tabs[6],0,-IVrw.Sum,false);
+													end;
+												end;
+												if(IVr.SalesMan==SVOr.CustomField7)then begin
+													if (RepSpec.flags[26]==0) then begin
+														outstring(tabs[7],0,SVOr.ServiceManager,false);
+													end;
+													enginer = SVOr.ServiceManager;
+												end else begin
+													if (RepSpec.flags[26]==0) then begin
+														outstring(tabs[7],0,IVr.SalesMan,false);
+													end;
+													enginer = IVr.SalesMan;
+												end;
+										if (RepSpec.flags[26]==0) then begin
+											endformat;
+										end;
+											if(INr.ItemType==3 or INr.ItemType==0)then begin  									
+												if(filter)then begin
+												
+													if(IVr.InvType!=kInvoiceTypeCredit)then begin
+														if(INr.Code!="СТРАХОВКА")then begin
+															ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] + IVrw.Sum;
+															totserv = totserv + ivsumserv[asvonr[i]];
+															supertotdolg = supertotdolg + IVrw.Sum;
+															akey = enginer & ":GOTOV:SERV";
+															vIngSum[akey] = vIngSum[akey] + IVrw.Sum;
+															if(vIngExst[enginer]==false)then begin
+																vIngExst[enginer] = true;
+																aing[ingcnt] = enginer;
+																ingcnt = ingcnt + 1;														
+															end;
+															akey = SVOr.Inspector & ":GOTOV:SERV";
+															vManSum[akey] = vManSum[akey] + IVrw.Sum;
+															if(vManExst[SVOr.Inspector]==false)then begin
+																vManExst[SVOr.Inspector] = true;
+																aman[mancnt] = SVOr.Inspector;
+																mancnt = mancnt + 1;														
+															end;
+														end else begin
+															ivsumservstrah[asvonr[i]] = ivsumservstrah[asvonr[i]] + IVrw.Sum;
+															akey = IVr.SalesMan & ":GOTOV:STRAH";
+															vManSum[akey] = vManSum[akey] + IVrw.Sum;
+															if(vManExst[IVr.SalesMan]==false)then begin
+																vManExst[IVr.SalesMan] = true;
+																aman[mancnt] = IVr.SalesMan;
+																mancnt = mancnt + 1;														
+															end;
+														end;
+													end else begin
+														if(INr.Code!="СТРАХОВКА")then begin
+															ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] - IVrw.Sum;
+															totserv = totserv - ivsumserv[asvonr[i]];
+															supertotdolg = supertotdolg - IVrw.Sum;
+															akey = enginer & ":GOTOV:SERV";
+															vIngSum[akey] = vIngSum[akey] - IVrw.Sum;
+															if(vIngExst[enginer]==false)then begin
+																vIngExst[enginer] = true;
+																aing[ingcnt] = enginer;
+																ingcnt = ingcnt + 1;														
+															end;
+															akey = SVOr.Inspector & ":GOTOV:SERV";
+															vManSum[akey] = vManSum[akey] - IVrw.Sum;
+															if(vManExst[SVOr.Inspector]==false)then begin
+																vManExst[SVOr.Inspector] = true;
+																aman[mancnt] = SVOr.Inspector;
+																mancnt = mancnt + 1;														
+															end;
+														end else begin
+															ivsumservstrah[asvonr[i]] = ivsumservstrah[asvonr[i]] - IVrw.Sum;
+															akey = IVr.SalesMan & ":GOTOV:STRAH";
+															vManSum[akey] = vManSum[akey] - IVrw.Sum;
+															if(vManExst[IVr.SalesMan]==false)then begin
+																vManExst[IVr.SalesMan] = true;
+																aman[mancnt] = IVr.SalesMan;
+																mancnt = mancnt + 1;														
+															end;
+														end;
+													end;
+												end;
+											end;
+											if(INr.ItemType==1)then begin  									
+												if(filter)then begin
+													if(IVr.InvType!=kInvoiceTypeCredit)then begin
+														ivsumservdet[asvonr[i]] = ivsumservdet[asvonr[i]] + IVrw.Sum;
+														totservdet = totservdet + ivsumservdet[asvonr[i]];
+														supertotdolgdet = supertotdolgdet + IVrw.Sum;
+														akey = enginer & ":GOTOV:DET";
 														vIngSum[akey] = vIngSum[akey] + IVrw.Sum;
 														if(vIngExst[enginer]==false)then begin
 															vIngExst[enginer] = true;
 															aing[ingcnt] = enginer;
 															ingcnt = ingcnt + 1;														
 														end;
-														akey = SVOr.Inspector & ":GOTOV:SERV";
+														akey = SVOr.Inspector & ":GOTOV:DET";
 														vManSum[akey] = vManSum[akey] + IVrw.Sum;
 														if(vManExst[SVOr.Inspector]==false)then begin
 															vManExst[SVOr.Inspector] = true;
@@ -701,207 +802,146 @@ begin
 															mancnt = mancnt + 1;														
 														end;
 													end else begin
-														ivsumservstrah[asvonr[i]] = ivsumservstrah[asvonr[i]] + IVrw.Sum;
-														akey = IVr.SalesMan & ":GOTOV:STRAH";
-														vManSum[akey] = vManSum[akey] + IVrw.Sum;
-														if(vManExst[IVr.SalesMan]==false)then begin
-															vManExst[IVr.SalesMan] = true;
-															aman[mancnt] = IVr.SalesMan;
-															mancnt = mancnt + 1;														
-														end;
-													end;
-												end else begin
-													if(INr.Code!="СТРАХОВКА")then begin
-														ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] - IVrw.Sum;
-														totserv = totserv - ivsumserv[asvonr[i]];
-														supertotdolg = supertotdolg - IVrw.Sum;
-														akey = enginer & ":GOTOV:SERV";
+														ivsumservdet[asvonr[i]] = ivsumservdet[asvonr[i]] - IVrw.Sum;
+														totservdet = totservdet - ivsumservdet[asvonr[i]];
+														supertotdolgdet = supertotdolgdet - IVrw.Sum;
+														akey = enginer & ":GOTOV:DET";
 														vIngSum[akey] = vIngSum[akey] - IVrw.Sum;
 														if(vIngExst[enginer]==false)then begin
 															vIngExst[enginer] = true;
 															aing[ingcnt] = enginer;
 															ingcnt = ingcnt + 1;														
 														end;
-														akey = SVOr.Inspector & ":GOTOV:SERV";
+														akey = SVOr.Inspector & ":GOTOV:DET";
 														vManSum[akey] = vManSum[akey] - IVrw.Sum;
 														if(vManExst[SVOr.Inspector]==false)then begin
 															vManExst[SVOr.Inspector] = true;
 															aman[mancnt] = SVOr.Inspector;
 															mancnt = mancnt + 1;														
 														end;
-													end else begin
-														ivsumservstrah[asvonr[i]] = ivsumservstrah[asvonr[i]] - IVrw.Sum;
-														akey = IVr.SalesMan & ":GOTOV:STRAH";
-														vManSum[akey] = vManSum[akey] - IVrw.Sum;
-														if(vManExst[IVr.SalesMan]==false)then begin
-															vManExst[IVr.SalesMan] = true;
-															aman[mancnt] = IVr.SalesMan;
-															mancnt = mancnt + 1;														
-														end;
 													end;
 												end;
-	  									end;
-	  								end;
-	  								if(INr.ItemType==1)then begin  									
-	  									if(filter)then begin
-												if(IVr.InvType!=kInvoiceTypeCredit)then begin
-													ivsumservdet[asvonr[i]] = ivsumservdet[asvonr[i]] + IVrw.Sum;
-													totservdet = totservdet + ivsumservdet[asvonr[i]];
-													supertotdolgdet = supertotdolgdet + IVrw.Sum;
-													akey = enginer & ":GOTOV:DET";
-													vIngSum[akey] = vIngSum[akey] + IVrw.Sum;
-													if(vIngExst[enginer]==false)then begin
-														vIngExst[enginer] = true;
-														aing[ingcnt] = enginer;
-														ingcnt = ingcnt + 1;														
-													end;
-													akey = SVOr.Inspector & ":GOTOV:DET";
-													vManSum[akey] = vManSum[akey] + IVrw.Sum;
-													if(vManExst[SVOr.Inspector]==false)then begin
-														vManExst[SVOr.Inspector] = true;
-														aman[mancnt] = SVOr.Inspector;
-														mancnt = mancnt + 1;														
-													end;
-												end else begin
-													ivsumservdet[asvonr[i]] = ivsumservdet[asvonr[i]] - IVrw.Sum;
-													totservdet = totservdet - ivsumservdet[asvonr[i]];
-													supertotdolgdet = supertotdolgdet - IVrw.Sum;
-													akey = enginer & ":GOTOV:DET";
-													vIngSum[akey] = vIngSum[akey] - IVrw.Sum;
-													if(vIngExst[enginer]==false)then begin
-														vIngExst[enginer] = true;
-														aing[ingcnt] = enginer;
-														ingcnt = ingcnt + 1;														
-													end;
-													akey = SVOr.Inspector & ":GOTOV:DET";
-													vManSum[akey] = vManSum[akey] - IVrw.Sum;
-													if(vManExst[SVOr.Inspector]==false)then begin
-														vManExst[SVOr.Inspector] = true;
-														aman[mancnt] = SVOr.Inspector;
-														mancnt = mancnt + 1;														
-													end;
-												end;
-	  									end;
-	  								end;
-	  							end;
-	  						end;
-	  					end;
-						end; 
+											end;
+										end;
+									end;
+								end;
+							end; 
+						end;
 					end;
-				end;
 				
-				if(svoout)then begin
-					totpayremqty = totpayremqty + 1;
-					totrem = totrem + 1;
+					if(svoout)then begin
+						totpayremqty = totpayremqty + 1;
+						totrem = totrem + 1;
 					
-					st0[SVOr.SerNr & ":0"] = CountWorkingDays(SVOr.Status0Sd,SVOr.Status0Ed,"","UA");
-					st0[SVOr.SerNr & ":1"] = CountWorkingDays(SVOr.Status1Sd,SVOr.Status1Ed,"","UA");
-					st0[SVOr.SerNr & ":3"] = CountWorkingDays(SVOr.Status3Sd,SVOr.Status3Ed,"","UA");
-					st0[SVOr.SerNr & ":4"] = CountWorkingDays(SVOr.Status4Sd,SVOr.Status4Ed,"","UA");
-					st0[SVOr.SerNr & ":5"] = CountWorkingDays(SVOr.Status5Sd,SVOr.Status5Ed,"","UA");
-					st0[SVOr.SerNr & ":7"] = CountWorkingDays(SVOr.Status7Sd,SVOr.Status7Ed,"","UA");
-					st0[SVOr.SerNr & ":8"] = CountWorkingDays(SVOr.Status8Sd,SVOr.Status8Ed,"","UA");
-					st0[SVOr.SerNr & ":10"] = CountWorkingDays(SVOr.Status10Sd,SVOr.Status10Ed,"","UA");
-					st0[SVOr.SerNr & ":11"] = CountWorkingDays(SVOr.Status11Sd,SVOr.Status11Ed,"","UA");
+						st0[SVOr.SerNr & ":0"] = CountWorkingDays(SVOr.Status0Sd,SVOr.Status0Ed,"","UA");
+						st0[SVOr.SerNr & ":1"] = CountWorkingDays(SVOr.Status1Sd,SVOr.Status1Ed,"","UA");
+						st0[SVOr.SerNr & ":3"] = CountWorkingDays(SVOr.Status3Sd,SVOr.Status3Ed,"","UA");
+						st0[SVOr.SerNr & ":4"] = CountWorkingDays(SVOr.Status4Sd,SVOr.Status4Ed,"","UA");
+						st0[SVOr.SerNr & ":5"] = CountWorkingDays(SVOr.Status5Sd,SVOr.Status5Ed,"","UA");
+						st0[SVOr.SerNr & ":7"] = CountWorkingDays(SVOr.Status7Sd,SVOr.Status7Ed,"","UA");
+						st0[SVOr.SerNr & ":8"] = CountWorkingDays(SVOr.Status8Sd,SVOr.Status8Ed,"","UA");
+						st0[SVOr.SerNr & ":10"] = CountWorkingDays(SVOr.Status10Sd,SVOr.Status10Ed,"","UA");
+						st0[SVOr.SerNr & ":11"] = CountWorkingDays(SVOr.Status11Sd,SVOr.Status11Ed,"","UA");
 					
-					if (RepSpec.flags[26]==0) then begin
-						startformat(15);
-							outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
-							outstring(tabs[1],0,SVOr.TransDate,false);
-							outstring(tabs[2],0,1,false);
-							outstring(tabs[3],0,1,false);
-							outstring(tabs[4],0,blankval,false);
-							outstring(tabs[5],0,blankval,false);
-							outstring(tabs[8],0,SVOr.StatusText,false);
-							//outstring(tabs[6],0,SVOr.WSCost,false);
-						endformat;
-					end else begin
-						if(ivsumservstrah[asvonr[i]]!=0)then begin
+						if (RepSpec.flags[26]==0) then begin
 							startformat(15);
 								outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
-								outstring(tabs[3],0,SVOr.TransDate,false);
-								outstring(tabs[5],0,ivsumservstrah[asvonr[i]],false);
-								outstring(tabs[7],0,"Оплачено",false);
+								outstring(tabs[1],0,SVOr.TransDate,false);
+								outstring(tabs[2],0,1,false);
+								outstring(tabs[3],0,1,false);
+								outstring(tabs[4],0,blankval,false);
+								outstring(tabs[5],0,blankval,false);
+								outstring(tabs[8],0,SVOr.StatusText,false);
+								//outstring(tabs[6],0,SVOr.WSCost,false);
 							endformat;
-						end;
-					end;
-					
-					
-					if(SVOr.StatusReturnCnt>0)then begin
-						vManCanQty[SVOr.Inspector & "DOR"] = vManCanQty[SVOr.Inspector & "DOR"] + SVOr.StatusReturnCnt;
-						vIngCanQty[SVOr.ServiceManager & "DOR"] = vIngCanQty[SVOr.ServiceManager & "DOR"] + SVOr.StatusReturnCnt;
-						if(RepSpec.flags[26]==0) then begin
-							startformat(15);
-								outstring(tabs[0],0,"Возвратов на доработку",false);
-								outstring(tabs[2],0,SVOr.StatusReturnCnt,false);
-							endformat;
-						end;
-					end;
-					
-					if (RepSpec.flags[26]==0) then begin
-						OutDaysInStatus(st0,SVOr.SerNr,SVOr.Inspector,SVOr.ServiceManager,vManCanQty,vIngCanQty);
-						if(nonblank(vCuDomain[SVOr.CustCode]))then begin
-							if(nonblank(vCuDomain[SVOr.CustCode]))then begin
-								startformat(15);
-									outstring(tabs[0],0,"Звонок с домена",false);
-									outstring(tabs[2],0,vCuDomain[SVOr.CustCode],false);
-								endformat;
-							end;
-							if(nonblank(vUTMSource[SVOr.CustCode]))then begin
-								startformat(15);
-									outstring(tabs[0],0,"Переход с ресурса",false);
-									outstring(tabs[2],0,vUTMSource[SVOr.CustCode],false);
-								endformat;
-							end;
-							if(nonblank(vUTMCampaign[SVOr.CustCode]))then begin
-								startformat(15);
-									outstring(tabs[0],0,"Кампания",false);
-									outstring(tabs[2],0,vUTMCampaign[SVOr.CustCode],false);
-								endformat;
-							end;
-							if(nonblank(vUTMTerm[SVOr.CustCode]))then begin
-								startformat(15);
-									outstring(tabs[0],0,"Условия",false);
-									outstring(tabs[2],0,vUTMTerm[SVOr.CustCode],false);
-								endformat;
-							end;
-						
-							if(nonblank(SVOr.GarNo))then begin
-								oldSVOr.InnerOrderNr = SVOr.GarNo;
-								if(readfirstkey("InnerOrderNr",oldSVOr,1,true))then begin
-									povtorsum = povtorsum + ivsumserv[asvonr[i]];
-									povtorqty = povtorqty + 1;						
-									startformat(15);
-										outstring(tabs[0],0,"Повторный ремонт",false);
-										outstring(tabs[6],"DblSVOVcSer",SVOr.GarNo,false);
-									endformat;
-									vPovtor[SVOr.SerNr] = true;
-								end;
-							end;
-					
-							black_divider(tabs[6],tabs[7]);
-							startformat(15);
-								outstring(tabs[0],0,"Итого по заказу",false);
-								outstring(tabs[6],0,ivsumserv[asvonr[i]],false);
-							endformat;
-						end;
-					end;
-					if(nonblank(vCuDomain[SVOr.CustCode]))then begin
-						tstr = "Оплаченные:" & vUTMSource[SVOr.CustCode] & "->" & vCuDomain[SVOr.CustCode] & "("  & vUTMCampaign[SVOr.CustCode] & "|" & vUTMTerm[SVOr.CustCode] & ")";
-						if(vTrackFlag[tstr])then begin
-							vTrackSum[tstr] = vTrackSum[tstr] + ivsumserv[asvonr[i]];
 						end else begin
-							vTrackFlag[tstr] = true;
-							vTrackSum[tstr] = ivsumserv[asvonr[i]];
-							TrackSumKey[TrackCnt] = tstr;
-							TrackCnt = TrackCnt +1;
+							if(ivsumservstrah[asvonr[i]]!=0)then begin
+								startformat(15);
+									outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
+									outstring(tabs[3],0,SVOr.TransDate,false);
+									outstring(tabs[5],0,ivsumservstrah[asvonr[i]],false);
+									outstring(tabs[7],0,"Оплачено",false);
+								endformat;
+							end;
 						end;
-					end;
-					if (RepSpec.flags[26]==0) then begin
-						gray_divider(0,1);
-					end;
-				end;			
-				resetloop(IVr);
+					
+					
+						if(SVOr.StatusReturnCnt>0)then begin
+							vManCanQty[SVOr.Inspector & "DOR"] = vManCanQty[SVOr.Inspector & "DOR"] + SVOr.StatusReturnCnt;
+							vIngCanQty[SVOr.ServiceManager & "DOR"] = vIngCanQty[SVOr.ServiceManager & "DOR"] + SVOr.StatusReturnCnt;
+							if(RepSpec.flags[26]==0) then begin
+								startformat(15);
+									outstring(tabs[0],0,"Возвратов на доработку",false);
+									outstring(tabs[2],0,SVOr.StatusReturnCnt,false);
+								endformat;
+							end;
+						end;
+					
+						if (RepSpec.flags[26]==0) then begin
+							OutDaysInStatus(st0,SVOr.SerNr,SVOr.Inspector,SVOr.ServiceManager,vManCanQty,vIngCanQty);
+							if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+								if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+									startformat(15);
+										outstring(tabs[0],0,"Звонок с домена",false);
+										outstring(tabs[2],0,vCuDomain[SVOr.CustCode],false);
+									endformat;
+								end;
+								if(nonblank(vUTMSource[SVOr.CustCode]))then begin
+									startformat(15);
+										outstring(tabs[0],0,"Переход с ресурса",false);
+										outstring(tabs[2],0,vUTMSource[SVOr.CustCode],false);
+									endformat;
+								end;
+								if(nonblank(vUTMCampaign[SVOr.CustCode]))then begin
+									startformat(15);
+										outstring(tabs[0],0,"Кампания",false);
+										outstring(tabs[2],0,vUTMCampaign[SVOr.CustCode],false);
+									endformat;
+								end;
+								if(nonblank(vUTMTerm[SVOr.CustCode]))then begin
+									startformat(15);
+										outstring(tabs[0],0,"Условия",false);
+										outstring(tabs[2],0,vUTMTerm[SVOr.CustCode],false);
+									endformat;
+								end;
+						
+								if(nonblank(SVOr.GarNo))then begin
+									oldSVOr.InnerOrderNr = SVOr.GarNo;
+									if(readfirstkey("InnerOrderNr",oldSVOr,1,true))then begin
+										povtorsum = povtorsum + ivsumserv[asvonr[i]];
+										povtorqty = povtorqty + 1;						
+										startformat(15);
+											outstring(tabs[0],0,"Повторный ремонт",false);
+											outstring(tabs[6],"DblSVOVcSer",SVOr.GarNo,false);
+										endformat;
+										vPovtor[SVOr.SerNr] = true;
+									end;
+								end;
+					
+								black_divider(tabs[6],tabs[7]);
+								startformat(15);
+									outstring(tabs[0],0,"Итого по заказу",false);
+									outstring(tabs[6],0,ivsumserv[asvonr[i]],false);
+								endformat;
+							end;
+						end;
+						if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+							tstr = "Оплаченные:" & vUTMSource[SVOr.CustCode] & "->" & vCuDomain[SVOr.CustCode] & "("  & vUTMCampaign[SVOr.CustCode] & "|" & vUTMTerm[SVOr.CustCode] & ")";
+							if(vTrackFlag[tstr])then begin
+								vTrackSum[tstr] = vTrackSum[tstr] + ivsumserv[asvonr[i]];
+							end else begin
+								vTrackFlag[tstr] = true;
+								vTrackSum[tstr] = ivsumserv[asvonr[i]];
+								TrackSumKey[TrackCnt] = tstr;
+								TrackCnt = TrackCnt +1;
+							end;
+						end;
+						if (RepSpec.flags[26]==0) then begin
+							gray_divider(0,1);
+						end;
+					end;			
+					resetloop(IVr);
+				end;
 			end;
 			if(ivretsum[asvonr[i]]>0)then begin
 				if (RepSpec.flags[26]==0) then begin
@@ -961,102 +1001,176 @@ begin
 		end;
 		For(i=0;i<k;i=i+1) begin
 			SVOr.SerNr = asvonr[i];
-			readfirstmain(SVOr,1,true);
+			if(svowscost[asvonr[i]]!=0 and ivsum[asvonr[i]]>0 and vsvodolg[asvonr[i]]==false)then begin
+				readfirstmain(SVOr,1,true);
 			
-			if(SVOr.WSCost!=0 and ivsum[asvonr[i]]>0)then begin				
-				svoout = false;
-				IVr.SVONr = SVOr.SerNr;
-				TrHs = true;
-				while(loopkey("SVONr",IVr,1,TrHs))begin	
-					testf = true;
-					if(IVr.SVONr!=SVOr.SerNr)then begin TrHs = false; testf = false; end;
-					if(IVr.OKFlag==0)then begin testf = false; end;
-					if(nonblankdate(SVOr.RegDate) and SVOr.RegDate<=ed and SVOr.RegDate>=sd)then begin testf = false; end;					
-					
-					enginer = "";
-					cnt=1;
-					while(ReadRecordLink(IVr,cnt,WSr,RLr)) begin
-						if(nonblank(WSr.EMCode))then begin
-							If(WSr.EMCode!=IVr.SalesMan) then begin
-								IVr.SalesMan = WSr.EMCode;
-							end; 
-						end;
-						cnt = cnt+1;
+				filter = true;
+			
+				if(RepSpec.flags[1]==0)then begin
+					if(KIVIFound(SVOr))then begin
+						filter = false;
 					end;
-						
+				end;
+			end else begin
+				filter = false;
+			end;
+			if(filter)then begin
+				if(SVOr.WSCost!=0 and ivsum[asvonr[i]]>0 and vsvodolg[asvonr[i]]==false)then begin				
+					svoout = false;
+					IVr.SVONr = SVOr.SerNr;
+					TrHs = true;
+					while(loopkey("SVONr",IVr,1,TrHs))begin	
+						testf = true;
+						if(IVr.SVONr!=SVOr.SerNr)then begin TrHs = false; testf = false; end;
+						if(IVr.OKFlag==0)then begin testf = false; end;
+						if(nonblankdate(SVOr.RegDate) and SVOr.RegDate<=ed and SVOr.RegDate>=sd)then begin testf = false; end;					
 					
-					if(testf)then begin
-						filter = true;
 						enginer = "";
-						if(IVr.SalesMan==SVOr.CustomField7)then begin
-							enginer = SVOr.ServiceManager;
-						end else begin
-							enginer = IVr.SalesMan;
+						cnt=1;
+						while(ReadRecordLink(IVr,cnt,WSr,RLr)) begin
+							if(nonblank(WSr.EMCode))then begin
+								If(WSr.EMCode!=IVr.SalesMan) then begin
+									IVr.SalesMan = WSr.EMCode;
+								end; 
+							end;
+							cnt = cnt+1;
 						end;
 						
-						if(nonblank(RepSpec.f1) and RepSpec.f1!=SVOr.SalesGroup)then begin filter = false; end;
-						if(nonblank(RepSpec.f3) and RepSpec.f3!=enginer)then begin filter = false; end;
-						if(nonblank(RepSpec.f4) and RepSpec.f4!=SVOr.CustomField7)then begin filter = false; end;
-						
-						testf = filter;
+					
 						if(testf)then begin
-							if(vCuExist[SVOr.CustCode]==false)then begin
-								vCuExist[SVOr.CustCode] = true;
-								CUr.Code = SVOr.CustCode;
+							filter = true;
+							enginer = "";
+							if(IVr.SalesMan==SVOr.CustomField7)then begin
+								enginer = SVOr.ServiceManager;
+							end else begin
+								enginer = IVr.SalesMan;
+							end;
+						
+							if(nonblank(RepSpec.f1) and RepSpec.f1!=SVOr.SalesGroup)then begin filter = false; end;
+							if(nonblank(RepSpec.f3) and RepSpec.f3!=enginer)then begin filter = false; end;
+							if(nonblank(RepSpec.f4) and RepSpec.f4!=SVOr.CustomField7)then begin filter = false; end;
+						
+							testf = filter;
+							if(testf)then begin
+								if(vCuExist[SVOr.CustCode]==false)then begin
+									vCuExist[SVOr.CustCode] = true;
+									CUr.Code = SVOr.CustCode;
 								
-								if(readfirstmain(CUr,1,true))then begin
-									tphone = CUr.Phone;
-									FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
-									tphone = CUr.Mobile;
-									FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
-									tphone = CUr.AltPhone;
-									FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+									if(readfirstmain(CUr,1,true))then begin
+										tphone = CUr.Phone;
+										FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+										tphone = CUr.Mobile;
+										FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+										tphone = CUr.AltPhone;
+										FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+									end;
 								end;
 							end;
 						end;
-					end;
 					
-					if(testf)then begin
-						mtrw = matrowcnt(IVr);
-						For(j=0;j<mtrw;j=j+1) begin
-	  					matrowget(IVr,j,IVrw);
-	  					if(IVrw.stp==kInvoiceRowTypeNormal)then begin
-	  						if(nonblank(IVrw.ArtCode))then begin
-	  							INr.Code = IVrw.ArtCode;
-	  							if(readfirstmain(INr,1,true))then begin
-	  								
-	  								svoout = true;
-										if (RepSpec.flags[26]==0) then begin
-											startformat(15);
-												outstring(tabs[2],0,IVrw.Spec,false);
-												if(IVr.InvType!=kInvoiceTypeCredit)then begin
-													outstring(tabs[6],0,IVrw.Sum,false);
-												end else begin
-													outstring(tabs[6],0,-IVrw.Sum,false);
+						if(testf)then begin
+							mtrw = matrowcnt(IVr);
+							For(j=0;j<mtrw;j=j+1) begin
+								matrowget(IVr,j,IVrw);
+								if(IVrw.stp==kInvoiceRowTypeNormal)then begin
+									if(nonblank(IVrw.ArtCode))then begin
+										INr.Code = IVrw.ArtCode;
+										if(readfirstmain(INr,1,true))then begin
+										
+											svoout = true;
+											if (RepSpec.flags[26]==0) then begin
+												startformat(15);
+													outstring(tabs[2],0,IVrw.Spec,false);
+													if(IVr.InvType!=kInvoiceTypeCredit)then begin
+														outstring(tabs[6],0,IVrw.Sum,false);
+													end else begin
+														outstring(tabs[6],0,-IVrw.Sum,false);
+													end;
+													if(IVr.SalesMan==SVOr.CustomField7)then begin
+														outstring(tabs[7],0,SVOr.ServiceManager,false);
+													end else begin
+														outstring(tabs[7],0,IVr.SalesMan,false);
+													end;
+													outstring(tabs[8],0,SVOr.StatusText,false);
+												endformat;
+											end;
+											if(INr.ItemType==3 or INr.ItemType==0)then begin
+												if(filter)then begin
+													if(IVr.InvType!=kInvoiceTypeCredit)then begin
+														if(INr.Code!="СТРАХОВКА")then begin
+															ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] + IVrw.Sum;
+															totserv = totserv + ivsumserv[asvonr[i]];
+															supertotdolg = supertotdolg + IVrw.Sum;
+															akey = enginer & ":NOPAY:SERV";
+															vIngSum[akey] = vIngSum[akey] + IVrw.Sum;
+															if(vIngExst[enginer]==false)then begin
+																vIngExst[enginer] = true;
+																aing[ingcnt] = enginer;
+																ingcnt = ingcnt + 1;														
+															end;
+															akey = SVOr.Inspector & ":NOPAY:SERV";
+															vManSum[akey] = vManSum[akey] + IVrw.Sum;
+															if(vManExst[SVOr.Inspector]==false)then begin
+																vManExst[SVOr.Inspector] = true;
+																aman[mancnt] = SVOr.Inspector;
+																mancnt = mancnt + 1;														
+															end;
+														end else begin
+															ivsumservstrah[asvonr[i]] = ivsumservstrah[asvonr[i]] + IVrw.Sum;
+															akey = IVr.SalesMan & ":NOPAY:STRAH";
+															vManSum[akey] = vManSum[akey] + IVrw.Sum;
+															if(vManExst[IVr.SalesMan]==false)then begin
+																vManExst[IVr.SalesMan] = true;
+																aman[mancnt] = IVr.SalesMan;
+																mancnt = mancnt + 1;														
+															end;
+														end;
+													end else begin
+														if(INr.Code!="СТРАХОВКА")then begin
+															ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] - IVrw.Sum;
+															totserv = totserv - ivsumserv[asvonr[i]];
+															supertotdolg = supertotdolg - IVrw.Sum;
+															akey = enginer & ":NOPAY:SERV";
+															vIngSum[akey] = vIngSum[akey] - IVrw.Sum;
+															if(vIngExst[enginer]==false)then begin
+																vIngExst[enginer] = true;
+																aing[ingcnt] = enginer;
+																ingcnt = ingcnt + 1;														
+															end;
+															akey = SVOr.Inspector & ":NOPAY:SERV";
+															vManSum[akey] = vManSum[akey] - IVrw.Sum;
+															if(vManExst[SVOr.Inspector]==false)then begin
+																vManExst[SVOr.Inspector] = true;
+																aman[mancnt] = SVOr.Inspector;
+																mancnt = mancnt + 1;														
+															end;
+														end else begin
+															ivsumservstrah[asvonr[i]] = ivsumservstrah[asvonr[i]] - IVrw.Sum;
+															akey = IVr.SalesMan & ":NOPAY:STRAH";
+															vManSum[akey] = vManSum[akey] - IVrw.Sum;
+															if(vManExst[IVr.SalesMan]==false)then begin
+																vManExst[IVr.SalesMan] = true;
+																aman[mancnt] = IVr.SalesMan;
+																mancnt = mancnt + 1;	
+															end;
+														end;
+													end;
 												end;
-												if(IVr.SalesMan==SVOr.CustomField7)then begin
-													outstring(tabs[7],0,SVOr.ServiceManager,false);
-												end else begin
-													outstring(tabs[7],0,IVr.SalesMan,false);
-												end;
-												outstring(tabs[8],0,SVOr.StatusText,false);
-											endformat;
-										end;
-	  								if(INr.ItemType==3 or INr.ItemType==0)then begin
-	  									if(filter)then begin
-												if(IVr.InvType!=kInvoiceTypeCredit)then begin
-													if(INr.Code!="СТРАХОВКА")then begin
-														ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] + IVrw.Sum;
-														totserv = totserv + ivsumserv[asvonr[i]];
-														supertotdolg = supertotdolg + IVrw.Sum;
-														akey = enginer & ":NOPAY:SERV";
+											end;
+											if(INr.ItemType==1)then begin
+												if(filter)then begin
+													if(IVr.InvType!=kInvoiceTypeCredit)then begin
+														ivsumservdet[asvonr[i]] = ivsumservdet[asvonr[i]] + IVrw.Sum;
+														totservdet = totservdet + ivsumservdet[asvonr[i]];
+														supertotdolgdet = supertotdolgdet + IVrw.Sum;
+														akey = enginer & ":NOPAY:DET";
 														vIngSum[akey] = vIngSum[akey] + IVrw.Sum;
 														if(vIngExst[enginer]==false)then begin
 															vIngExst[enginer] = true;
 															aing[ingcnt] = enginer;
 															ingcnt = ingcnt + 1;														
 														end;
-														akey = SVOr.Inspector & ":NOPAY:SERV";
+														akey = SVOr.Inspector & ":NOPAY:DET";
 														vManSum[akey] = vManSum[akey] + IVrw.Sum;
 														if(vManExst[SVOr.Inspector]==false)then begin
 															vManExst[SVOr.Inspector] = true;
@@ -1064,214 +1178,153 @@ begin
 															mancnt = mancnt + 1;														
 														end;
 													end else begin
-														ivsumservstrah[asvonr[i]] = ivsumservstrah[asvonr[i]] + IVrw.Sum;
-														akey = IVr.SalesMan & ":NOPAY:STRAH";
-														vManSum[akey] = vManSum[akey] + IVrw.Sum;
-														if(vManExst[IVr.SalesMan]==false)then begin
-															vManExst[IVr.SalesMan] = true;
-															aman[mancnt] = IVr.SalesMan;
-															mancnt = mancnt + 1;														
-														end;
-													end;
-												end else begin
-													if(INr.Code!="СТРАХОВКА")then begin
-														ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] - IVrw.Sum;
-														totserv = totserv - ivsumserv[asvonr[i]];
-														supertotdolg = supertotdolg - IVrw.Sum;
-														akey = enginer & ":NOPAY:SERV";
+														ivsumservdet[asvonr[i]] = ivsumservdet[asvonr[i]] - IVrw.Sum;
+														totservdet = totservdet - ivsumservdet[asvonr[i]];
+														supertotdolgdet = supertotdolgdet - IVrw.Sum;
+														akey = enginer & ":NOPAY:DET";
 														vIngSum[akey] = vIngSum[akey] - IVrw.Sum;
 														if(vIngExst[enginer]==false)then begin
 															vIngExst[enginer] = true;
 															aing[ingcnt] = enginer;
 															ingcnt = ingcnt + 1;														
 														end;
-														akey = SVOr.Inspector & ":NOPAY:SERV";
+														akey = SVOr.Inspector & ":NOPAY:DET";
 														vManSum[akey] = vManSum[akey] - IVrw.Sum;
 														if(vManExst[SVOr.Inspector]==false)then begin
 															vManExst[SVOr.Inspector] = true;
 															aman[mancnt] = SVOr.Inspector;
 															mancnt = mancnt + 1;														
 														end;
-													end else begin
-														ivsumservstrah[asvonr[i]] = ivsumservstrah[asvonr[i]] - IVrw.Sum;
-														akey = IVr.SalesMan & ":NOPAY:STRAH";
-														vManSum[akey] = vManSum[akey] - IVrw.Sum;
-														if(vManExst[IVr.SalesMan]==false)then begin
-															vManExst[IVr.SalesMan] = true;
-															aman[mancnt] = IVr.SalesMan;
-															mancnt = mancnt + 1;	
-														end;
 													end;
 												end;
-	  									end;
-	  								end;
-	  								if(INr.ItemType==1)then begin
-	  									if(filter)then begin
-												if(IVr.InvType!=kInvoiceTypeCredit)then begin
-													ivsumservdet[asvonr[i]] = ivsumservdet[asvonr[i]] + IVrw.Sum;
-													totservdet = totservdet + ivsumservdet[asvonr[i]];
-													supertotdolgdet = supertotdolgdet + IVrw.Sum;
-													akey = enginer & ":NOPAY:DET";
-													vIngSum[akey] = vIngSum[akey] + IVrw.Sum;
-													if(vIngExst[enginer]==false)then begin
-														vIngExst[enginer] = true;
-														aing[ingcnt] = enginer;
-														ingcnt = ingcnt + 1;														
-													end;
-													akey = SVOr.Inspector & ":NOPAY:DET";
-													vManSum[akey] = vManSum[akey] + IVrw.Sum;
-													if(vManExst[SVOr.Inspector]==false)then begin
-														vManExst[SVOr.Inspector] = true;
-														aman[mancnt] = SVOr.Inspector;
-														mancnt = mancnt + 1;														
-													end;
-												end else begin
-													ivsumservdet[asvonr[i]] = ivsumservdet[asvonr[i]] - IVrw.Sum;
-													totservdet = totservdet - ivsumservdet[asvonr[i]];
-													supertotdolgdet = supertotdolgdet - IVrw.Sum;
-													akey = enginer & ":NOPAY:DET";
-													vIngSum[akey] = vIngSum[akey] - IVrw.Sum;
-													if(vIngExst[enginer]==false)then begin
-														vIngExst[enginer] = true;
-														aing[ingcnt] = enginer;
-														ingcnt = ingcnt + 1;														
-													end;
-													akey = SVOr.Inspector & ":NOPAY:DET";
-													vManSum[akey] = vManSum[akey] - IVrw.Sum;
-													if(vManExst[SVOr.Inspector]==false)then begin
-														vManExst[SVOr.Inspector] = true;
-														aman[mancnt] = SVOr.Inspector;
-														mancnt = mancnt + 1;														
-													end;
-												end;
-	  									end;
-	  								end;
-	  							end;
-	  						end;
-	  					end;
-						end; 
-					end;
-				end;
-				
-				if(svoout)then begin
-					totnopayremqty = totnopayremqty + 1;
-					totrem = totrem + 1;
-					
-					st0[SVOr.SerNr] = CountWorkingDays(SVOr.Status0Sd,SVOr.Status0Ed,"","UA");
-					st0[SVOr.SerNr & ":1"] = CountWorkingDays(SVOr.Status1Sd,SVOr.Status1Ed,"","UA");
-					st0[SVOr.SerNr & ":3"] = CountWorkingDays(SVOr.Status3Sd,SVOr.Status3Ed,"","UA");
-					st0[SVOr.SerNr & ":4"] = CountWorkingDays(SVOr.Status4Sd,SVOr.Status4Ed,"","UA");
-					st0[SVOr.SerNr & ":5"] = CountWorkingDays(SVOr.Status5Sd,SVOr.Status5Ed,"","UA");
-					st0[SVOr.SerNr & ":7"] = CountWorkingDays(SVOr.Status7Sd,SVOr.Status7Ed,"","UA");
-					st0[SVOr.SerNr & ":8"] = CountWorkingDays(SVOr.Status8Sd,SVOr.Status8Ed,"","UA");
-					st0[SVOr.SerNr & ":10"] = CountWorkingDays(SVOr.Status10Sd,SVOr.Status10Ed,"","UA");
-					st0[SVOr.SerNr & ":11"] = CountWorkingDays(SVOr.Status11Sd,SVOr.Status11Ed,"","UA");
-					
-					if (RepSpec.flags[26]==0) then begin
-						startformat(15);
-							outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
-							outstring(tabs[1],0,SVOr.TransDate,false);
-							outstring(tabs[2],0,1,false);
-							outstring(tabs[3],0,blankval,false);
-							outstring(tabs[4],0,blankval,false);
-							outstring(tabs[5],0,blankval,false);
-						endformat;
-					end else begin
-						if(ivsumservstrah[asvonr[i]]!=0)then begin
-							startformat(15);
-								outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
-								outstring(tabs[3],0,SVOr.TransDate,false);
-								outstring(tabs[5],0,ivsumservstrah[asvonr[i]],false);
-								outstring(tabs[7],0,"Неоплачено",false);
-							endformat;
+											end;
+										end;
+									end;
+								end;
+							end; 
 						end;
 					end;
-					if(SVOr.StatusReturnCnt>0)then begin
-						vManCanQty[SVOr.Inspector & "DOR"] = vManCanQty[SVOr.Inspector & "DOR"] + SVOr.StatusReturnCnt;
-						vIngCanQty[SVOr.ServiceManager & "DOR"] = vIngCanQty[SVOr.ServiceManager & "DOR"] + SVOr.StatusReturnCnt;
+				
+					if(svoout)then begin
+						totnopayremqty = totnopayremqty + 1;
+						totrem = totrem + 1;
+					
+						st0[SVOr.SerNr] = CountWorkingDays(SVOr.Status0Sd,SVOr.Status0Ed,"","UA");
+						st0[SVOr.SerNr & ":1"] = CountWorkingDays(SVOr.Status1Sd,SVOr.Status1Ed,"","UA");
+						st0[SVOr.SerNr & ":3"] = CountWorkingDays(SVOr.Status3Sd,SVOr.Status3Ed,"","UA");
+						st0[SVOr.SerNr & ":4"] = CountWorkingDays(SVOr.Status4Sd,SVOr.Status4Ed,"","UA");
+						st0[SVOr.SerNr & ":5"] = CountWorkingDays(SVOr.Status5Sd,SVOr.Status5Ed,"","UA");
+						st0[SVOr.SerNr & ":7"] = CountWorkingDays(SVOr.Status7Sd,SVOr.Status7Ed,"","UA");
+						st0[SVOr.SerNr & ":8"] = CountWorkingDays(SVOr.Status8Sd,SVOr.Status8Ed,"","UA");
+						st0[SVOr.SerNr & ":10"] = CountWorkingDays(SVOr.Status10Sd,SVOr.Status10Ed,"","UA");
+						st0[SVOr.SerNr & ":11"] = CountWorkingDays(SVOr.Status11Sd,SVOr.Status11Ed,"","UA");
+					
 						if (RepSpec.flags[26]==0) then begin
 							startformat(15);
-								outstring(tabs[0],0,"Возвратов на доработку",false);
-								outstring(tabs[2],0,SVOr.StatusReturnCnt,false);
+								outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
+								outstring(tabs[1],0,SVOr.TransDate,false);
+								outstring(tabs[2],0,1,false);
+								outstring(tabs[3],0,blankval,false);
+								outstring(tabs[4],0,blankval,false);
+								outstring(tabs[5],0,blankval,false);
 							endformat;
-						end;
-					end;
-					
-					if (RepSpec.flags[26]==0) then begin
-						OutDaysInStatus(st0,SVOr.SerNr,SVOr.Inspector,SVOr.ServiceManager,vManCanQty,vIngCanQty);
-
-						if(nonblank(vCuDomain[SVOr.CustCode]))then begin
-							if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+						end else begin
+							if(ivsumservstrah[asvonr[i]]!=0)then begin
 								startformat(15);
-									outstring(tabs[0],0,"Звонок с домена",false);
-									outstring(tabs[2],0,vCuDomain[SVOr.CustCode],false);
-								endformat;
-							end;
-							if(nonblank(vUTMSource[SVOr.CustCode]))then begin
-								startformat(15);
-									outstring(tabs[0],0,"Переход с ресурса",false);
-									outstring(tabs[2],0,vUTMSource[SVOr.CustCode],false);
-								endformat;
-							end;
-							if(nonblank(vUTMCampaign[SVOr.CustCode]))then begin
-								startformat(15);
-									outstring(tabs[0],0,"Кампания",false);
-									outstring(tabs[2],0,vUTMCampaign[SVOr.CustCode],false);
-								endformat;
-							end;
-							if(nonblank(vUTMTerm[SVOr.CustCode]))then begin
-								startformat(15);
-									outstring(tabs[0],0,"Условия",false);
-									outstring(tabs[2],0,vUTMTerm[SVOr.CustCode],false);
+									outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
+									outstring(tabs[3],0,SVOr.TransDate,false);
+									outstring(tabs[5],0,ivsumservstrah[asvonr[i]],false);
+									outstring(tabs[7],0,"Неоплачено",false);
 								endformat;
 							end;
 						end;
-					end;
-					
-					
-					if(nonblank(SVOr.GarNo))then begin
-						oldSVOr.InnerOrderNr = SVOr.GarNo;
-						if(readfirstkey("InnerOrderNr",oldSVOr,1,true))then begin
-							povtorsumneoplat = povtorsumneoplat + ivsumserv[asvonr[i]];
-							povtorqtyneoplat = povtorqtyneoplat +1;
+						if(SVOr.StatusReturnCnt>0)then begin
+							vManCanQty[SVOr.Inspector & "DOR"] = vManCanQty[SVOr.Inspector & "DOR"] + SVOr.StatusReturnCnt;
+							vIngCanQty[SVOr.ServiceManager & "DOR"] = vIngCanQty[SVOr.ServiceManager & "DOR"] + SVOr.StatusReturnCnt;
 							if (RepSpec.flags[26]==0) then begin
 								startformat(15);
-									outstring(tabs[0],0,"Повторный ремонт",false);
-									outstring(tabs[6],"DblSVOVcSer",SVOr.GarNo,false);
+									outstring(tabs[0],0,"Возвратов на доработку",false);
+									outstring(tabs[2],0,SVOr.StatusReturnCnt,false);
 								endformat;
 							end;
-							vPovtor[SVOr.SerNr] = true;
 						end;
-					end;
 					
-					if (RepSpec.flags[26]==0) then begin
-						black_divider(tabs[6],tabs[7]);
-						startformat(15);
-							outstring(tabs[0],0,"Итого по заказу",false);							
-							outstring(150,0,"Услуги:",false);
-							outstring(200,0,ivsumserv[asvonr[i]],false);
-							outstring(250,0,"Детали:",false);
-							outstring(300,0,ivsumservdet[asvonr[i]],false);
-							outstring(350,0,"Всего:",false);
-							outstring(400,0,ivsumserv[asvonr[i]]+ivsumservdet[asvonr[i]],false);
-						endformat;
-					end;
-					if(nonblank(vCuDomain[SVOr.CustCode]))then begin
-						tstr = "Неоплаченные:" & vUTMSource[SVOr.CustCode] & "->" & vCuDomain[SVOr.CustCode] & "("  & vUTMCampaign[SVOr.CustCode] & "|" & vUTMTerm[SVOr.CustCode] & ")";
-						if(vTrackFlag[tstr])then begin
-							vTrackSum[tstr] = vTrackSum[tstr] + ivsumserv[asvonr[i]];
-						end else begin
-							vTrackFlag[tstr] = true;
-							vTrackSum[tstr] = ivsumserv[asvonr[i]];
-							TrackSumKey[TrackCnt] = tstr;
-							TrackCnt = TrackCnt +1;
+						if (RepSpec.flags[26]==0) then begin
+							OutDaysInStatus(st0,SVOr.SerNr,SVOr.Inspector,SVOr.ServiceManager,vManCanQty,vIngCanQty);
+
+							if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+								if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+									startformat(15);
+										outstring(tabs[0],0,"Звонок с домена",false);
+										outstring(tabs[2],0,vCuDomain[SVOr.CustCode],false);
+									endformat;
+								end;
+								if(nonblank(vUTMSource[SVOr.CustCode]))then begin
+									startformat(15);
+										outstring(tabs[0],0,"Переход с ресурса",false);
+										outstring(tabs[2],0,vUTMSource[SVOr.CustCode],false);
+									endformat;
+								end;
+								if(nonblank(vUTMCampaign[SVOr.CustCode]))then begin
+									startformat(15);
+										outstring(tabs[0],0,"Кампания",false);
+										outstring(tabs[2],0,vUTMCampaign[SVOr.CustCode],false);
+									endformat;
+								end;
+								if(nonblank(vUTMTerm[SVOr.CustCode]))then begin
+									startformat(15);
+										outstring(tabs[0],0,"Условия",false);
+										outstring(tabs[2],0,vUTMTerm[SVOr.CustCode],false);
+									endformat;
+								end;
+							end;
 						end;
-					end;
-					if (RepSpec.flags[26]==0) then begin
-						gray_divider(0,1);
-					end;
-				end;			
-				resetloop(IVr);
+					
+					
+						if(nonblank(SVOr.GarNo))then begin
+							oldSVOr.InnerOrderNr = SVOr.GarNo;
+							if(readfirstkey("InnerOrderNr",oldSVOr,1,true))then begin
+								povtorsumneoplat = povtorsumneoplat + ivsumserv[asvonr[i]];
+								povtorqtyneoplat = povtorqtyneoplat +1;
+								if (RepSpec.flags[26]==0) then begin
+									startformat(15);
+										outstring(tabs[0],0,"Повторный ремонт",false);
+										outstring(tabs[6],"DblSVOVcSer",SVOr.GarNo,false);
+									endformat;
+								end;
+								vPovtor[SVOr.SerNr] = true;
+							end;
+						end;
+					
+						if (RepSpec.flags[26]==0) then begin
+							black_divider(tabs[6],tabs[7]);
+							startformat(15);
+								outstring(tabs[0],0,"Итого по заказу",false);							
+								outstring(150,0,"Услуги:",false);
+								outstring(200,0,ivsumserv[asvonr[i]],false);
+								outstring(250,0,"Детали:",false);
+								outstring(300,0,ivsumservdet[asvonr[i]],false);
+								outstring(350,0,"Всего:",false);
+								outstring(400,0,ivsumserv[asvonr[i]]+ivsumservdet[asvonr[i]],false);
+							endformat;
+						end;
+						if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+							tstr = "Неоплаченные:" & vUTMSource[SVOr.CustCode] & "->" & vCuDomain[SVOr.CustCode] & "("  & vUTMCampaign[SVOr.CustCode] & "|" & vUTMTerm[SVOr.CustCode] & ")";
+							if(vTrackFlag[tstr])then begin
+								vTrackSum[tstr] = vTrackSum[tstr] + ivsumserv[asvonr[i]];
+							end else begin
+								vTrackFlag[tstr] = true;
+								vTrackSum[tstr] = ivsumserv[asvonr[i]];
+								TrackSumKey[TrackCnt] = tstr;
+								TrackCnt = TrackCnt +1;
+							end;
+						end;
+						if (RepSpec.flags[26]==0) then begin
+							gray_divider(0,1);
+						end;
+					end;			
+					resetloop(IVr);
+				end;
 			end;
 		end;
 		if (RepSpec.flags[26]==0) then begin
@@ -1298,102 +1351,174 @@ begin
 		end;
 		For(i=0;i<k;i=i+1) begin
 			SVOr.SerNr = asvonr[i];
-			readfirstmain(SVOr,1,true);
+			if(svowscost[asvonr[i]]!=0 and ivsum[asvonr[i]]>0 and vsvodolg[asvonr[i]])then begin
+				readfirstmain(SVOr,1,true);
 			
-			if(SVOr.WSCost!=0 and ivsum[asvonr[i]]>0)then begin				
-				svoout = false;
-				IVr.SVONr = SVOr.SerNr;
-				TrHs = true;
-				while(loopkey("SVONr",IVr,1,TrHs))begin	
-					testf = true;
-					if(IVr.SVONr!=SVOr.SerNr)then begin TrHs = false; testf = false; end;
-					if(IVr.OKFlag==0)then begin testf = false; end;
-					if(blankdate(SVOr.RegDate))then begin testf = false; end;
-					if(SVOr.RegDate>ed)then begin testf = false; end;
-					
-					enginer = "";
-					cnt=1;
-					while(ReadRecordLink(IVr,cnt,WSr,RLr)) begin
-						if(nonblank(WSr.EMCode))then begin
-							If(WSr.EMCode!=IVr.SalesMan) then begin
-								IVr.SalesMan = WSr.EMCode;
-							end; 
-						end;
-						cnt = cnt+1;
+				filter = true;
+			
+				if(RepSpec.flags[1]==0)then begin
+					if(KIVIFound(SVOr))then begin
+						filter = false;
 					end;
+				end;
+			end else begin
+				filter = false;
+			end;
+			if(filter)then begin
+				if(SVOr.WSCost!=0 and ivsum[asvonr[i]]>0 and vsvodolg[asvonr[i]])then begin				
+					svoout = false;
+					IVr.SVONr = SVOr.SerNr;
+					TrHs = true;
+					while(loopkey("SVONr",IVr,1,TrHs))begin	
+						testf = true;
+						if(IVr.SVONr!=SVOr.SerNr)then begin TrHs = false; testf = false; end;
+						if(IVr.OKFlag==0)then begin testf = false; end;
+						if(blankdate(SVOr.RegDate))then begin testf = false; end;
+						if(SVOr.RegDate>ed)then begin testf = false; end;
 					
-					if(testf)then begin
-						filter = true;
 						enginer = "";
-						if(IVr.SalesMan==SVOr.CustomField7)then begin
-							enginer = SVOr.ServiceManager;
-						end else begin
-							enginer = IVr.SalesMan;
+						cnt=1;
+						while(ReadRecordLink(IVr,cnt,WSr,RLr)) begin
+							if(nonblank(WSr.EMCode))then begin
+								If(WSr.EMCode!=IVr.SalesMan) then begin
+									IVr.SalesMan = WSr.EMCode;
+								end; 
+							end;
+							cnt = cnt+1;
 						end;
-						
-						if(nonblank(RepSpec.f1) and RepSpec.f1!=SVOr.SalesGroup)then begin filter = false; end;
-						if(nonblank(RepSpec.f3) and RepSpec.f3!=enginer)then begin filter = false; end;
-						if(nonblank(RepSpec.f4) and RepSpec.f4!=SVOr.CustomField7)then begin filter = false; end;
-						
-						testf = filter;
-						
+					
 						if(testf)then begin
-							if(vCuExist[SVOr.CustCode]==false)then begin
-								vCuExist[SVOr.CustCode] = true;
-								CUr.Code = SVOr.CustCode;
+							filter = true;
+							enginer = "";
+							if(IVr.SalesMan==SVOr.CustomField7)then begin
+								enginer = SVOr.ServiceManager;
+							end else begin
+								enginer = IVr.SalesMan;
+							end;
+						
+							if(nonblank(RepSpec.f1) and RepSpec.f1!=SVOr.SalesGroup)then begin filter = false; end;
+							if(nonblank(RepSpec.f3) and RepSpec.f3!=enginer)then begin filter = false; end;
+							if(nonblank(RepSpec.f4) and RepSpec.f4!=SVOr.CustomField7)then begin filter = false; end;
+						
+							testf = filter;
+						
+							if(testf)then begin
+								if(vCuExist[SVOr.CustCode]==false)then begin
+									vCuExist[SVOr.CustCode] = true;
+									CUr.Code = SVOr.CustCode;
 								
-								if(readfirstmain(CUr,1,true))then begin
-									tphone = CUr.Phone;
-									FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
-									tphone = CUr.Mobile;
-									FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
-									tphone = CUr.AltPhone;
-									FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+									if(readfirstmain(CUr,1,true))then begin
+										tphone = CUr.Phone;
+										FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+										tphone = CUr.Mobile;
+										FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+										tphone = CUr.AltPhone;
+										FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+									end;
 								end;
 							end;
 						end;
-					end;
 					
-					if(testf)then begin
-						mtrw = matrowcnt(IVr);
-						For(j=0;j<mtrw;j=j+1) begin
-	  					matrowget(IVr,j,IVrw);
-	  					if(IVrw.stp==kInvoiceRowTypeNormal)then begin
-	  						if(nonblank(IVrw.ArtCode))then begin
-	  							INr.Code = IVrw.ArtCode;
-	  							if(readfirstmain(INr,1,true))then begin
-	  							
-	  								svoout = true;
-										if (RepSpec.flags[26]==0) then begin
-											startformat(15);
-												outstring(tabs[2],0,IVrw.Spec,false);
+						if(testf)then begin
+							mtrw = matrowcnt(IVr);
+							For(j=0;j<mtrw;j=j+1) begin
+								matrowget(IVr,j,IVrw);
+								if(IVrw.stp==kInvoiceRowTypeNormal)then begin
+									if(nonblank(IVrw.ArtCode))then begin
+										INr.Code = IVrw.ArtCode;
+										if(readfirstmain(INr,1,true))then begin
+									
+											svoout = true;
+											if (RepSpec.flags[26]==0) then begin
+												startformat(15);
+													outstring(tabs[2],0,IVrw.Spec,false);
+													if(IVr.InvType!=kInvoiceTypeCredit)then begin
+														outstring(tabs[6],0,IVrw.Sum,false);
+													end else begin
+														outstring(tabs[6],0,-IVrw.Sum,false);
+													end;
+													if(IVr.SalesMan==SVOr.CustomField7)then begin
+														outstring(tabs[7],0,SVOr.ServiceManager,false);
+													end else begin
+														outstring(tabs[7],0,IVr.SalesMan,false);
+													end;
+													outstring(tabs[8],0,SVOr.StatusText,false);
+												endformat;
+											end;
+											if(INr.ItemType==3 or INr.ItemType==0)then begin
 												if(IVr.InvType!=kInvoiceTypeCredit)then begin
-													outstring(tabs[6],0,IVrw.Sum,false);
+													if(INr.Code!="СТРАХОВКА")then begin
+														ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] + IVrw.Sum;
+														totserv = totserv + ivsumserv[asvonr[i]];
+														totdolgsum = totdolgsum + IVrw.Sum;
+														akey = enginer & ":DOLG:SERV";
+														vIngSum[akey] = vIngSum[akey] + IVrw.Sum;
+														if(vIngExst[enginer]==false)then begin
+															vIngExst[enginer] = true;
+															aing[ingcnt] = enginer;
+															ingcnt = ingcnt + 1;														
+														end;
+														akey = SVOr.Inspector & ":DOLG:SERV";
+														vManSum[akey] = vManSum[akey] + IVrw.Sum;
+														if(vManExst[SVOr.Inspector]==false)then begin
+															vManExst[SVOr.Inspector] = true;
+															aman[mancnt] = SVOr.Inspector;
+															mancnt = mancnt + 1;														
+														end;
+													end else begin
+														ivsumservstrah[asvonr[i]] = ivsumservstrah[asvonr[i]] + IVrw.Sum;
+														akey = IVr.SalesMan & ":DOLG:STRAH";
+														vManSum[akey] = vManSum[akey] + IVrw.Sum;
+														if(vManExst[IVr.SalesMan]==false)then begin
+															vManExst[IVr.SalesMan] = true;
+															aman[mancnt] = IVr.SalesMan;
+															mancnt = mancnt + 1;														
+														end;
+													end;
 												end else begin
-													outstring(tabs[6],0,-IVrw.Sum,false);
+													if(INr.Code!="СТРАХОВКА")then begin
+														ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] - IVrw.Sum;
+														totserv = totserv - ivsumserv[asvonr[i]];
+														totdolgsum = totdolgsum - IVrw.Sum;
+														akey = enginer & ":DOLG:SERV";
+														vIngSum[akey] = vIngSum[akey] - IVrw.Sum;
+														if(vIngExst[enginer]==false)then begin
+															vIngExst[enginer] = true;
+															aing[ingcnt] = enginer;
+															ingcnt = ingcnt + 1;														
+														end;
+														akey = SVOr.Inspector & ":DOLG:SERV";
+														vManSum[akey] = vManSum[akey] - IVrw.Sum;
+														if(vManExst[SVOr.Inspector]==false)then begin
+															vManExst[SVOr.Inspector] = true;
+															aman[mancnt] = SVOr.Inspector;
+															mancnt = mancnt + 1;														
+														end;
+													end else begin
+														ivsumservstrah[asvonr[i]] = ivsumservstrah[asvonr[i]] - IVrw.Sum;
+														akey = IVr.SalesMan & ":DOLG:STRAH";
+														vManSum[akey] = vManSum[akey] - IVrw.Sum;
+														if(vManExst[IVr.SalesMan]==false)then begin
+															vManExst[IVr.SalesMan] = true;
+															aman[mancnt] = IVr.SalesMan;
+															mancnt = mancnt + 1;														
+														end;
+													end;
 												end;
-												if(IVr.SalesMan==SVOr.CustomField7)then begin
-													outstring(tabs[7],0,SVOr.ServiceManager,false);
-												end else begin
-													outstring(tabs[7],0,IVr.SalesMan,false);
-												end;
-												outstring(tabs[8],0,SVOr.StatusText,false);
-											endformat;
-										end;
-	  								if(INr.ItemType==3 or INr.ItemType==0)then begin
-											if(IVr.InvType!=kInvoiceTypeCredit)then begin
-												if(INr.Code!="СТРАХОВКА")then begin
-													ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] + IVrw.Sum;
-													totserv = totserv + ivsumserv[asvonr[i]];
-													totdolgsum = totdolgsum + IVrw.Sum;
-													akey = enginer & ":DOLG:SERV";
+											end;
+											if(INr.ItemType==1)then begin
+												if(IVr.InvType!=kInvoiceTypeCredit)then begin
+													ivsumservdet[asvonr[i]] = ivsumservdet[asvonr[i]] + IVrw.Sum;
+													totservdet = totservdet + ivsumservdet[asvonr[i]];
+													totdolgsumdet = totdolgsumdet + IVrw.Sum;
+													akey = enginer & ":DOLG:DET";
 													vIngSum[akey] = vIngSum[akey] + IVrw.Sum;
 													if(vIngExst[enginer]==false)then begin
 														vIngExst[enginer] = true;
 														aing[ingcnt] = enginer;
 														ingcnt = ingcnt + 1;														
 													end;
-													akey = SVOr.Inspector & ":DOLG:SERV";
+													akey = SVOr.Inspector & ":DOLG:DET";
 													vManSum[akey] = vManSum[akey] + IVrw.Sum;
 													if(vManExst[SVOr.Inspector]==false)then begin
 														vManExst[SVOr.Inspector] = true;
@@ -1401,213 +1526,154 @@ begin
 														mancnt = mancnt + 1;														
 													end;
 												end else begin
-													ivsumservstrah[asvonr[i]] = ivsumservstrah[asvonr[i]] + IVrw.Sum;
-													akey = IVr.SalesMan & ":DOLG:STRAH";
-													vManSum[akey] = vManSum[akey] + IVrw.Sum;
-													if(vManExst[IVr.SalesMan]==false)then begin
-														vManExst[IVr.SalesMan] = true;
-														aman[mancnt] = IVr.SalesMan;
-														mancnt = mancnt + 1;														
-													end;
-												end;
-											end else begin
-												if(INr.Code!="СТРАХОВКА")then begin
-													ivsumserv[asvonr[i]] = ivsumserv[asvonr[i]] - IVrw.Sum;
-													totserv = totserv - ivsumserv[asvonr[i]];
-													totdolgsum = totdolgsum - IVrw.Sum;
-													akey = enginer & ":DOLG:SERV";
+													ivsumservdet[asvonr[i]] = ivsumservdet[asvonr[i]] - IVrw.Sum;
+													totservdet = totservdet - ivsumservdet[asvonr[i]];
+													totdolgsumdet = totdolgsumdet - IVrw.Sum;
+													akey = enginer & ":DOLG:DET";
 													vIngSum[akey] = vIngSum[akey] - IVrw.Sum;
 													if(vIngExst[enginer]==false)then begin
 														vIngExst[enginer] = true;
 														aing[ingcnt] = enginer;
 														ingcnt = ingcnt + 1;														
 													end;
-													akey = SVOr.Inspector & ":DOLG:SERV";
+													akey = SVOr.Inspector & ":DOLG:DET";
 													vManSum[akey] = vManSum[akey] - IVrw.Sum;
 													if(vManExst[SVOr.Inspector]==false)then begin
 														vManExst[SVOr.Inspector] = true;
 														aman[mancnt] = SVOr.Inspector;
 														mancnt = mancnt + 1;														
 													end;
-												end else begin
-													ivsumservstrah[asvonr[i]] = ivsumservstrah[asvonr[i]] - IVrw.Sum;
-													akey = IVr.SalesMan & ":DOLG:STRAH";
-													vManSum[akey] = vManSum[akey] - IVrw.Sum;
-													if(vManExst[IVr.SalesMan]==false)then begin
-														vManExst[IVr.SalesMan] = true;
-														aman[mancnt] = IVr.SalesMan;
-														mancnt = mancnt + 1;														
-													end;
 												end;
 											end;
-	  								end;
-	  								if(INr.ItemType==1)then begin
-											if(IVr.InvType!=kInvoiceTypeCredit)then begin
-												ivsumservdet[asvonr[i]] = ivsumservdet[asvonr[i]] + IVrw.Sum;
-												totservdet = totservdet + ivsumservdet[asvonr[i]];
-												totdolgsumdet = totdolgsumdet + IVrw.Sum;
-												akey = enginer & ":DOLG:DET";
-												vIngSum[akey] = vIngSum[akey] + IVrw.Sum;
-												if(vIngExst[enginer]==false)then begin
-													vIngExst[enginer] = true;
-													aing[ingcnt] = enginer;
-													ingcnt = ingcnt + 1;														
-												end;
-												akey = SVOr.Inspector & ":DOLG:DET";
-												vManSum[akey] = vManSum[akey] + IVrw.Sum;
-												if(vManExst[SVOr.Inspector]==false)then begin
-													vManExst[SVOr.Inspector] = true;
-													aman[mancnt] = SVOr.Inspector;
-													mancnt = mancnt + 1;														
-												end;
-											end else begin
-												ivsumservdet[asvonr[i]] = ivsumservdet[asvonr[i]] - IVrw.Sum;
-												totservdet = totservdet - ivsumservdet[asvonr[i]];
-												totdolgsumdet = totdolgsumdet - IVrw.Sum;
-												akey = enginer & ":DOLG:DET";
-												vIngSum[akey] = vIngSum[akey] - IVrw.Sum;
-												if(vIngExst[enginer]==false)then begin
-													vIngExst[enginer] = true;
-													aing[ingcnt] = enginer;
-													ingcnt = ingcnt + 1;														
-												end;
-												akey = SVOr.Inspector & ":DOLG:DET";
-												vManSum[akey] = vManSum[akey] - IVrw.Sum;
-												if(vManExst[SVOr.Inspector]==false)then begin
-													vManExst[SVOr.Inspector] = true;
-													aman[mancnt] = SVOr.Inspector;
-													mancnt = mancnt + 1;														
-												end;
-											end;
-	  								end;
-	  							end;
-	  						end;
-	  					end;
-						end; 
+										end;
+									end;
+								end;
+							end; 
+						end;
 					end;
-				end;
 				
-				if(svoout)then begin
-					totdolgqty = totdolgqty + 1;
-					totrem = totrem + 1;
+					if(svoout)then begin
+						totdolgqty = totdolgqty + 1;
+						totrem = totrem + 1;
+						if (RepSpec.flags[26]==0) then begin
+							st0[SVOr.SerNr] = CountWorkingDays(SVOr.Status0Sd,SVOr.Status0Ed,"","UA");
+							st0[SVOr.SerNr & ":1"] = CountWorkingDays(SVOr.Status1Sd,SVOr.Status1Ed,"","UA");
+							st0[SVOr.SerNr & ":3"] = CountWorkingDays(SVOr.Status3Sd,SVOr.Status3Ed,"","UA");
+							st0[SVOr.SerNr & ":4"] = CountWorkingDays(SVOr.Status4Sd,SVOr.Status4Ed,"","UA");
+							st0[SVOr.SerNr & ":5"] = CountWorkingDays(SVOr.Status5Sd,SVOr.Status5Ed,"","UA");
+							st0[SVOr.SerNr & ":7"] = CountWorkingDays(SVOr.Status7Sd,SVOr.Status7Ed,"","UA");
+							st0[SVOr.SerNr & ":8"] = CountWorkingDays(SVOr.Status8Sd,SVOr.Status8Ed,"","UA");
+							st0[SVOr.SerNr & ":10"] = CountWorkingDays(SVOr.Status10Sd,SVOr.Status10Ed,"","UA");
+							st0[SVOr.SerNr & ":11"] = CountWorkingDays(SVOr.Status11Sd,SVOr.Status11Ed,"","UA");
 					
-					st0[SVOr.SerNr] = CountWorkingDays(SVOr.Status0Sd,SVOr.Status0Ed,"","UA");
-					st0[SVOr.SerNr & ":1"] = CountWorkingDays(SVOr.Status1Sd,SVOr.Status1Ed,"","UA");
-					st0[SVOr.SerNr & ":3"] = CountWorkingDays(SVOr.Status3Sd,SVOr.Status3Ed,"","UA");
-					st0[SVOr.SerNr & ":4"] = CountWorkingDays(SVOr.Status4Sd,SVOr.Status4Ed,"","UA");
-					st0[SVOr.SerNr & ":5"] = CountWorkingDays(SVOr.Status5Sd,SVOr.Status5Ed,"","UA");
-					st0[SVOr.SerNr & ":7"] = CountWorkingDays(SVOr.Status7Sd,SVOr.Status7Ed,"","UA");
-					st0[SVOr.SerNr & ":8"] = CountWorkingDays(SVOr.Status8Sd,SVOr.Status8Ed,"","UA");
-					st0[SVOr.SerNr & ":10"] = CountWorkingDays(SVOr.Status10Sd,SVOr.Status10Ed,"","UA");
-					st0[SVOr.SerNr & ":11"] = CountWorkingDays(SVOr.Status11Sd,SVOr.Status11Ed,"","UA");
-					
-					if (RepSpec.flags[26]==0) then begin
-						startformat(15);
-							outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
-							outstring(tabs[1],0,SVOr.TransDate,false);
-							outstring(tabs[2],0,1,false);
-							outstring(tabs[3],0,blankval,false);
-							outstring(tabs[4],0,blankval,false);
-							outstring(tabs[5],0,blankval,false);
-						endformat;
-					end else begin
-						if(ivsumservstrah[asvonr[i]]!=0)then begin
+						
 							startformat(15);
 								outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
-								outstring(tabs[3],0,SVOr.TransDate,false);
-								outstring(tabs[5],0,ivsumservstrah[asvonr[i]],false);
-								outstring(tabs[7],0,"Вдолг",false);
+								outstring(tabs[1],0,SVOr.TransDate,false);
+								outstring(tabs[2],0,1,false);
+								outstring(tabs[3],0,blankval,false);
+								outstring(tabs[4],0,blankval,false);
+								outstring(tabs[5],0,blankval,false);
 							endformat;
-						end;
-					end;
-					if(SVOr.StatusReturnCnt>0)then begin
-						vManCanQty[SVOr.Inspector & "DOR"] = vManCanQty[SVOr.Inspector & "DOR"] + SVOr.StatusReturnCnt;
-						vIngCanQty[SVOr.ServiceManager & "DOR"] = vIngCanQty[SVOr.ServiceManager & "DOR"] + SVOr.StatusReturnCnt;
-						if (RepSpec.flags[26]==0) then begin
-							startformat(15);
-								outstring(tabs[0],0,"Возвратов на доработку",false);
-								outstring(tabs[2],0,SVOr.StatusReturnCnt,false);
-							endformat;
-						end;
-					end;
-					
-					if (RepSpec.flags[26]==0) then begin
-						OutDaysInStatus(st0,SVOr.SerNr,SVOr.Inspector,SVOr.ServiceManager,vManCanQty,vIngCanQty);
-					
-						if(nonblank(vCuDomain[SVOr.CustCode]))then begin
-							if(nonblank(vCuDomain[SVOr.CustCode]))then begin
-								startformat(15);
-									outstring(tabs[0],0,"Звонок с домена",false);
-									outstring(tabs[2],0,vCuDomain[SVOr.CustCode],false);
-								endformat;
-							end;
-							if(nonblank(vUTMSource[SVOr.CustCode]))then begin
-								startformat(15);
-									outstring(tabs[0],0,"Переход с ресурса",false);
-									outstring(tabs[2],0,vUTMSource[SVOr.CustCode],false);
-								endformat;
-							end;
-							if(nonblank(vUTMCampaign[SVOr.CustCode]))then begin
-								startformat(15);
-									outstring(tabs[0],0,"Кампания",false);
-									outstring(tabs[2],0,vUTMCampaign[SVOr.CustCode],false);
-								endformat;
-							end;
-							if(nonblank(vUTMTerm[SVOr.CustCode]))then begin
-								startformat(15);
-									outstring(tabs[0],0,"Условия",false);
-									outstring(tabs[2],0,vUTMTerm[SVOr.CustCode],false);
-								endformat;
-							end;
-						end;
-					end;
-					
-					if(nonblank(SVOr.GarNo))then begin
-						oldSVOr.InnerOrderNr = SVOr.GarNo;
-						if(readfirstkey("InnerOrderNr",oldSVOr,1,true))then begin
-							povtorsumdolg = povtorsumdolg + ivsumserv[asvonr[i]];
-							povtorqtydolg = povtorqtydolg + 1;
-						
-							if(RepSpec.flags[26]==0)then begin
-								startformat(15);
-									outstring(tabs[0],0,"Повторный ремонт",false);
-									outstring(tabs[6],"DblSVOVcSer",SVOr.GarNo,false);
-								endformat;
-							end;
-							vPovtor[SVOr.SerNr] = true;
-						end;
-					end;
-					
-					if (RepSpec.flags[26]==0) then begin
-						black_divider(tabs[6],tabs[7]);
-						startformat(15);
-							outstring(tabs[0],0,"Итого по заказу",false);
-							//outstring(tabs[6],0,ivsumserv[asvonr[i]],false);
-							
-							outstring(150,0,"Услуги:",false);
-							outstring(200,0,ivsumserv[asvonr[i]],false);
-							outstring(250,0,"Детали:",false);
-							outstring(300,0,ivsumservdet[asvonr[i]],false);
-							outstring(350,0,"Всего:",false);
-							outstring(400,0,ivsumserv[asvonr[i]]+ivsumservdet[asvonr[i]],false);
-						endformat;
-					end;
-					if(nonblank(vCuDomain[SVOr.CustCode]))then begin
-						tstr = "Вдолг:" & vUTMSource[SVOr.CustCode] & "->" & vCuDomain[SVOr.CustCode] & "("  & vUTMCampaign[SVOr.CustCode] & "|" & vUTMTerm[SVOr.CustCode] & ")";
-						if(vTrackFlag[tstr])then begin
-							vTrackSum[tstr] = vTrackSum[tstr] + ivsumserv[asvonr[i]];
 						end else begin
-							vTrackFlag[tstr] = true;
-							vTrackSum[tstr] = ivsumserv[asvonr[i]];
-							TrackSumKey[TrackCnt] = tstr;
-							TrackCnt = TrackCnt +1;
+							if(ivsumservstrah[asvonr[i]]!=0)then begin
+								startformat(15);
+									outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
+									outstring(tabs[3],0,SVOr.TransDate,false);
+									outstring(tabs[5],0,ivsumservstrah[asvonr[i]],false);
+									outstring(tabs[7],0,"Вдолг",false);
+								endformat;
+							end;
 						end;
-					end;
-					if (RepSpec.flags[26]==0) then begin
-						gray_divider(0,1);
-					end;
-				end;			
-				resetloop(IVr);
+						if(SVOr.StatusReturnCnt>0)then begin
+							vManCanQty[SVOr.Inspector & "DOR"] = vManCanQty[SVOr.Inspector & "DOR"] + SVOr.StatusReturnCnt;
+							vIngCanQty[SVOr.ServiceManager & "DOR"] = vIngCanQty[SVOr.ServiceManager & "DOR"] + SVOr.StatusReturnCnt;
+							if (RepSpec.flags[26]==0) then begin
+								startformat(15);
+									outstring(tabs[0],0,"Возвратов на доработку",false);
+									outstring(tabs[2],0,SVOr.StatusReturnCnt,false);
+								endformat;
+							end;
+						end;
+					
+						if (RepSpec.flags[26]==0) then begin
+							OutDaysInStatus(st0,SVOr.SerNr,SVOr.Inspector,SVOr.ServiceManager,vManCanQty,vIngCanQty);
+					
+							if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+								if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+									startformat(15);
+										outstring(tabs[0],0,"Звонок с домена",false);
+										outstring(tabs[2],0,vCuDomain[SVOr.CustCode],false);
+									endformat;
+								end;
+								if(nonblank(vUTMSource[SVOr.CustCode]))then begin
+									startformat(15);
+										outstring(tabs[0],0,"Переход с ресурса",false);
+										outstring(tabs[2],0,vUTMSource[SVOr.CustCode],false);
+									endformat;
+								end;
+								if(nonblank(vUTMCampaign[SVOr.CustCode]))then begin
+									startformat(15);
+										outstring(tabs[0],0,"Кампания",false);
+										outstring(tabs[2],0,vUTMCampaign[SVOr.CustCode],false);
+									endformat;
+								end;
+								if(nonblank(vUTMTerm[SVOr.CustCode]))then begin
+									startformat(15);
+										outstring(tabs[0],0,"Условия",false);
+										outstring(tabs[2],0,vUTMTerm[SVOr.CustCode],false);
+									endformat;
+								end;
+							end;
+						end;
+					
+						if(nonblank(SVOr.GarNo))then begin
+							oldSVOr.InnerOrderNr = SVOr.GarNo;
+							if(readfirstkey("InnerOrderNr",oldSVOr,1,true))then begin
+								povtorsumdolg = povtorsumdolg + ivsumserv[asvonr[i]];
+								povtorqtydolg = povtorqtydolg + 1;
+						
+								if(RepSpec.flags[26]==0)then begin
+									startformat(15);
+										outstring(tabs[0],0,"Повторный ремонт",false);
+										outstring(tabs[6],"DblSVOVcSer",SVOr.GarNo,false);
+									endformat;
+								end;
+								vPovtor[SVOr.SerNr] = true;
+							end;
+						end;
+					
+						if (RepSpec.flags[26]==0) then begin
+							black_divider(tabs[6],tabs[7]);
+							startformat(15);
+								outstring(tabs[0],0,"Итого по заказу",false);
+								//outstring(tabs[6],0,ivsumserv[asvonr[i]],false);
+							
+								outstring(150,0,"Услуги:",false);
+								outstring(200,0,ivsumserv[asvonr[i]],false);
+								outstring(250,0,"Детали:",false);
+								outstring(300,0,ivsumservdet[asvonr[i]],false);
+								outstring(350,0,"Всего:",false);
+								outstring(400,0,ivsumserv[asvonr[i]]+ivsumservdet[asvonr[i]],false);
+							endformat;
+						end;
+						if(nonblank(vCuDomain[SVOr.CustCode]))then begin
+							tstr = "Вдолг:" & vUTMSource[SVOr.CustCode] & "->" & vCuDomain[SVOr.CustCode] & "("  & vUTMCampaign[SVOr.CustCode] & "|" & vUTMTerm[SVOr.CustCode] & ")";
+							if(vTrackFlag[tstr])then begin
+								vTrackSum[tstr] = vTrackSum[tstr] + ivsumserv[asvonr[i]];
+							end else begin
+								vTrackFlag[tstr] = true;
+								vTrackSum[tstr] = ivsumserv[asvonr[i]];
+								TrackSumKey[TrackCnt] = tstr;
+								TrackCnt = TrackCnt +1;
+							end;
+						end;
+						if (RepSpec.flags[26]==0) then begin
+							gray_divider(0,1);
+						end;
+					end;			
+					resetloop(IVr);
+				end;
 			end;
 		end; 
 		if (RepSpec.flags[26]==0) then begin
@@ -1639,6 +1705,13 @@ begin
 			if(nonblank(RepSpec.f1) and RepSpec.f1!=SVOr.SalesGroup)then begin testf = false; end;
 			if(nonblank(RepSpec.f3) and RepSpec.f3!=SVOr.ServiceManager)then begin testf = false; end;
 			if(nonblank(RepSpec.f4) and RepSpec.f4!=SVOr.CustomField7)then begin testf = false; end;
+			
+			
+			if(RepSpec.flags[1]==0)then begin
+				if(KIVIFound(SVOr))then begin
+					testf = false;
+				end;
+			end;
 			
 			if(testf)then begin
 				if(SVOr.OrderStatus==6)then begin

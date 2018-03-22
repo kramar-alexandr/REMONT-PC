@@ -221,7 +221,7 @@ begin
 return;
 end;
 
-global procedure ServiceJobsRn(record RcVc RepSpec)
+global procedure ServiceJobsRnProc(record RcVc RepSpec,var integer mancnt,var integer ingcnt,var vector val vIngSum,var vector val vManSum,var array string aing,var array string aman)
 begin
 	record INVc INr;
 	record SVOVc SVOr,oldSVOr;
@@ -255,14 +255,12 @@ begin
 	vector string 100 vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm;
 	boolean TrHs2,testf2;
 	vector val vTrackSum;
-	vector boolean vTrackFlag,vPovtor;
+	vector boolean vTrackFlag,vPovtor,svoiskivi;
 	array string 255 TrackSumKey;
 	integer TrackCnt,povtorqty,povtorqtydolg,povtorqtyotkaz,povtorqtyneoplat;
-	vector val vIngSum;
-	vector val vManSum;
 	vector integer vIngCanQty,vManCanQty,vSVOQty;
-	array string 50 aing,aman,arjct;
-	integer ingcnt,mancnt,irjct,userscnt,ui;
+	array string 50 arjct;
+	integer irjct,userscnt,ui;
 	vector boolean vIngExst,vManExst,vrjct,vsvodolg; 
 	record UserVc User;
 	vector val st0,ivretsummanag;
@@ -325,12 +323,19 @@ begin
 												svoserman[IVr.SVONr] = SVOr.ServiceManager;
 												svoinsp[IVr.SVONr] = SVOr.Inspector;
 												svowscost[IVr.SVONr] = SVOr.WSCost;
+												if(RepSpec.flags[1]==0)then begin
+													svoiskivi[IVr.SVONr] = KIVIFound(SVOr);
+												end;
 												IF(nonblankdate(SVOr.RegDate) and SVOr.RegDate<=ed and SVOr.RegDate>=sd)THEN BEGIN
 													vsvodolg[IVr.SVONr] = TRUE;
 												END;
 											end;
 										end;
 										if(IVr.InvType!=kInvoiceTypeCredit)then begin
+											if(IVr.InvDate==ed and svoiskivi[IVr.SVONr]==false)then begin
+												vIngSum[IVr.SalesMan & ":TODAYSUM"]= vIngSum[IVr.SalesMan & ":TODAYSUM"] + IVr.Sum4;
+												vIngSum[IVr.SalesMan & ":TODAYQTY"]= vIngSum[IVr.SalesMan & ":TODAYQTY"] + 1;
+											end;
 											if(paydate[IVr.SVONr]<IVr.InvDate)then begin
 												paydate[IVr.SVONr] = IVr.InvDate;
 											end;
@@ -343,6 +348,10 @@ begin
 												end;
 											end; 
 										end else begin
+											if(IVr.InvDate==ed and svoiskivi[IVr.SVONr]==false)then begin
+												vIngSum[IVr.SalesMan & ":TODAYSUM"] = vIngSum[IVr.SalesMan & ":TODAYSUM"] - IVr.Sum4;
+												vIngSum[IVr.SalesMan & ":TODAYQTY"] = vIngSum[IVr.SalesMan & ":TODAYQTY"] - 1;
+											end;
 											ivsum[IVr.SVONr] = ivsum[IVr.SVONr] - IVr.Sum4;
 										end;
 									end;
@@ -364,6 +373,9 @@ begin
 															svoserman[IPrw.CUPNr] = SVOr.ServiceManager;
 															svoinsp[IPrw.CUPNr] = SVOr.Inspector;
 															svowscost[IPrw.CUPNr] = SVOr.WSCost;
+															if(RepSpec.flags[1]==0)then begin
+																svoiskivi[IPrw.CUPNr] = KIVIFound(SVOr);
+															end;
 															IF(nonblankdate(SVOr.RegDate) and SVOr.RegDate<=ed and SVOr.RegDate>=sd)THEN BEGIN
 																vsvodolg[IPrw.CUPNr] = TRUE;
 															END;
@@ -434,6 +446,9 @@ begin
 															svoserman[IVr.SVONr] = SVOr.ServiceManager;
 															svoinsp[IVr.SVONr] = SVOr.Inspector;
 															svowscost[IVr.SVONr] = SVOr.WSCost;
+															if(RepSpec.flags[1]==0)then begin
+																svoiskivi[IVr.SVONr] = KIVIFound(SVOr);
+															end;
 															IF(nonblankdate(SVOr.RegDate) and SVOr.RegDate<=ed and SVOr.RegDate>=sd)THEN BEGIN
 																vsvodolg[IVr.SVONr] = TRUE;
 															END;
@@ -622,7 +637,7 @@ begin
 				filter = true;
 			
 				if(RepSpec.flags[1]==0)then begin
-					if(KIVIFound(SVOr))then begin
+					if(svoiskivi[asvonr[i]])then begin
 						filter = false;
 					end;
 				end;
@@ -1007,7 +1022,7 @@ begin
 				filter = true;
 			
 				if(RepSpec.flags[1]==0)then begin
-					if(KIVIFound(SVOr))then begin
+					if(svoiskivi[asvonr[i]])then begin
 						filter = false;
 					end;
 				end;
@@ -1357,7 +1372,7 @@ begin
 				filter = true;
 			
 				if(RepSpec.flags[1]==0)then begin
-					if(KIVIFound(SVOr))then begin
+					if(svoiskivi[asvonr[i]])then begin
 						filter = false;
 					end;
 				end;
@@ -2420,5 +2435,28 @@ begin
 
 		
 	endjob;
+return;
+end;
+
+global procedure ServiceJobsRn(record RcVc RepSpec)
+begin
+	integer mancnt;
+	integer ingcnt;
+	vector val vIngSum;
+	vector val vManSum;
+	array string 50 aing;
+	array string 50 aman;
+	
+	ServiceJobsRnProc(RepSpec,mancnt,ingcnt,vIngSum,vManSum,aing,aman);
+	
+return;
+end;
+
+global procedure ServiceJobsRnStat(record RcVc RepSpec,var integer mancnt,var integer ingcnt,var vector val vIngSum,var vector val vManSum,var array string aing,var array string aman)
+begin
+
+	RepSpec.flags[26] = 1;
+	ServiceJobsRnProc(RepSpec,mancnt,ingcnt,vIngSum,vManSum,aing,aman);
+	
 return;
 end;

@@ -6,6 +6,7 @@ external function LongInt DateDiff(Date,Date);
 external function LongInt CountWorkingDays(Date,Date,string,string);
 external procedure MySortStringArray(var array string ,integer );
 external procedure ExtractObj(string,var Integer,var string);
+external procedure ServiceJobsRnStat(record RcVc,var integer,var integer,var vector val,var vector val,var array string,var array string);
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -692,7 +693,7 @@ begin
 	row    ManagerPlanVc		MPrw;
 	record RcVc					RepSpec;
 	vector string 255 			Name;
-	vector val					PlanWork, FactWork, TodWork;
+	vector val					PlanWork,FactWork,TodWork,TodQty;
 	array string 255 			atags;
 	string 	255					temp;
 	integer 					i, k, mtrw;
@@ -702,8 +703,31 @@ begin
 	vector date					endDate;
 	val							res;
 	val 						today_res;
+	integer mancnt;
+	integer ingcnt;
+	vector val vIngSum;
+	vector val vManSum;
+	array string 50 aing;
+	array string 50 aman;
+	date sd,ed;
 	
 	usrs = webgetarg("users");
+	RepSpec.flags[26]=1;
+	
+	logtext(0,"WebHW " & usrs);
+	
+	sd.day = 1;
+	sd.month = getmonth(currentdate);
+	sd.year = getyear(currentdate);
+	ed = currentdate;
+	RepSpec.sStartDate = sd;
+	RepSpec.sEndDate = ed;
+	
+	ServiceJobsRnStat(RepSpec,mancnt,ingcnt,vIngSum,vManSum,aing,aman);
+	logtext(0,ingcnt);
+	For(i=0;i<ingcnt;i=i+1) begin
+	  logtext(0,aing[i] & " tot " & vIngSum[tmp & ":GOTOV:SERV"]);
+	end; 
 	
 	if (nonblank(usrs)) then begin
 		k = 0;
@@ -725,10 +749,9 @@ begin
 					PrevDate = MPrw.PlansDate;
 				end;
 				endDate[tmp] = currentdate;
-				logtext(0,MPr.Code & " sd " & Start[MPr.Code] & " ed " & endDate[MPr.Code]);
-				count_fact(tmp, Start[tmp], endDate[tmp], res, today_res);
-				FactWork[tmp] = res;
-				TodWork[tmp] = today_res;
+				FactWork[tmp] = vIngSum[tmp & ":GOTOV:SERV"];
+				TodWork[tmp] = vIngSum[tmp & ":TODAYSUM"];
+				TodQty[tmp] = vIngSum[tmp & ":TODAYQTY"];
 			end;
 			ExtractObj(usrs,k,tmp);
 		end;
@@ -749,17 +772,28 @@ begin
 				PrevDate = MPrw.PlansDate;
 			end;
 			endDate[MPr.Code] = currentdate;
-			logtext(0,MPr.Code & " sd " & Start[MPr.Code] & " ed " & endDate[MPr.Code]);
-			count_fact(MPr.Code, Start[MPr.Code], endDate[MPr.Code], res, today_res);
-			FactWork[MPr.Code] = res;
-			TodWork[MPr.Code] = today_res;
+			FactWork[MPr.Code] = vIngSum[MPr.Code & ":GOTOV:SERV"];
+			TodWork[MPr.Code] = vIngSum[MPr.Code & ":TODAYSUM"];
+			TodQty[MPr.Code] = vIngSum[MPr.Code & ":TODAYQTY"];
 		end;
 	end;
 	GetVectorTags(Start, atags);
 	WebOutString("{");
 	for (i = 0; i < atags.length; i = i + 1) begin
 		//WebOutString("{");
-		temp = "\"" & atags[i] & "\": {" & "\"fact\":" & FactWork[atags[i]] & ",\"plan\":" & PlanWork[atags[i]] & ",\"today_res\":" & TodWork[atags[i]] & "}";
+		if(FactWork[atags[i]]==0)then begin
+			FactWork[atags[i]] = 0;
+		end;
+		if(PlanWork[atags[i]]==0)then begin
+			PlanWork[atags[i]] = 0;
+		end;
+		if(TodWork[atags[i]]==0)then begin
+			TodWork[atags[i]] = 0;
+		end;
+		if(TodQty[atags[i]]==0)then begin
+			TodQty[atags[i]] = 0;
+		end;
+		temp = "\"" & atags[i] & "\": {" & "\"fact\":" & FactWork[atags[i]] & ",\"plan\":" & PlanWork[atags[i]] & ",\"today_res\":" & TodWork[atags[i]] &",\"today_qty\":" & TodQty[atags[i]] & "}";
 		WebOutString(temp);
 		if (i < atags.length - 1) then begin
 			WebOutString(",");

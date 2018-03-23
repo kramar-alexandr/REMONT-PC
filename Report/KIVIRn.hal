@@ -263,7 +263,7 @@ begin
 							end;
 						end;
 					end;
-					if(workqty[worklist[0]]>0)then begin 
+					if(workqty[worklist[0]]>0 and stringtolongint(firstinrange(worklist[0],20))==SVOr.SerNr)then begin 
 						outstring(350,0,workname[0],false);
 						outstring(350,0,workprice[0],false);
 					end else begin
@@ -313,7 +313,7 @@ begin
 							outstring(0,0,"",false);
 							outstring(0,0,"",false);
 							if(vi<artcnt)then begin
-								if(workqty[worklist[vi]]>0)then begin
+								if(workqty[worklist[vi]]>0 and stringtolongint(firstinrange(worklist[vi],20))==SVOr.SerNr)then begin
 									outstring(350,0,workname[vi],false);
 									outstring(350,0,workprice[vi],false);
 								end else begin
@@ -342,7 +342,7 @@ begin
 							outstring(0,0,"",false);
 							outstring(0,0,"",false);
 							outstring(0,0,"",false);
-							if(workqty[worklist[vi]]>0)then begin
+							if(workqty[worklist[vi]]>0 and stringtolongint(firstinrange(worklist[vi],20))==SVOr.SerNr)then begin
 								outstring(350,0,workname[vi],false);
 								outstring(350,0,workprice[vi],false);
 							end else begin

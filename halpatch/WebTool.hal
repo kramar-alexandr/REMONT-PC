@@ -733,6 +733,7 @@ begin
 	  end;
 	end; 
 	For(i=0;i<ingcnt;i=i+1) begin
+	LOGTEXT(0,"aing[i] " & aing[i]);
 		if(nonblank(aing[i]))then begin
 			ising[aing[i]] = true;
 			if(param=="Ing")then begin

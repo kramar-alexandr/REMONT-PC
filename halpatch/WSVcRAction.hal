@@ -816,20 +816,21 @@ begin
     if (nonblank(WSrw.ArtCode)) then begin
     // Edit Start ---------------------------------------------- Edit Start
 	//Thursday, 22 March 2018 17:00:12
-	
-    prev = 0;
-		for (j=0;j<i;j=j+1) begin
-			MatRowGet(WSp,j,WS2rw);
-			if (WS2rw.ArtCode==WSrw.ArtCode) then begin
-				prev = prev + WS2rw.Quant;
+		if ((INr.ItemType==1)) then begin
+			prev = 0;
+			for (j=0;j<i;j=j+1) begin
+				MatRowGet(WSp,j,WS2rw);
+				if (WS2rw.ArtCode==WSrw.ArtCode) then begin
+					prev = prev + WS2rw.Quant;
+				end;
 			end;
-		end;
-		prev = prev + WSrw.Quant;
-		FindStockValue(WSrw.ArtCode,location,ISr);
-		if (ISr.Instock==0) then begin
-			RecordCheckError(1247,"",i,"Quant");      
-			res = -1;
-			goto LWSVcRecordCheck;
+			prev = prev + WSrw.Quant;
+			FindStockValue(WSrw.ArtCode,location,ISr);
+			if (ISr.Instock==0) then begin
+				RecordCheckError(1247,"",i,"Quant");      
+				res = -1;
+				goto LWSVcRecordCheck;
+			end;
 		end;
     	
 	// Edit End ---------------------------------------------- Edit End

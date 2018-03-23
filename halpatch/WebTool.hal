@@ -687,7 +687,7 @@ begin
 	return;
 end;
 
-global webpublic procedure WebHW()
+global procedure WebHW(string arg,string param)
 begin
 	record ManagerPlanVc 		MPr;
 	row    ManagerPlanVc		MPrw;
@@ -710,12 +710,11 @@ begin
 	array string 50 aing;
 	array string 50 aman;
 	date sd,ed;
+	vector boolean isman,ising,outpers;
 	
-	usrs = webgetarg("users");
+	usrs = arg;
 	RepSpec.flags[26]=1;
-	
-	logtext(0,"WebHW " & usrs);
-	
+		
 	sd.day = 1;
 	sd.month = getmonth(currentdate);
 	sd.year = getyear(currentdate);
@@ -724,10 +723,24 @@ begin
 	RepSpec.sEndDate = ed;
 	
 	ServiceJobsRnStat(RepSpec,mancnt,ingcnt,vIngSum,vManSum,aing,aman);
-	logtext(0,ingcnt);
-	For(i=0;i<ingcnt;i=i+1) begin
-	  logtext(0,aing[i] & " tot " & vIngSum[tmp & ":GOTOV:SERV"]);
+	
+	For(i=0;i<mancnt;i=i+1) begin
+		if(nonblank(aman[i]))then begin
+			isman[aman[i]] = true;
+			if(param=="Man")then begin
+				outpers[aman[i]] = true;
+			end;
+	  end;
 	end; 
+	For(i=0;i<ingcnt;i=i+1) begin
+		if(nonblank(aing[i]))then begin
+			ising[aing[i]] = true;
+			if(param=="Ing")then begin
+				outpers[ising[i]] = true;
+			end;
+	  end;
+	end;
+	
 	
 	if (nonblank(usrs)) then begin
 		k = 0;
@@ -736,22 +749,31 @@ begin
 			MPr.Code = tmp;
 			if (readfirstmain(MPr,1,true)) then begin
 				mtrw = matrowcnt(MPr);
-				matrowget(MPr,0,MPrw)
-				PrevDate = MPrw.PlansDate;
-				PrevDate.day = 1;
-				PlanWork[tmp] = MPrw.PlansRepair;
-				for (i=0;i<mtrw;i=i+1) begin
-					matrowget(MPr,i,MPrw)
-					if (currentdate <= MPrw.PlansDate and currentdate > PrevDate) then begin
-						Start[tmp] = addDay(PrevDate, 1); //MPrw.PlansDate;
-						PlanWork[tmp] = MPrw.PlansRepair;
-					end;
+				matrowget(MPr,0,MPrw);
+				if(MPrw.PlansRepair>0 and outpers[MPr.Code])then begin
 					PrevDate = MPrw.PlansDate;
+					PrevDate.day = 1;
+					PlanWork[tmp] = MPrw.PlansRepair;
+					for (i=0;i<mtrw;i=i+1) begin
+						matrowget(MPr,i,MPrw)
+						if (currentdate <= MPrw.PlansDate and currentdate > PrevDate) then begin
+							Start[tmp] = addDay(PrevDate, 1); //MPrw.PlansDate;
+							PlanWork[tmp] = MPrw.PlansRepair;
+						end;
+						PrevDate = MPrw.PlansDate;
+					end;
+					endDate[tmp] = currentdate;
+					if(param=="Ing")then begin
+						FactWork[tmp] = vIngSum[tmp & ":GOTOV:SERV"];
+						TodWork[tmp] = vIngSum[tmp & ":TODAYSUM"];
+						TodQty[tmp] = vIngSum[tmp & ":TODAYQTY"];
+					end;
+					if(param=="Man")then begin
+						FactWork[tmp] = vManSum[tmp & ":GOTOV:SERV"];
+						TodWork[tmp] = vManSum[tmp & ":TODAYSUM"];
+						TodQty[tmp] = vManSum[tmp & ":TODAYQTY"];
+					end;
 				end;
-				endDate[tmp] = currentdate;
-				FactWork[tmp] = vIngSum[tmp & ":GOTOV:SERV"];
-				TodWork[tmp] = vIngSum[tmp & ":TODAYSUM"];
-				TodQty[tmp] = vIngSum[tmp & ":TODAYQTY"];
 			end;
 			ExtractObj(usrs,k,tmp);
 		end;
@@ -760,21 +782,30 @@ begin
 		while (loopmain(MPr,1,true)) begin
 			mtrw = matrowcnt(MPr);
 			matrowget(MPr,0,MPrw)
-			PrevDate = MPrw.PlansDate;
-			PrevDate.day = 1;
-			PlanWork[MPr.Code] = MPrw.PlansRepair;
-			for (i=0;i<mtrw;i=i+1) begin
-				matrowget(MPr,i,MPrw)
-				if (currentdate <= MPrw.PlansDate and currentdate > PrevDate) then begin
-					Start[MPr.Code] = addDay(PrevDate, 1); //MPrw.PlansDate;
-					PlanWork[MPr.Code] = MPrw.PlansRepair;
-				end;
+			if(MPrw.PlansRepair>0 and outpers[MPr.Code])then begin
 				PrevDate = MPrw.PlansDate;
+				PrevDate.day = 1;
+				PlanWork[MPr.Code] = MPrw.PlansRepair;
+				for (i=0;i<mtrw;i=i+1) begin
+					matrowget(MPr,i,MPrw)
+					if (currentdate <= MPrw.PlansDate and currentdate > PrevDate) then begin
+						Start[MPr.Code] = addDay(PrevDate, 1); //MPrw.PlansDate;
+						PlanWork[MPr.Code] = MPrw.PlansRepair;
+					end;
+					PrevDate = MPrw.PlansDate;
+				end;
+				endDate[MPr.Code] = currentdate;
+				if(param=="Ing")then begin
+					FactWork[MPr.Code] = vIngSum[MPr.Code & ":GOTOV:SERV"];
+					TodWork[MPr.Code] = vIngSum[MPr.Code & ":TODAYSUM"];
+					TodQty[MPr.Code] = vIngSum[MPr.Code & ":TODAYQTY"];
+				end;
+				if(param=="Man")then begin
+					FactWork[MPr.Code] = vManSum[MPr.Code & ":GOTOV:SERV"];
+					TodWork[MPr.Code] = vManSum[MPr.Code & ":TODAYSUM"];
+					TodQty[MPr.Code] = vManSum[MPr.Code & ":TODAYQTY"];
+				end;
 			end;
-			endDate[MPr.Code] = currentdate;
-			FactWork[MPr.Code] = vIngSum[MPr.Code & ":GOTOV:SERV"];
-			TodWork[MPr.Code] = vIngSum[MPr.Code & ":TODAYSUM"];
-			TodQty[MPr.Code] = vIngSum[MPr.Code & ":TODAYQTY"];
 		end;
 	end;
 	GetVectorTags(Start, atags);
@@ -804,3 +835,24 @@ begin
 	return;
 end;
 
+global webpublic procedure WebHWIng()
+begin
+	string 255 arg,param;
+	
+	arg = webgetarg("users");
+	param = "Ing";
+	WebHW(arg,param);
+
+return;
+end;
+
+global webpublic procedure WebHWMan()
+begin
+	string 255 arg,param;
+	
+	arg = webgetarg("users");
+	param = "Man";
+	WebHW(arg,param);
+	
+return;
+end;

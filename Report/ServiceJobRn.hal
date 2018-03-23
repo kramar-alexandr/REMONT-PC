@@ -335,6 +335,8 @@ begin
 											if(IVr.InvDate==ed and svoiskivi[IVr.SVONr]==false)then begin
 												vIngSum[IVr.SalesMan & ":TODAYSUM"]= vIngSum[IVr.SalesMan & ":TODAYSUM"] + IVr.Sum4;
 												vIngSum[IVr.SalesMan & ":TODAYQTY"]= vIngSum[IVr.SalesMan & ":TODAYQTY"] + 1;
+												vManSum[svoinsp[IVr.SVONr] & ":TODAYSUM"]= vManSum[svoinsp[IVr.SVONr] & ":TODAYSUM"] + IVr.Sum4;
+												vManSum[svoinsp[IVr.SVONr] & ":TODAYQTY"]= vManSum[svoinsp[IVr.SVONr] & ":TODAYQTY"] + 1;
 											end;
 											if(paydate[IVr.SVONr]<IVr.InvDate)then begin
 												paydate[IVr.SVONr] = IVr.InvDate;
@@ -351,6 +353,8 @@ begin
 											if(IVr.InvDate==ed and svoiskivi[IVr.SVONr]==false)then begin
 												vIngSum[IVr.SalesMan & ":TODAYSUM"] = vIngSum[IVr.SalesMan & ":TODAYSUM"] - IVr.Sum4;
 												vIngSum[IVr.SalesMan & ":TODAYQTY"] = vIngSum[IVr.SalesMan & ":TODAYQTY"] - 1;
+												vManSum[svoinsp[IVr.SVONr] & ":TODAYSUM"] = vManSum[svoinsp[IVr.SVONr] & ":TODAYSUM"] - IVr.Sum4;
+												vManSum[svoinsp[IVr.SVONr] & ":TODAYQTY"] = vManSum[svoinsp[IVr.SVONr] & ":TODAYQTY"] - 1;
 											end;
 											ivsum[IVr.SVONr] = ivsum[IVr.SVONr] - IVr.Sum4;
 										end;

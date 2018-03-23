@@ -2786,8 +2786,8 @@ begin
 	MatrixBegin(x,y+=40,-50,-20,-,60);
 	Flip(0);
 	MatCol(1,30,"Дата",0,PlansDate,false,PasteCurDate);
-	MatCol(1,130,"План продаж",0,PlansSales,false,0);
-	MatCol(1,250,"План ремонта",0,PlansRepair,false,0);
+	//MatCol(1,130,"План продаж",0,PlansSales,false,0);
+	MatCol(1,250,"План",0,PlansRepair,false,0);
 	MatCol(1,370,"Комментарий",0,PlansComment,false,0);
 	EndMatrix;
 	EndWindow;

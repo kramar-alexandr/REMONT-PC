@@ -825,15 +825,12 @@ begin
 		if(TodQty[atags[i]]==0)then begin
 			TodQty[atags[i]] = 0;
 		end;
-		USr.Code = atags[i];
-		if(readfirstmain(USr,1,true))then begin
-			temp = "\"" & USr.Name & "\": {" & "\"fact\":" & FactWork[atags[i]] & ",\"plan\":" & PlanWork[atags[i]] & ",\"today_res\":" & TodWork[atags[i]] &",\"today_qty\":" & TodQty[atags[i]] & "}";
-			WebOutString(temp);
-			if (i < atags.length - 1) then begin
-				WebOutString(",");
-			end;
-			temp = "";
+		temp = "\"" & atags[i] & "\": {" & "\"fact\":" & FactWork[atags[i]] & ",\"plan\":" & PlanWork[atags[i]] & ",\"today_res\":" & TodWork[atags[i]] &",\"today_qty\":" & TodQty[atags[i]] & "}";
+		WebOutString(temp);
+		if (i < atags.length - 1) then begin
+			WebOutString(",");
 		end;
+		temp = "";
 	end;
 	WebOutString("}");
 	return;

@@ -711,6 +711,7 @@ begin
 	array string 50 aman;
 	date sd,ed;
 	vector boolean isman,ising,outpers;
+	record UserVc USr;
 	
 	usrs = arg;
 	RepSpec.flags[26]=1;
@@ -824,12 +825,15 @@ begin
 		if(TodQty[atags[i]]==0)then begin
 			TodQty[atags[i]] = 0;
 		end;
-		temp = "\"" & atags[i] & "\": {" & "\"fact\":" & FactWork[atags[i]] & ",\"plan\":" & PlanWork[atags[i]] & ",\"today_res\":" & TodWork[atags[i]] &",\"today_qty\":" & TodQty[atags[i]] & "}";
-		WebOutString(temp);
-		if (i < atags.length - 1) then begin
-			WebOutString(",");
+		USr.Code = atags[i];
+		if(readfirstmain(USr,1,true))then begin
+			temp = "\"" & USr.Name & "\": {" & "\"fact\":" & FactWork[atags[i]] & ",\"plan\":" & PlanWork[atags[i]] & ",\"today_res\":" & TodWork[atags[i]] &",\"today_qty\":" & TodQty[atags[i]] & "}";
+			WebOutString(temp);
+			if (i < atags.length - 1) then begin
+				WebOutString(",");
+			end;
+			temp = "";
 		end;
-		temp = "";
 	end;
 	WebOutString("}");
 	return;

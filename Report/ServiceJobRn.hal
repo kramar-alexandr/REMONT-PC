@@ -762,6 +762,8 @@ begin
 															ivsumservstrah[asvonr[i]] = ivsumservstrah[asvonr[i]] + IVrw.Sum;
 															akey = IVr.SalesMan & ":GOTOV:STRAH";
 															vManSum[akey] = vManSum[akey] + IVrw.Sum;
+															akey = IVr.SalesMan & ":GOTOV:STRAH:QTY";
+															vManSum[akey] = vManSum[akey] + IVrw.Quant;
 															if(vManExst[IVr.SalesMan]==false)then begin
 																vManExst[IVr.SalesMan] = true;
 																aman[mancnt] = IVr.SalesMan;
@@ -791,6 +793,8 @@ begin
 															ivsumservstrah[asvonr[i]] = ivsumservstrah[asvonr[i]] - IVrw.Sum;
 															akey = IVr.SalesMan & ":GOTOV:STRAH";
 															vManSum[akey] = vManSum[akey] - IVrw.Sum;
+															akey = IVr.SalesMan & ":GOTOV:STRAH:QTY";
+															vManSum[akey] = vManSum[akey] - IVrw.Quant;
 															if(vManExst[IVr.SalesMan]==false)then begin
 																vManExst[IVr.SalesMan] = true;
 																aman[mancnt] = IVr.SalesMan;
@@ -1138,6 +1142,8 @@ begin
 															ivsumservstrah[asvonr[i]] = ivsumservstrah[asvonr[i]] + IVrw.Sum;
 															akey = IVr.SalesMan & ":NOPAY:STRAH";
 															vManSum[akey] = vManSum[akey] + IVrw.Sum;
+															akey = IVr.SalesMan & ":NOPAY:STRAH:QTY";
+															vManSum[akey] = vManSum[akey] + IVrw.Quant;
 															if(vManExst[IVr.SalesMan]==false)then begin
 																vManExst[IVr.SalesMan] = true;
 																aman[mancnt] = IVr.SalesMan;
@@ -1167,6 +1173,8 @@ begin
 															ivsumservstrah[asvonr[i]] = ivsumservstrah[asvonr[i]] - IVrw.Sum;
 															akey = IVr.SalesMan & ":NOPAY:STRAH";
 															vManSum[akey] = vManSum[akey] - IVrw.Sum;
+															akey = IVr.SalesMan & ":NOPAY:STRAH:QTY";
+															vManSum[akey] = vManSum[akey] - IVrw.Quant;
 															if(vManExst[IVr.SalesMan]==false)then begin
 																vManExst[IVr.SalesMan] = true;
 																aman[mancnt] = IVr.SalesMan;
@@ -1488,6 +1496,8 @@ begin
 														ivsumservstrah[asvonr[i]] = ivsumservstrah[asvonr[i]] + IVrw.Sum;
 														akey = IVr.SalesMan & ":DOLG:STRAH";
 														vManSum[akey] = vManSum[akey] + IVrw.Sum;
+														akey = IVr.SalesMan & ":DOLG:STRAH:QTY";
+														vManSum[akey] = vManSum[akey] + IVrw.Quant;
 														if(vManExst[IVr.SalesMan]==false)then begin
 															vManExst[IVr.SalesMan] = true;
 															aman[mancnt] = IVr.SalesMan;
@@ -1517,6 +1527,8 @@ begin
 														ivsumservstrah[asvonr[i]] = ivsumservstrah[asvonr[i]] - IVrw.Sum;
 														akey = IVr.SalesMan & ":DOLG:STRAH";
 														vManSum[akey] = vManSum[akey] - IVrw.Sum;
+														akey = IVr.SalesMan & ":DOLG:STRAH:QTY";
+														vManSum[akey] = vManSum[akey] - IVrw.Quant;
 														if(vManExst[IVr.SalesMan]==false)then begin
 															vManExst[IVr.SalesMan] = true;
 															aman[mancnt] = IVr.SalesMan;
@@ -2190,10 +2202,10 @@ begin
 					if(vManSum[aman[i] & ":GOTOV:STRAH"]!=0 or vManSum[aman[i] & ":NOPAY:STRAH"]!=0 or vManSum[aman[i] & ":DOLG:STRAH"]!=0)then begin
 						startformat(15);
 							outstring(tabs[0],0,aman[i],false);
-							outstring(tabs[3],0,vManSum[aman[i] & ":GOTOV:STRAH"],false);
-							outstring(tabs[6],0,vManSum[aman[i] & ":NOPAY:STRAH"],false);
-							outstring(tabs[9],0,vManSum[aman[i] & ":DOLG:STRAH"],false);
-							outstring(tabs[11],0,vManSum[aman[i] & ":GOTOV:STRAH"] + vManSum[aman[i] & ":NOPAY:STRAH"] + vManSum[aman[i] & ":DOLG:STRAH"],false);
+							outstring(tabs[3],0,vManSum[aman[i] & ":GOTOV:STRAH"] & "(" & vManSum[aman[i] & ":GOTOV:STRAH:QTY"] & ")",false);
+							outstring(tabs[6],0,vManSum[aman[i] & ":NOPAY:STRAH"] & "(" & vManSum[aman[i] & ":NOPAY:STRAH:QTY"] & ")",false);
+							outstring(tabs[9],0,vManSum[aman[i] & ":DOLG:STRAH"] & "(" & vManSum[aman[i] & ":DOLG:STRAH:QTY"] & ")",false);
+							outstring(tabs[11],0,(vManSum[aman[i] & ":GOTOV:STRAH"] + vManSum[aman[i] & ":NOPAY:STRAH"] + vManSum[aman[i] & ":DOLG:STRAH"]) & "(" & (vManSum[aman[i] & ":GOTOV:STRAH:QTY"] + vManSum[aman[i] & ":NOPAY:STRAH:QTY"] + vManSum[aman[i] & ":DOLG:STRAH:QTY"]) & ")",false);
 						endformat;
 					end;
 				end;
@@ -2210,6 +2222,9 @@ begin
 				tot[11] = tot[11] + vManSum[aman[i] & ":GOTOV:STRAH"];
 				tot[12] = tot[12] + vManSum[aman[i] & ":NOPAY:STRAH"];
 				tot[13] = tot[13] + vManSum[aman[i] & ":DOLG:STRAH"];
+				tot[14] = tot[14] + vManSum[aman[i] & ":GOTOV:STRAH:QTY"];
+				tot[15] = tot[15] + vManSum[aman[i] & ":NOPAY:STRAH:QTY"];
+				tot[16] = tot[16] + vManSum[aman[i] & ":DOLG:STRAH:QTY"];
 				if (RepSpec.flags[26]==0) then begin
 					gray_divider(0,1);
 				end;

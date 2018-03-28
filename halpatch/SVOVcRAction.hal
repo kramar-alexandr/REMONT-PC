@@ -2648,6 +2648,10 @@ BEGIN
   if((SVOr.Addr0=="Новый контакт" or SVOr.Addr0=="Новый клиент") and SVOr.Addr0!=SVOr.Vlastnik)then begin
   	SVOr.Addr0 = SVOr.Vlastnik;
   end;
+  if(nonblank(SVOr.Vlastnik) and SVOr.Addr0!=SVOr.Vlastnik)then begin
+  	SVOr.Addr0 = SVOr.Vlastnik;
+  end;
+  
   
   res = CheckCUVATNrMask(SVOr.CustCode,SVOr.VATNr,tstr);
   if (res!=0) then begin

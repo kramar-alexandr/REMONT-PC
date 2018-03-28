@@ -179,7 +179,9 @@ BEGIN
    
     // Edit Start ---------------------------------------------- Edit Start
 	//Tuesday, 29 August 2017 15:00:53
-	
+		
+		warntext = "";// Edit ************************** BPI Ukraine - KramarAlexandr - Wednesday, 28 March 2018 15:10:59
+		
     SVOr.CustCode = CUr.Code;
     TrHs = true;
     while(loopkey("CustCode",SVOr,1,TrHs))begin

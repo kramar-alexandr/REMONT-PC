@@ -817,6 +817,7 @@ BEGIN
   record LocalMachineBlock LMb;// Edit ************************** Wednesday, 19 October 2011 10:59:49
   integer mtrw,i;// Edit ************************** Wednesday, 19 October 2011 10:59:50
   string 255 warning;// Edit ************************** Friday, 6 January 2012 11:08:47
+  record RcVc RepSpec;
   
   BlockLoad(ARAccRec);
   SVOr.SerNr = -1;
@@ -880,9 +881,16 @@ BEGIN
 	if (blank(SVOr.CustCode)) then begin
     SVOr.CustCode = LMb.DefCustCode;
     if (PasteCUInSVO(SVOr,"",warning)) then begin	////Edit----------------------Dima  14.05.2015 //oldcustCode = blank
-    if(nonblank(warning))then begin
-    	messagebox(0,warning);// Edit ************************** Tuesday, 29 August 2017 15:06:55
-    end;
+			if(left(warning,10)=="На клиента")then begin    
+				if(nonblank(warning))then begin
+					RepSpec.f2 = right(warning,len(warning)-38);
+					OpenWindow("OpenMessageSVOWClass",1,0,"","",RepSpec);
+				end;
+			end else begin
+				if(nonblank(warning))then begin
+					messagebox(0,warning);// Edit ************************** Tuesday, 29 August 2017 15:06:55
+				end;
+			end;
     end;
   end;  
     
@@ -3202,6 +3210,40 @@ BEGIN
 END;
 
 
+global procedure DblOpenMessageSVODsm()
+begin
+	integer wn;
+	record RcVc RepSpec;
+	record SVOVc SVOr;
+	string 20 tstr;
+	longint ser;
+	integer pos;
+	
+	wn = curwindow;
+	getwindowrecord(wn,RepSpec);
+	
+	
+	if(nonblank(RepSpec.f2))then begin
+		pos = 0;
+		ExtractObj(RepSpec.f2,pos,tstr);
+		while(nonblank(tstr))begin
+			if(nonblank(tstr))then begin
+				ser = stringtolongint(tstr);
+				SVOr.SerNr = ser;
+				if(readfirstmain(SVOr,1,true))then begin
+					OpenWindow("SVODClass",1,0,"","",SVOr);
+				end;
+				ExtractObj(RepSpec.f2,pos,tstr);
+			end;
+		end;
+		
+	end;
+	closewindow(wn);
+
+return;
+end;
+
+
 /*global procedure DblSendSMSOkDsm()
 begin
 	integer wn;
@@ -3215,7 +3257,7 @@ begin
 return;
 end;*/
 
-/*global procedure DblSendSMSCancelDsm()
+global procedure DblSendSMSCancelDsm()
 begin
 	integer wn;
 	record RcVc RepSpec;
@@ -3225,7 +3267,7 @@ begin
 	
 
 return;
-end;*/
+end;
 
 global procedure FastPaySVODsm()
 begin

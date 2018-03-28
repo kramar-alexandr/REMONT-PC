@@ -2408,6 +2408,24 @@ WindowBegin("Отправить СМС клиенту?",YesNoCancelSMSWClass,CGother,RcType);
   EndWindow;
 end;
 
+window OpenMessageSVOWClass:1 //Edit-------------------Vitalii 15:51 04.11.2016
+ wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs;
+WindowBegin("",OpenMessageSVOWClass,CGother,RcType);
+  Modality(1);
+  UseView(RcVc);
+  SetWRect(80,200,600,300);
+  Sizeable(-1,-1,0,0);
+  h = 20; v = -30;
+  statictext(h,v-23,"На клиента есть предварительный заказ!",false);
+  EditField(h,v-20,-20,"№",ViewOnly,f2,false,0);
+  HalPushButton(h,v,h+80,v+25,"DblSendSMSCancelDsm","Ok");
+  HalPushButton(h+=100,v,h+80,v+25,"DblOpenMessageSVODsm","Открыть");
+  
+  EndWindow;
+end;
+
 window ConfirmFastPaySVOWClass:1 //Edit-------------------Vitalii 15:51 04.11.2016
  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin

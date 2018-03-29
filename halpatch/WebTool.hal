@@ -712,6 +712,7 @@ begin
 	date sd,ed;
 	vector boolean isman,ising,outpers;
 	record UserVc USr;
+	boolean testf;
 	
 	usrs = arg;
 	RepSpec.flags[26]=1;
@@ -749,30 +750,40 @@ begin
 		while (nonblank(tmp)) begin
 			MPr.Code = tmp;
 			if (readfirstmain(MPr,1,true)) then begin
-				mtrw = matrowcnt(MPr);
-				matrowget(MPr,0,MPrw);
-				if(MPrw.PlansRepair>0 and outpers[MPr.Code])then begin
-					PrevDate = MPrw.PlansDate;
-					PrevDate.day = 1;
-					PlanWork[tmp] = MPrw.PlansRepair;
-					for (i=0;i<mtrw;i=i+1) begin
-						matrowget(MPr,i,MPrw)
-						if (currentdate <= MPrw.PlansDate and currentdate > PrevDate) then begin
-							Start[tmp] = addDay(PrevDate, 1); //MPrw.PlansDate;
-							PlanWork[tmp] = MPrw.PlansRepair;
-						end;
+				testf = true;
+				if(param=="Ing" and MPr.ManagerFlag==1)then begin
+					testf = false;
+				end;
+				if(param=="Man" and MPr.ManagerFlag==0)then begin
+					testf = false;
+				end;
+				
+				if(testf)then begin
+					mtrw = matrowcnt(MPr);
+					matrowget(MPr,0,MPrw);
+					if(MPrw.PlansRepair>0 and outpers[MPr.Code])then begin
 						PrevDate = MPrw.PlansDate;
-					end;
-					endDate[tmp] = currentdate;
-					if(param=="Ing")then begin
-						FactWork[tmp] = vIngSum[tmp & ":GOTOV:SERV"];
-						TodWork[tmp] = vIngSum[tmp & ":TODAYSUM"];
-						TodQty[tmp] = vIngSum[tmp & ":TODAYQTY"];
-					end;
-					if(param=="Man")then begin
-						FactWork[tmp] = vManSum[tmp & ":GOTOV:SERV"];
-						TodWork[tmp] = vManSum[tmp & ":TODAYSUM"];
-						TodQty[tmp] = vManSum[tmp & ":TODAYQTY"];
+						PrevDate.day = 1;
+						PlanWork[tmp] = MPrw.PlansRepair;
+						for (i=0;i<mtrw;i=i+1) begin
+							matrowget(MPr,i,MPrw)
+							if (currentdate <= MPrw.PlansDate and currentdate > PrevDate) then begin
+								Start[tmp] = addDay(PrevDate, 1); //MPrw.PlansDate;
+								PlanWork[tmp] = MPrw.PlansRepair;
+							end;
+							PrevDate = MPrw.PlansDate;
+						end;
+						endDate[tmp] = currentdate;
+						if(param=="Ing")then begin
+							FactWork[tmp] = vIngSum[tmp & ":GOTOV:SERV"];
+							TodWork[tmp] = vIngSum[tmp & ":TODAYSUM"];
+							TodQty[tmp] = vIngSum[tmp & ":TODAYQTY"];
+						end;
+						if(param=="Man")then begin
+							FactWork[tmp] = vManSum[tmp & ":GOTOV:SERV"];
+							TodWork[tmp] = vManSum[tmp & ":TODAYSUM"];
+							TodQty[tmp] = vManSum[tmp & ":TODAYQTY"];
+						end;
 					end;
 				end;
 			end;
@@ -781,30 +792,41 @@ begin
 		GetVectorTags(PlanWork,atags);
 	end else begin
 		while (loopmain(MPr,1,true)) begin
-			mtrw = matrowcnt(MPr);
-			matrowget(MPr,0,MPrw)
-			if(MPrw.PlansRepair>0 and outpers[MPr.Code])then begin
-				PrevDate = MPrw.PlansDate;
-				PrevDate.day = 1;
-				PlanWork[MPr.Code] = MPrw.PlansRepair;
-				for (i=0;i<mtrw;i=i+1) begin
-					matrowget(MPr,i,MPrw)
-					if (currentdate <= MPrw.PlansDate and currentdate > PrevDate) then begin
-						Start[MPr.Code] = addDay(PrevDate, 1); //MPrw.PlansDate;
-						PlanWork[MPr.Code] = MPrw.PlansRepair;
-					end;
+			testf = true;
+			if(param=="Ing" and MPr.ManagerFlag==1)then begin
+				testf = false;
+			end;
+			if(param=="Man" and MPr.ManagerFlag==0)then begin
+				testf = false;
+			end;
+				
+				
+			if(testf)then begin
+				mtrw = matrowcnt(MPr);
+				matrowget(MPr,0,MPrw)
+				if(MPrw.PlansRepair>0 and outpers[MPr.Code])then begin
 					PrevDate = MPrw.PlansDate;
-				end;
-				endDate[MPr.Code] = currentdate;
-				if(param=="Ing")then begin
-					FactWork[MPr.Code] = vIngSum[MPr.Code & ":GOTOV:SERV"];
-					TodWork[MPr.Code] = vIngSum[MPr.Code & ":TODAYSUM"];
-					TodQty[MPr.Code] = vIngSum[MPr.Code & ":TODAYQTY"];
-				end;
-				if(param=="Man")then begin
-					FactWork[MPr.Code] = vManSum[MPr.Code & ":GOTOV:SERV"];
-					TodWork[MPr.Code] = vManSum[MPr.Code & ":TODAYSUM"];
-					TodQty[MPr.Code] = vManSum[MPr.Code & ":TODAYQTY"];
+					PrevDate.day = 1;
+					PlanWork[MPr.Code] = MPrw.PlansRepair;
+					for (i=0;i<mtrw;i=i+1) begin
+						matrowget(MPr,i,MPrw)
+						if (currentdate <= MPrw.PlansDate and currentdate > PrevDate) then begin
+							Start[MPr.Code] = addDay(PrevDate, 1); //MPrw.PlansDate;
+							PlanWork[MPr.Code] = MPrw.PlansRepair;
+						end;
+						PrevDate = MPrw.PlansDate;
+					end;
+					endDate[MPr.Code] = currentdate;
+					if(param=="Ing")then begin
+						FactWork[MPr.Code] = vIngSum[MPr.Code & ":GOTOV:SERV"];
+						TodWork[MPr.Code] = vIngSum[MPr.Code & ":TODAYSUM"];
+						TodQty[MPr.Code] = vIngSum[MPr.Code & ":TODAYQTY"];
+					end;
+					if(param=="Man")then begin
+						FactWork[MPr.Code] = vManSum[MPr.Code & ":GOTOV:SERV"];
+						TodWork[MPr.Code] = vManSum[MPr.Code & ":TODAYSUM"];
+						TodQty[MPr.Code] = vManSum[MPr.Code & ":TODAYQTY"];
+					end;
 				end;
 			end;
 		end;

@@ -449,14 +449,14 @@ begin
 							end;
 					end;
 
-					/*if(SVO2r.OrderStatus==10 and SVOr.OrderStatus!=10)then begin//закрыть запрос на заказ деталей
+					if(SVO2r.OrderStatus==10 and SVOr.OrderStatus!=10)then begin//закрыть запрос на заказ деталей
 							testf1 = true;
 							if(Actr.ActType!="ZAKAZ")then begin testf1 = false; end;
 							testf1 = (testf1 and testf);
 							if(testf1)then begin
 									CloseActivity(Actr,"ЋЉ");
 							end;
-					end;*/
+					end;
 					
 					
 					if(nonblank(SVOr.Kontinfo1) and nonblank(SVOr.Addr0) and nonblank(SVOr.Kontinfo3))then begin//закрыть запрос на заказ деталей

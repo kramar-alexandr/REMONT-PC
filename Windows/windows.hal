@@ -2415,7 +2415,7 @@ begin
 WindowBegin("",OpenMessageSVOWClass,CGother,RcType);
   Modality(1);
   UseView(RcVc);
-  SetWRect(80,200,600,300);
+  SetWRect(80,200,400,300);
   Sizeable(-1,-1,0,0);
   h = 20; v = -30;
   statictext(h,v-23,"Ќа клиента есть предварительный заказ!",false);

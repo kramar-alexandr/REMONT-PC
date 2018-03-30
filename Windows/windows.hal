@@ -2805,6 +2805,12 @@ begin
 	UseView(ManagerPlanVc);
 	EditField(x,y+=30,width,"Код",Normal,Code,false,UserSClass);
 	EditField(x,y+=20,width,"Имя",Normal,Name,false,0);
+	y=0;
+	ButtonFrame(x+100,y+=30,140,3,"Статус");
+	RadioButton(x+100,y,0,0,"Инженер",ManagerFlag);
+	RadioButton(x+100,y+=16,1,0,"Менеджер",ManagerFlag);
+	RadioButton(x+100,y+=16,2,0,"Оба",ManagerFlag);
+	
 	MatrixBegin(x,y+=40,-50,-20,-,60);
 	Flip(0);
 	MatCol(1,30,"Дата",0,PlansDate,false,PasteCurDate);

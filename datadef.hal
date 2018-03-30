@@ -1853,6 +1853,7 @@ begin
   RecordField(Code,M4Code,100,0);
   RecordField(Name,M4Str,60,0);
   RecordField(Matrix,M4matrix,0,0);
+  RecordField(ManagerFlag,M4Int,0,0);// Edit ************************** BPI Ukraine - KramarAlexandr - 04, 29 03 2018 y. о 23:11:48
   ArrayBegin(Matrix,-,1);
   ArrayField(PlansDate,M4Date,0,0);
   ArrayField(PlansSales,M4Val,0,0);

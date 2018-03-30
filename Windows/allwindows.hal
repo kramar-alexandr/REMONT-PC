@@ -8050,23 +8050,18 @@ begin
   EditFieldTL(150,v+=vs ,100,"Группа",M4Code,Normal,50,f7,false,ITSClass);
   EditFieldTL(150,v+=vs ,-20,"Классификация",M4UStr,Normal,50,f8,false,DISClass);
   
-  //CheckBox(h=160,v+=22,0,"Показать проблему",flags[7]); //origin field
-  /*ButtonFrame(h=12,vm=(v+=41),123,3,"Функция"); //origin field
-  RadioButton(h,v,0,0,"Сводный",ArtMode); //origin field
-  RadioButton(h,v+=16,1,0,"Подробно",ArtMode); //origin field
-  RadioButton(h,v+=16,2,0,"Без НДС",ArtMode); //origin field
-  ButtonFrame(h+=148,v = vm,123,3,"Статус"); //origin field
-  CheckBox(h,v,0,"Неотфактурир.",flags[1]); //origin field
-  CheckBox(h,v+=16,0,"Част. отфактурир.",flags[2]); //origin field
-  CheckBox(h,v+=16,0,"Отфактурир.",flags[3]);*/ //origin field
   ButtonFrame(h=12,vm=(v+=41),123,4,"Сортировать за датой"); //Edit***************************Sasha2,14:55 15.05.2017 {
   RadioButton(h,v,0,0,"Дата заказа",ArtMode);
   RadioButton(h,v+=16,1,0,"Дата оконч.диагн.",ArtMode);
   RadioButton(h,v+=16,2,0,"Дата оконч. рем.",ArtMode);
   RadioButton(h,v+=16,3,0,"Дата выдачи",ArtMode);
-  ButtonFrame(h+=148,v = vm,123,12,"Статус");
   
+  ButtonFrame(h=12,vm=(v+=41),123,3,"KIVI"); //Edit***************************Sasha2,14:55 15.05.2017 {
+  RadioButton(h,v,0,0,"Без KIVI",flags[19]);
+  RadioButton(h,v+=16,1,0,"Только KIVI",flags[19]);
+  RadioButton(h,v+=16,2,0,"Все",flags[19]);
   
+  ButtonFrame(h+=148,v = vm,123,13,"Статус");  
   CheckBox(h,v,0,"Предварит.",flags[13]);//9
   CheckBox(h,v+=16,0,"В ожидании",flags[1]);//0
   CheckBox(h,v+=16,0,"На диагностике",flags[2]);//5
@@ -8081,7 +8076,7 @@ begin
   CheckBox(h,v+=16,0,"Вернули на доработку",flags[17]); // 11 //Edit-------------------Vitalii 16:21 21.09.2017
   CheckBox(h,v+=16,0,"Отказ",flags[12]);//6 //Edit***************************Sasha2,14:55 15.05.2017 }
   
-  //**************** NOT USED FLAGS : 5 7 8 18-.. ****************
+  //**************** NOT USED FLAGS : 5 7 8 18 19-.. ****************
   
   ButtonFrame(h+=148,v = vm,123,3,"Завершено");
   CheckBox(h,v,0,"Нет",flags[4]);

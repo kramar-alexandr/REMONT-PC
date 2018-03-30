@@ -1,3 +1,5 @@
+external function boolean KIVIFound(record SVOVc);
+
 SetLangMode(LangRussian,"RUS",0);
 
 procedure MySortStringArray(var array string astr,integer cnt)
@@ -40,7 +42,7 @@ begin
 	row SVOVc SVOrw;
 	record IntSerBalVc SBr;
 	vector string 50 vSerLoc,vSerInServ;
-	vector boolean vSGExist,vLocExist,vSGLocExist;
+	vector boolean vSGExist,vLocExist,vSGLocExist,vKIVIFlag;
 	vector longint vSerSVONr;
 	array string 50 aSerials,aSerials1;
 	integer k,i;
@@ -73,9 +75,11 @@ begin
 					vSGExist[SVOr.SalesGroup] = true;
 					vSGLocExist[SVOr.SalesGroup & ";" & SBr.Location] = true;
 					vSerSVONr[SBr.Serial] = SVOr.SerNr;
+					vKIVIFlag[SBr.Serial] = KIVIFound(SVOr);
 				end else begin
 					vSerInServ[SBr.Serial] = "NO";
 					vSerSVONr[SBr.Serial] = -1;
+					vKIVIFlag[SBr.Serial] = false;
 				end;
 			end;
 		end;
@@ -115,6 +119,13 @@ begin
 								if(readfirstkey("InnerOrderNr",SVOr,1,true))then begin
 									testfsvo = true;
 									if(RepSpec.flags[0]==1 and SVOr.OrderStatus!=2 and SVOr.OrderStatus!=6)then begin testfsvo = false; end;
+									
+									if(RepSpec.ArtMode==0 and vKIVIFlag[aSerials[i]])then begin
+										testfsvo = false;
+									end;
+									if(RepSpec.ArtMode==1 and vKIVIFlag[aSerials[i]]==false)then begin
+										testfsvo = false;
+									end;
 									
 									if(testfsvo)then begin
 										if(matrowcnt(SVOr)>0)then begin

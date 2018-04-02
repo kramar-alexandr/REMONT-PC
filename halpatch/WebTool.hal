@@ -754,6 +754,7 @@ begin
 						outpers[ingcnt] = true;
 						ising[ingcnt] = true;
 						aing[ingcnt] = MPr.Code;
+						ingcnt = ingcnt + 1;
 						i = mtrw;
 					end;
 				end;
@@ -772,6 +773,7 @@ begin
 						outpers[mancnt] = true;
 						isman[mancnt] = true;
 						aman[mancnt] = MPr.Code;
+						mancnt = mancnt + 1;
 						i = mtrw;
 					end;
 				end;

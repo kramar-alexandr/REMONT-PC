@@ -657,6 +657,7 @@ begin
 						testf = true;
 						if(IVr.SVONr!=SVOr.SerNr)then begin TrHs = false; testf = false; end;
 						if(IVr.OKFlag==0)then begin testf = false; end;
+						if(IVr.InvDate>ed)then begin testf = false; end;
 					
 						filter = true;
 						if(testf)then begin

@@ -261,7 +261,7 @@ begin
 	vector integer vIngCanQty,vManCanQty,vSVOQty;
 	array string 50 arjct;
 	integer irjct,userscnt,ui;
-	vector boolean vIngExst,vManExst,vrjct,vsvodolg; 
+	vector boolean vIngExst,vManExst,vrjct,vsvodolg,vIVoldPer; 
 	record UserVc User;
 	vector val st0,ivretsummanag;
 	array string 255 atags;
@@ -342,6 +342,7 @@ begin
 												paydate[IVr.SVONr] = IVr.InvDate;
 											end;
 											ivsum[IVr.SVONr] = ivsum[IVr.SVONr] + IVr.Sum4;
+											vIVoldPer[IVr.SerNr] = true;
 											mtrw = matrowcnt(IVr);
 											For(i=0;i<mtrw;i=i+1) begin
 												matrowget(IVr,i,IVrw);
@@ -357,6 +358,7 @@ begin
 												vManSum[svoinsp[IVr.SVONr] & ":TODAYQTY"] = vManSum[svoinsp[IVr.SVONr] & ":TODAYQTY"] - 1;
 											end;
 											ivsum[IVr.SVONr] = ivsum[IVr.SVONr] - IVr.Sum4;
+											vIVoldPer[IVr.SerNr] = true;
 										end;
 									end;
 					case 1:	IPr.SerNr = IPRsr.TransNr;
@@ -459,6 +461,7 @@ begin
 														end;
 													end;
 													
+													vIVoldPer[IVr.SerNr] = true;
 													if(IVr.InvDate<sd)then begin
 														if(ivexist[IVr.SerNr]==false)then begin
 															ivexist[IVr.SerNr] = true;
@@ -659,6 +662,7 @@ begin
 						if(IVr.OKFlag==0)then begin testf = false; end;
 						if(IVr.InvDate>ed)then begin testf = false; end;
 						///if(IVr.InvDate<sd)then begin testf = false; end;
+						if(vIVoldPer[IVr.SerNr]==false)begin testf = false; end;
 					
 						filter = true;
 						if(testf)then begin

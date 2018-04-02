@@ -744,6 +744,43 @@ begin
 	end;
 	
 	
+	if(param=="Ing")then begin
+		while (loopmain(MPr,1,true)) begin
+			if(MPr.ManagerFlag==0 and outpers[MPr.Code]==false)then begin
+				mtrw = matrowcnt(MPr);
+				for (i=0;i<mtrw;i=i+1) begin
+					matrowget(MPr,i,MPrw);
+					if(MPrw.PlansDate>currentdate)then begin
+						outpers[ingcnt] = true;
+						ising[ingcnt] = true;
+						aing[ingcnt] = MPr.Code;
+						i = mtrw;
+					end;
+				end;
+			end;
+		end;
+		resetloop(MPr);
+	end;
+	
+	if(param=="Man")then begin
+		while (loopmain(MPr,1,true)) begin
+			if(MPr.ManagerFlag==1 and outpers[MPr.Code]==false)then begin
+				mtrw = matrowcnt(MPr);
+				for (i=0;i<mtrw;i=i+1) begin
+					matrowget(MPr,i,MPrw);
+					if(MPrw.PlansDate>currentdate)then begin
+						outpers[mancnt] = true;
+						isman[mancnt] = true;
+						aman[mancnt] = MPr.Code;
+						i = mtrw;
+					end;
+				end;
+			end;
+		end;
+		resetloop(MPr);
+	end;
+	
+	
 	if (nonblank(usrs)) then begin
 		k = 0;
 		ExtractObj(usrs,k,tmp);
@@ -809,7 +846,7 @@ begin
 					PrevDate.day = 1;
 					PlanWork[MPr.Code] = MPrw.PlansRepair;
 					for (i=0;i<mtrw;i=i+1) begin
-						matrowget(MPr,i,MPrw)
+						matrowget(MPr,i,MPrw);
 						if (currentdate <= MPrw.PlansDate and currentdate > PrevDate) then begin
 							Start[MPr.Code] = addDay(PrevDate, 1); //MPrw.PlansDate;
 							PlanWork[MPr.Code] = MPrw.PlansRepair;

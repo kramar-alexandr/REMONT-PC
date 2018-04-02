@@ -745,6 +745,7 @@ begin
 	
 	
 	if(param=="Ing")then begin
+		MPr.Code = "";
 		while (loopmain(MPr,1,true)) begin
 			if(MPr.ManagerFlag==0 and outpers[MPr.Code]==false)then begin
 				mtrw = matrowcnt(MPr);
@@ -764,6 +765,7 @@ begin
 	end;
 	
 	if(param=="Man")then begin
+		MPr.Code = "";
 		while (loopmain(MPr,1,true)) begin
 			if(MPr.ManagerFlag==1 and outpers[MPr.Code]==false)then begin
 				mtrw = matrowcnt(MPr);
@@ -830,6 +832,7 @@ begin
 		end;
 		GetVectorTags(PlanWork,atags);
 	end else begin
+		MPr.Code = "";
 		while (loopmain(MPr,1,true)) begin
 			testf = true;
 			if(param=="Ing" and MPr.ManagerFlag==1)then begin

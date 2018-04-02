@@ -750,9 +750,9 @@ begin
 				mtrw = matrowcnt(MPr);
 				for (i=0;i<mtrw;i=i+1) begin
 					matrowget(MPr,i,MPrw);
-					if(MPrw.PlansDate>currentdate)then begin
-						outpers[ingcnt] = true;
-						ising[ingcnt] = true;
+					if(MPrw.PlansDate>=currentdate)then begin
+						outpers[MPr.Code] = true;
+						ising[MPr.Code] = true;
 						aing[ingcnt] = MPr.Code;
 						ingcnt = ingcnt + 1;
 						i = mtrw;
@@ -769,9 +769,9 @@ begin
 				mtrw = matrowcnt(MPr);
 				for (i=0;i<mtrw;i=i+1) begin
 					matrowget(MPr,i,MPrw);
-					if(MPrw.PlansDate>currentdate)then begin
-						outpers[mancnt] = true;
-						isman[mancnt] = true;
+					if(MPrw.PlansDate>=currentdate)then begin
+						outpers[MPr.Code] = true;
+						isman[MPr.Code] = true;
 						aman[mancnt] = MPr.Code;
 						mancnt = mancnt + 1;
 						i = mtrw;

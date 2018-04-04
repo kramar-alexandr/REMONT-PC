@@ -8091,6 +8091,41 @@ begin
   EndWindow;
 end;
 
+window GoodsInRClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vm,vs;
+  WindowBegin("Определите журнал приема товара",GoodsInRClass,CGrCW,RcType);
+  SetWRect(50,100,500,300);
+  v = 10; vs = 20; h = 160;
+  PeriodField(h,v+=vs,"Период");
+  EditFieldTL(h,v+=vs ,150,"Клиент",M4Str,Normal,60,f2,false,CUSClass);
+  if (HasContactClassification) then begin
+    EditFieldTL(h,v+=vs,150,"Классиф. клиента",M4UStr,Normal,30,f5,false,CClassSClass); 
+  end;
+  if (HasCategories) then begin
+    EditFieldTL(h,v+=vs,50,"Категория клиента",M4UStr,Normal,5,f4,false,CCatSClass); 
+  end;  
+ // EditFieldTL(h,v+=vs ,150,"PO No.",M4Str,Normal,20,TransStr,false,0);
+  EditFieldTL(h,v+=vs ,150,"Склад",M4Str,Normal,20,f3,false,LocationSClass);
+  ButtonFrame(h=70,vm=(v+=40),123,2,"Функция");
+  RadioButton(h,v,0,0,"Сводный",ArtMode);
+  RadioButton(h,v+=16,1,0,"Подробно",ArtMode);
+  //ButtonFrame(h+=148,v = vm,123,2,"Specify");
+  CheckBox(h,v += 30,0,"Включая неутвержд.",flags[1]);
+  //CheckBox(h,v+=16,0,"O_Ked",flags[2]);
+  ButtonFrame(h+=148,v = vm,123,2,"Сортировка");
+  RadioButton(h,v,0,0,"Номер",flags[5]);
+  RadioButton(h,v+=16,1,0,"Дата",flags[5]);
+  
+  ButtonFrame(h,v+=40,123,3,"KIVI"); //Edit***************************Sasha2,14:55 15.05.2017 {
+  RadioButton(h,v,0,0,"Без KIVI",flags[19]);
+  RadioButton(h,v+=16,1,0,"Только KIVI",flags[19]);
+  RadioButton(h,v+=16,2,0,"Все",flags[19]);
+  EndWindow;
+end;
+
+
 window TRLClass:3
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin

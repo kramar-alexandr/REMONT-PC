@@ -6,6 +6,7 @@ external function Boolean ContactInGroupClass(string,string,string,string,string
 external procedure HTDetailLevel(Integer, var string);
 external procedure HT2Per(Date, Date,var string);
 external procedure HTNr(Integer,Integer,LongInt,LongInt,var string);
+external function boolean KIVIFound(record SVOVc);
 
 global 
 procedure GoodsOutRn(record RcVc RepSpec)
@@ -183,6 +184,7 @@ begin
   record OffHireVc OffHirer;
   record CUVc Cur;
   record SVOVc SVOr;
+  row SVOVc SVOrw;
   row OffHireVc OffHirerw;
   integer rw,rwc;
   string 20 ckey;
@@ -292,7 +294,27 @@ begin
     if (nonblank(RepSpec.f3) and RepSpec.f3 != OffHirer.Location) then begin
       printf = false;
     end;
+    // Edit Start ---------------------------------------------- Edit Start
+	//Wednesday, 4 April 2018 16:53:17
+		
+		if(printf)then begin
+			rwc = matrowcnt(OffHirer);
+			for (rw = 0; rw < rwc; rw = rw + 1) begin
+				MatrowGet(OffHirer,rw,OffHirerw);
+				SVOr.InnerOrderNr = OffHirerw.SerialNr;
+				if (ReadFirstKey("InnerOrderNr",SVOr,1,true)) then begin
+					if(RepSpec.flags[19]==0 and KIVIFound(SVOr))then begin
+						printf = false;
+					end;
+					if(RepSpec.flags[19]==1 and KIVIFound(SVOr)==false)then begin
+						printf = false;
+					end; 
+				end;
+			end;
+    end;
     
+	// Edit End ---------------------------------------------- Edit End
+	
     if (printf) then begin
       rwc = matrowcnt(OffHirer);
       if (RepSpec.ArtMode == 1) then begin

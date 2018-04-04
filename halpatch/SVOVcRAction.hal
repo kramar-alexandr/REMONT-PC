@@ -457,6 +457,14 @@ begin
 									CloseActivity(Actr,"ОК");
 							end;
 					end;
+					if(SVO2r.OrderStatus==10 and SVOr.OrderStatus!=10)then begin//закрыть запрос на заказ деталей
+							testf1 = true;
+							if(Actr.ActType!="ZAKUP")then begin testf1 = false; end;
+							testf1 = (testf1 and testf);
+							if(testf1)then begin
+									CloseActivity(Actr,"ОК");
+							end;
+					end;
 					
 					
 					if(nonblank(SVOr.Kontinfo1) and nonblank(SVOr.Addr0) and nonblank(SVOr.Kontinfo3))then begin//закрыть запрос на заказ деталей
@@ -471,6 +479,14 @@ begin
 					if(SVO2r.OrderStatus==3 and SVOr.OrderStatus!=3)then begin//закрыть напоминание о долгом заказе деталей
 							testf1 = true;
 							if(Actr.ActType!="ZAKAZ")then begin testf1 = false; end;
+							testf1 = (testf1 and testf);
+							if(testf1)then begin
+									CloseActivity(Actr,"ОК");
+							end;
+					end;
+					if(SVO2r.OrderStatus==3 and SVOr.OrderStatus!=3)then begin//закрыть напоминание о долгом заказе деталей
+							testf1 = true;
+							if(Actr.ActType!="ZAKUP")then begin testf1 = false; end;
 							testf1 = (testf1 and testf);
 							if(testf1)then begin
 									CloseActivity(Actr,"ОК");
@@ -576,6 +592,9 @@ begin
         if (SVOr.OrderStatus==3) then begin
           CreateCustomActivityFromSVO(SVOr,"ZAKAZ",SVOr.Inspector & "," & "КУМКО",CalcWorkDate(currentdate,4,true),"Ожидание запчасти больше 3 дней!!!!","ADM_V,ЗАКУП");
         end;
+        if (SVOr.OrderStatus==3) then begin
+          CreateCustomActivityFromSVO(SVOr,"ZAKUP","",CalcWorkDate(currentdate,4,true),"Ожидание запчасти больше 3 дней!!!!","ЗАКУП");// Edit ************************** BPI Ukraine - KramarAlexandr - Wednesday, 4 April 2018 10:34:25
+        end;
         if ((SVOr.OrderStatus==3)) then begin
             CreateCustomActivityFromSVO(SVOr,"ZAKAZ",SVOr.Inspector,addday(currentdate,5),"Оповестить клиента о задержке деталей!!!!","");
         end;
@@ -640,10 +659,13 @@ begin
         end;
 
         if (SVOr.OrderStatus==10 and SVO2r.OrderStatus!=10) then begin// ZAKAZ DETALEY
-            CreateCustomActivityFromSVO(SVOr,"ZAKAZ","КУМКО",currentdate,"Заказать детали!","ЗАКУП");
+            CreateCustomActivityFromSVO(SVOr,"ZAKUP","КУМКО",currentdate,"Заказать детали!","ЗАКУП");
         end;
         if ((SVOr.OrderStatus==3 and SVO2r.OrderStatus!=3)) then begin
             CreateCustomActivityFromSVO(SVOr,"ZAKAZ",SVOr.Inspector,CalcWorkDate(currentdate,4,true),"Ожидание запчасти больше 3 дней!!!!","ADM_V,ЗАКУП");
+        end;
+        if ((SVOr.OrderStatus==3 and SVO2r.OrderStatus!=3)) then begin
+            CreateCustomActivityFromSVO(SVOr,"ZAKUP","",CalcWorkDate(currentdate,4,true),"Ожидание запчасти больше 3 дней!!!!","ЗАКУП");
         end;
         if ((SVOr.OrderStatus==3 and SVO2r.OrderStatus!=3)) then begin
             CreateCustomActivityFromSVO(SVOr,"ZAKAZ",SVOr.Inspector,addday(currentdate,5),"Оповестить клиента о задержке деталей!!!!","");

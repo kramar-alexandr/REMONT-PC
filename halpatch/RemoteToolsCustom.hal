@@ -2890,12 +2890,10 @@ begin
 					if(FBrw.Deb2Val!=0 or FBrw.Cred2Val!=0)then begin
 						FBrw.CurDebVal = FBrw.Deb2Val;
 						FBrw.CurCredVal = FBrw.Cred2Val;
-						logtext(0,FBr.SerNr & " 1 " & FBrw.AccNumber);
 					end else begin
 							FBrw.CurncyCode = "";
 							FBrw.CurDebVal = blankval;
 							FBrw.CurCredVal = blankval;
-							logtext(0,FBr.SerNr & " 2 " & FBrw.AccNumber);
 					end;
 				end;
 			matrowput(FBr,i,FBrw);	  

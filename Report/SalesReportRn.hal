@@ -936,7 +936,6 @@ begin
 									vecode[ressize] = PUr.VECode;
 									serial[ressize] = IHr.SerialNr; 
 									qty[ressize] = -IHr.Qty*cred; 
-									logtext(0,qty[ressize]);
 									com = "SD ";
 									findf = true;
 									NewCalcCostAndPrice(IVr,IVrw,cost,curcost,qty,ressize,cred,realcostbase,realcostuah,realpricebase,realpriceuah,realsumbase,realsumuah,PUr,uahpurate,uahcurrate,com,comment,BCb,vecode);

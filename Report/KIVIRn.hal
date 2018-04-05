@@ -251,9 +251,7 @@ begin
 								end;
 								
 								vkey = workname[vi] & " " & newdiagstr;
-								
-								logtext(0,vkey & workqty[worklist[vi]]);
-								
+																
 								if(vbsumworks[vkey])then begin
 									vsumworks[vkey] = vsumworks[vkey] + workqty[worklist[vi]];
 								end else begin

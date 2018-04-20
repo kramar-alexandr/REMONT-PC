@@ -575,7 +575,7 @@ BEGIN
       end;
       if (res) then begin
         MatRowGet(IVr,rownr,IVrw);
-        if (UserCanAction("ChangeUnitPrices",true)==false) then begin res = false; end;
+        if (UserCanAction("AllowChangeRebate",true)==false) then begin res = false; end;
       end;
       if (IVrw.OrdRow>=0) then begin 
         if (AnyRowWithRvrsVATCode(IVr)) then begin res = false; end;

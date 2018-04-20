@@ -847,7 +847,7 @@ begin
 	page = "/api/2.0/calls/call-details.json";
 	
 	generalCallID = RepSpec.long1;
-	generalCallIDtxt = "\"generalCallID\":" & "\"" & generalCallID & "\"";
+	generalCallIDtxt = "\"generalCallID\":" & "[" & generalCallID & "]";
 	
 	secret = secret & "{" & extNumNode & "," & phoneNode & "}";
 	signatureNode = "\"signature\":" & "\"" & LowerCase(MD5String(secret)) & "\"";
@@ -859,6 +859,8 @@ begin
 	AddTextToArea(signatureNode & ",",req);
 	AddTextToArea(keyNode,req);
 	AddTextToArea("}",req);
+	
+	WriteAreaToFile(req,"BinotelGetCallInfoCallBackReq.txt",0);
 	
 	MySendAsyncWebRequest(host,443,-1,true,"POST",page,"application/json","",req,"BinotelGetCallInfoCallBack",5);
 		

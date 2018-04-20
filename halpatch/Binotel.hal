@@ -847,7 +847,7 @@ begin
 	page = "/api/2.0/calls/call-details.json";
 	
 	generalCallID = RepSpec.long1;
-	generalCallIDtxt = "\"generalCallID\":" & "[" & generalCallID & "]";
+	generalCallIDtxt = "\"generalCallID\":" & "[\"" & generalCallID & "\"]";
 	
 	secret = secret & "{" & extNumNode & "," & phoneNode & "}";
 	signatureNode = "\"signature\":" & "\"" & LowerCase(MD5String(secret)) & "\"";

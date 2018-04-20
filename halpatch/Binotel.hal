@@ -851,7 +851,7 @@ begin
 	
 	secret = secret & "{" & extNumNode & "," & phoneNode & "}";
 	signatureNode = "\"signature\":" & "\"" & LowerCase(MD5String(secret)) & "\"";
-	
+	keyNode = "\"key\":" & "\"" & key & "\"";
 	
 	
 	AddTextToArea("{",req);

@@ -836,6 +836,15 @@ WindowBegin("Maintenance",MyVClass,CGMnt,RcType);
   EndWindow;
 end;
 
+window BinotelCallStatVClass:1 // Edit ************************** Friday, 17 October 2014 11:47:19
+ wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+ begin
+WindowBegin("Maintenance",BinotelCallStatVClass,CGMnt,RcType);
+  SetWRect(20,120,360,220);
+  EditField(100,25,100,"Номер",Normal,long1,false,0);
+  EndWindow;
+end;
+
 
 window MyShopsRecalcVClass:1 // Edit ************************** Friday, 17 October 2014 11:47:19
  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")

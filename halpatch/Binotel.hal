@@ -831,6 +831,53 @@ begin
   return;
 end; //Edit***************************Sasha2,13:29 01.06.2017 }
 
+global //Edit***************************Sasha2,13:28 01.06.2017 {
+procedure BinotelGetCallInfo(record RcVc RepSpec)
+begin
+	Area req,reply;	
+	record BinotelSettingsBlock BSb;
+  string 255 key,secret,host,keyNode,signatureNode,extNumNode,phoneNode,page,generalCallIDtxt;
+	longint generalCallID;
+	
+	blockload(BSb);
+	
+	key = BSb.ApiKey;//"bc327a-61c63b1";
+	secret = BSb.ApiSecret;//"1546c2-8c393b-fcf888-acbaba-3ec826a2";
+	host = "api.binotel.com";
+	page = "/api/2.0/calls/call-details.json";
+	
+	generalCallID = RepSpec.long1;
+	generalCallIDtxt = "\"generalCallID\":" & "\"" & generalCallID & "\"";
+	
+	secret = secret & "{" & extNumNode & "," & phoneNode & "}";
+	signatureNode = "\"signature\":" & "\"" & LowerCase(MD5String(secret)) & "\"";
+	
+	
+	
+	AddTextToArea("{",req);
+	AddTextToArea(generalCallID & ",",req);
+	AddTextToArea(signatureNode & ",",req);
+	AddTextToArea(keyNode,req);
+	AddTextToArea("}",req);
+	
+	MySendAsyncWebRequest(host,443,-1,true,"POST",page,"application/json","",req,"BinotelGetCallInfoCallBack",5);
+		
+		
+	
+return;
+end;
+
+
+global webpublic updating procedure BinotelGetCallInfoCallBack()
+begin
+	area a_reply;
+
+	webgetpostdata(a_reply);
+	WriteAreaToFile(a_reply,"BinotelGetCallInfoCallBack.txt",0);
+	
+	
+return;
+end;
 
 global webpublic updating procedure WebCalReqCallBack()
 begin

@@ -855,7 +855,7 @@ begin
 	
 	
 	AddTextToArea("{",req);
-	AddTextToArea(generalCallID & ",",req);
+	AddTextToArea(generalCallIDtxt & ",",req);
 	AddTextToArea(signatureNode & ",",req);
 	AddTextToArea(keyNode,req);
 	AddTextToArea("}",req);

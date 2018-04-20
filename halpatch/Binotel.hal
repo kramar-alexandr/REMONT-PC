@@ -841,14 +841,14 @@ begin
 	
 	blockload(BSb);
 	
-	key = BSb.ApiKey;//"bc327a-61c63b1";
-	secret = BSb.ApiSecret;//"1546c2-8c393b-fcf888-acbaba-3ec826a2";
+	key = BSb.ApiKey;
+	secret = BSb.ApiSecret;
 	host = "api.binotel.com";
 	page = "/api/2.0/stats/call-details.json";
 	
 	generalCallID = RepSpec.long1;
 	
-	generalCallIDtxt = "\"generalCallID\":" & "\"" & generalCallID & "\"";
+	generalCallIDtxt = "\"generalCallID\":" & "[\"" & generalCallID & "\"]";
 	keyNode = "\"key\":" & "\"" & key & "\"";
 	secret = secret & "{" & generalCallIDtxt & "}";
 	signatureNode = "\"signature\":" & "\"" & LowerCase(MD5String(secret)) & "\"";
@@ -865,7 +865,8 @@ begin
 	
 	MySendAsyncWebRequest(host,443,-1,true,"POST",page,"application/json","",req,"BinotelGetCallInfoCallBack",5);
 		
-		
+	//MySendRawWebRequest(host,"443",true,"POST","","application/json","",false,req,reply,10);
+	WriteAreaToFile(reply,"BinotelGetCallInfoCallBack.txt",0);
 	
 return;
 end;

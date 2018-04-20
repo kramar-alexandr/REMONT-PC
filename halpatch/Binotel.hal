@@ -836,7 +836,7 @@ procedure BinotelGetCallInfo(record RcVc RepSpec)
 begin
 	Area req,reply;	
 	record BinotelSettingsBlock BSb;
-  string 255 key,secret,host,keyNode,signatureNode,extNumNode,phoneNode,page,generalCallIDtxt,fromExtNumber,toPhoneNumber;
+  string 255 key,secret,host,keyNode,signatureNode,extNumNode,phoneNode,page,generalCallIDtxt;
 	longint generalCallID;
 	
 	blockload(BSb);
@@ -846,28 +846,26 @@ begin
 	host = "api.binotel.com";
 	page = "/api/2.0/stats/call-details.json";
 	
-	fromExtNumber = "901";
-	toPhoneNumber = "0662200737";
+	generalCallID = RepSpec.long1;
 	
-	extNumNode = "\"ext_number\":" & "\"" & fromExtNumber & "\"";
-	phoneNode = "\"phone_number\":" & "\"" & toPhoneNumber & "\"";
+	generalCallIDtxt = "\"generalCallID\":" & "[\"" & generalCallID & "\"]";
 	keyNode = "\"key\":" & "\"" & key & "\"";
-	
-	secret = secret & "{" & extNumNode & "," & phoneNode & "}";
+	secret = secret & "{" & generalCallIDtxt & "}";
 	signatureNode = "\"signature\":" & "\"" & LowerCase(MD5String(secret)) & "\"";
 	
+	
+	
 	AddTextToArea("{",req);
-	AddTextToArea(extNumNode & ",",req);
-	AddTextToArea(phoneNode & ",",req);
+	AddTextToArea(generalCallIDtxt & ",",req);
 	AddTextToArea(signatureNode & ",",req);
 	AddTextToArea(keyNode,req);
 	AddTextToArea("}",req);
 	
 	WriteAreaToFile(req,"BinotelGetCallInfoCallBackReq.txt",0);
-	MySendAsyncWebRequest(host,443,-1,true,"POST",page,"application/json","",req,"BinotelGetCallInfoCallBack",5);
+	
+	MySendAsyncWebRequest(host,443,-1,true,"POST",page,"application/json","",req,"BinotelGetCallInfoCallBack",15);
 		
 	//MySendRawWebRequest(host,"443",true,"POST","","application/json","",false,req,reply,10);
-	
 	
 return;
 end;

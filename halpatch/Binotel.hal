@@ -4,6 +4,7 @@ external function boolean MySendWebRequest(string,integer,longint,boolean,string
 external procedure MySendAsyncWebRequest(string,integer,longint,boolean,string,string,string,string,area,string,integer);
 external procedure FindUserMailboxName(string,var string,var string);
 external procedure AlarmMessage(record ActVc,integer,string);
+external procedure MySendWebRequest(string,integer,longint, boolean,string,string,string,string,boolean,area,area,integer);
 
 global webpublic updating procedure WebBinotelAPICallEnd()
 begin
@@ -863,8 +864,10 @@ begin
 	
 	WriteAreaToFile(req,"BinotelGetCallInfoCallBackReq.txt",0);
 	
-	MySendAsyncWebRequest(host,443,-1,true,"POST",page,"application/json","",req,"BinotelGetCallInfoCallBack",15);
+	//MySendAsyncWebRequest(host,443,-1,true,"POST",page,"application/json","",req,"BinotelGetCallInfoCallBack",15);
 		
+	MySendWebRequest(host,443,-1,true,"POST",page,"application/json","",false,req,reply,10);
+	WriteAreaToFile(reply,"BinotelGetCallInfoCallBack.txt",0);
 	//MySendRawWebRequest(host,"443",true,"POST","","application/json","",false,req,reply,10);
 	
 return;

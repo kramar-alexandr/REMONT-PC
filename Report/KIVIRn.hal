@@ -43,6 +43,7 @@ begin
 	startformat(15);
 		outstring(0,0,"№ заказа ",false);	
 		outstring(0,0,"Дата приема устройства",false);
+		outstring(0,0,"Дата завершения ремонта",false)//Edit_-_-_-_-_-_-_-_-Anton 12:12 25.04.2018
 		outstring(0,0,"Дата выдачи",false);
 		outstring(0,0,"Модель аппарата",false);
 		outstring(0,0,"Диагональ",false);
@@ -74,6 +75,7 @@ begin
 			startformat(15);
 				outstring(0,"DblSVOVcSer",SVOr.InnerOrderNr,false);
 				outstring(0,0,SVOr.GetItemDate,false);
+				outstring(0,0,SVOr.PlanShipDate,false);//Edit_-_-_-_-_-_-_-_-Anton 12:49 25.04.2018
 				outstring(80,0,SVOr.RegDate,false);
 				
 				if(matrowcnt(SVOr)>0)then begin
@@ -299,7 +301,6 @@ begin
 				outstring(380,0,"",false);
 				outstring(390,0,"",false);
 				outstring(400,0,SVOr.Addr0 & " " & SVOr.Kontinfo1,false);
-				
 			endformat;
 			
 			if(artcnt>1 or wokcnt>1)then begin

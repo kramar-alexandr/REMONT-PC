@@ -74,7 +74,7 @@ begin
 return;
 end;
 
-procedure FindPhoneDomain(record RcVc RepSpec,string tphone,string cucude, var vector boolean vPhoneExist,var vector string vCuDomain,var vector string vUTMSource,var vector string vUTMCampaign,var vector string vUTMTerm)
+procedure FindPhoneDomain(record SVOVc SVOr,record RcVc RepSpec,string tphone,string cucude, var vector boolean vPhoneExist,var vector string vCuDomain,var vector string vCallType)
 begin
 	record BinotelCallEndVc BCEr;
 	boolean TrHsph;
@@ -85,37 +85,57 @@ begin
 				vPhoneExist[tphone] = true;
 				resetloop(BCEr);
 				BCEr.externalNumber = tphone;
+				BCEr.TransDate = SVOr.TransDate;
 				TrHsph = true;
-				while(loopbackkey("externalNumber",BCEr,1,TrHsph))begin
+				while(loopkey("externalNumber",BCEr,2,TrHsph))begin
+					if(BCEr.TransDate>RepSpec.sEndDate)then begin TrHsph=false; end;
 					if(BCEr.externalNumber!=tphone)then begin TrHsph=false; end;
-			
+					
+					
 					if(TrHsph)then begin
-						if(nonblank(BCEr.CTdomain))then begin
-							vCuDomain[cucude] = BCEr.CTdomain;
+						
+						if(nonblank(BCEr.CTid))then begin
+							TrHsph=false;
+							vCallType[cucude] = "Call Tracking";
+							if(nonblank(BCEr.CTdomain))then begin
+								vCuDomain[cucude] = BCEr.CTdomain;
+							end;
+							
+							/*if(nonblank(BCEr.CTutmsource))then begin
+								vUTMSource[cucude] = BCEr.CTutmsource;
+							end;
+							if(nonblank(BCEr.CTutmcampaign))then begin
+								vUTMCampaign[cucude] = BCEr.CTutmcampaign;
+							end;
+							if(nonblank(BCEr.CTutmterm))then begin
+								vUTMTerm[cucude] = BCEr.CTutmterm;
+							end;*/
+							
 						end;
-						if(nonblank(BCEr.gCDdomain))then begin
-							vCuDomain[cucude] = BCEr.gCDdomain;
+						if(nonblank(BCEr.gCDid))then begin
+							TrHsph=false;
+							vCallType[cucude] = "Get Call";
+							if(nonblank(BCEr.gCDfullUrl))then begin
+								vCuDomain[cucude] = BCEr.gCDfullUrl;
+							end;
+							/*if(nonblank(BCEr.gCDutm_source))then begin
+								vUTMSource[cucude] = BCEr.gCDutm_source;
+							end;
+							if(nonblank(BCEr.gCDutm_campaign))then begin
+								vUTMCampaign[cucude] = BCEr.gCDutm_campaign;
+							end;
+							if(nonblank(BCEr.gCDutm_term))then begin
+								vUTMTerm[cucude] = BCEr.gCDutm_term;
+							end;*/
+							
 						end;
-						if(nonblank(BCEr.CTutmsource))then begin
-							vUTMSource[cucude] = BCEr.CTutmsource;
-						end;
-						if(nonblank(BCEr.gCDutm_source))then begin
-							vUTMSource[cucude] = BCEr.gCDutm_source;
-						end;
+						
+						
+						
+						
 					
-						if(nonblank(BCEr.CTutmcampaign))then begin
-							vUTMCampaign[cucude] = BCEr.CTutmcampaign;
-						end;
-						if(nonblank(BCEr.gCDutm_campaign))then begin
-							vUTMCampaign[cucude] = BCEr.gCDutm_campaign;
-						end;
-					
-						if(nonblank(BCEr.CTutmterm))then begin
-							vUTMTerm[cucude] = BCEr.CTutmterm;
-						end;
-						if(nonblank(BCEr.CTutmterm))then begin
-							vUTMTerm[cucude] = BCEr.gCDutm_term;
-						end;
+						
+						
 					
 					
 					
@@ -252,7 +272,7 @@ begin
 	integer cnt,mtrw2;
 	record CUVc CUr;
 	record BinotelCallEndVc BCEr;
-	vector string 100 vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm;
+	vector string 100 vCuDomain,vCallType;
 	boolean TrHs2,testf2;
 	vector val vTrackSum;
 	vector boolean vTrackFlag,vPovtor,svoiskivi;
@@ -695,11 +715,11 @@ begin
 								
 									if(readfirstmain(CUr,1,true))then begin
 										tphone = CUr.Phone;
-										FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+										FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType);
 										tphone = CUr.Mobile;
-										FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+										FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType);
 										tphone = CUr.AltPhone;
-										FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+										FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType);
 									end;
 								end;
 							end;
@@ -915,7 +935,7 @@ begin
 										outstring(tabs[2],0,vCuDomain[SVOr.CustCode],false);
 									endformat;
 								end;
-								if(nonblank(vUTMSource[SVOr.CustCode]))then begin
+								/*if(nonblank(vUTMSource[SVOr.CustCode]))then begin
 									startformat(15);
 										outstring(tabs[0],0,"Переход с ресурса",false);
 										outstring(tabs[2],0,vUTMSource[SVOr.CustCode],false);
@@ -932,7 +952,7 @@ begin
 										outstring(tabs[0],0,"Условия",false);
 										outstring(tabs[2],0,vUTMTerm[SVOr.CustCode],false);
 									endformat;
-								end;
+								end;*/
 						
 								if(nonblank(SVOr.GarNo))then begin
 									oldSVOr.InnerOrderNr = SVOr.GarNo;
@@ -955,7 +975,7 @@ begin
 							end;
 						end;
 						if(nonblank(vCuDomain[SVOr.CustCode]))then begin
-							tstr = "Оплаченные:" & vUTMSource[SVOr.CustCode] & "->" & vCuDomain[SVOr.CustCode] & "("  & vUTMCampaign[SVOr.CustCode] & "|" & vUTMTerm[SVOr.CustCode] & ")";
+							tstr = "Оплаченные:" & vCuDomain[SVOr.CustCode];
 							if(vTrackFlag[tstr])then begin
 								vTrackSum[tstr] = vTrackSum[tstr] + ivsumserv[asvonr[i]];
 							end else begin
@@ -1087,11 +1107,11 @@ begin
 								
 									if(readfirstmain(CUr,1,true))then begin
 										tphone = CUr.Phone;
-										FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+										FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType);
 										tphone = CUr.Mobile;
-										FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+										FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType);
 										tphone = CUr.AltPhone;
-										FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+										FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType);
 									end;
 								end;
 							end;
@@ -1292,7 +1312,7 @@ begin
 										outstring(tabs[2],0,vCuDomain[SVOr.CustCode],false);
 									endformat;
 								end;
-								if(nonblank(vUTMSource[SVOr.CustCode]))then begin
+								/*if(nonblank(vUTMSource[SVOr.CustCode]))then begin
 									startformat(15);
 										outstring(tabs[0],0,"Переход с ресурса",false);
 										outstring(tabs[2],0,vUTMSource[SVOr.CustCode],false);
@@ -1309,7 +1329,7 @@ begin
 										outstring(tabs[0],0,"Условия",false);
 										outstring(tabs[2],0,vUTMTerm[SVOr.CustCode],false);
 									endformat;
-								end;
+								end;*/
 							end;
 						end;
 					
@@ -1342,7 +1362,7 @@ begin
 							endformat;
 						end;
 						if(nonblank(vCuDomain[SVOr.CustCode]))then begin
-							tstr = "Неоплаченные:" & vUTMSource[SVOr.CustCode] & "->" & vCuDomain[SVOr.CustCode] & "("  & vUTMCampaign[SVOr.CustCode] & "|" & vUTMTerm[SVOr.CustCode] & ")";
+							tstr = "Неоплаченные:" & vCuDomain[SVOr.CustCode];
 							if(vTrackFlag[tstr])then begin
 								vTrackSum[tstr] = vTrackSum[tstr] + ivsumserv[asvonr[i]];
 							end else begin
@@ -1442,11 +1462,11 @@ begin
 								
 									if(readfirstmain(CUr,1,true))then begin
 										tphone = CUr.Phone;
-										FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+										FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType);
 										tphone = CUr.Mobile;
-										FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+										FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType);
 										tphone = CUr.AltPhone;
-										FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+										FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType);
 									end;
 								end;
 							end;
@@ -1643,7 +1663,7 @@ begin
 										outstring(tabs[2],0,vCuDomain[SVOr.CustCode],false);
 									endformat;
 								end;
-								if(nonblank(vUTMSource[SVOr.CustCode]))then begin
+								/*if(nonblank(vUTMSource[SVOr.CustCode]))then begin
 									startformat(15);
 										outstring(tabs[0],0,"Переход с ресурса",false);
 										outstring(tabs[2],0,vUTMSource[SVOr.CustCode],false);
@@ -1660,7 +1680,7 @@ begin
 										outstring(tabs[0],0,"Условия",false);
 										outstring(tabs[2],0,vUTMTerm[SVOr.CustCode],false);
 									endformat;
-								end;
+								end;*/
 							end;
 						end;
 					
@@ -1695,7 +1715,7 @@ begin
 							endformat;
 						end;
 						if(nonblank(vCuDomain[SVOr.CustCode]))then begin
-							tstr = "Вдолг:" & vUTMSource[SVOr.CustCode] & "->" & vCuDomain[SVOr.CustCode] & "("  & vUTMCampaign[SVOr.CustCode] & "|" & vUTMTerm[SVOr.CustCode] & ")";
+							tstr = "Вдолг:" & vCuDomain[SVOr.CustCode];
 							if(vTrackFlag[tstr])then begin
 								vTrackSum[tstr] = vTrackSum[tstr] + ivsumserv[asvonr[i]];
 							end else begin
@@ -1813,11 +1833,11 @@ begin
 						CUr.Code = SVOr.CustCode;
 						if(readfirstmain(CUr,1,true))then begin
 							tphone = CUr.Phone;
-							FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+							FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType);
 							tphone = CUr.Mobile;
-							FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+							FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType);
 							tphone = CUr.AltPhone;
-							FindPhoneDomain(RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vUTMSource,vUTMCampaign,vUTMTerm);
+							FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType);
 						end;
 					end;
 					if (RepSpec.flags[26]==0) then begin
@@ -1855,7 +1875,7 @@ begin
 							endformat;
 						end;
 					end;
-					if(nonblank(vUTMSource[SVOr.CustCode]))then begin
+					/*if(nonblank(vUTMSource[SVOr.CustCode]))then begin
 						if (RepSpec.flags[26]==0) then begin
 							startformat(15);
 								outstring(tabs[0],0,"Переход с ресурса",false);
@@ -1878,8 +1898,8 @@ begin
 								outstring(tabs[2],0,vUTMTerm[SVOr.CustCode],false);
 							endformat;
 						end;
-					end;
-					tstr = "Отмененные:" & vUTMSource[SVOr.CustCode] & "->" & vCuDomain[SVOr.CustCode] & "("  & vUTMCampaign[SVOr.CustCode] & "|" & vUTMTerm[SVOr.CustCode] & ")";
+					end;*/
+					tstr = "Отмененные:" & vCuDomain[SVOr.CustCode];
 					if(vTrackFlag[tstr])then begin
 						vTrackSum[tstr] = vTrackSum[tstr] + 1;
 					end else begin

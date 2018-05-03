@@ -1,6 +1,5 @@
 external function date CalcWorkDate(date,integer,boolean);
 external procedure OutDaysInStatus(vector val,longint ,string ,string ,var vector integer ,var vector integer);
-external procedure FindPhoneDomain(record RcVc,string ,string, var vector boolean ,var vector string ,var vector string ,var vector string ,var vector string);
 external procedure MySortLngIntArray(var array longint ,integer );
 external function LongInt DateDiff(Date,Date);
 external function LongInt CountWorkingDays(Date,Date,string,string);

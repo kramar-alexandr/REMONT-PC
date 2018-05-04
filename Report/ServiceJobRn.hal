@@ -2380,6 +2380,7 @@ begin
 						outstring(tabs[6],0,vTrackSum[TrackSumKey[i] & ":CRD"],false);
 						outstring(tabs[7],0,vTrackSum[TrackSumKey[i] & ":CNC"],true);
 					endformat;
+					gray_divider(0,1);
 				end;
 			end;
 			startformat(15);
@@ -2401,6 +2402,7 @@ begin
 						outstring(tabs[6],0,vTrackSum[TrackSumKey[i] & ":CRD"],false);
 						outstring(tabs[7],0,vTrackSum[TrackSumKey[i] & ":CNC"],true);
 					endformat;
+					gray_divider(0,1);
 				end;
 			end;
 		end;

@@ -78,6 +78,9 @@ procedure FindPhoneDomain(record SVOVc SVOr,record RcVc RepSpec,string tphone,st
 begin
 	record BinotelCallEndVc BCEr;
 	boolean TrHsph;
+	string 255 url;
+	string 1 sim;
+	integer i, l; 
 	
 	if(RepSpec.flags[0]>0)then begin
 		if(nonblank(tphone))then begin
@@ -96,9 +99,21 @@ begin
 						
 						if(nonblank(BCEr.CTid))then begin
 							TrHsph=false;
-							vCallType[cucude] = "Call Tracking";
+							vCallType[cucude] = "CT";
 							if(nonblank(BCEr.CTdomain))then begin
-								vCuDomain[cucude] = BCEr.CTdomain;
+								l = Len(BCEr.CTdomain);
+								for(i=0;i<l;i=i+1) begin
+									sim = mid(BCEr.CTdomain,i,1);
+									if (sim=="?")then begin
+										url = Left(BCEr.CTdomain,i-1);
+										i = l;
+									end else begin
+										if(i==l-1)then begin
+											url = Left(BCEr.CTdomain,i+1);
+										end;
+									end;
+								end;
+								vCuDomain[cucude] = url;
 							end;
 							
 							/*if(nonblank(BCEr.CTutmsource))then begin
@@ -112,11 +127,24 @@ begin
 							end;*/
 							
 						end;
+				
 						if(nonblank(BCEr.gCDid))then begin
 							TrHsph=false;
-							vCallType[cucude] = "Get Call";
+							vCallType[cucude] = "GC";
 							if(nonblank(BCEr.gCDfullUrl))then begin
-								vCuDomain[cucude] = BCEr.gCDfullUrl;
+								l = Len(BCEr.gCDfullUrl);
+								for(i=0;i<l;i=i+1) begin
+									sim = mid(BCEr.gCDfullUrl,i,1);
+									if (sim=="?")then begin
+										url = Left(BCEr.gCDfullUrl,i-1);
+										i = l;
+									end else begin
+										if(i==l-1)then begin
+											url = Left(BCEr.gCDfullUrl,i+1);
+										end;
+									end;
+								end;
+								vCuDomain[cucude] = url;
 							end;
 							/*if(nonblank(BCEr.gCDutm_source))then begin
 								vUTMSource[cucude] = BCEr.gCDutm_source;
@@ -975,13 +1003,13 @@ begin
 							end;
 						end;
 						if(nonblank(vCuDomain[SVOr.CustCode]))then begin
-							tstr = "Оплаченные:" & vCuDomain[SVOr.CustCode];
+							tstr = vCallType[SVOr.CustCode] & ":" & vCuDomain[SVOr.CustCode];
 							if(vTrackFlag[tstr])then begin
-								vTrackSum[tstr] = vTrackSum[tstr] + ivsumserv[asvonr[i]];
+								vTrackSum[tstr & ":PD"] = vTrackSum[tstr & ":PD"] + ivsumserv[asvonr[i]];
 							end else begin
 								vTrackFlag[tstr] = true;
-								vTrackSum[tstr] = ivsumserv[asvonr[i]];
 								TrackSumKey[TrackCnt] = tstr;
+								vTrackSum[tstr & ":PD"] = ivsumserv[asvonr[i]];
 								TrackCnt = TrackCnt +1;
 							end;
 						end;
@@ -1362,13 +1390,13 @@ begin
 							endformat;
 						end;
 						if(nonblank(vCuDomain[SVOr.CustCode]))then begin
-							tstr = "Неоплаченные:" & vCuDomain[SVOr.CustCode];
+							tstr = vCallType[SVOr.CustCode] & ":" & vCuDomain[SVOr.CustCode];
 							if(vTrackFlag[tstr])then begin
-								vTrackSum[tstr] = vTrackSum[tstr] + ivsumserv[asvonr[i]];
+								vTrackSum[tstr & ":UNP"] = vTrackSum[tstr & ":UNP"] + ivsumserv[asvonr[i]];
 							end else begin
 								vTrackFlag[tstr] = true;
-								vTrackSum[tstr] = ivsumserv[asvonr[i]];
 								TrackSumKey[TrackCnt] = tstr;
+								vTrackSum[tstr & ":UNP"] = ivsumserv[asvonr[i]];
 								TrackCnt = TrackCnt +1;
 							end;
 						end;
@@ -1715,13 +1743,13 @@ begin
 							endformat;
 						end;
 						if(nonblank(vCuDomain[SVOr.CustCode]))then begin
-							tstr = "Вдолг:" & vCuDomain[SVOr.CustCode];
+							tstr = vCallType[SVOr.CustCode] & ":" & vCuDomain[SVOr.CustCode];
 							if(vTrackFlag[tstr])then begin
-								vTrackSum[tstr] = vTrackSum[tstr] + ivsumserv[asvonr[i]];
+								vTrackSum[tstr & ":CRD"] = vTrackSum[tstr & ":CRD"] + ivsumserv[asvonr[i]];
 							end else begin
 								vTrackFlag[tstr] = true;
-								vTrackSum[tstr] = ivsumserv[asvonr[i]];
 								TrackSumKey[TrackCnt] = tstr;
+								vTrackSum[tstr & ":CRD"] = ivsumserv[asvonr[i]];
 								TrackCnt = TrackCnt +1;
 							end;
 						end;
@@ -1899,13 +1927,13 @@ begin
 							endformat;
 						end;
 					end;*/
-					tstr = "Отмененные:" & vCuDomain[SVOr.CustCode];
+					tstr = vCallType[SVOr.CustCode] & ":" & vCuDomain[SVOr.CustCode];
 					if(vTrackFlag[tstr])then begin
-						vTrackSum[tstr] = vTrackSum[tstr] + 1;
+						vTrackSum[tstr & ":CNC"] = vTrackSum[tstr & ":CNC"] + ivsumserv[asvonr[i]];
 					end else begin
 						vTrackFlag[tstr] = true;
-						vTrackSum[tstr] = 1;
 						TrackSumKey[TrackCnt] = tstr;
+						vTrackSum[tstr & ":CNC"] = ivsumserv[asvonr[i]];
 						TrackCnt = TrackCnt +1;
 					end;
 				end;
@@ -2318,15 +2346,62 @@ begin
 			gray_divider(0,1);
 			startformat(15);
 				outstring(tabs[0],0,"Статистика Binotel:",false);
-				outstring(tabs[6],0,"Сумма",false);
 			endformat;
 			MySortStringArray(TrackSumKey,TrackCnt);
-
-			for(i=0;i<TrackCnt;i=i+1)begin
-				startformat(15);
-					outstring(tabs[0],0,TrackSumKey[i],false);
-					outstring(tabs[6],0,vTrackSum[TrackSumKey[i]],false);
+			/*
+			
+			tphone = CUr.Phone;
+			FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType);
+			tphone = CUr.Mobile;
+			FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType);
+			tphone = CUr.AltPhone;
+			FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType);
+			*/
+			startformat(15);
+				outstring(tabs[0],0,"GetCall звонки:",false);
+			endformat;
+			tabs[2] = 320;
+			tabs[4] = 370;
+			tabs[6] = 420;
+			tabs[7] = 470;
+			startformat(15);
+					outstring(tabs[0],0,"Страница",false);
+					outstring(tabs[2],0,"Оплачено",false);
+					outstring(tabs[4],0,"Неоплаченно",false);
+					outstring(tabs[6],0,"Долг",false);
+					outstring(tabs[7],0,"Отмена",true);			
 				endformat;
+			for(i=0;i<TrackCnt;i=i+1)begin
+				if(Left(TrackSumKey[i],3)=="GC:")then begin
+					startformat(15);
+						outstring(tabs[0],0,Right(TrackSumKey[i],len(TrackSumKey[i])-3),false);
+						outstring(tabs[2],0,vTrackSum[TrackSumKey[i] & ":PD"],false);
+						outstring(tabs[4],0,vTrackSum[TrackSumKey[i] & ":UNP"],false);
+						outstring(tabs[6],0,vTrackSum[TrackSumKey[i] & ":CRD"],false);
+						outstring(tabs[7],0,vTrackSum[TrackSumKey[i] & ":CNC"],true);
+					endformat;
+				end;
+			end;
+			startformat(15);
+				outstring(tabs[0],0,"CallTracking звонки:",false);
+			endformat;
+			startformat(15);
+					outstring(tabs[0],0,"Страница",false);
+					outstring(tabs[2],0,"Оплачено",false);
+					outstring(tabs[4],0,"Неоплаченно",false);
+					outstring(tabs[6],0,"Долг",false);
+					outstring(tabs[7],0,"Отмена",true);			
+				endformat;
+			for(i=0;i<TrackCnt;i=i+1)begin
+				if(Left(TrackSumKey[i],3)=="CT:")then begin
+					startformat(15);
+						outstring(tabs[0],0,Right(TrackSumKey[i],len(TrackSumKey[i])-3),false);
+						outstring(tabs[2],0,vTrackSum[TrackSumKey[i] & ":PD"],false);
+						outstring(tabs[4],0,vTrackSum[TrackSumKey[i] & ":UNP"],false);
+						outstring(tabs[6],0,vTrackSum[TrackSumKey[i] & ":CRD"],false);
+						outstring(tabs[7],0,vTrackSum[TrackSumKey[i] & ":CNC"],true);
+					endformat;
+				end;
 			end;
 		end;
 	endjob;

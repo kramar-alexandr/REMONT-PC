@@ -564,7 +564,10 @@ updating
 procedure CreateActivitiesFromSVO(record SVOVc SVOr, record SVOVc SVO2r, boolean saveAfter)
 begin
     string 128 mainPrsns,commentee;
-
+		boolean iskivi;
+		
+		iskivi = KIVIFound(SVOr);
+		
     mainPrsns="";
     commentee="";
 
@@ -576,7 +579,7 @@ begin
         end;
         
         if(SVOr.GetItemFlag>0)then begin
-        	if(KIVIFound(SVOr))then begin
+        	if(iskivi)then begin
         		if(blank(SVOr.Kontinfo1) or blank(SVOr.Kontinfo3) or blank(SVOr.Addr0))then begin
 							CreateCustomActivityFromSVO(SVOr,"KIVI",SVOr.Inspector,currentdate,"Внести данные KIVI","");
         		end;
@@ -589,15 +592,25 @@ begin
         if (SVOr.OrderStatus==7) then begin
             CreateCustomActivityFromSVO(SVOr,"СОГОК",SVOr.ServiceManager,currentdate,"Ремонт согласован!","");//----------------- dima-f 22.09.17
         end;
-        if (SVOr.OrderStatus==3) then begin
-          CreateCustomActivityFromSVO(SVOr,"ZAKAZ",SVOr.Inspector & "," & "КУМКО",CalcWorkDate(currentdate,4,true),"Ожидание запчасти больше 3 дней!!!!","ADM_V");
+        
+        if(iskivi)then begin
+        	if (SVOr.OrderStatus==3) then begin
+						CreateCustomActivityFromSVO(SVOr,"ZAKUP","",CalcWorkDate(currentdate,4,true),"Ожидание запчасти больше 3 дней!!!!","KIVI");// Edit ************************** BPI Ukraine - KramarAlexandr - Wednesday, 4 April 2018 10:34:25
+					end;
+        end else begin
+					if (SVOr.OrderStatus==3) then begin
+						CreateCustomActivityFromSVO(SVOr,"ZAKUP","",CalcWorkDate(currentdate,4,true),"Ожидание запчасти больше 3 дней!!!!","ЗАКУП");// Edit ************************** BPI Ukraine - KramarAlexandr - Wednesday, 4 April 2018 10:34:25
+					end;
         end;
+        
         if (SVOr.OrderStatus==3) then begin
-          CreateCustomActivityFromSVO(SVOr,"ZAKUP","",CalcWorkDate(currentdate,4,true),"Ожидание запчасти больше 3 дней!!!!","ЗАКУП");// Edit ************************** BPI Ukraine - KramarAlexandr - Wednesday, 4 April 2018 10:34:25
+          CreateCustomActivityFromSVO(SVOr,"ZAKAZ",SVOr.Inspector,CalcWorkDate(currentdate,4,true),"Ожидание запчасти больше 3 дней!!!!","ADM_V");
         end;
         if ((SVOr.OrderStatus==3)) then begin
             CreateCustomActivityFromSVO(SVOr,"ZAKAZ",SVOr.Inspector,addday(currentdate,5),"Оповестить клиента о задержке деталей!!!!","");
         end;
+        
+        
         if (SVOr.OrderStatus==9 and nonblankdate(SVOr.PlanVisitDate)) then begin
           CreateCustomActivityFromSVO(SVOr,"ПРЕДЗ",SVOr.SalesMan,addday(SVOr.PlanVisitDate,1),"Клиент не пришел по предварительной заявке!","");
         end;
@@ -633,7 +646,7 @@ begin
         
         
         if(SVOr.GetItemFlag>0 and SVO2r.GetItemFlag==0)then begin
-        	if(KIVIFound(SVOr))then begin
+        	if(iskivi)then begin
         		if(blank(SVOr.Kontinfo1) or blank(SVOr.Kontinfo3) or blank(SVOr.Addr0))then begin
 							CreateCustomActivityFromSVO(SVOr,"KIVI",SVOr.Inspector,currentdate,"Внести данные KIVI","");
         		end;
@@ -657,19 +670,33 @@ begin
                 end;
             end;
         end;
-
-        if (SVOr.OrderStatus==10 and SVO2r.OrderStatus!=10) then begin// ZAKAZ DETALEY
-            CreateCustomActivityFromSVO(SVOr,"ZAKUP","КУМКО",currentdate,"Заказать детали!","ЗАКУП");
+        
+        if(iskivi)then begin
+					if (SVOr.OrderStatus==10 and SVO2r.OrderStatus!=10) then begin// ZAKAZ DETALEY
+						CreateCustomActivityFromSVO(SVOr,"ZAKUP","",currentdate,"Заказать детали!","KIVI");
+					end;
+					if ((SVOr.OrderStatus==3 and SVO2r.OrderStatus!=3)) then begin
+						CreateCustomActivityFromSVO(SVOr,"ZAKUP","",CalcWorkDate(currentdate,4,true),"Ожидание запчасти больше 3 дней!!!!","KIVI");
+					end;
+				end else begin
+					if (SVOr.OrderStatus==10 and SVO2r.OrderStatus!=10) then begin// ZAKAZ DETALEY
+						CreateCustomActivityFromSVO(SVOr,"ZAKUP","",currentdate,"Заказать детали!","ЗАКУП");
+					end;
+					if ((SVOr.OrderStatus==3 and SVO2r.OrderStatus!=3)) then begin
+						CreateCustomActivityFromSVO(SVOr,"ZAKUP","",CalcWorkDate(currentdate,4,true),"Ожидание запчасти больше 3 дней!!!!","ЗАКУП");
+					end;
         end;
+        
+        
+        
         if ((SVOr.OrderStatus==3 and SVO2r.OrderStatus!=3)) then begin
             CreateCustomActivityFromSVO(SVOr,"ZAKAZ",SVOr.Inspector,CalcWorkDate(currentdate,4,true),"Ожидание запчасти больше 3 дней!!!!","ADM_V");
         end;
         if ((SVOr.OrderStatus==3 and SVO2r.OrderStatus!=3)) then begin
-            CreateCustomActivityFromSVO(SVOr,"ZAKUP","",CalcWorkDate(currentdate,4,true),"Ожидание запчасти больше 3 дней!!!!","ЗАКУП");
-        end;
-        if ((SVOr.OrderStatus==3 and SVO2r.OrderStatus!=3)) then begin
             CreateCustomActivityFromSVO(SVOr,"ZAKAZ",SVOr.Inspector,addday(currentdate,5),"Оповестить клиента о задержке деталей!!!!","");
         end;
+        
+        
         if ((SVOr.OrderStatus==5 and SVO2r.OrderStatus!=5)) then begin
             CreateCustomActivityFromSVO(SVOr,"PRS",SVOr.Inspector & "," & SVOr.ServiceManager,CalcWorkDate(currentdate,4,true),"Диагностика больше 3 дней!!!!","ADM_V");
         end;

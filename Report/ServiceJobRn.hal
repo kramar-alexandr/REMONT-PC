@@ -1929,11 +1929,11 @@ begin
 					end;*/
 					tstr = vCallType[SVOr.CustCode] & ":" & vCuDomain[SVOr.CustCode];
 					if(vTrackFlag[tstr])then begin
-						vTrackSum[tstr & ":CNC"] = vTrackSum[tstr & ":CNC"] + ivsumserv[asvonr[i]];
+						vTrackSum[tstr & ":CNC"] = vTrackSum[tstr & ":CNC"] + 1;
 					end else begin
 						vTrackFlag[tstr] = true;
 						TrackSumKey[TrackCnt] = tstr;
-						vTrackSum[tstr & ":CNC"] = ivsumserv[asvonr[i]];
+						vTrackSum[tstr & ":CNC"] = 1;
 						TrackCnt = TrackCnt +1;
 					end;
 				end;

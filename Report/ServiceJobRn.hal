@@ -2357,6 +2357,7 @@ begin
 			tphone = CUr.AltPhone;
 			FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType);
 			*/
+			logtext(0,"TrackCnt " & TrackCnt);
 			startformat(15);
 				outstring(tabs[0],0,"GetCall звонки:",false);
 			endformat;

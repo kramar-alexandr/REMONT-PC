@@ -1028,17 +1028,11 @@ begin
 							if(vTrackFlag[tstr])then begin
 								vTrackSum[tstr & ":PD"] = vTrackSum[tstr & ":PD"] + ivsumserv[asvonr[i]];
 								vTrackSum[tstr & vCallExpData[SVOr.CustCode] & ":PD"] = vTrackSum[tstr & vCallExpData[SVOr.CustCode] & ":PD"] + ivsumserv[asvonr[i]];
-								logtext(0,tstr & ":PD " & vTrackSum[tstr & ":PD"]);
-								logtext(0,tstr & vCallExpData[SVOr.CustCode] & ":PD" & vTrackSum[tstr & vCallExpData[SVOr.CustCode] & ":PD"]);
-								LogText(0,"___________________________________________");
 							end else begin
 								vTrackFlag[tstr] = true;
 								TrackSumKey[TrackCnt] = tstr;
 								vTrackSum[tstr & ":PD"] = ivsumserv[asvonr[i]];
 								vTrackSum[tstr & vCallExpData[SVOr.CustCode] & ":PD"] = ivsumserv[asvonr[i]];
-								logtext(0,tstr & ":PD " & vTrackSum[tstr & ":PD"]);
-								logtext(0,tstr & vCallExpData[SVOr.CustCode] & ":PD" & vTrackSum[tstr & vCallExpData[SVOr.CustCode] & ":PD"]);
-								LogText(0,"___________________________________________");
 								TrackCnt = TrackCnt +1;
 							end;
 						end;
@@ -2431,9 +2425,10 @@ begin
 						outstring(tabs[7],0,vTrackSum[TrackSumKey[i] & ":CNC"],true);
 					endformat;
 					for(j=0;j<cdatacnt;j=j+1) begin
-						pos = 0;
 						if(left(aCallExpData[j],3)=="GC:")then begin
-							if(Mid(aCallExpData[j],3,len(Right(TrackSumKey[i],len(TrackSumKey[i])-3)))==Right(TrackSumKey[i],len(TrackSumKey[i])-3))then begin
+							pos = 0;
+							ExtractObjWithSeparator(";;;",aCallExpData[j],true,pos,tstr);
+							if(right(tstr,len(tstr)-3)==Right(TrackSumKey[i],len(TrackSumKey[i])-3))then begin
 								tstr = Mid(aCallExpData[j],3,len(Right(TrackSumKey[i],len(TrackSumKey[i])-3)));
 								startformat(15);
 									outstring(tabs[0],0,tstr,false);

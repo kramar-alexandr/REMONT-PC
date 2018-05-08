@@ -2426,7 +2426,7 @@ begin
 					endformat;
 					for(j=0;j<cdatacnt;j=j+1) begin
 						pos = 0;
-						if(left(aCallExpData[j],3)=="GT:")then begin
+						if(left(aCallExpData[j],3)=="GC:")then begin
 							if(Mid(aCallExpData[j],3,len(Right(TrackSumKey[i],len(TrackSumKey[i])-3)))==Right(TrackSumKey[i],len(TrackSumKey[i])-3))then begin
 								tstr = Mid(aCallExpData[j],3,len(Right(TrackSumKey[i],len(TrackSumKey[i])-3)));
 								startformat(15);

@@ -2471,9 +2471,17 @@ begin
 							ExtractObjWithSeparator(";",aCallExpData[j],true,pos,tstr);
 							if(right(tstr,len(tstr)-3)==Right(TrackSumKey[i],len(TrackSumKey[i])-3))then begin
 								tstr = Mid(aCallExpData[j],3,len(Right(TrackSumKey[i],len(TrackSumKey[i])-3)));
-								
+								pos = 0;
+								ExtractObjWithSeparator(";",aCallExpData[j],true,pos,tstr);
 								startformat(15);
+									ExtractObjWithSeparator(";",aCallExpData[j],true,pos,tstr);
 									outstring(tabs[0],0,tstr,false);
+									ExtractObjWithSeparator(";",aCallExpData[j],true,pos,tstr);
+									outstring(tabs[0]+50,0,tstr,false);
+									ExtractObjWithSeparator(";",aCallExpData[j],true,pos,tstr);
+									outstring(tabs[0]+100,0,tstr,false);
+									ExtractObjWithSeparator(";",aCallExpData[j],true,pos,tstr);
+									outstring(tabs[0]+150,0,tstr,false);
 									outstring(tabs[2],0,vTrackSum[aCallExpData[j] & ":PD"],false);
 									outstring(tabs[4],0,vTrackSum[aCallExpData[j] & ":UNP"],false);
 									outstring(tabs[6],0,vTrackSum[aCallExpData[j] & ":CRD"],false);

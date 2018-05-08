@@ -2429,9 +2429,6 @@ begin
 						if(left(aCallExpData[j],3)=="GC:")then begin
 							pos = 0;
 							ExtractObjWithSeparator(";",aCallExpData[j],true,pos,tstr);
-							logtext(0,"tstr " & tstr);
-							logtext(0,"tstr== " & Right(TrackSumKey[i],len(TrackSumKey[i])-3));
-							logtext(0,"====================================" & tstr);
 							if(right(tstr,len(tstr)-3)==Right(TrackSumKey[i],len(TrackSumKey[i])-3))then begin
 								tstr = Mid(aCallExpData[j],3,len(Right(TrackSumKey[i],len(TrackSumKey[i])-3)));
 								startformat(15);
@@ -2470,7 +2467,9 @@ begin
 						pos = 0;
 						//ExtractObjWithSeparator(";",aCallExpData[j],true,pos,tstr);
 						if(left(aCallExpData[j],3)=="CT:")then begin
-							if(Mid(aCallExpData[j],3,len(Right(TrackSumKey[i],len(TrackSumKey[i])-3)))==Right(TrackSumKey[i],len(TrackSumKey[i])-3))then begin
+							pos = 0;
+							ExtractObjWithSeparator(";",aCallExpData[j],true,pos,tstr);
+							if(right(tstr,len(tstr)-3)==Right(TrackSumKey[i],len(TrackSumKey[i])-3))then begin
 								tstr = Mid(aCallExpData[j],3,len(Right(TrackSumKey[i],len(TrackSumKey[i])-3)));
 								
 								startformat(15);

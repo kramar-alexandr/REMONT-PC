@@ -2477,6 +2477,7 @@ begin
 						pos = 0;
 						//ExtractObjWithSeparator(";",aCallExpData[j],true,pos,tstr);
 						if(left(aCallExpData[j],3)=="CT:")then begin
+							logtext(0,aCallExpData[j]);
 							pos = 0;
 							ExtractObjWithSeparator(";",aCallExpData[j],true,pos,tstr);
 							if(right(tstr,len(tstr)-3)==Right(TrackSumKey[i],len(TrackSumKey[i])-3))then begin

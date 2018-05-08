@@ -2424,6 +2424,13 @@ begin
 						outstring(tabs[6],0,vTrackSum[TrackSumKey[i] & ":CRD"],false);
 						outstring(tabs[7],0,vTrackSum[TrackSumKey[i] & ":CNC"],true);
 					endformat;
+					startformat(15);
+						outstring(tabs[0],0,"Source",false);
+						outstring(tabs[0]+50,0,"Medium",false);
+						outstring(tabs[0]+80,0,"Campaign",false);
+						outstring(tabs[0]+160,0,"Content",false);
+						outstring(tabs[0]+240,0,"Term",false);
+					endformat;
 					for(j=0;j<cdatacnt;j=j+1) begin
 						pos = 0;
 						if(left(aCallExpData[j],3)=="GC:")then begin
@@ -2474,6 +2481,13 @@ begin
 						outstring(tabs[4],0,vTrackSum[TrackSumKey[i] & ":UNP"],false);
 						outstring(tabs[6],0,vTrackSum[TrackSumKey[i] & ":CRD"],false);
 						outstring(tabs[7],0,vTrackSum[TrackSumKey[i] & ":CNC"],true);
+					endformat;
+					startformat(15);
+						outstring(tabs[0],0,"Source",false);
+						outstring(tabs[0]+50,0,"Medium",false);
+						outstring(tabs[0]+80,0,"Campaign",false);
+						outstring(tabs[0]+160,0,"Content",false);
+						outstring(tabs[0]+240,0,"Term",false);
 					endformat;
 					for(j=0;j<cdatacnt;j=j+1) begin
 						pos = 0;

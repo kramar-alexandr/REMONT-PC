@@ -2425,11 +2425,13 @@ begin
 					endformat;
 					for(j=0;j<cdatacnt;j=j+1) begin
 						pos = 0;
-						//ExtractObjWithSeparator(";;;",aCallExpData[j],true,pos,tstr);
-						if(Mid(aCallExpData[j],3,len(aCallExpData[j]))==Right(TrackSumKey[i],len(TrackSumKey[i])-3))then begin
+						if(Mid(aCallExpData[j],3,len(Right(TrackSumKey[i],len(TrackSumKey[i])-3)))==Right(TrackSumKey[i],len(TrackSumKey[i])-3))then begin
 							startformat(15);
 								outstring(tabs[0],0,aCallExpData[j],false);
 								outstring(tabs[2],0,vTrackSum[aCallExpData[j] & ":PD"],false);
+								outstring(tabs[4],0,vTrackSum[aCallExpData[j] & ":UNP"],false);
+								outstring(tabs[6],0,vTrackSum[aCallExpData[j] & ":CRD"],false);
+								outstring(tabs[7],0,vTrackSum[aCallExpData[j] & ":CNC"],true);
 							endformat;
 						end;
 					end;
@@ -2462,10 +2464,10 @@ begin
 							startformat(15);
 								outstring(tabs[0],0,aCallExpData[j],false);
 								outstring(tabs[2],0,vTrackSum[aCallExpData[j] & ":PD"],false);
+								outstring(tabs[4],0,vTrackSum[aCallExpData[j] & ":UNP"],false);
+								outstring(tabs[6],0,vTrackSum[aCallExpData[j] & ":CRD"],false);
+								outstring(tabs[7],0,vTrackSum[aCallExpData[j] & ":CNC"],true);
 							endformat;
-							/*startformat(15);
-								outstring(tabs[0],0,Mid(aCallExpData[j],3,len(Right(TrackSumKey[i],len(TrackSumKey[i])-3))),false);
-							endformat;*/
 						end;
 					end;
 					gray_divider(0,1);

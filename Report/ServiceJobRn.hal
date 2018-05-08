@@ -120,7 +120,7 @@ begin
 									end;
 								end;
 								vCuDomain[cucude] = url;
-								vUTMSource[cucude] = ";;;" & BCEr.CTutmsource & ";;;" & BCEr.CTutmmedium & ";;;" & BCEr.CTutmcampaign & ";;;" & BCEr.CTutmcontent & ";;;" & BCEr.CTutmterm;
+								vUTMSource[cucude] = ";" & BCEr.CTutmsource & ";" & BCEr.CTutmmedium & ";" & BCEr.CTutmcampaign & ";" & BCEr.CTutmcontent & ";" & BCEr.CTutmterm;
 
 							end;
 							
@@ -153,7 +153,7 @@ begin
 									end;
 								end;
 								vCuDomain[cucude] = url;
-								vUTMSource[cucude] = ";;;" & BCEr.gCDutm_source & ";;;" & BCEr.gCDutm_medium & ";;;" & BCEr.gCDutm_campaign & ";;;" & BCEr.gCDutm_content & ";;;" & BCEr.gCDutm_term;
+								vUTMSource[cucude] = ";" & BCEr.gCDutm_source & ";" & BCEr.gCDutm_medium & ";" & BCEr.gCDutm_campaign & ";" & BCEr.gCDutm_content & ";" & BCEr.gCDutm_term;
 
 							end;
 							/*if(nonblank(BCEr.gCDutm_source))then begin
@@ -2428,7 +2428,7 @@ begin
 						pos = 0;
 						if(left(aCallExpData[j],3)=="GC:")then begin
 							pos = 0;
-							ExtractObjWithSeparator(";;;",aCallExpData[j],true,pos,tstr);
+							ExtractObjWithSeparator(";",aCallExpData[j],true,pos,tstr);
 							logtext(0,"tstr " & tstr);
 							logtext(0,"tstr== " & Right(TrackSumKey[i],len(TrackSumKey[i])-3));
 							logtext(0,"====================================" & tstr);
@@ -2468,7 +2468,7 @@ begin
 					endformat;
 					for(j=0;j<cdatacnt;j=j+1) begin
 						pos = 0;
-						//ExtractObjWithSeparator(";;;",aCallExpData[j],true,pos,tstr);
+						//ExtractObjWithSeparator(";",aCallExpData[j],true,pos,tstr);
 						if(left(aCallExpData[j],3)=="CT:")then begin
 							if(Mid(aCallExpData[j],3,len(Right(TrackSumKey[i],len(TrackSumKey[i])-3)))==Right(TrackSumKey[i],len(TrackSumKey[i])-3))then begin
 								tstr = Mid(aCallExpData[j],3,len(Right(TrackSumKey[i],len(TrackSumKey[i])-3)));

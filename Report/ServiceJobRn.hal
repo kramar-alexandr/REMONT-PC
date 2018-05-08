@@ -74,7 +74,7 @@ begin
 return;
 end;
 
-procedure FindPhoneDomain(record SVOVc SVOr,record RcVc RepSpec,string tphone,string cucude, var vector boolean vPhoneExist,var vector string vCuDomain,var vector string vCallType)
+procedure FindPhoneDomain(record SVOVc SVOr,record RcVc RepSpec,string tphone,string cucude, var vector boolean vPhoneExist,var vector string vCuDomain,var vector string vCallType,var vector string vUTMSource)
 begin
 	record BinotelCallEndVc BCEr;
 	boolean TrHsph;
@@ -96,6 +96,11 @@ begin
 					
 					
 					if(TrHsph)then begin
+						if(nonblank(BCEr.didName))then begin
+							TrHsph=false;
+							vCallType[cucude] = "SR";
+							vCuDomain[cucude] = BCEr.didName;
+						end;
 						
 						if(nonblank(BCEr.CTid))then begin
 							TrHsph=false;
@@ -114,6 +119,8 @@ begin
 									end;
 								end;
 								vCuDomain[cucude] = url;
+								vUTMSource[cucude] = BCEr.CTutmsource & ";;;" & BCEr.CTutmmedium & ";;;" & BCEr.CTutmcampaign & ";;;" & BCEr.CTutmcontent & ";;;" & BCEr.CTutmterm;
+
 							end;
 							
 							/*if(nonblank(BCEr.CTutmsource))then begin
@@ -145,6 +152,8 @@ begin
 									end;
 								end;
 								vCuDomain[cucude] = url;
+								vUTMSource[cucude] = BCEr.gCDutm_source & ";;;" & BCEr.gCDutm_medium & ";;;" & BCEr.gCDutm_campaign & ";;;" & BCEr.gCDutm_content & ";;;" & BCEr.gCDutm_term;
+
 							end;
 							/*if(nonblank(BCEr.gCDutm_source))then begin
 								vUTMSource[cucude] = BCEr.gCDutm_source;
@@ -301,6 +310,10 @@ begin
 	record CUVc CUr;
 	record BinotelCallEndVc BCEr;
 	vector string 100 vCuDomain,vCallType;
+	vector string 255 vCallExpData;
+	vector boolean vCallExpDataBool;
+	array string 255 aCallExpData;
+	integer cdatacnt;
 	boolean TrHs2,testf2;
 	vector val vTrackSum;
 	vector boolean vTrackFlag,vPovtor,svoiskivi;
@@ -743,11 +756,11 @@ begin
 								
 									if(readfirstmain(CUr,1,true))then begin
 										tphone = CUr.Phone;
-										FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType);
+										FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType,vCallExpData);
 										tphone = CUr.Mobile;
-										FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType);
+										FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType,vCallExpData);
 										tphone = CUr.AltPhone;
-										FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType);
+										FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType,vCallExpData);
 									end;
 								end;
 							end;
@@ -1135,11 +1148,11 @@ begin
 								
 									if(readfirstmain(CUr,1,true))then begin
 										tphone = CUr.Phone;
-										FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType);
+										FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType,vCallExpData);
 										tphone = CUr.Mobile;
-										FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType);
+										FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType,vCallExpData);
 										tphone = CUr.AltPhone;
-										FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType);
+										FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType,vCallExpData);
 									end;
 								end;
 							end;
@@ -1490,11 +1503,11 @@ begin
 								
 									if(readfirstmain(CUr,1,true))then begin
 										tphone = CUr.Phone;
-										FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType);
+										FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType,vCallExpData);
 										tphone = CUr.Mobile;
-										FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType);
+										FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType,vCallExpData);
 										tphone = CUr.AltPhone;
-										FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType);
+										FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType,vCallExpData);
 									end;
 								end;
 							end;
@@ -1861,11 +1874,11 @@ begin
 						CUr.Code = SVOr.CustCode;
 						if(readfirstmain(CUr,1,true))then begin
 							tphone = CUr.Phone;
-							FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType);
+							FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType,vCallExpData);
 							tphone = CUr.Mobile;
-							FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType);
+							FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType,vCallExpData);
 							tphone = CUr.AltPhone;
-							FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType);
+							FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType,vCallExpData);
 						end;
 					end;
 					if (RepSpec.flags[26]==0) then begin
@@ -2351,11 +2364,11 @@ begin
 			/*
 			
 			tphone = CUr.Phone;
-			FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType);
+			FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType,vCallExpData);
 			tphone = CUr.Mobile;
-			FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType);
+			FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType,vCallExpData);
 			tphone = CUr.AltPhone;
-			FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType);
+			FindPhoneDomain(SVOr,RepSpec,tphone,CUr.Code,vPhoneExist,vCuDomain,vCallType,vCallExpData);
 			*/
 			startformat(15);
 				outstring(tabs[0],0,"GetCall звонки:",false);
@@ -2395,6 +2408,28 @@ begin
 				endformat;
 			for(i=0;i<TrackCnt;i=i+1)begin
 				if(Left(TrackSumKey[i],3)=="CT:")then begin
+					startformat(15);
+						outstring(tabs[0],0,Right(TrackSumKey[i],len(TrackSumKey[i])-3),false);
+						outstring(tabs[2],0,vTrackSum[TrackSumKey[i] & ":PD"],false);
+						outstring(tabs[4],0,vTrackSum[TrackSumKey[i] & ":UNP"],false);
+						outstring(tabs[6],0,vTrackSum[TrackSumKey[i] & ":CRD"],false);
+						outstring(tabs[7],0,vTrackSum[TrackSumKey[i] & ":CNC"],true);
+					endformat;
+					gray_divider(0,1);
+				end;
+			end;
+			startformat(15);
+				outstring(tabs[0],0,"Звонки с источников:",false);
+			endformat;
+			startformat(15);
+					outstring(tabs[0],0,"Источник",false);
+					outstring(tabs[2],0,"Оплачено",false);
+					outstring(tabs[4],0,"Неоплаченно",false);
+					outstring(tabs[6],0,"Долг",false);
+					outstring(tabs[7],0,"Отмена",true);			
+				endformat;
+			for(i=0;i<TrackCnt;i=i+1)begin
+				if(Left(TrackSumKey[i],3)=="SR:")then begin
 					startformat(15);
 						outstring(tabs[0],0,Right(TrackSumKey[i],len(TrackSumKey[i])-3),false);
 						outstring(tabs[2],0,vTrackSum[TrackSumKey[i] & ":PD"],false);

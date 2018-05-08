@@ -1729,8 +1729,7 @@ begin
     RecordField(gCDgeoipCity,M4Str,100,0);
     RecordField(gCDgeoipOrg,M4Str,100,0);
     RecordField(gCDdomain,M4Str,100,0);
-    
-		
+    RecordField(CTfullUrl,M4Str,100,0);
 		
 		ArrayBegin(Math,-,1);
 		ArrayField(mdstNumber,M4Str,255,0);

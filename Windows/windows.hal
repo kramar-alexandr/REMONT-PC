@@ -152,6 +152,7 @@ begin
   EditField(h,v+=vs,200,"CTgeoipCity",ViewOnly,CTgeoipCity,false,0);
   EditField(h,v+=vs,200,"CTgeoipOrg",ViewOnly,CTgeoipOrg,false,0);
   EditField(h,v+=vs,200,"CTdomain",ViewOnly,CTdomain,false,0);
+  EditField(h,v+=vs,200,"CTfullUrl",ViewOnly,CTfullUrl,false,0);
   EditField(h,v+=vs,200,"CTgaTrackingId",ViewOnly,CTgaTrackingId,false,0);
   EditField(h,v+=vs,200,"CTtimeSpentOnSiteBeforeMakeCall",ViewOnly,CTtimeSpentOnSiteBeforeMakeCall,false,0);
   

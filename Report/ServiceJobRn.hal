@@ -1023,16 +1023,22 @@ begin
 							if(!vCallExpDataBool[tstr & vCallExpData[SVOr.CustCode]])then begin
 								vCallExpDataBool[tstr & vCallExpData[SVOr.CustCode]] = true;
 								aCallExpData[cdatacnt] = tstr & vCallExpData[SVOr.CustCode];
-								cdatacnt = cdatacnt +1;
+								cdatacnt = cdatacnt + 1;
 							end;
 							if(vTrackFlag[tstr])then begin
 								vTrackSum[tstr & ":PD"] = vTrackSum[tstr & ":PD"] + ivsumserv[asvonr[i]];
 								vTrackSum[tstr & vCallExpData[SVOr.CustCode] & ":PD"] = vTrackSum[tstr & vCallExpData[SVOr.CustCode] & ":PD"] + ivsumserv[asvonr[i]];
+								logtext(0,tstr & ":PD " & vTrackSum[tstr & ":PD"]);
+								logtext(0,tstr & vCallExpData[SVOr.CustCode] & ":PD" & vTrackSum[tstr & vCallExpData[SVOr.CustCode] & ":PD"]);
+								LogText(0,"___________________________________________");
 							end else begin
 								vTrackFlag[tstr] = true;
 								TrackSumKey[TrackCnt] = tstr;
 								vTrackSum[tstr & ":PD"] = ivsumserv[asvonr[i]];
 								vTrackSum[tstr & vCallExpData[SVOr.CustCode] & ":PD"] = ivsumserv[asvonr[i]];
+								logtext(0,tstr & ":PD " & vTrackSum[tstr & ":PD"]);
+								logtext(0,tstr & vCallExpData[SVOr.CustCode] & ":PD" & vTrackSum[tstr & vCallExpData[SVOr.CustCode] & ":PD"]);
+								LogText(0,"___________________________________________");
 								TrackCnt = TrackCnt +1;
 							end;
 						end;

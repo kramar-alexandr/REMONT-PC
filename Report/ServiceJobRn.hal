@@ -1020,8 +1020,8 @@ begin
 						end;
 						if(nonblank(vCuDomain[SVOr.CustCode]))then begin
 							tstr = vCallType[SVOr.CustCode] & ":" & vCuDomain[SVOr.CustCode]; 
-							if(!vCallExpDataBool[tstr & vCallExpData[SVOr.CustCode] & ":PD"])then begin
-								vCallExpDataBool[tstr & vCallExpData[SVOr.CustCode] & ":PD"] = true;
+							if(!vCallExpDataBool[tstr & vCallExpData[SVOr.CustCode]])then begin
+								vCallExpDataBool[tstr & vCallExpData[SVOr.CustCode]] = true;
 								aCallExpData[cdatacnt] = tstr & vCallExpData[SVOr.CustCode];
 								cdatacnt = cdatacnt +1;
 							end;
@@ -1414,9 +1414,9 @@ begin
 						end;
 						if(nonblank(vCuDomain[SVOr.CustCode]))then begin
 							tstr = vCallType[SVOr.CustCode] & ":" & vCuDomain[SVOr.CustCode];
-							if(!vCallExpDataBool[tstr & vCallExpData[SVOr.CustCode] & ":UNP"])then begin
-								vCallExpDataBool[tstr & vCallExpData[SVOr.CustCode] & ":UNP"] = true;
-								aCallExpData[cdatacnt] = tstr & vCallExpData[SVOr.CustCode] & ":UNP";
+							if(!vCallExpDataBool[tstr & vCallExpData[SVOr.CustCode]])then begin
+								vCallExpDataBool[tstr & vCallExpData[SVOr.CustCode]] = true;
+								aCallExpData[cdatacnt] = tstr & vCallExpData[SVOr.CustCode];
 								cdatacnt = cdatacnt +1;
 							end;
 							if(vTrackFlag[tstr])then begin
@@ -1774,9 +1774,9 @@ begin
 						end;
 						if(nonblank(vCuDomain[SVOr.CustCode]))then begin
 							tstr = vCallType[SVOr.CustCode] & ":" & vCuDomain[SVOr.CustCode];
-							if(!vCallExpDataBool[tstr & vCallExpData[SVOr.CustCode] & ":CRD"])then begin
-								vCallExpDataBool[tstr & vCallExpData[SVOr.CustCode] & ":CRD"] = true;
-								aCallExpData[cdatacnt] = tstr & vCallExpData[SVOr.CustCode] & ":CRD";
+							if(!vCallExpDataBool[tstr & vCallExpData[SVOr.CustCode]])then begin
+								vCallExpDataBool[tstr & vCallExpData[SVOr.CustCode]] = true;
+								aCallExpData[cdatacnt] = tstr & vCallExpData[SVOr.CustCode];
 								cdatacnt = cdatacnt +1;
 							end;
 							if(vTrackFlag[tstr])then begin
@@ -1965,9 +1965,9 @@ begin
 						end;
 					end;*/
 					tstr = vCallType[SVOr.CustCode] & ":" & vCuDomain[SVOr.CustCode];
-					if(!vCallExpDataBool[tstr & vCallExpData[SVOr.CustCode] & ":CNC"])then begin
-						vCallExpDataBool[tstr & vCallExpData[SVOr.CustCode] & ":CNC"] = true;
-						aCallExpData[cdatacnt] = tstr & vCallExpData[SVOr.CustCode] & ":CNC";
+					if(!vCallExpDataBool[tstr & vCallExpData[SVOr.CustCode]])then begin
+						vCallExpDataBool[tstr & vCallExpData[SVOr.CustCode]] = true;
+						aCallExpData[cdatacnt] = tstr & vCallExpData[SVOr.CustCode];
 						cdatacnt = cdatacnt +1;
 					end;
 					if(vTrackFlag[tstr])then begin

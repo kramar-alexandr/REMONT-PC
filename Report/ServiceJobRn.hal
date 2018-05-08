@@ -2479,7 +2479,7 @@ begin
 									ExtractObjWithSeparator(";",aCallExpData[j],true,pos,tstr);
 									outstring(tabs[0]+50,0,tstr,false);
 									ExtractObjWithSeparator(";",aCallExpData[j],true,pos,tstr);
-									outstring(tabs[0]+100,0,tstr,false);
+									outstring(tabs[0]+80,0,tstr,false);
 									ExtractObjWithSeparator(";",aCallExpData[j],true,pos,tstr);
 									outstring(tabs[0]+150,0,tstr,false);
 									outstring(tabs[2],0,vTrackSum[aCallExpData[j] & ":PD"],false);

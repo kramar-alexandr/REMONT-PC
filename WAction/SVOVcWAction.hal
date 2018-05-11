@@ -1284,6 +1284,7 @@ BEGIN
   record SVOVc SVO2r;
   record OffHireVc OffHirer;
   record SVOVc      SVOVc_test_r;
+  row SVOVc SVOrw;
 
   Integer updatemode,insertmode;
   string 200 tstr;
@@ -1378,6 +1379,13 @@ BEGIN
           MessageBox(1067,"");
         end;
         goto LSVODClassActiveEditField;
+      case "Spec": if(matrowcnt(SVOr)>0)then begin// Edit ************************** BPI Ukraine - KramarAlexandr - Friday, 11 May 2018 11:46:12
+      								matrowget(SVOr,0,SVOrw);
+      								if(nonblank(SVOrw.ArtCode))then begin
+      									res = false;
+      									goto LSVODClassActiveEditField;
+      								end;
+      							end;
     end;
   end;
   //GetWindowRecord(wn,SVOr);

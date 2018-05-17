@@ -2148,6 +2148,13 @@ BEGIN
   end;
   
   
+  if(nonblank(SVOr.Kontinfo1))then begin
+  	SVOr.Kontinfo1 = trim(SVOr.Kontinfo1);
+  end;
+  if(nonblank(SVOr.Phone2))then begin
+  	SVOr.Phone2 = trim(SVOr.Phone2);
+  end;
+  
   FixStatusesDateDiff(SVOr,SVO2r,stat);// Edit ************************** Wednesday, 11 October 2017 11:37:39
   if(stat==updatemode)then begin
     	

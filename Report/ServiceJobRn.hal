@@ -345,6 +345,12 @@ begin
 			end;
 		end;
 	end;
+	if(usercanaction("ServiceJobsIngener",true)==false)then begin
+		RepSpec.f3 = currentuser;
+	end;
+	if(usercanaction("ServiceJobsManager",true)==false)then begin
+		RepSpec.f4 = currentuser;
+	end;
 		
 	tot[0] = blankval;
 	tabs[0] = 0;

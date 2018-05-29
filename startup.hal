@@ -408,6 +408,8 @@ StrSetText(AllowAddingINtoRet,"Добавлять товары в возвраты");
   
   StrSetText(SVOListGroupAcces,"Ограничить журнал заказов на обслуживание группой продаж");
   StrSetText(ServiceJobsGroupAcces,"Ограничить отчет по выполненым ремонтам группой продаж");
+  StrSetText(ServiceJobsIngener,"Ограничить отчет по выполненым ремонтам инженером");
+  StrSetText(ServiceJobsManager,"Ограничить отчет по выполненым ремонтам приемщиком");
   
   StrSetText(OpenTRFromSpec,"Открытие записи из меню Операция");
   StrSetText(OpenCashDrawer,"Открытие кассы");

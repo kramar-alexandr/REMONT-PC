@@ -999,24 +999,6 @@ begin
 										outstring(tabs[2],0,vCuDomain[SVOr.CustCode],false);
 									endformat;
 								end;
-								/*if(nonblank(vUTMSource[SVOr.CustCode]))then begin
-									startformat(15);
-										outstring(tabs[0],0,"Переход с ресурса",false);
-										outstring(tabs[2],0,vUTMSource[SVOr.CustCode],false);
-									endformat;
-								end;
-								if(nonblank(vUTMCampaign[SVOr.CustCode]))then begin
-									startformat(15);
-										outstring(tabs[0],0,"Кампания",false);
-										outstring(tabs[2],0,vUTMCampaign[SVOr.CustCode],false);
-									endformat;
-								end;
-								if(nonblank(vUTMTerm[SVOr.CustCode]))then begin
-									startformat(15);
-										outstring(tabs[0],0,"Условия",false);
-										outstring(tabs[2],0,vUTMTerm[SVOr.CustCode],false);
-									endformat;
-								end;*/
 						
 								if(nonblank(SVOr.GarNo))then begin
 									oldSVOr.InnerOrderNr = SVOr.GarNo;
@@ -1069,6 +1051,9 @@ begin
 						outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
 						outstring(tabs[0],0,"Возврат денег",false);
 						outstring(tabs[6],0,ivretsum[asvonr[i]],false);
+						if(currentuser=="SA")then begin
+							outstring(350,0,asvonr[i],false);
+						end;
 					endformat;
 					if(ivretsummanag[asvonr[i] & ":PREPAY"]>0)then begin
 						startformat(15);

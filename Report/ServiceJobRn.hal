@@ -396,6 +396,9 @@ begin
 												if(RepSpec.flags[1]==0)then begin
 													svoiskivi[IVr.SVONr] = KIVIFound(SVOr);
 												end;
+												if(RepSpec.flags[2]==1)then begin
+													svoiskivi[IVr.SVONr] = !KIVIFound(SVOr);
+												end;
 												IF(nonblankdate(SVOr.RegDate) and SVOr.RegDate<=ed and SVOr.RegDate>=sd)THEN BEGIN
 													vsvodolg[IVr.SVONr] = TRUE;
 												END;
@@ -451,6 +454,9 @@ begin
 															svowscost[IPrw.CUPNr] = SVOr.WSCost;
 															if(RepSpec.flags[1]==0)then begin
 																svoiskivi[IPrw.CUPNr] = KIVIFound(SVOr);
+															end;
+															if(RepSpec.flags[2]==1)then begin
+																svoiskivi[IPrw.CUPNr] = !KIVIFound(SVOr);
 															end;
 															IF(nonblankdate(SVOr.RegDate) and SVOr.RegDate<=ed and SVOr.RegDate>=sd)THEN BEGIN
 																vsvodolg[IPrw.CUPNr] = TRUE;
@@ -524,6 +530,9 @@ begin
 															svowscost[IVr.SVONr] = SVOr.WSCost;
 															if(RepSpec.flags[1]==0)then begin
 																svoiskivi[IVr.SVONr] = KIVIFound(SVOr);
+															end;
+															if(RepSpec.flags[2]==1)then begin
+																svoiskivi[IVr.SVONr] = !KIVIFound(SVOr);
 															end;
 															IF(nonblankdate(SVOr.RegDate) and SVOr.RegDate<=ed and SVOr.RegDate>=sd)THEN BEGIN
 																vsvodolg[IVr.SVONr] = TRUE;
@@ -714,6 +723,11 @@ begin
 				filter = true;
 			
 				if(RepSpec.flags[1]==0)then begin
+					if(svoiskivi[asvonr[i]])then begin
+						filter = false;
+					end;
+				end;
+				if(RepSpec.flags[2]==1)then begin
 					if(svoiskivi[asvonr[i]])then begin
 						filter = false;
 					end;
@@ -1117,6 +1131,11 @@ begin
 						filter = false;
 					end;
 				end;
+				if(RepSpec.flags[2]==1)then begin
+					if(svoiskivi[asvonr[i]])then begin
+						filter = false;
+					end;
+				end;
 			end else begin
 				filter = false;
 			end;
@@ -1474,6 +1493,11 @@ begin
 				filter = true;
 			
 				if(RepSpec.flags[1]==0)then begin
+					if(svoiskivi[asvonr[i]])then begin
+						filter = false;
+					end;
+				end;
+				if(RepSpec.flags[2]==1)then begin
 					if(svoiskivi[asvonr[i]])then begin
 						filter = false;
 					end;
@@ -1837,6 +1861,11 @@ begin
 			
 			if(RepSpec.flags[1]==0)then begin
 				if(KIVIFound(SVOr))then begin
+					testf = false;
+				end;
+			end;
+			if(RepSpec.flags[2]==1)then begin
+				if(KIVIFound(SVOr)==false)then begin
 					testf = false;
 				end;
 			end;

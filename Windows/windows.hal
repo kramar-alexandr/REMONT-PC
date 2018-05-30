@@ -2039,7 +2039,8 @@ real h,v,vs;
     EditField(h,v+=16,150,"Мастер",Normal,f3,false,UserSClass);
     EditField(h,v+=16,150,"Приемщик",Normal,f4,false,UserSClass);
 		CheckBox(h,v+=16,0,"Статистика Binotel",flags[0]);
-		CheckBox(h,v+=16,0,"Ремонты KIVI",flags[1]);
+		CheckBox(h,v+=16,0,"Включая ремонты KIVI",flags[1]);
+		CheckBox(h,v+=16,0,"Только ремонты KIVI",flags[2]);
   EndWindow;  
 end;
 

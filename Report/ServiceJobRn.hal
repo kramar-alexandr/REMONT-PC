@@ -1046,36 +1046,52 @@ begin
 				end;
 			end;
 			if(ivretsum[asvonr[i]]>0)then begin
-				if (RepSpec.flags[26]==0) then begin
-					startformat(15);
-						outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
-						outstring(tabs[0],0,"Возврат денег",false);
-						outstring(tabs[6],0,ivretsum[asvonr[i]],false);
-						if(currentuser=="SA")then begin
-							outstring(350,0,asvonr[i],false);
-						end;
-					endformat;
-					if(ivretsummanag[asvonr[i] & ":PREPAY"]>0)then begin
-						startformat(15);
-							outstring(tabs[0],0,"",false);
-							outstring(tabs[0],0,"",false);
-							outstring(tabs[6],0,ivretsum[asvonr[i]],false);
-							outstring(tabs[7],0,"С предоплаты",false);
-						endformat;
+				SVOr.SerNr = asvonr[i];
+				readfirstmain(SVOr,1,true);
+				filter = true;
+			
+				if(RepSpec.flags[1]==0)then begin
+					if(svoiskivi[asvonr[i]])then begin
+						filter = false;
 					end;
-					For(ui=0;ui<userscnt;ui=ui+1) begin
-						if(ivretsummanag[asvonr[i] & ":" & users[ui]]>0)then begin
+				end;
+				if(RepSpec.flags[2]==1)then begin
+					if(svoiskivi[asvonr[i]])then begin
+						filter = false;
+					end;
+				end;
+				if(filter)then begin
+					if (RepSpec.flags[26]==0) then begin
+						startformat(15);
+							outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
+							outstring(tabs[0],0,"Возврат денег",false);
+							outstring(tabs[6],0,ivretsum[asvonr[i]],false);
+							if(currentuser=="SA")then begin
+								outstring(350,0,asvonr[i],false);
+							end;
+						endformat;
+						if(ivretsummanag[asvonr[i] & ":PREPAY"]>0)then begin
 							startformat(15);
 								outstring(tabs[0],0,"",false);
 								outstring(tabs[0],0,"",false);
 								outstring(tabs[6],0,ivretsum[asvonr[i]],false);
-								outstring(tabs[7],0,users[ui],false);
+								outstring(tabs[7],0,"С предоплаты",false);
 							endformat;
 						end;
-					end; 
-				end;
-				if (RepSpec.flags[26]==0) then begin
-					gray_divider(0,1);
+						For(ui=0;ui<userscnt;ui=ui+1) begin
+							if(ivretsummanag[asvonr[i] & ":" & users[ui]]>0)then begin
+								startformat(15);
+									outstring(tabs[0],0,"",false);
+									outstring(tabs[0],0,"",false);
+									outstring(tabs[6],0,ivretsum[asvonr[i]],false);
+									outstring(tabs[7],0,users[ui],false);
+								endformat;
+							end;
+						end; 
+					end;
+					if (RepSpec.flags[26]==0) then begin
+						gray_divider(0,1);
+					end;
 				end;
 			end;
 		end;

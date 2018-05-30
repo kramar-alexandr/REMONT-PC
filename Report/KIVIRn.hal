@@ -267,13 +267,16 @@ begin
 						end;
 					end;
 					if(workqty[worklist[0]]>0)then begin 
+						outstring(350,0,"",false);
 						outstring(350,0,workname[0],false);
 						outstring(350,0,workprice[0],false);
 					end else begin
 						outstring(350,0,"",false);
 						outstring(350,0,"",false);
+						outstring(350,0,"",false);
 					end;
 				end else begin
+					outstring(350,0,"",false);
 					outstring(350,0,"",false);
 					outstring(350,0,"",false);
 				end;
@@ -314,6 +317,7 @@ begin
 							outstring(0,0,"",false);
 							outstring(0,0,"",false);
 							outstring(0,0,"",false);
+							outstring(0,0,"",false);
 							if(vi<artcnt)then begin
 								if(workqty[worklist[vi]]>0)then begin
 									outstring(350,0,workname[vi],false);
@@ -338,6 +342,7 @@ begin
 					For(vi=1;vi<wokcnt;vi=vi+1) begin
 						startformat(15);
 							outstring(0,0,"",false);
+							outstring(350,0,"",false);
 							outstring(0,0,"",false);
 							outstring(0,0,"",false);
 							outstring(0,0,"",false);
@@ -371,6 +376,7 @@ begin
 	
 	startformat(15);
 		outstring(0,0,"",false);	
+		outstring(0,0,"",false);	
 		outstring(0,0,"",false);
 		outstring(0,0,"",false);
 		outstring(0,0,"",false);
@@ -389,6 +395,7 @@ begin
 		outstring(0,0,"",false);
 	endformat;
 	startformat(15);
+		outstring(0,0,"",false);	
 		outstring(0,0,"",false);	
 		outstring(0,0,"",false);
 		outstring(0,0,"",false);

@@ -336,6 +336,8 @@ begin
 		
 	end;
 	
+	logtext(0,SVOr.InnerOrderNr & " - " & res);
+	
 	KIVIFound = res;
 
 return;

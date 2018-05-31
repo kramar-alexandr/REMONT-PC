@@ -329,7 +329,7 @@ begin
 			end;
 		end;
 		if(nonblank(INr.Disp5Name))then begin
-			if(INr.Disp5Name!="KIVI" and INr.Disp5Name!="kivi" and INr.Disp5Name!="Kivi")then begin
+			if(left(INr.Disp5Name,4)!="KIVI" and left(INr.Disp5Name,4)!="kivi" and left(INr.Disp5Name,4)!="Kivi")then begin
 				res = false;
 			end;
 		end;

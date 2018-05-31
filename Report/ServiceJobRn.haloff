@@ -364,7 +364,7 @@ begin
 	tabs[8] = 340;
 	
 		if (RepSpec.flags[26]==0) then begin
-			StartReportJob("Выполненные ремонты");
+			StartReportJob("Выполеные ремонты");
 			PrintHeader(RepSpec);
 		end else begin
 			StartReportNoHeaderJob("Продажи страховки");
@@ -395,6 +395,9 @@ begin
 												svowscost[IVr.SVONr] = SVOr.WSCost;
 												if(RepSpec.flags[1]==0)then begin
 													svoiskivi[IVr.SVONr] = KIVIFound(SVOr);
+												end;
+												if(RepSpec.flags[2]==1)then begin
+													svoiskivi[IVr.SVONr] = !KIVIFound(SVOr);
 												end;
 												IF(nonblankdate(SVOr.RegDate) and SVOr.RegDate<=ed and SVOr.RegDate>=sd)THEN BEGIN
 													vsvodolg[IVr.SVONr] = TRUE;
@@ -451,6 +454,9 @@ begin
 															svowscost[IPrw.CUPNr] = SVOr.WSCost;
 															if(RepSpec.flags[1]==0)then begin
 																svoiskivi[IPrw.CUPNr] = KIVIFound(SVOr);
+															end;
+															if(RepSpec.flags[2]==1)then begin
+																svoiskivi[IPrw.CUPNr] = !KIVIFound(SVOr);
 															end;
 															IF(nonblankdate(SVOr.RegDate) and SVOr.RegDate<=ed and SVOr.RegDate>=sd)THEN BEGIN
 																vsvodolg[IPrw.CUPNr] = TRUE;
@@ -524,6 +530,9 @@ begin
 															svowscost[IVr.SVONr] = SVOr.WSCost;
 															if(RepSpec.flags[1]==0)then begin
 																svoiskivi[IVr.SVONr] = KIVIFound(SVOr);
+															end;
+															if(RepSpec.flags[2]==1)then begin
+																svoiskivi[IVr.SVONr] = !KIVIFound(SVOr);
 															end;
 															IF(nonblankdate(SVOr.RegDate) and SVOr.RegDate<=ed and SVOr.RegDate>=sd)THEN BEGIN
 																vsvodolg[IVr.SVONr] = TRUE;
@@ -714,6 +723,11 @@ begin
 				filter = true;
 			
 				if(RepSpec.flags[1]==0)then begin
+					if(svoiskivi[asvonr[i]])then begin
+						filter = false;
+					end;
+				end;
+				if(RepSpec.flags[2]==1)then begin
 					if(svoiskivi[asvonr[i]])then begin
 						filter = false;
 					end;
@@ -985,24 +999,6 @@ begin
 										outstring(tabs[2],0,vCuDomain[SVOr.CustCode],false);
 									endformat;
 								end;
-								/*if(nonblank(vUTMSource[SVOr.CustCode]))then begin
-									startformat(15);
-										outstring(tabs[0],0,"Переход с ресурса",false);
-										outstring(tabs[2],0,vUTMSource[SVOr.CustCode],false);
-									endformat;
-								end;
-								if(nonblank(vUTMCampaign[SVOr.CustCode]))then begin
-									startformat(15);
-										outstring(tabs[0],0,"Кампания",false);
-										outstring(tabs[2],0,vUTMCampaign[SVOr.CustCode],false);
-									endformat;
-								end;
-								if(nonblank(vUTMTerm[SVOr.CustCode]))then begin
-									startformat(15);
-										outstring(tabs[0],0,"Условия",false);
-										outstring(tabs[2],0,vUTMTerm[SVOr.CustCode],false);
-									endformat;
-								end;*/
 						
 								if(nonblank(SVOr.GarNo))then begin
 									oldSVOr.InnerOrderNr = SVOr.GarNo;
@@ -1050,33 +1046,49 @@ begin
 				end;
 			end;
 			if(ivretsum[asvonr[i]]>0)then begin
-				if (RepSpec.flags[26]==0) then begin
-					startformat(15);
-						outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
-						outstring(tabs[0],0,"Возврат денег",false);
-						outstring(tabs[6],0,ivretsum[asvonr[i]],false);
-					endformat;
-					if(ivretsummanag[asvonr[i] & ":PREPAY"]>0)then begin
-						startformat(15);
-							outstring(tabs[0],0,"",false);
-							outstring(tabs[0],0,"",false);
-							outstring(tabs[6],0,ivretsum[asvonr[i]],false);
-							outstring(tabs[7],0,"С предоплаты",false);
-						endformat;
+				SVOr.SerNr = asvonr[i];
+				readfirstmain(SVOr,1,true);
+				filter = true;
+			
+				if(RepSpec.flags[1]==0)then begin
+					if(svoiskivi[asvonr[i]])then begin
+						filter = false;
 					end;
-					For(ui=0;ui<userscnt;ui=ui+1) begin
-						if(ivretsummanag[asvonr[i] & ":" & users[ui]]>0)then begin
+				end;
+				if(RepSpec.flags[2]==1)then begin
+					if(svoiskivi[asvonr[i]])then begin
+						filter = false;
+					end;
+				end;
+				if(filter)then begin
+					if (RepSpec.flags[26]==0) then begin
+						startformat(15);
+							outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
+							outstring(tabs[0],0,"Возврат денег",false);
+							outstring(tabs[6],0,ivretsum[asvonr[i]],false);
+						endformat;
+						if(ivretsummanag[asvonr[i] & ":PREPAY"]>0)then begin
 							startformat(15);
 								outstring(tabs[0],0,"",false);
 								outstring(tabs[0],0,"",false);
 								outstring(tabs[6],0,ivretsum[asvonr[i]],false);
-								outstring(tabs[7],0,users[ui],false);
+								outstring(tabs[7],0,"С предоплаты",false);
 							endformat;
 						end;
-					end; 
-				end;
-				if (RepSpec.flags[26]==0) then begin
-					gray_divider(0,1);
+						For(ui=0;ui<userscnt;ui=ui+1) begin
+							if(ivretsummanag[asvonr[i] & ":" & users[ui]]>0)then begin
+								startformat(15);
+									outstring(tabs[0],0,"",false);
+									outstring(tabs[0],0,"",false);
+									outstring(tabs[6],0,ivretsum[asvonr[i]],false);
+									outstring(tabs[7],0,users[ui],false);
+								endformat;
+							end;
+						end; 
+					end;
+					if (RepSpec.flags[26]==0) then begin
+						gray_divider(0,1);
+					end;
 				end;
 			end;
 		end;
@@ -1113,6 +1125,11 @@ begin
 				filter = true;
 			
 				if(RepSpec.flags[1]==0)then begin
+					if(svoiskivi[asvonr[i]])then begin
+						filter = false;
+					end;
+				end;
+				if(RepSpec.flags[2]==1)then begin
 					if(svoiskivi[asvonr[i]])then begin
 						filter = false;
 					end;
@@ -1478,6 +1495,11 @@ begin
 						filter = false;
 					end;
 				end;
+				if(RepSpec.flags[2]==1)then begin
+					if(svoiskivi[asvonr[i]])then begin
+						filter = false;
+					end;
+				end;
 			end else begin
 				filter = false;
 			end;
@@ -1837,6 +1859,11 @@ begin
 			
 			if(RepSpec.flags[1]==0)then begin
 				if(KIVIFound(SVOr))then begin
+					testf = false;
+				end;
+			end;
+			if(RepSpec.flags[2]==1)then begin
+				if(KIVIFound(SVOr)==false)then begin
 					testf = false;
 				end;
 			end;

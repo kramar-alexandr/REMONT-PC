@@ -10695,6 +10695,20 @@ begin
 	EndWindow;
 end;
 
+//Edit_-_-_-_-_-_-_-_-Anton 10:45 01.06.2018
+
+window ReNameProdVClass:1
+	wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+	WindowBegin("Заменить название товара", ReNameProdVClass,CGMnt,RecType);
+	SetWRect(20,80,640,480);
+	Sizeable(-1,-1,0,0);
+	EditField(200,30,80,"Поточное название: ",Normal,f1,false,0);
+	EditField(380,30,80,"Изменить на: ",Normal,f2,false,0);
+	EndWindow;
+end;
+
+
 // Edit Dima ************* 2018-03-09 01:26 PM
 
 window CreateLoyaltyCardsVClass:1

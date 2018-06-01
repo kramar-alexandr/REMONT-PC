@@ -3,10 +3,12 @@
 global updating procedure ReNameProdMn(record RcVc RepSpec) //Edit_-_-_-_-_-_-_-_-Anton 10:44 01.06.2018
 begin
 	record INVc	INr,IN2r;
-	while(loopmain(INr,1,true)) begin
-		if (INr.Disp5Name==RepSpec.f1) then begin
-			INr.Disp5Name = RepSpec.f2;
-			RecordStore(INr,1);
+	if(nonblank(RepSpec.f1) and nonblank(RepSpec.f2))then begin
+		while(loopmain(INr,1,true)) begin
+			if (INr.Disp5Name==RepSpec.f1) then begin
+				INr.Disp5Name = RepSpec.f2;
+				RecordStore(INr,1);
+			end;
 		end;
 	end;
 	ResetLoop(INr);

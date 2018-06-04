@@ -42,6 +42,11 @@ begin
 			diagstr = mid(partnum,4,2);
 		end;
 	end;
+	
+	if(left(ArtCode,5)=="σλός" or left(INr.Name,5)=="σλός")then begin
+		diagstr = "";
+		partnum = "“‹’";
+	end;
 
 return;
 end;

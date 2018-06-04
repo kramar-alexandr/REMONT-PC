@@ -3,6 +3,49 @@ external function boolean KIVIFound(record SVOVc);
 SetLangMode(LangRussian,"RUS",0);
 
 
+procedure FindKIVIModel(var record INVc INr,String ArtCode,string Spec,var string diagstr,var string partnum)
+begin
+	
+	partnum = ArtCode;
+	INr.Code = ArtCode;
+	readfirstmain(INr,1,true);
+	if(left(partnum,5)=="KIVI_")then begin
+		partnum = mid(partnum,5,len(partnum)-5);
+	end;
+	if(left(partnum,12)=="’…‹…‚ˆ‡_KI")then begin
+		partnum = mid(partnum,12,len(partnum)-12);
+	end;
+	if(left(partnum,13)=="›‹…‘‘_KIVI_")then begin
+		partnum = mid(partnum,12,len(partnum)-12);
+	end;
+					
+	if(right(partnum,1)=="_")then begin
+		partnum = left(partnum,len(partnum)-1);
+	end;
+	if(left(partnum,4)=="KIVI")then begin
+		partnum = mid(partnum,4,len(partnum)-4);
+	end;
+	if(nonblank(INr.Disp6))then begin
+		partnum = INr.Disp6;
+	end;
+	if(nonblank(INr.Disp6Name))then begin
+		partnum = INr.Disp6Name;
+	end;
+		
+	outstring(130,0,partnum,false);
+	diagstr = left(partnum,2);
+	
+	if(left(partnum,5)=="KIVI_")then begin
+		diagstr = mid(partnum,5,2);
+	end else begin
+		if(left(partnum,4)=="KIVI")then begin
+			diagstr = mid(partnum,4,2);
+		end;
+	end;
+
+return;
+end;
+
 global procedure KIVIRn(record RcVc RepSpec)
 begin
 	record SVOVc SVOr;
@@ -81,39 +124,10 @@ begin
 				if(matrowcnt(SVOr)>0)then begin
 					matrowget(SVOr,0,SVOrw);
 				end;
-				partnum = SVOrw.ArtCode;
-				INr.Code = SVOrw.ArtCode;
-				readfirstmain(INr,1,true);
-				if(left(partnum,5)=="KIVI_")then begin
-					partnum = mid(partnum,5,len(partnum)-5);
-				end;
-				if(left(partnum,12)=="’…‹…‚ˆ‡_KI")then begin
-					partnum = mid(partnum,12,len(partnum)-12);
-				end;
-				if(left(partnum,13)=="›‹…‘‘_KIVI_")then begin
-					partnum = mid(partnum,12,len(partnum)-12);
-				end;
-								
-				if(right(partnum,1)=="_")then begin
-					partnum = left(partnum,len(partnum)-1);
-				end;
-				if(left(partnum,4)=="KIVI")then begin
-					partnum = mid(partnum,4,len(partnum)-4);
-				end;
-				if(nonblank(INr.Disp6))then begin
-					partnum = INr.Disp6;
-				end;
 				
-				outstring(130,0,partnum,false);
-				diagstr = left(partnum,2);
 				
-				if(left(partnum,5)=="KIVI_")then begin
-					diagstr = mid(partnum,5,2);
-				end else begin
-					if(left(partnum,4)=="KIVI")then begin
-						diagstr = mid(partnum,4,2);
-					end;
-				end;
+				FindKIVIModel(INr,SVOrw.ArtCode,SVOrw.Spec,diagstr,partnum);
+				
 				
 				diagfound = false;
 				if(asc(left(diagstr,1))>47 and asc(left(diagstr,1))<58)then begin

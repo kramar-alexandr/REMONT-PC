@@ -336,6 +336,13 @@ begin
 		
 	end;
 	
+	if(INr.Code=="›‹…‘‘_KIVI_2")then begin
+		res = false;
+	end;
+	if(INr.Code=="›‹…‘‘_KIVI_1")then begin
+		res = false;
+	end;
+	
 	logtext(0,SVOr.InnerOrderNr & " - " & res);
 	
 	KIVIFound = res;

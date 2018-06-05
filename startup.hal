@@ -23,7 +23,7 @@ begin
 	Setting("Структура программы лояльности накопительной карты",MyLCMLevelSetTClass,modSVO);// Edit ************************** BPI Ukraine - KramarAlexandr - 04, 15 03 2018 y. о 19:34:51
 
 	Report("Статистика предварительных заказов",CallConversionRClass,CallConversionRn,0,modSVO);
-	Report("KIVI отчет",ServiceJobsRClass,KIVIRn,0,modSVO);
+	Report("KIVI отчет",KIVIRnRClass,KIVIRn,0,modSVO);
 	Report("Выполненые ремонты",ServiceJobsRClass,ServiceJobsRn,0,modSVO);
 	Report("Binotel Short Report",ServiceJobsRClass,BinotelSimpleRepRn,0,modSVO);
 	Report("Binotel List Report",SimpleRClass,BinotelTrackListRn,0,modSVO);

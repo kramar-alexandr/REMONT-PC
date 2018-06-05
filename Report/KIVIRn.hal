@@ -2,9 +2,11 @@ external procedure MySortStringArray(var array string,integer);
 external function boolean KIVIFound(record SVOVc);
 SetLangMode(LangRussian,"RUS",0);
 
-
+global
 procedure FindKIVIModel(var record INVc INr,String ArtCode,string Spec,var string diagstr,var string partnum)
 begin
+	
+	boolean diagfound;
 	
 	partnum = ArtCode;
 	INr.Code = ArtCode;
@@ -32,7 +34,6 @@ begin
 		partnum = INr.Disp6Name;
 	end;
 		
-	outstring(130,0,partnum,false);
 	diagstr = left(partnum,2);
 	
 	if(left(partnum,5)=="KIVI_")then begin
@@ -46,6 +47,17 @@ begin
 	if(left(ArtCode,5)=="Пульт" or left(INr.Name,5)=="Пульт")then begin
 		diagstr = "";
 		partnum = "ПУЛЬТ";
+	end;
+	diagfound = false;
+	if(asc(left(diagstr,1))>47 and asc(left(diagstr,1))<58)then begin
+		if(asc(mid(diagstr,1,1))>47 and asc(mid(diagstr,1,1))<58)then begin
+			diagfound = true;
+		end;
+	end;
+	if(diagfound)then begin
+		diagstr = diagstr & "\"";
+	end else begin
+		diagstr = "";
 	end;
 
 return;
@@ -95,6 +107,8 @@ begin
 		outstring(0,0,"Дата выдачи",false);
 		outstring(0,0,"Модель аппарата",false);
 		outstring(0,0,"Диагональ",false);
+		outstring(0,0,"Код",false);
+		outstring(0,0,"Имя",false);
 		outstring(0,0,"Серийный номер",false);
 		outstring(0,0,"Неисправность ",false);
 		outstring(0,0,"Выполненная работа ",false);
@@ -112,12 +126,79 @@ begin
 	TrHs = true;
 	SVOr.RegDate = sd;
 	while(loopkey("RegDate",SVOr,1,TrHs))begin
-		testf = true;
+		kivif = KIVIFound(SVOr);		
+		testf = kivif;
+		if (testf) then begin 
+		  testf = false; 
+		  if (RepSpec.flags[13]==1) then begin /* Предварит */
+			if (SVOr.OrderStatus==9) then begin
+			  testf = true;
+			end;
+		  end;  
+		  if (RepSpec.flags[4]==1) then begin /* В ожидании */
+			if (SVOr.OrderStatus==0) then begin
+			  testf = true;
+			end;
+		  end;
+		  if (RepSpec.flags[5]==1) then begin /* На диагностике*/
+			if (SVOr.OrderStatus==5) then begin
+			  testf = true;
+			end;
+		  end;
+		  if (RepSpec.flags[3]==1) then begin /* На согласовании*/
+			if (SVOr.OrderStatus==4) then begin
+			  testf = true;
+			end;
+		  end;
+		  if (RepSpec.flags[14]==1) then begin /* Согласовано*/
+			if (SVOr.OrderStatus==7) then begin
+			  testf = true;
+			end;
+		  end;
+		  if (RepSpec.flags[9]==1) then begin /* В ремонте*/
+			if (SVOr.OrderStatus==1) then begin
+			  testf = true;
+			end;
+		  end;
+		  if (RepSpec.flags[10]==1) then begin /* В удал. сервисе*/
+			if (SVOr.OrderStatus==8) then begin
+			  testf = true;
+			end;
+		  end;
+		  if (RepSpec.flags[15]==1) then begin /* Ожидает запч.*/
+			if (SVOr.OrderStatus==3) then begin
+			  testf = true;
+			end;
+		  end;
+		  if (RepSpec.flags[16]==1) then begin /* Заказать запч.*/
+			if (SVOr.OrderStatus==10) then begin
+			  testf = true;
+			end;
+		  end;
+		  if (RepSpec.flags[11]==1) then begin /* Готов.*/
+			if (SVOr.OrderStatus==2) then begin
+			  testf = true;
+			end;
+		  end;
+		  if (RepSpec.flags[12]==1) then begin /* Отказ.*/
+			if (SVOr.OrderStatus==6) then begin
+			  testf = true;
+			end;
+		  end;
+		  if (RepSpec.flags[17]==1) then begin /* Вернули на доработку*/
+			if (SVOr.OrderStatus==11) then begin
+			  testf = true;
+			end;
+		  end;
+		  if (RepSpec.flags[18]==1) then begin /* Клиент думает*/
+			if (SVOr.OrderStatus==12) then begin
+			  testf = true;
+			end;
+		  end;
+		end;
 		if(SVOr.RegDate>ed)then begin TrHs = false; testf = false; end;
 		if(SVOr.RegDate<sd)then begin testf = false; end;
 		
-		kivif = KIVIFound(SVOr);		
-		testf = kivif;
 		
 		if(testf)then begin
 			startformat(15);
@@ -132,20 +213,12 @@ begin
 				
 				
 				FindKIVIModel(INr,SVOrw.ArtCode,SVOrw.Spec,diagstr,partnum);
+				outstring(130,0,partnum,false);
+				outstring(200,0,diagstr,false);
+
+				outstring(0,0,SVOrw.ArtCode,false);
+				outstring(0,0,SVOrw.Spec,false);
 				
-				
-				diagfound = false;
-				if(asc(left(diagstr,1))>47 and asc(left(diagstr,1))<58)then begin
-					if(asc(mid(diagstr,1,1))>47 and asc(mid(diagstr,1,1))<58)then begin
-						diagfound = true;
-					end;
-				end;
-				if(diagfound)then begin
-					outstring(200,0,diagstr & "\"",false);
-				end else begin
-					outstring(200,0,"",false);
-					diagstr = "";
-				end;
 				/*if(left(currentuser,2)=="SA")then begin
 					outstring(220,0,SVOrw.Spec,false);
 				end;*/
@@ -334,6 +407,8 @@ begin
 							outstring(0,0,"",false);
 							outstring(0,0,"",false);
 							outstring(0,0,"",false);
+							outstring(0,0,"",false);
+							outstring(0,0,"",false);
 							if(vi<artcnt)then begin
 								if(workqty[worklist[vi]]>0)then begin
 									outstring(350,0,workname[vi],false);
@@ -357,6 +432,8 @@ begin
 				end else begin
 					For(vi=1;vi<wokcnt;vi=vi+1) begin
 						startformat(15);
+							outstring(0,0,"",false);
+							outstring(0,0,"",false);
 							outstring(0,0,"",false);
 							outstring(0,0,"",false);
 							outstring(0,0,"",false);

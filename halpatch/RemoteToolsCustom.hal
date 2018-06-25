@@ -4420,3 +4420,45 @@ record UserVc User;
 
 return;
 end;
+
+
+global updating procedure FillINClass()
+begin
+	record SVOVc SVOr;
+	row SVOVc SVOrw;
+	record INVc INr;
+	vector boolean infound;
+	
+	SVOr.SerNr = 0;
+	while(loopmain(SVOr,1,true))begin
+		if(matrowcnt(SVOr)>0)then begin
+			matrowget(SVOr,0,SVOrw);
+			if(nonblank(SVOrw.ArtCode))then begin
+				INr.Code = SVOrw.ArtCode;
+				if(infound[INr.Code]==false)then begin
+					if(readfirstmain(INr,1,true))then begin
+						if((blank(INr.Disp2) and INr.Disp1=="USER" and blank(INr.Disp3)) or (blank(INr.Disp1) and INr.DispGroups=="USER"))then begin
+							INr.Disp2 = "SKLADU";
+							INr.Disp2Name = "Складируемый товар";
+							if(blank(INr.Disp3))then begin
+								INr.Disp3 = "Устройс001";
+								INr.Disp3Name = "Устройство клиента";
+							end;
+							if(blank(INr.Disp1))then begin
+								INr.Disp1 = "USER";
+								INr.Disp1Name = "Устройства клиентов";
+							end;
+							INr.DispGroups = "USER,SKLADU,УСТРОЙС001";
+							logtext(0,INr.Code & " " & INr.Name);
+							recordstore(INr,true);
+						end;
+					end;
+					infound[INr.Code] = true;
+				end;
+			end;
+		end;
+	end;
+	
+
+return;
+end;

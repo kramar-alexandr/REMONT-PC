@@ -4483,13 +4483,13 @@ begin
 	DIr.Code = "";
 	while(loopmain(DIr,1,true))begin
 		if(DIr.CType=="DISP4" and DIr.DispGroups=="Устройс001")then begin
-			DINames[acnt] = DIr.Name;
+			DINames[acnt] = trim(DIr.Name);
 			DICodes[acnt] = DIr.Code;
 			logtext(0,"*** " & DINames[acnt] & " " & DICodes[acnt]);
 			acnt = acnt + 1;
 		end;
 		if(DIr.CType=="DISP5")then begin
-			DI5Names[a5cnt] = DIr.Name;
+			DI5Names[a5cnt] = trim(DIr.Name);
 			DI5Codes[a5cnt] = DIr.Code;
 			DI5Class[a5cnt] = DIr.DispGroups;
 			a5cnt = a5cnt + 1;
@@ -4498,7 +4498,7 @@ begin
 	
 	ITr.Code = "";
 	while(loopmain(ITr,1,true))begin
-		ITNames[ITr.Code] = ITr.Comment;
+		ITNames[ITr.Code] = trim(ITr.Comment);
 	end;
 	
 	INr.Code = "";
@@ -4529,7 +4529,7 @@ begin
 	  		end;
 			end;
 			logtext(0,INr.Code & " " & INr.Group & "  " & INr.Disp5);
-			//recordstore(INr,true);
+			recordstore(INr,true);
 		end;
 	end;
 

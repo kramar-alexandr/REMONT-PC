@@ -1017,6 +1017,7 @@ LValidateItemDescriptionRows_Polish:;
   return;
 end;
 
+global
 updating procedure CheckAndCreateClass(var string chdir, var string mdir,var string name,string type)
 begin
 	record DIVc DIr,DI2r;

@@ -23,6 +23,7 @@ remote function Boolean IntORchrsum(record IntORVc,Integer);
 remote procedure SumupIntOR(var record IntORVc,var val);
 external function string 255 StrReplace(string,string,string);
 external updating procedure UpdateLoyCard(record SVOVc,record SVOVc);// Edit ************************** BPI Ukraine - KramarAlexandr - 04, 15 03 2018 y. о 19:51:40
+external updating procedure CheckAndCreateClass(var string, var string,var string,string);
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -4551,7 +4552,7 @@ return;
 end;
 
 
-global procedure ItemswithnoclassRn()
+global updating procedure ItemswithnoclassRn()
 begin
 	record SVOVc SVOr;
 	row SVOVc SVOrw;
@@ -4566,7 +4567,7 @@ begin
 	integer acnt,i,a5cnt;
 	record ITVc ITr;
 	vector string 255 ITNames;
-	string 255 newdisp;
+	string 255 newdisp,brandname;
 	
 	startreportnoheaderjob("Товары без классификации");
 	
@@ -4582,6 +4583,25 @@ begin
 	
 	while(loopmain(INr,1,true))begin
 		if(INr.Disp1=="USER" and INr.Disp3=="Устройс001" and (blank(INr.Disp4) or blank(INr.Disp5)))then begin
+			if(nonblank(INr.Disp4))then begin
+				if(nonblank(INr.Group))then begin
+					ITr.Code = INr.Group;
+					if(readfirstmain(ITr,1,true))then begin
+						brandname = trim(ITr.Comment);
+						newdisp = "";
+						INr.Disp5 = brandname;
+						CheckAndCreateClass(INr.Disp5,INr.Disp4,INr.Disp5Name,"DISP5");//Brand
+						if(nonblank(INr.Disp1) and nonblank(INr.Disp2) and nonblank(INr.Disp3) and nonblank(INr.Disp4) and nonblank(INr.Disp5))then begin
+							newdisp = INr.Disp1 & "," & INr.Disp2 & "," & INr.Disp3 & "," & INr.Disp4 & "," & INr.Disp5;
+							if(newdisp!=INr.DispGroups)then begin
+								INr.DispGroups = newdisp;
+								recordstore(INr,true);
+							end;
+						end;
+					end;
+				end;
+				
+			end;
 			startformat(15);
 				outstring(0,"DblINVc",INr.Code,false);
 				outstring(100,0,INr.Name,false);

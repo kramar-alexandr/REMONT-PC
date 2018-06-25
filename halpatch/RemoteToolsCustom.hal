@@ -4549,3 +4549,52 @@ begin
 
 return;
 end;
+
+
+global procedure ItemswithnoclassRn()
+begin
+	record SVOVc SVOr;
+	row SVOVc SVOrw;
+	record INVc INr;
+	vector boolean infound;
+	record DIVc DIr;
+	array string 255 DINames;
+	array string 255 DICodes;
+	array string 255 DI5Names;
+	array string 255 DI5Codes;
+	array string 255 DI5Class;
+	integer acnt,i,a5cnt;
+	record ITVc ITr;
+	vector string 255 ITNames;
+	string 255 newdisp;
+	
+	startreportnoheaderjob("Товары без классификации");
+	
+	startformat(15);
+		outstring(0,0,"Код",false);
+		outstring(100,0,"Название",false);
+		outstring(200,0,"1",false);
+		outstring(225,0,"2",false);
+		outstring(250,0,"3",false);
+		outstring(275,0,"4",false);
+		outstring(300,0,"5",false);
+	endformat;
+	
+	while(loopmain(INr,1,true))begin
+		if(INr.Disp1=="USER" and INr.Disp3=="Устройс001" and (blank(INr.Disp4) or blank(INr.Disp5)))then begin
+			startformat(15);
+				outstring(0,"DblINVc",INr.Code,false);
+				outstring(100,0,INr.Name,false);
+				outstring(200,0,INr.Disp1Name,false);
+				outstring(225,0,INr.Disp2Name,false);
+				outstring(250,0,INr.Disp3Name,false);
+				outstring(275,0,INr.Disp4Name,false);
+				outstring(300,0,INr.Disp5Name,false);
+			endformat;
+		end;
+	end;
+	
+	endjob;
+	
+return;
+end;

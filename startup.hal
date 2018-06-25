@@ -48,6 +48,9 @@ begin
 	Report("LVT Статус клиента",LVTCustRClass,LVTCustRn,0,modSVO);// Edit ************************** BPI Ukraine - KramarAlexandr - Wednesday, 7 March 2018 10:19:48
 	Report("Отчет по продаже Страховки",InsuranceReportRClass,ServiceJobsRn,0,modSVO); // Edit Dima ************* 2018-03-12 12:32 PM
   
+  Report("Товары без классификаторов",InsuranceReportRClass,ItemswithnoclassRn,0,modSVO); // Edit Dima ************* 2018-03-12 12:32 PM
+
+  
   Maintenance("Git HAL Files",MyVClass,GitHALFilesMn,modTC);
   Maintenance("Удалить все записи",CustomRegisterRemoveVClass,CustomRegisterRemoveMn,modDBMain); //Edit***************************Sasha2,11:11 26.05.2017
   Maintenance("Fill SVO Status",MyVClass,FillSVOStatusTextMn,modDBMain);

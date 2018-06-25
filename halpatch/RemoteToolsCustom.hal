@@ -4479,6 +4479,7 @@ begin
 	integer acnt,i,a5cnt;
 	record ITVc ITr;
 	vector string 255 ITNames;
+	string 255 newdisp;
 	
 	DIr.Code = "";
 	while(loopmain(DIr,1,true))begin
@@ -4525,11 +4526,24 @@ begin
 	  		if(DI5Names[i]==ITNames[INr.Group] and DI5Class[i]==INr.Disp4)then begin
 	  			INr.Disp5 = DI5Codes[i];
 	  			INr.Disp5Name = DI5Names[i];
-	  			INr.DispGroups = INr.DispGroups & "," & INr.Disp5;
 	  		end;
 			end;
+			INr.DispGroups = INr.DispGroups & "," & INr.Disp5;
 			logtext(0,INr.Code & " " & INr.Group & "  " & INr.Disp5);
 			recordstore(INr,true);
+		end;
+	end;
+	
+	resetloop(INr);
+	INr.Code = "";
+	while(loopmain(INr,1,true))begin
+		newdisp = "";
+		if(nonblank(INr.Disp1) and nonblank(INr.Disp2) and nonblank(INr.Disp3) and nonblank(INr.Disp4) and nonblank(INr.Disp5) and blank(INr.Disp6))then begin
+			newdisp = INr.Disp1 & "," & INr.Disp2 & "," & INr.Disp3 & "," & INr.Disp4 & "," & INr.Disp5;
+			if(newdisp!=INr.DispGroups)then begin
+				INr.DispGroups = newdisp;
+				recordstore(INr,true);
+			end;
 		end;
 	end;
 

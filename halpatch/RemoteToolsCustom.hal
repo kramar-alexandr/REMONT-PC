@@ -4473,7 +4473,12 @@ begin
 	record DIVc DIr;
 	array string 255 DINames;
 	array string 255 DICodes;
-	integer acnt,i;
+	array string 255 DI5Names;
+	array string 255 DI5Codes;
+	array string 255 DI5Class;
+	integer acnt,i,a5cnt;
+	record ITVc ITr;
+	vector string 255 ITNames;
 	
 	DIr.Code = "";
 	while(loopmain(DIr,1,true))begin
@@ -4483,6 +4488,17 @@ begin
 			logtext(0,"*** " & DINames[acnt] & " " & DICodes[acnt]);
 			acnt = acnt + 1;
 		end;
+		if(DIr.CType=="DISP5")then begin
+			DI5Names[a5cnt] = DIr.Name;
+			DI5Codes[a5cnt] = DIr.Code;
+			DI5Class[a5cnt] = DIr.DispGroups;
+			a5cnt = a5cnt + 1;
+		end;
+	end;
+	
+	ITr.Code = "";
+	while(loopmain(ITr,1,true))begin
+		ITNames[ITr.Code] = ITr.Comment;
 	end;
 	
 	INr.Code = "";
@@ -4498,6 +4514,22 @@ begin
 				Logtext(0,INr.Code & " " & INr.Name & " " & INr.Disp4 & " " & INr.Disp4Name);
 				recordstore(INr,true);
 			end;
+		end;
+	end;
+	resetloop(INr);
+	INr.Code = "";
+	while(loopmain(INr,1,true))begin
+		if(INr.Disp1=="USER" and INr.Disp3=="Устройс001" and nonblank(INr.Disp4) and blank(INr.Disp5))then begin
+			INr.DispGroups = INr.Disp1 & "," & INr.Disp2 & "," & INr.Disp3 & "," & INr.Disp4;
+			For(i=0;i<a5cnt;i=i+1) begin
+	  		if(DI5Names[i]==ITNames[INr.Group] and DI5Class[i]==INr.Disp4)then begin
+	  			INr.Disp5 = DI5Codes[i];
+	  			INr.Disp5Name = DI5Names[i];
+	  			INr.DispGroups = INr.DispGroups & "," & INr.Disp5;
+	  		end;
+			end;
+			logtext(0,INr.Disp5);
+			//recordstore(INr,true);
 		end;
 	end;
 

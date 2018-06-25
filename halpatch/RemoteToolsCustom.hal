@@ -4584,7 +4584,7 @@ begin
 	while(loopmain(INr,1,true))begin
 		if(INr.Disp1=="USER" and INr.Disp3=="Устройс001" and (blank(INr.Disp4) or blank(INr.Disp5)))then begin
 			if(nonblank(INr.Disp4))then begin
-				if(nonblank(INr.Group))then begin
+				/*if(nonblank(INr.Group))then begin
 					ITr.Code = INr.Group;
 					if(readfirstmain(ITr,1,true))then begin
 						brandname = trim(ITr.Comment);
@@ -4599,7 +4599,7 @@ begin
 							end;
 						end;
 					end;
-				end;
+				end;*/
 				
 			end;
 			startformat(15);

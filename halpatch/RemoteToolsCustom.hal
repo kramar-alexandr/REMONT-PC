@@ -4039,6 +4039,79 @@ begin
 return;
 end; //Edit***************************Sasha2,13:36 12.07.2017 }
 
+global
+updating procedure TrimUprcDIVcITVc(record RcVc RepSpec)
+begin
+	record DIVc DIr;
+	record ITVc ITr;
+	string 255 Upperstring;
+	integer Ln, i, cnt;
+	vector integer DIVcRepeat;
+	array string 255 RepeatStr;
+	vector string 255 DIVcRepeatCode;
+	boolean testf;
+	
+	
+	ITr.Code = "";
+    while (LoopMain(ITr,1,true)) begin
+		logtext(0,ITr.Comment & " ITVc Before");
+		ITr.Comment = UpperCase(Trim(ITr.Comment));
+		RecordStore(ITr,true);
+		logtext(0,ITr.Comment & " ITVc After");
+    end;
+	resetloop(ITr);
+	
+	DIr.Code = "";
+    while (LoopMain(DIr,1,true)) begin
+		logtext(0,DIr.Name & " DIVC Before");
+		DIr.Name = Trim(DIr.Name);
+		Upperstring = UpperCase(DIr.Name);
+		ITr.Comment = Upperstring;
+		if(ReadFirstKey("Comment",ITr,1,true))then begin
+			DIr.Name = Upperstring;
+			logtext(0,DIr.Name & " DIVC After uppercace");
+		end else begin
+			Ln = len(DIr.Name)-1;
+			Upperstring = UpperCase(left(DIr.Name,1)) & mid(DIr.Name,1,Ln);
+			DIr.Name = Upperstring;
+		end;
+		RecordStore(DIr,true);
+		logtext(0,DIr.Name & " DIVC After all " & DIr.Code);
+    end;
+	resetloop(DIr);
+	cnt = 0;
+	DIr.Code = "";
+    while(LoopMain(DIr,1,true))begin
+		if(DIVcRepeat[DIr.DispGroups & DIr.CType & DIr.Name]<=0)then begin
+			DIVcRepeat[DIr.DispGroups & DIr.CType & DIr.Name] = 1;
+			DIVcRepeatCode[DIr.DispGroups & DIr.CType & DIr.Name] = DIr.Code & ",";
+		end;
+		if(DIVcRepeat[DIr.DispGroups & DIr.CType & DIr.Name]>0)then begin
+			testf = true;
+			for(i=0;i<=cnt;i=i+1) begin
+				if(RepeatStr[i]==DIr.DispGroups & DIr.CType & DIr.Name)then begin
+					testf = false;
+				end;
+			end;
+			if(testf)then begin RepeatStr[i] = DIr.DispGroups & DIr.CType & DIr.Name; end;
+			DIVcRepeat[DIr.DispGroups & DIr.CType & DIr.Name] = DIVcRepeat[DIr.DispGroups & DIr.CType & DIr.Name] + 1;
+			DIVcRepeatCode[DIr.DispGroups & DIr.CType & DIr.Name] = DIVcRepeatCode[DIr.DispGroups & DIr.CType & DIr.Name] & DIr.Code & ",";
+		end;
+		cnt=cnt+1;
+    end;
+	resetloop(DIr);
+	for(i=0;i<cnt;i=i+1)begin
+		if(DIVcRepeat[RepeatStr[i]]>1)then begin
+			logtext(0,DIVcRepeatCode[RepeatStr[i]] & " Code");
+			logtext(0,RepeatStr[i] & " Body");
+			logtext(0,DIVcRepeat[RepeatStr[i]] & " Qty");
+		end;
+	end;
+return;
+end; 
+
+
+
 global //Edit***************************Sasha2,13:07 01.08.2017 {
 updating procedure ActFromPUIfIntOrExists(record PUVc PUr,boolean delflag)
 begin

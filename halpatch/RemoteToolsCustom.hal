@@ -4462,3 +4462,44 @@ begin
 
 return;
 end;
+
+
+global updating procedure FillDisp4INClass()
+begin
+	record SVOVc SVOr;
+	row SVOVc SVOrw;
+	record INVc INr;
+	vector boolean infound;
+	record DIVc DIr;
+	array string 255 DINames;
+	array string 255 DICodes;
+	integer acnt,i;
+	
+	DIr.Code = "";
+	while(loopmain(DIr,1,true))begin
+		if(DIr.CType=="DISP4" and DIr.DispGroups=="Устройс001")then begin
+			DINames[acnt] = DIr.Name;
+			DICodes[acnt] = DIr.Code;
+			logtext(0,"*** " & DINames[acnt] & " " & DICodes[acnt]);
+			acnt = acnt + 1;
+		end;
+	end;
+	
+	INr.Code = "";
+	while(loopmain(INr,1,true))begin
+		if(INr.Disp1=="USER" and INr.Disp3=="Устройс001" and blank(INr.Disp4))then begin
+			For(i=0;i<acnt;i=i+1) begin
+	  		if(DINames[i]==left(INr.Name,len(DINames[i])))then begin
+	  			INr.Disp4 = DICodes[i];
+	  			INr.Disp4Name = DINames[i];
+	  		end;
+			end; 
+			if(nonblank(INr.Disp4))then begin
+				Logtext(0,INr.Code & " " & INr.Name & " " & INr.Disp4 & " " & INr.Disp4Name);
+				recordstore(INr,true);
+			end;
+		end;
+	end;
+
+return;
+end;

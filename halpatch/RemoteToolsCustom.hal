@@ -4528,7 +4528,7 @@ begin
 	  			INr.DispGroups = INr.DispGroups & "," & INr.Disp5;
 	  		end;
 			end;
-			logtext(0,INr.Disp5);
+			logtext(0,INr.Code & " " & INr.Group & "  " & INr.Disp5);
 			//recordstore(INr,true);
 		end;
 	end;

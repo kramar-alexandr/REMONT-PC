@@ -1026,6 +1026,13 @@ begin
 	longint counter;
 	
 	foundf = false;
+		chdir = trim(chdir);
+		name = trim(name);
+		
+		if(type=="DISP5")then begin
+			name = uppercase(name);
+			chdir = uppercase(chdir);
+		end;
 		
 		if(nonblank(chdir))then begin
 			DIr.Code = chdir;

@@ -4048,9 +4048,10 @@ begin
 	integer Ln, i, cnt;
 	vector integer DIVcRepeat;
 	array string 255 RepeatStr;
-	vector string 255 DIVcRepeatCode;
+	vector string 255 DIVcRepeatCode,DIVcRepeatFirstCode;
 	boolean testf;
-	
+	record INVc INr;
+	boolean changed;
 	
 	ITr.Code = "";
     while (LoopMain(ITr,1,true)) begin
@@ -4082,32 +4083,77 @@ begin
 	cnt = 0;
 	DIr.Code = "";
     while(LoopMain(DIr,1,true))begin
-		if(DIVcRepeat[DIr.DispGroups & DIr.CType & DIr.Name]<=0)then begin
-			DIVcRepeat[DIr.DispGroups & DIr.CType & DIr.Name] = 1;
-			DIVcRepeatCode[DIr.DispGroups & DIr.CType & DIr.Name] = DIr.Code & ",";
-		end;
-		if(DIVcRepeat[DIr.DispGroups & DIr.CType & DIr.Name]>0)then begin
-			testf = true;
-			for(i=0;i<=cnt;i=i+1) begin
-				if(RepeatStr[i]==DIr.DispGroups & DIr.CType & DIr.Name)then begin
-					testf = false;
+			if(DIVcRepeat[DIr.DispGroups & DIr.CType & DIr.Name]>0)then begin
+				testf = true;
+				for(i=0;i<=cnt;i=i+1) begin
+					if(RepeatStr[i]==DIr.DispGroups & DIr.CType & DIr.Name)then begin
+						testf = false;
+					end;
 				end;
+				if(testf)then begin 
+					RepeatStr[cnt] = DIr.DispGroups & DIr.CType & DIr.Name; 
+					cnt=cnt+1;
+				end;
+				DIVcRepeat[DIr.DispGroups & DIr.CType & DIr.Name] = DIVcRepeat[DIr.DispGroups & DIr.CType & DIr.Name] + 1;
+				DIVcRepeatCode[DIr.DispGroups & DIr.CType & DIr.Name] = DIVcRepeatCode[DIr.DispGroups & DIr.CType & DIr.Name] & DIr.Code & ",";
 			end;
-			if(testf)then begin 
-				RepeatStr[cnt] = DIr.DispGroups & DIr.CType & DIr.Name; 
-				cnt=cnt+1;
+			if(DIVcRepeat[DIr.DispGroups & DIr.CType & DIr.Name]<=0)then begin
+				DIVcRepeat[DIr.DispGroups & DIr.CType & DIr.Name] = 1;
+				DIVcRepeatFirstCode[DIr.DispGroups & DIr.CType & DIr.Name] = DIr.Code;
 			end;
-			DIVcRepeat[DIr.DispGroups & DIr.CType & DIr.Name] = DIVcRepeat[DIr.DispGroups & DIr.CType & DIr.Name] + 1;
-			DIVcRepeatCode[DIr.DispGroups & DIr.CType & DIr.Name] = DIVcRepeatCode[DIr.DispGroups & DIr.CType & DIr.Name] & DIr.Code & ",";
-		end;
 		
     end;
 	resetloop(DIr);
-	for(i=0;i<cnt;i=i+1)begin
-		if(DIVcRepeat[RepeatStr[i]]>1)then begin
-			logtext(0,DIVcRepeatCode[RepeatStr[i]] & " Code");
-			logtext(0,RepeatStr[i] & " Body");
-			logtext(0,DIVcRepeat[RepeatStr[i]] & " Qty");
+	
+	INr.Code = "";
+	while(loopmain(INr,1,true))begin
+		changed = false;
+		for(i=0;i<cnt;i=i+1)begin
+			if(DIVcRepeat[RepeatStr[i]]>1)then begin
+				if(nonblank(INr.Disp1) and setinset(INr.Disp1,DIVcRepeatCode[RepeatStr[i]]))then begin
+					INr.Disp1 = DIVcRepeatFirstCode[RepeatStr[i]];
+					changed = true;
+				end;
+				if(nonblank(INr.Disp2) and setinset(INr.Disp2,DIVcRepeatCode[RepeatStr[i]]))then begin
+					INr.Disp2 = DIVcRepeatFirstCode[RepeatStr[i]];
+					changed = true;
+				end;
+				if(nonblank(INr.Disp3) and setinset(INr.Disp3,DIVcRepeatCode[RepeatStr[i]]))then begin
+					INr.Disp3 = DIVcRepeatFirstCode[RepeatStr[i]];
+					changed = true;
+				end;
+				if(nonblank(INr.Disp4) and setinset(INr.Disp4,DIVcRepeatCode[RepeatStr[i]]))then begin
+					INr.Disp4 = DIVcRepeatFirstCode[RepeatStr[i]];
+					changed = true;
+				end;
+				if(nonblank(INr.Disp5) and setinset(INr.Disp5,DIVcRepeatCode[RepeatStr[i]]))then begin
+					INr.Disp5 = DIVcRepeatFirstCode[RepeatStr[i]];
+					changed = true;
+				end;
+				if(nonblank(INr.Disp6) and setinset(INr.Disp6,DIVcRepeatCode[RepeatStr[i]]))then begin
+					INr.Disp6 = DIVcRepeatFirstCode[RepeatStr[i]];
+					changed = true;
+				end;
+				
+				
+			end;
+		end;
+	end;
+	if(changed)then begin
+		recordstore(INr,true);
+		logtext(0,"INr stored " & INr.Code);
+	end;
+	
+	DIr.Code = "";
+	while(loopmain(DIr,1,true))begin
+		for(i=0;i<cnt;i=i+1)begin
+			if(DIVcRepeat[RepeatStr[i]]>1)then begin
+				if(setinset(DIr.Code,DIVcRepeatCode[RepeatStr[i]]))then begin
+					logtext(0,"Delete DIr " & DIr.Code & " name = " & DIr.Name);
+					recorddelete(DIr);
+					StepBack(DIr);
+				end;
+			end;
 		end;
 	end;
 return;

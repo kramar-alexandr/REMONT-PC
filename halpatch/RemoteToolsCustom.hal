@@ -4093,11 +4093,14 @@ begin
 					testf = false;
 				end;
 			end;
-			if(testf)then begin RepeatStr[i] = DIr.DispGroups & DIr.CType & DIr.Name; end;
+			if(testf)then begin 
+				RepeatStr[cnt] = DIr.DispGroups & DIr.CType & DIr.Name; 
+				cnt=cnt+1;
+			end;
 			DIVcRepeat[DIr.DispGroups & DIr.CType & DIr.Name] = DIVcRepeat[DIr.DispGroups & DIr.CType & DIr.Name] + 1;
 			DIVcRepeatCode[DIr.DispGroups & DIr.CType & DIr.Name] = DIVcRepeatCode[DIr.DispGroups & DIr.CType & DIr.Name] & DIr.Code & ",";
 		end;
-		cnt=cnt+1;
+		
     end;
 	resetloop(DIr);
 	for(i=0;i<cnt;i=i+1)begin

@@ -4053,7 +4053,7 @@ begin
 	record INVc INr;
 	boolean changed;
 	
-	ITr.Code = "";
+	/*ITr.Code = "";
     while (LoopMain(ITr,1,true)) begin
 		logtext(0,ITr.Comment & " ITVc Before");
 		ITr.Comment = UpperCase(Trim(ITr.Comment));
@@ -4138,11 +4138,12 @@ begin
 				
 			end;
 		end;
+		if(changed)then begin
+			recordstore(INr,true);
+			logtext(0,"INr stored " & INr.Code);
+		end;
 	end;
-	if(changed)then begin
-		recordstore(INr,true);
-		logtext(0,"INr stored " & INr.Code);
-	end;
+	
 	
 	DIr.Code = "";
 	while(loopmain(DIr,1,true))begin
@@ -4155,7 +4156,22 @@ begin
 				end;
 			end;
 		end;
+	end;*/
+	
+	INr.Code = "";
+	while(loopmain(INr,1,true))begin
+		INr.Disp1 = uppercase(INr.Disp1);
+		INr.Disp2 = uppercase(INr.Disp2);
+		INr.Disp3 = uppercase(INr.Disp3);
+		INr.Disp4 = uppercase(INr.Disp4);
+		INr.Disp5 = uppercase(INr.Disp5);
+		INr.Disp6 = uppercase(INr.Disp6);
+		
+		INr.DispGroups = uppercase(INr.DispGroups);
+		recordstore(INr,true);
+		
 	end;
+	
 return;
 end; 
 

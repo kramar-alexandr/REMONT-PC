@@ -4564,7 +4564,7 @@ begin
 							INr.Disp2 = "SKLADU";
 							INr.Disp2Name = "Складируемый товар";
 							if(blank(INr.Disp3))then begin
-								INr.Disp3 = "Устройс001";
+								INr.Disp3 = "УСТРОЙС001";
 								INr.Disp3Name = "Устройство клиента";
 							end;
 							if(blank(INr.Disp1))then begin
@@ -4606,7 +4606,7 @@ begin
 	
 	DIr.Code = "";
 	while(loopmain(DIr,1,true))begin
-		if(DIr.CType=="DISP4" and DIr.DispGroups=="Устройс001")then begin
+		if(DIr.CType=="DISP4" and DIr.DispGroups=="УСТРОЙС001")then begin
 			DINames[acnt] = trim(DIr.Name);
 			DICodes[acnt] = DIr.Code;
 			logtext(0,"*** " & DINames[acnt] & " " & DICodes[acnt]);
@@ -4627,7 +4627,7 @@ begin
 	
 	INr.Code = "";
 	while(loopmain(INr,1,true))begin
-		if(INr.Disp1=="USER" and INr.Disp3=="Устройс001" and blank(INr.Disp4))then begin
+		if(INr.Disp1=="USER" and INr.Disp3=="УСТРОЙС001" and blank(INr.Disp4))then begin
 			For(i=0;i<acnt;i=i+1) begin
 	  		if(DINames[i]==left(INr.Name,len(DINames[i])))then begin
 	  			INr.Disp4 = DICodes[i];
@@ -4643,7 +4643,7 @@ begin
 	resetloop(INr);
 	INr.Code = "";
 	while(loopmain(INr,1,true))begin
-		if(INr.Disp1=="USER" and INr.Disp3=="Устройс001" and nonblank(INr.Disp4) and blank(INr.Disp5))then begin
+		if(INr.Disp1=="USER" and INr.Disp3=="УСТРОЙС001" and nonblank(INr.Disp4) and blank(INr.Disp5))then begin
 			INr.DispGroups = INr.Disp1 & "," & INr.Disp2 & "," & INr.Disp3 & "," & INr.Disp4;
 			For(i=0;i<a5cnt;i=i+1) begin
 	  		if(DI5Names[i]==ITNames[INr.Group] and DI5Class[i]==INr.Disp4)then begin
@@ -4704,7 +4704,7 @@ begin
 	endformat;
 	
 	while(loopmain(INr,1,true))begin
-		if(INr.Disp1=="USER" and INr.Disp3=="Устройс001" and (blank(INr.Disp4) or blank(INr.Disp5)))then begin
+		if(INr.Disp1=="USER" and INr.Disp3=="УСТРОЙС001" and (blank(INr.Disp4) or blank(INr.Disp5)))then begin
 			if(nonblank(INr.Disp4))then begin
 				/*if(nonblank(INr.Group))then begin
 					ITr.Code = INr.Group;

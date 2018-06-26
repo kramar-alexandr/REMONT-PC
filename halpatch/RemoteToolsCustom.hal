@@ -4176,6 +4176,112 @@ return;
 end; 
 
 
+global updating procedure FixItemDiso()
+begin
+	record INVc INr;
+	record DIVc DIr;
+	array string 100 dicodes;
+	integer acnt,i;
+	boolean found,TrHs;
+	
+	while (TestEOF==false) begin
+    dicodes[acnt] = ImportField;
+    acnt = acnt + 1;
+    if (NextImportLine(true)) then begin
+    end;
+  end;
+	
+	INr.Code = "";
+	while(loopmain(INr,1,true))begin
+		found = false;
+		if(nonblank(INr.DispGroups))then begin
+			For(i=0;i<acnt;i=i+1) begin
+	  		if(nonblank(dicodes[i]))then begin
+	  			if(setinset(dicodes[i],INr.DispGroups))then begin
+	  				if(INr.Disp3==dicodes[i])then begin
+	  					DIr.Name = trim(INr.Disp3Name);
+	  					TrHs = true;
+	  					while(loopkey("Name",DIr,1,TrHs))begin
+	  						if(DIr.Name!=trim(INr.Disp3Name))then begin TrHs = false; end;
+	  						if(TrHs and DIr.CType=="DISP3" and DIr.DispGroups==INr.Disp2)then begin
+	  							INr.Disp3 = DIr.Code;
+	  						end;
+	  					end;
+	  					resetloop(DIr);
+	  				end;
+	  				
+	  				if(INr.Disp4==dicodes[i])then begin
+	  					DIr.Name = trim(INr.Disp4Name);
+	  					TrHs = true;
+	  					while(loopkey("Name",DIr,1,TrHs))begin
+	  						if(DIr.Name!=trim(INr.Disp4Name))then begin TrHs = false; end;
+	  						if(TrHs and DIr.CType=="DISP4" and DIr.DispGroups==INr.Disp3)then begin
+	  							INr.Disp4 = DIr.Code;
+	  						end;
+	  					end;
+	  					resetloop(DIr);
+	  				end;
+	  				
+	  				if(INr.Disp5==dicodes[i])then begin
+	  					DIr.Name = trim(INr.Disp5Name);
+	  					TrHs = true;
+	  					while(loopkey("Name",DIr,1,TrHs))begin
+	  						if(DIr.Name!=trim(INr.Disp5Name))then begin TrHs = false; end;
+	  						if(TrHs and DIr.CType=="DISP5" and DIr.DispGroups==INr.Disp4)then begin
+	  							INr.Disp5 = DIr.Code;
+	  						end;
+	  					end;
+	  					resetloop(DIr);
+	  				end;
+	  				
+	  				if(INr.Disp6==dicodes[i])then begin
+	  					DIr.Name = trim(INr.Disp6Name);
+	  					TrHs = true;
+	  					while(loopkey("Name",DIr,1,TrHs))begin
+	  						if(DIr.Name!=trim(INr.Disp6Name))then begin TrHs = false; end;
+	  						if(TrHs and DIr.CType=="DISP6" and DIr.DispGroups==INr.Disp5)then begin
+	  							INr.Disp6 = DIr.Code;
+	  						end;
+	  					end;
+	  					resetloop(DIr);
+	  				end;
+	  				
+	  				found = true;
+	  			end;
+	  		end;
+			end; 
+		end;
+		
+		if(found)then begin
+			logtext(0,INr.Code & "OldClass  " & INr.DispGroups);
+			if(nonblank(INr.Disp1))then begin
+				INr.DispGroups = INr.Disp1;
+			end;
+			if(nonblank(INr.Disp2))then begin
+				INr.DispGroups = INr.DispGroups & "," & INr.Disp2;
+			end;
+			if(nonblank(INr.Disp3))then begin
+				INr.DispGroups = INr.DispGroups & "," & INr.Disp3;
+			end;
+			if(nonblank(INr.Disp4))then begin
+				INr.DispGroups = INr.DispGroups & "," & INr.Disp4;//Item Type Name
+			end;
+			if(nonblank(INr.Disp5))then begin
+				INr.DispGroups = INr.DispGroups & "," & INr.Disp5;//Brand
+			end;
+			if(nonblank(INr.Disp6))then begin
+				INr.DispGroups = INr.DispGroups & "," & INr.Disp6;//Product Code
+			end;
+			logtext(0,INr.Code & "NewClass  " & INr.DispGroups);
+			logtext(0,"*****");
+		end;
+	end;
+
+
+return;
+end;
+
+
 
 global //Edit***************************Sasha2,13:07 01.08.2017 {
 updating procedure ActFromPUIfIntOrExists(record PUVc PUr,boolean delflag)

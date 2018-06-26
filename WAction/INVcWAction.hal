@@ -208,7 +208,7 @@ begin
     	if(readfirstmain(DIr,1,true))then begin
     		INr.Disp2Name = DIr.Name;
     	end;
-    	INr.Disp3 = "“סענמיס001";
+    	INr.Disp3 = "“‘’‰‘001";
     	DIr.Code = INr.Disp3;
     	if(readfirstmain(DIr,1,true))then begin
     		INr.Disp3Name = DIr.Name;

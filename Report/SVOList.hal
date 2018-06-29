@@ -329,16 +329,24 @@ begin
 			DIr.Code = "";
 			while(loopmain(DIr,1,true))begin
 				if(DIr.CType=="DISP4" and DIr.Name==RepSpec.f9)then begin
-					NameStr = NameStr & DIr.Code;
+					NameStr = NameStr & DIr.Code & ";";
 				end;
 			end;
+			ResetLoop(DIr);
 			INr.Code = SVorw.ArtCode;
 			if(ReadFirstMain(INr,1,true))then begin
-				//logtext(0,"Ent");
-				if(setinset(INr.Disp4,NameStr))then begin testf = true; end;
-				if(setinset(INr.Disp4,NameStr))then begin testf = true; end;
-				if(setinset(INr.Disp4,NameStr))then begin testf = true; end;
-				if(setinset(INr.Disp4,NameStr))then begin testf = true; end;
+				if(nonblank(INr.Disp4))then begin
+					if(setinset(trim(INr.Disp4),NameStr))then begin testf = true; end;
+				end;
+				if(nonblank(INr.Disp3))then begin
+					if(setinset(trim(INr.Disp3),NameStr))then begin testf = true; end;
+				end;
+				if(nonblank(INr.Disp2))then begin
+					if(setinset(trim(INr.Disp2),NameStr))then begin testf = true; end;
+				end;
+				if(nonblank(INr.Disp1))then begin
+					if(setinset(trim(INr.Disp1),NameStr))then begin testf = true; end;
+				end;
 			end;
 		end;
 		

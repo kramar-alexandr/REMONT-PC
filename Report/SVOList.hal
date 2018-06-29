@@ -211,6 +211,8 @@ begin
 	val sumsvo,qtysvo;
 	record UserVc User;
 	record INVc INr;
+	record DIVc Dir;
+	string 255 NameStr;
 	
 	if(usercanaction("SVOListGroupAcces",false)==false)then begin
 		User.Code = currentuser;
@@ -321,6 +323,21 @@ begin
 		end;
 		if(nonblank(RepSpec.f8) and !setinset(RepSpec.f8,INr.DispGroups))then begin
 			testf = false;
+		end;
+		if(nonblank(RepSpec.f9))then begin
+			testf = false;
+			DIr.Code = "";
+			while(loopmain(DIr,1,true))begin
+				if(DIr.CType=="DISP4" and DIr.Name==RepSpec.f9)then begin
+					NameStr = NameStr & DIr.Code;
+				end;
+			end;
+			if(setinset(SVorw.ArtCode,NameStr))then begin
+				INr.Code = SVorw.ArtCode;
+				if(ReadFirstMain(INr,1,true))then begin
+					if(setinset(INr.Disp4,RepSpec.f9))then begin testf = true; end;
+				end;
+			end;
 		end;
 		
 		

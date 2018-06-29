@@ -8049,8 +8049,9 @@ begin
   EditFieldTL(150,v+=vs ,100,"Товар",M4Code,Normal,50,f6,false,INSClass);
   EditFieldTL(150,v+=vs ,100,"Группа",M4Code,Normal,50,f7,false,ITSClass);
   EditFieldTL(150,v+=vs ,-20,"Классификация",M4UStr,Normal,50,f8,false,DISClass);
+  EditFieldTL(150,v+=vs ,-20,"Имя классификации",M4UStr,Normal,50,f9,false,DI2SClass);
   
-  v=230;
+  v=250;
   ButtonFrame(h=12,vm=(v),123,4,"Сортировать за датой"); //Edit***************************Sasha2,14:55 15.05.2017 {
   RadioButton(h,v,0,0,"Дата заказа",ArtMode);
   RadioButton(h,v+=16,1,0,"Дата оконч.диагн.",ArtMode);
@@ -8063,7 +8064,7 @@ begin
   RadioButton(h,v+=16,1,0,"Только KIVI",flags[19]);
   RadioButton(h,v+=16,2,0,"Все",flags[19]);
   
-  v=230;
+  v=250;
   ButtonFrame(h+=148,v,123,13,"Статус");  
   CheckBox(h,v,0,"Предварит.",flags[13]);//9
   CheckBox(h,v+=16,0,"В ожидании",flags[1]);//0
@@ -8080,7 +8081,7 @@ begin
   CheckBox(h,v+=16,0,"Отказ",flags[12]);//6 //Edit***************************Sasha2,14:55 15.05.2017 }
   
   //**************** NOT USED FLAGS : 5 7 8 18 19-.. ****************
-  v=230;
+  v=250;
   ButtonFrame(h+=148,v,123,3,"Завершено");
   CheckBox(h,v,0,"Нет",flags[4]);
   //CheckBox(h,v+=16,0,"Част. выполнен",flags[5]);  //origin field
@@ -9936,7 +9937,7 @@ v = 6;
   RadioButton(h1,v,0,0,"не изменять",UpdateCost);
   RadioButton(h1,v+=16,1,0,"на ст-ть посл.покупки,вкл.накл.з.",UpdateCost);
   RadioButton(h1,v+=16,2,0,"на средневзвешенную",UpdateCost);
-  RadioButton(h1,v+=16,3,0,"на цену посл.покупки,искл.накл.з.)",UpdateCost);
+  RadioButton(h1,v+=16,3,0,"на цену посл.покупки,искл.накл.з.",UpdateCost);
   ButtonFrame(h5=540,v=v-3*16,200,3,"Обнов.стоим. по переоц.");
   RadioButton(h5,v,0,0,"не обновлять",SRUpdateCost);
   RadioButton(h5,v+=16,1,0,"стоим. последн. переоценки",SRUpdateCost);
@@ -10161,6 +10162,21 @@ begin
     CalculatedColumn(-140,-140,"Раздел","DIMotherDI",false); // Edit ************************** BPI Ukraine - KramarAlexandr - Wednesday, 6 December 2017 16:44:30
   end;
   SearchField("Поиск");
+  EndWindow;
+end;
+
+
+
+window DI2SClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer") 
+begin
+  WindowBegin("Paste name of classification",DI2SClass,CGother,HBlRecType); 
+  SetWRect(8,80,300,441);
+  DataList(9,20,-22,-6,"PDIDL"); 
+  DataListColumn(1,4,90,AdjRight,"Name","Имя",M4Code); 
+  DataListColumn(1,100,170,AdjLeft,"Code","Код",M4Str); 
+  DataListColumn(1,175,270,AdjLeft,"CType","Тип",M4Str);
+  SearchField("Поиск"); 
   EndWindow;
 end;
 

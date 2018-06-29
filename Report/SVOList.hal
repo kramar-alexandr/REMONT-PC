@@ -336,6 +336,9 @@ begin
 				INr.Code = SVorw.ArtCode;
 				if(ReadFirstMain(INr,1,true))then begin
 					if(setinset(INr.Disp4,RepSpec.f9))then begin testf = true; end;
+					if(setinset(INr.Disp3,RepSpec.f9))then begin testf = true; end;
+					if(setinset(INr.Disp2,RepSpec.f9))then begin testf = true; end;
+					if(setinset(INr.Disp1,RepSpec.f9))then begin testf = true; end;
 				end;
 			end;
 		end;

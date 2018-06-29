@@ -332,14 +332,13 @@ begin
 					NameStr = NameStr & DIr.Code;
 				end;
 			end;
-			if(setinset(SVorw.ArtCode,NameStr))then begin
-				INr.Code = SVorw.ArtCode;
-				if(ReadFirstMain(INr,1,true))then begin
-					if(setinset(INr.Disp4,RepSpec.f9))then begin testf = true; end;
-					if(setinset(INr.Disp3,RepSpec.f9))then begin testf = true; end;
-					if(setinset(INr.Disp2,RepSpec.f9))then begin testf = true; end;
-					if(setinset(INr.Disp1,RepSpec.f9))then begin testf = true; end;
-				end;
+			INr.Code = SVorw.ArtCode;
+			if(ReadFirstMain(INr,1,true))then begin
+				//logtext(0,"Ent");
+				if(setinset(INr.Disp4,NameStr))then begin testf = true; end;
+				if(setinset(INr.Disp4,NameStr))then begin testf = true; end;
+				if(setinset(INr.Disp4,NameStr))then begin testf = true; end;
+				if(setinset(INr.Disp4,NameStr))then begin testf = true; end;
 			end;
 		end;
 		

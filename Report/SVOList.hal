@@ -324,17 +324,20 @@ begin
 		if(nonblank(RepSpec.f8) and !setinset(RepSpec.f8,INr.DispGroups))then begin
 			testf = false;
 		end;
-		if(nonblank(RepSpec.f9))then begin
+		if(nonblank(RepSpec.f9) and testf)then begin
 			testf = false;
 			DIr.Code = "";
 			while(loopmain(DIr,1,true))begin
-				if(DIr.CType=="DISP4" and DIr.Name==RepSpec.f9)then begin
-					NameStr = NameStr & DIr.Code & ";";
+				if(DIr.CType=="DISP4" and uppercase(trim(DIr.Name))==uppercase(RepSpec.f9))then begin
+					NameStr = NameStr & DIr.Code & ",";
 				end;
 			end;
 			ResetLoop(DIr);
 			INr.Code = SVorw.ArtCode;
 			if(ReadFirstMain(INr,1,true))then begin
+				if(nonblank(INr.Disp5))then begin
+					if(setinset(trim(INr.Disp5),NameStr))then begin testf = true; end;
+				end;
 				if(nonblank(INr.Disp4))then begin
 					if(setinset(trim(INr.Disp4),NameStr))then begin testf = true; end;
 				end;

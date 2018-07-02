@@ -276,6 +276,16 @@ begin
       SVOr.TransDate = afr;
   end;
   
+  if(nonblank(RepSpec.f9))then begin
+		DIr.Code = "";
+		while(loopmain(DIr,1,true))begin
+			if(DIr.CType=="DISP4" and uppercase(trim(DIr.Name))==uppercase(RepSpec.f9))then begin
+				NameStr = NameStr & DIr.Code & ",";
+			end;
+		end;
+		ResetLoop(DIr);
+	end;
+  
   loops = 0;
   TrHs = true;
   SVOr.TransDate = afr;
@@ -326,13 +336,6 @@ begin
 		end;
 		if(nonblank(RepSpec.f9) and testf)then begin
 			testf = false;
-			DIr.Code = "";
-			while(loopmain(DIr,1,true))begin
-				if(DIr.CType=="DISP4" and uppercase(trim(DIr.Name))==uppercase(RepSpec.f9))then begin
-					NameStr = NameStr & DIr.Code & ",";
-				end;
-			end;
-			ResetLoop(DIr);
 			INr.Code = SVorw.ArtCode;
 			if(ReadFirstMain(INr,1,true))then begin
 				if(nonblank(INr.Disp5))then begin

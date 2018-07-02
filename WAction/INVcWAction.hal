@@ -1538,8 +1538,8 @@ begin
     for (i=0;i<astr.length;i=i+1) begin
       AddListRow(wn,"PDIDL",1,astr[i],0);
       AddListData(wn,"PDIDL","Name",astr[i]);
-      AddListData(wn,"PDIDL","Code",astr2[i]);
-      AddListData(wn,"PDIDL","CType",astr3[i]);
+      //AddListData(wn,"PDIDL","Code",astr2[i]);
+      //AddListData(wn,"PDIDL","CType",astr3[i]);
     end;
  
   DI2SClassOnOpenWindow = false;

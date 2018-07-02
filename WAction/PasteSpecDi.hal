@@ -55,6 +55,7 @@ external function Boolean UserCanChangePendingRecord(Integer);
 remote updating procedure HandleWSReceiptPrinting(record WSVc,var area);//Edit----------------------Dima  21.09.2015
 remote procedure HandleIVReceiptPrinting(record IVVc,var area);//Edit----------------------Dima  21.09.2015
 remote updating procedure HandleSVOReceiptPrinting(record SVOVc,var area); //Edit***************************Sasha2,13:20 13.10.2016
+external procedure MySortStringArray(var array string,integer);
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -65,17 +66,24 @@ BEGIN
   record LocationVc Locationr;
   Boolean testf;
   integer i;
+  vector boolean vName;
   
     DIr.Code = "";
 	i = 0;
 	while (LoopMain(DIr,1,true)) begin
-		if(SetInSet(name,DIr.Name) and DIr.CType=="DISP4")then begin
-			astr[i] = DIr.Name;
-			astr2[i] = DIr.Code;
-			astr3[i] = DIr.CType;
-			i=i+1;
+		if(nonblank(DIr.Name))then begin
+			if(SetInSet(name,DIr.Name) and DIr.CType=="DISP4")then begin
+				if(vName[uppercase(trim(DIr.Name))]==false)then begin
+					vName[uppercase(trim(DIr.Name))] = true;
+					astr[i] = trim(DIr.Name);
+					astr2[i] = DIr.Code;
+					astr3[i] = DIr.CType;
+					i=i+1;
+				end;
+			end;
 		end;
 	end;
+	MySortStringArray(astr,i);
  
   RETURN;
 END;

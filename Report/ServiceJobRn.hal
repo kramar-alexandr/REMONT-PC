@@ -2699,12 +2699,32 @@ begin
 	
 	StartReportnoheaderJob("BinotelTrackListRn");
 	
+	startformat(15);
+			outstring(0,0,"#",false);
+			outstring(50,0,"Call Type",false);
+			outstring(100,0,"Domen",false);
+			outstring(150,0,"Full url",false);
+			outstring(150,0,"Source",false);
+			outstring(150,0,"Medium",false);
+			outstring(150,0,"Campain",false);
+			outstring(150,0,"Content",false);
+			outstring(150,0,"Term",false);
+			outstring(1,0,"Date",true);
+		endformat;
+	
 	while(loopmain(BCEr,1,true))begin
 		if(nonblank(BCEr.CTdomain))then begin
 			startformat(15);
 				outstring(0,"DblBCEr",BCEr.SerNr,false);
 				outstring(50,0,"CallTracking",false);
 				outstring(100,0,BCEr.CTdomain,false);
+				outstring(150,0,BCEr.CTfullUrl,false);
+				outstring(150,0,BCEr.CTutmsource,false);
+				outstring(150,0,BCEr.CTutmmedium,false);
+				outstring(150,0,BCEr.CTutmcampaign,false);
+				outstring(150,0,BCEr.CTutmcontent,false);
+				outstring(150,0,BCEr.CTutmterm,false);
+				
 				outstring(1,0,BCEr.TransDate,true);
 			endformat;
 			phi = phi +1;
@@ -2714,6 +2734,14 @@ begin
 				outstring(0,"DblBCEr",BCEr.SerNr,false);
 				outstring(150,0,"Get Call Detail",false);
 				outstring(200,0,BCEr.gCDdomain,false);
+				
+				outstring(150,0,BCEr.gCDfullUrl,false);
+				outstring(150,0,BCEr.gCDutm_source,false);
+				outstring(150,0,BCEr.gCDutm_medium,false);
+				outstring(150,0,BCEr.gCDutm_campaign,false);
+				outstring(150,0,BCEr.gCDutm_content,false);
+				outstring(150,0,BCEr.gCDutm_term,false);
+				
 				outstring(1,0,BCEr.TransDate,true);
 				svi = svi +1;
 			endformat;

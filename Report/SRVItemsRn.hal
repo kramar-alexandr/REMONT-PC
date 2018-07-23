@@ -2,7 +2,7 @@ external function boolean KIVIFound(record SVOVc);
 
 SetLangMode(LangRussian,"RUS",0);
 
-procedure MySortStringArray(var array string astr,integer cnt)
+global procedure MySortStringArray(var array string astr,integer cnt)
 begin
 	integer i,j;
 	string 100 tmp1,tmp2;

@@ -11,7 +11,7 @@ external function Time TimeDiff(Time,Time);// Edit ************************** Tu
 external procedure ExtractObj(string,var Integer,var string);
 external procedure MySortStringArray(var array string,integer);
 external function boolean KIVIFound(record SVOVc);// Edit ************************** BPI Ukraine - KramarAlexandr - Friday, 30 March 2018 11:36:17
-
+external procedure FindKIVIModel(var record INVc,String,string,var string,var string);
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -203,7 +203,7 @@ begin
   Boolean wonotmade,TrHs1;// Edit ************************** Tuesday, 11 October 2011 16:11:25
   record WSVc WSr;
   row WSVc WSrw;
-  string 255 serial,artcode;// Edit ************************** Tuesday, 11 October 2011 16:03:06
+  string 255 serial,artcode,diagstr,partnum;// Edit ************************** Tuesday, 11 October 2011 16:03:06
   string 20 key;
   date compareDate;
   record IntSerBalVc ISBr;// Edit ************************** Friday, 23 June 2017 16:51:36
@@ -211,6 +211,8 @@ begin
 	val sumsvo,qtysvo;
 	record UserVc User;
 	record INVc INr;
+	record DIVc Dir;
+	string 255 NameStr;
 	
 	if(usercanaction("SVOListGroupAcces",false)==false)then begin
 		User.Code = currentuser;
@@ -238,9 +240,11 @@ begin
     OutString(300,0,"Телефон",false);
     OutString(340,0,"Дата",false);
     OutString(1,0,"Статус",true);
-    if(RepSpec.Media==mtExcel)then begin
+    if(RepSpec.Media==mtExcel or RepSpec.Media==mtClipboard)then begin
     	OutString(1,0,"Устройство",true);
-    	OutString(1,0,"Назваине",true);
+    	OutString(1,0,"Название",true);
+		OutString(1,0,"Модель",true);
+		OutString(1,0,"Диагональ",true);
     	OutString(1,0,"На складе",true);
     	OutString(0,0,"Жалобы",false);
     	OutString(0,0,"Внешний вид",false);
@@ -271,6 +275,16 @@ begin
       key = "TransDate";
       SVOr.TransDate = afr;
   end;
+  
+  if(nonblank(RepSpec.f9))then begin
+		DIr.Code = "";
+		while(loopmain(DIr,1,true))begin
+			if(DIr.CType=="DISP4" and uppercase(trim(DIr.Name))==uppercase(RepSpec.f9))then begin
+				NameStr = NameStr & DIr.Code & ",";
+			end;
+		end;
+		ResetLoop(DIr);
+	end;
   
   loops = 0;
   TrHs = true;
@@ -320,7 +334,27 @@ begin
 		if(nonblank(RepSpec.f8) and !setinset(RepSpec.f8,INr.DispGroups))then begin
 			testf = false;
 		end;
-		logtext(0,SVOr.SerNr & " " & testf);
+		if(nonblank(RepSpec.f9) and testf)then begin
+			testf = false;
+			INr.Code = SVorw.ArtCode;
+			if(ReadFirstMain(INr,1,true))then begin
+				if(nonblank(INr.Disp5))then begin
+					if(setinset(trim(INr.Disp5),NameStr))then begin testf = true; end;
+				end;
+				if(nonblank(INr.Disp4))then begin
+					if(setinset(trim(INr.Disp4),NameStr))then begin testf = true; end;
+				end;
+				if(nonblank(INr.Disp3))then begin
+					if(setinset(trim(INr.Disp3),NameStr))then begin testf = true; end;
+				end;
+				if(nonblank(INr.Disp2))then begin
+					if(setinset(trim(INr.Disp2),NameStr))then begin testf = true; end;
+				end;
+				if(nonblank(INr.Disp1))then begin
+					if(setinset(trim(INr.Disp1),NameStr))then begin testf = true; end;
+				end;
+			end;
+		end;
 		
 		
     
@@ -331,7 +365,6 @@ begin
     if (RepSpec.flags[6]==0) then begin /* Completed  */
       if (SVOr.DoneMark!=0) then begin testf = false; end;
     end;
-    logtext(0,SVOr.SerNr & "   " & testf);
     
     if (testf) then begin 
       testf = false; 
@@ -426,15 +459,14 @@ begin
 					OutString(1,0,SVOr.StatusText,true);
 					//OutString(260,0,SVOrw.Spec,false);
 				
-				if(RepSpec.Media!=mtExcel)then begin
+				if(RepSpec.Media!=mtExcel and RepSpec.Media!=mtClipboard)then begin
 					EndFormat;
 				end;
-				if(RepSpec.Media!=mtExcel)then begin
+				if(RepSpec.Media!=mtExcel and RepSpec.Media!=mtClipboard)then begin
 					StartFormat(15);
 						OutString(0,0,"Устройство:",false);
 						OutString(50,0,SVOrw.ArtCode,false);	
-						OutString(150,0,SVOrw.Spec,false);	
-					
+						OutString(150,0,SVOrw.Spec,false);
 						if(nonblank(SVOrw.ArtCode) and nonblank(SVOrw.SerialNr))then begin
 							ISBr.Item = SVOrw.ArtCode;
 							ISBr.Serial = SVOrw.SerialNr;
@@ -461,6 +493,14 @@ begin
 				end else begin
 					OutString(50,0,SVOrw.ArtCode,false);	
 					OutString(150,0,SVOrw.Spec,false);
+					if(KIVIFound(SVOr))then begin
+						FindKIVIModel(INr,SVOrw.ArtCode,SVOrw.Spec,diagstr,partnum);
+						outstring(200,0,partnum,false);
+						outstring(250,0,diagstr,false);
+					end else begin
+						outstring(200,0,"",false);
+						outstring(250,0,"",false);
+					end;
 					if(nonblank(SVOrw.ArtCode) and nonblank(SVOrw.SerialNr))then begin
 						ISBr.Item = SVOrw.ArtCode;
 						ISBr.Serial = SVOrw.SerialNr;
@@ -488,7 +528,7 @@ begin
 				end;
 				
 				
-				if(RepSpec.Media!=mtExcel)then begin
+				if(RepSpec.Media!=mtExcel and RepSpec.Media!=mtClipboard)then begin
 					StartFormat(15);
 						OutString(0,0,"Жалобы:",false);
 						OutString(50,0,SVOr.Comment1,false);	

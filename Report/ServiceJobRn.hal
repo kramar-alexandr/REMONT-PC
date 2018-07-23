@@ -279,6 +279,17 @@ begin
 return;
 end;
 
+function string 200 GetSVOItemName(record SVOVc SVOr)
+begin
+ row SVOVc SVOrw;
+ 
+	if(matrowcnt(SVOr)>0)then begin
+		matrowget(SVOr,0,SVOrw);
+	end;
+	GetSVOItemName = SVOrw.Spec;
+return;
+end;
+
 global procedure ServiceJobsRnProc(record RcVc RepSpec,var integer mancnt,var integer ingcnt,var vector val vIngSum,var vector val vManSum,var array string aing,var array string aman)
 begin
 	record INVc INr;
@@ -703,18 +714,34 @@ begin
 		MySortLngIntArray(asvonr,k);
 		
 		if (RepSpec.flags[26]==0) then begin
-			startformat(15);
-				outstring(tabs[0],0,"Заказ",false);
-				outstring(tabs[1],0,"Дата",false);
-				outstring(tabs[2],0,"Кол-во",false);
-				outstring(tabs[3],0,"Выдано за деньги",false);
-				outstring(tabs[4],0,"Отказ",false);
-				outstring(tabs[5],0,"Отказ по нашей вине",false);
-				outstring(tabs[6],0,"Сумма по вып. рем.",false);
-				outstring(tabs[7],0,"Мастер",false);
-				outstring(tabs[8],0,"Статус",false);
-				//outstring(tabs[7],0,SVOr.StatusText,false);
-			endformat;
+			If(RepSpec.Media==mtScreen or RepSpec.Media==mtPrinter or RepSpec.Media==mtPdf)then begin
+				startformat(15);
+					outstring(tabs[0],0,"Заказ",false);
+					outstring(tabs[1],0,"Дата",false);
+					outstring(tabs[2],0,"Кол-во",false);
+					outstring(tabs[3],0,"Выдано за деньги",false);
+					outstring(tabs[4],0,"Отказ",false);
+					outstring(tabs[5],0,"Отказ по нашей вине",false);
+					outstring(tabs[6],0,"Сумма по вып. рем.",false);
+					outstring(tabs[7],0,"Мастер",false);
+					outstring(tabs[8],0,"Статус",false);
+					//outstring(tabs[7],0,SVOr.StatusText,false);
+				endformat;
+			end else begin
+				startformat(15);
+					outstring(tabs[0],0,"Заказ",false);
+					outstring(tabs[1],0,"Дата",false);
+					outstring(tabs[1],0,"Устойство",false);
+					outstring(tabs[2],0,"Кол-во",false);
+					outstring(tabs[3],0,"Выдано за деньги",false);
+					outstring(tabs[4],0,"Отказ",false);
+					outstring(tabs[5],0,"Отказ по нашей вине",false);
+					outstring(tabs[6],0,"Работа",false);
+					outstring(tabs[6],0,"Сумма по вып. рем.",false);
+					outstring(tabs[7],0,"Мастер",false);
+					outstring(tabs[8],0,"Статус",false);
+				endformat;
+			end;
 		end;
 		For(i=0;i<k;i=i+1) begin
 			SVOr.SerNr = asvonr[i];
@@ -801,6 +828,15 @@ begin
 											svoout = true;
 											if (RepSpec.flags[26]==0) then begin
 													startformat(15);
+														If(RepSpec.Media==mtFile or RepSpec.Media==mtClipboard or RepSpec.Media==mtExcel)then begin
+															outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
+															outstring(tabs[1],0,SVOr.TransDate,false);
+															outstring(tabs[1],0,GetSVOItemName(SVOr),false);
+															outstring(tabs[2],0,1,false);
+															outstring(tabs[3],0,1,false);
+															outstring(tabs[4],0,blankval,false);
+															outstring(tabs[5],0,blankval,false);
+														end;
 														outstring(tabs[2],0,IVrw.Spec,false);
 											end;
 												if(IVr.InvType!=kInvoiceTypeCredit)then begin
@@ -824,6 +860,9 @@ begin
 													enginer = IVr.SalesMan;
 												end;
 										if (RepSpec.flags[26]==0) then begin
+											If(RepSpec.Media==mtFile or RepSpec.Media==mtClipboard or RepSpec.Media==mtExcel)then begin
+												outstring(tabs[8],0,SVOr.StatusText,false);
+											end;
 											endformat;
 										end;
 											if(INr.ItemType==3 or INr.ItemType==0)then begin  									
@@ -955,26 +994,28 @@ begin
 						st0[SVOr.SerNr & ":8"] = CountWorkingDays(SVOr.Status8Sd,SVOr.Status8Ed,"","UA");
 						st0[SVOr.SerNr & ":10"] = CountWorkingDays(SVOr.Status10Sd,SVOr.Status10Ed,"","UA");
 						st0[SVOr.SerNr & ":11"] = CountWorkingDays(SVOr.Status11Sd,SVOr.Status11Ed,"","UA");
-					
-						if (RepSpec.flags[26]==0) then begin
-							startformat(15);
-								outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
-								outstring(tabs[1],0,SVOr.TransDate,false);
-								outstring(tabs[2],0,1,false);
-								outstring(tabs[3],0,1,false);
-								outstring(tabs[4],0,blankval,false);
-								outstring(tabs[5],0,blankval,false);
-								outstring(tabs[8],0,SVOr.StatusText,false);
-								//outstring(tabs[6],0,SVOr.WSCost,false);
-							endformat;
-						end else begin
-							if(ivsumservstrah[asvonr[i]]!=0)then begin
+						
+						If(RepSpec.Media==mtScreen or RepSpec.Media==mtPrinter or RepSpec.Media==mtPdf)then begin
+							if (RepSpec.flags[26]==0) then begin
 								startformat(15);
 									outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
-									outstring(tabs[3],0,SVOr.TransDate,false);
-									outstring(tabs[5],0,ivsumservstrah[asvonr[i]],false);
-									outstring(tabs[7],0,"Оплачено",false);
+									outstring(tabs[1],0,SVOr.TransDate,false);
+									outstring(tabs[2],0,1,false);
+									outstring(tabs[3],0,1,false);
+									outstring(tabs[4],0,blankval,false);
+									outstring(tabs[5],0,blankval,false);
+									outstring(tabs[8],0,SVOr.StatusText,false);
+									//outstring(tabs[6],0,SVOr.WSCost,false);
 								endformat;
+							end else begin
+								if(ivsumservstrah[asvonr[i]]!=0)then begin
+									startformat(15);
+										outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
+										outstring(tabs[3],0,SVOr.TransDate,false);
+										outstring(tabs[5],0,ivsumservstrah[asvonr[i]],false);
+										outstring(tabs[7],0,"Оплачено",false);
+									endformat;
+								end;
 							end;
 						end;
 					
@@ -1203,6 +1244,15 @@ begin
 											svoout = true;
 											if (RepSpec.flags[26]==0) then begin
 												startformat(15);
+													If(RepSpec.Media==mtFile or RepSpec.Media==mtClipboard or RepSpec.Media==mtExcel)then begin
+														outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
+														outstring(tabs[1],0,SVOr.TransDate,false);
+														outstring(tabs[1],0,GetSVOItemName(SVOr),false);
+														outstring(tabs[2],0,1,false);
+														outstring(tabs[3],0,blankval,false);
+														outstring(tabs[4],0,blankval,false);
+														outstring(tabs[5],0,blankval,false);
+													end;
 													outstring(tabs[2],0,IVrw.Spec,false);
 													if(IVr.InvType!=kInvoiceTypeCredit)then begin
 														outstring(tabs[6],0,IVrw.Sum,false);
@@ -1345,24 +1395,26 @@ begin
 						st0[SVOr.SerNr & ":8"] = CountWorkingDays(SVOr.Status8Sd,SVOr.Status8Ed,"","UA");
 						st0[SVOr.SerNr & ":10"] = CountWorkingDays(SVOr.Status10Sd,SVOr.Status10Ed,"","UA");
 						st0[SVOr.SerNr & ":11"] = CountWorkingDays(SVOr.Status11Sd,SVOr.Status11Ed,"","UA");
-					
-						if (RepSpec.flags[26]==0) then begin
-							startformat(15);
-								outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
-								outstring(tabs[1],0,SVOr.TransDate,false);
-								outstring(tabs[2],0,1,false);
-								outstring(tabs[3],0,blankval,false);
-								outstring(tabs[4],0,blankval,false);
-								outstring(tabs[5],0,blankval,false);
-							endformat;
-						end else begin
-							if(ivsumservstrah[asvonr[i]]!=0)then begin
+						
+						If(RepSpec.Media==mtScreen or RepSpec.Media==mtPrinter or RepSpec.Media==mtPdf)then begin
+							if (RepSpec.flags[26]==0) then begin
 								startformat(15);
 									outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
-									outstring(tabs[3],0,SVOr.TransDate,false);
-									outstring(tabs[5],0,ivsumservstrah[asvonr[i]],false);
-									outstring(tabs[7],0,"Неоплачено",false);
+									outstring(tabs[1],0,SVOr.TransDate,false);
+									outstring(tabs[2],0,1,false);
+									outstring(tabs[3],0,blankval,false);
+									outstring(tabs[4],0,blankval,false);
+									outstring(tabs[5],0,blankval,false);
 								endformat;
+							end else begin
+								if(ivsumservstrah[asvonr[i]]!=0)then begin
+									startformat(15);
+										outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
+										outstring(tabs[3],0,SVOr.TransDate,false);
+										outstring(tabs[5],0,ivsumservstrah[asvonr[i]],false);
+										outstring(tabs[7],0,"Неоплачено",false);
+									endformat;
+								end;
 							end;
 						end;
 						if(SVOr.StatusReturnCnt>0)then begin
@@ -1424,16 +1476,18 @@ begin
 						end;
 					
 						if (RepSpec.flags[26]==0) then begin
-							black_divider(tabs[6],tabs[7]);
-							startformat(15);
-								outstring(tabs[0],0,"Итого по заказу",false);							
-								outstring(150,0,"Услуги:",false);
-								outstring(200,0,ivsumserv[asvonr[i]],false);
-								outstring(250,0,"Детали:",false);
-								outstring(300,0,ivsumservdet[asvonr[i]],false);
-								outstring(350,0,"Всего:",false);
-								outstring(400,0,ivsumserv[asvonr[i]]+ivsumservdet[asvonr[i]],false);
-							endformat;
+							If(RepSpec.Media==mtScreen or RepSpec.Media==mtPrinter or RepSpec.Media==mtPdf)then begin
+								black_divider(tabs[6],tabs[7]);
+								startformat(15);
+									outstring(tabs[0],0,"Итого по заказу",false);							
+									outstring(150,0,"Услуги:",false);
+									outstring(200,0,ivsumserv[asvonr[i]],false);
+									outstring(250,0,"Детали:",false);
+									outstring(300,0,ivsumservdet[asvonr[i]],false);
+									outstring(350,0,"Всего:",false);
+									outstring(400,0,ivsumserv[asvonr[i]]+ivsumservdet[asvonr[i]],false);
+								endformat;
+							end;
 						end;
 						if(nonblank(vCuDomain[SVOr.CustCode]))then begin
 							tstr = vCallType[SVOr.CustCode] & ":" & vCuDomain[SVOr.CustCode];
@@ -1570,6 +1624,15 @@ begin
 											svoout = true;
 											if (RepSpec.flags[26]==0) then begin
 												startformat(15);
+													If(RepSpec.Media==mtFile or RepSpec.Media==mtClipboard or RepSpec.Media==mtExcel)then begin
+														outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
+														outstring(tabs[1],0,SVOr.TransDate,false);
+														outstring(tabs[1],0,GetSVOItemName(SVOr),false);
+														outstring(tabs[2],0,1,false);
+														outstring(tabs[3],0,blankval,false);
+														outstring(tabs[4],0,blankval,false);
+														outstring(tabs[5],0,blankval,false);
+													end;
 													outstring(tabs[2],0,IVrw.Spec,false);
 													if(IVr.InvType!=kInvoiceTypeCredit)then begin
 														outstring(tabs[6],0,IVrw.Sum,false);
@@ -1709,7 +1772,7 @@ begin
 							st0[SVOr.SerNr & ":10"] = CountWorkingDays(SVOr.Status10Sd,SVOr.Status10Ed,"","UA");
 							st0[SVOr.SerNr & ":11"] = CountWorkingDays(SVOr.Status11Sd,SVOr.Status11Ed,"","UA");
 					
-						
+						If(RepSpec.Media==mtScreen or RepSpec.Media==mtPrinter or RepSpec.Media==mtPdf)then begin
 							startformat(15);
 								outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
 								outstring(tabs[1],0,SVOr.TransDate,false);
@@ -1718,14 +1781,17 @@ begin
 								outstring(tabs[4],0,blankval,false);
 								outstring(tabs[5],0,blankval,false);
 							endformat;
+						end;
 						end else begin
-							if(ivsumservstrah[asvonr[i]]!=0)then begin
-								startformat(15);
-									outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
-									outstring(tabs[3],0,SVOr.TransDate,false);
-									outstring(tabs[5],0,ivsumservstrah[asvonr[i]],false);
-									outstring(tabs[7],0,"Вдолг",false);
-								endformat;
+							If(RepSpec.Media==mtScreen or RepSpec.Media==mtPrinter or RepSpec.Media==mtPdf)then begin
+								if(ivsumservstrah[asvonr[i]]!=0)then begin
+									startformat(15);
+										outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
+										outstring(tabs[3],0,SVOr.TransDate,false);
+										outstring(tabs[5],0,ivsumservstrah[asvonr[i]],false);
+										outstring(tabs[7],0,"Вдолг",false);
+									endformat;
+								end;
 							end;
 						end;
 						if(SVOr.StatusReturnCnt>0)then begin
@@ -1787,18 +1853,20 @@ begin
 						end;
 					
 						if (RepSpec.flags[26]==0) then begin
-							black_divider(tabs[6],tabs[7]);
-							startformat(15);
-								outstring(tabs[0],0,"Итого по заказу",false);
-								//outstring(tabs[6],0,ivsumserv[asvonr[i]],false);
+							If(RepSpec.Media==mtScreen or RepSpec.Media==mtPrinter or RepSpec.Media==mtPdf)then begin
+								black_divider(tabs[6],tabs[7]);
+								startformat(15);
+									outstring(tabs[0],0,"Итого по заказу",false);
+									//outstring(tabs[6],0,ivsumserv[asvonr[i]],false);
 							
-								outstring(150,0,"Услуги:",false);
-								outstring(200,0,ivsumserv[asvonr[i]],false);
-								outstring(250,0,"Детали:",false);
-								outstring(300,0,ivsumservdet[asvonr[i]],false);
-								outstring(350,0,"Всего:",false);
-								outstring(400,0,ivsumserv[asvonr[i]]+ivsumservdet[asvonr[i]],false);
-							endformat;
+									outstring(150,0,"Услуги:",false);
+									outstring(200,0,ivsumserv[asvonr[i]],false);
+									outstring(250,0,"Детали:",false);
+									outstring(300,0,ivsumservdet[asvonr[i]],false);
+									outstring(350,0,"Всего:",false);
+									outstring(400,0,ivsumserv[asvonr[i]]+ivsumservdet[asvonr[i]],false);
+								endformat;
+							end;
 						end;
 						if(nonblank(vCuDomain[SVOr.CustCode]))then begin
 							tstr = vCallType[SVOr.CustCode] & ":" & vCuDomain[SVOr.CustCode];
@@ -1883,12 +1951,14 @@ begin
 					st0[SVOr.SerNr & ":11"] =CountWorkingDays(SVOr.Status11Sd,SVOr.Status11Ed,"","UA");
 					
 					if (RepSpec.flags[26]==0) then begin
-						startformat(15);
-						outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
-						outstring(tabs[1],0,SVOr.TransDate,false);
-						outstring(tabs[2],0,1,false);
-						outstring(tabs[3],0,blankval,false);
-						outstring(tabs[4],0,1,false);
+						If(RepSpec.Media==mtScreen or RepSpec.Media==mtPrinter or RepSpec.Media==mtPdf)then begin
+							startformat(15);
+							outstring(tabs[0],"DblSVOVcSer",SVOr.InnerOrderNr,false);
+							outstring(tabs[1],0,SVOr.TransDate,false);
+							outstring(tabs[2],0,1,false);
+							outstring(tabs[3],0,blankval,false);
+							outstring(tabs[4],0,1,false);
+						end;
 					end;
 					if(SVOr.StatusReturnCnt>0)then begin
 						vManCanQty[SVOr.Inspector & "DOR"] = vManCanQty[SVOr.Inspector & "DOR"] + SVOr.StatusReturnCnt;

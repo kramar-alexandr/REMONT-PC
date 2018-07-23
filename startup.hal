@@ -23,7 +23,7 @@ begin
 	Setting("Структура программы лояльности накопительной карты",MyLCMLevelSetTClass,modSVO);// Edit ************************** BPI Ukraine - KramarAlexandr - 04, 15 03 2018 y. о 19:34:51
 
 	Report("Статистика предварительных заказов",CallConversionRClass,CallConversionRn,0,modSVO);
-	Report("KIVI отчет",ServiceJobsRClass,KIVIRn,0,modSVO);
+	Report("KIVI отчет",KIVIRnRClass,KIVIRn,0,modSVO);
 	Report("Выполненые ремонты",ServiceJobsRClass,ServiceJobsRn,0,modSVO);
 	Report("Binotel Short Report",ServiceJobsRClass,BinotelSimpleRepRn,0,modSVO);
 	Report("Binotel List Report",SimpleRClass,BinotelTrackListRn,0,modSVO);
@@ -48,6 +48,9 @@ begin
 	Report("LVT Статус клиента",LVTCustRClass,LVTCustRn,0,modSVO);// Edit ************************** BPI Ukraine - KramarAlexandr - Wednesday, 7 March 2018 10:19:48
 	Report("Отчет по продаже Страховки",InsuranceReportRClass,ServiceJobsRn,0,modSVO); // Edit Dima ************* 2018-03-12 12:32 PM
   
+  Report("Товары без классификаторов",InsuranceReportRClass,ItemswithnoclassRn,0,modSVO); // Edit Dima ************* 2018-03-12 12:32 PM
+
+  
   Maintenance("Git HAL Files",MyVClass,GitHALFilesMn,modTC);
   Maintenance("Удалить все записи",CustomRegisterRemoveVClass,CustomRegisterRemoveMn,modDBMain); //Edit***************************Sasha2,11:11 26.05.2017
   Maintenance("Fill SVO Status",MyVClass,FillSVOStatusTextMn,modDBMain);
@@ -71,14 +74,20 @@ begin
   Maintenance("Создание карт лояльности для счёт-фактур", CreateLoyaltyCardsVClass,CreateLoyaltyCardsMn,modSL);			// Edit Dima ************* 2018-03-09 01:26 PM
   Maintenance("Статус клиента",ClientStatusVClass,ClientStatusMn,modSVO); 												// Edit Dima ************* 2018-03-09 03:16 PM
   Maintenance("Исправление названия товара",ReNameProdVClass,ReNameProdMn,modSL); //Edit_-_-_-_-_-_-_-_-Anton 10:22 01.06.2018
+  Maintenance("Упорядочить класификации и группы товаров",MyVClass,TrimUprcDIVcITVc,modDBMain);
   
 	Maintenance("Get Binotel Call Status",BinotelCallStatVClass,BinotelGetCallInfo,modSVO);
+	
+	Maintenance("Fill Item Class",MyVClass,FillINClass,modSVO);
+	Maintenance("Fill Item Disp4 Class",MyVClass,FillDisp4INClass,modSVO);
 	
   Import("Импорт контактов и заказов, выгруженных из ServiceMY",CUAndSVOInitSystemImportIClass,CUAndSVOInitSystemImportIn,modDBMain); //Edit***************************Sasha2,13:21 26.05.2017
 	Import("Импорт BINOTEL",CUAndSVOInitSystemImportIClass,ImportBinotel,modDBMain); //Edit***************************Sasha2,13:21 26.05.2017
 	Import("Импорт BINOTEL1",CUAndSVOInitSystemImportIClass,ImportBinotel1,modDBMain); //Edit***************************Sasha2,13:21 26.05.2017
+	
+	Import("FixItemDi",CUAndSVOInitSystemImportIClass,FixItemDiso,modDBMain); //Edit***************************Sasha2,13:21 26.05.2017
 
-
+	
   Export("IVVcExport",IVVcExportEClass,IVVcExportEn,modSL); // Edit *********** Dima 2 February 2018, 10:34
 
 	SString(964,"");

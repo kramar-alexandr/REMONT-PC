@@ -1017,6 +1017,7 @@ LValidateItemDescriptionRows_Polish:;
   return;
 end;
 
+global
 updating procedure CheckAndCreateClass(var string chdir, var string mdir,var string name,string type)
 begin
 	record DIVc DIr,DI2r;
@@ -1024,13 +1025,21 @@ begin
 	string 50 itemnr;
 	longint counter;
 	
-	foundf = false;
+		foundf = false;
+		chdir = trim(chdir);
+		name = trim(name);
+		
+		if(type=="DISP5")then begin
+			name = uppercase(name);
+			chdir = uppercase(chdir);
+		end;
 		
 		if(nonblank(chdir))then begin
 			DIr.Code = chdir;
 			if(readfirstmain(DIr,1,true))then begin
 				if(DIr.DispGroups==mdir)then begin
 					foundf = true;
+					name = DIr.Name;
 				end;
 			end;
 			if(foundf==false)then begin

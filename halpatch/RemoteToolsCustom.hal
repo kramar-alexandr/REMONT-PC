@@ -23,6 +23,7 @@ remote function Boolean IntORchrsum(record IntORVc,Integer);
 remote procedure SumupIntOR(var record IntORVc,var val);
 external function string 255 StrReplace(string,string,string);
 external updating procedure UpdateLoyCard(record SVOVc,record SVOVc);// Edit ************************** BPI Ukraine - KramarAlexandr - 04, 15 03 2018 y. о 19:51:40
+external updating procedure CheckAndCreateClass(var string, var string,var string,string);
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -4038,6 +4039,250 @@ begin
 return;
 end; //Edit***************************Sasha2,13:36 12.07.2017 }
 
+global
+updating procedure TrimUprcDIVcITVc(record RcVc RepSpec)
+begin
+	record DIVc DIr;
+	record ITVc ITr;
+	string 255 Upperstring;
+	integer Ln, i, cnt;
+	vector integer DIVcRepeat;
+	array string 255 RepeatStr;
+	vector string 255 DIVcRepeatCode,DIVcRepeatFirstCode;
+	boolean testf;
+	record INVc INr;
+	boolean changed;
+	
+	/*ITr.Code = "";
+    while (LoopMain(ITr,1,true)) begin
+		logtext(0,ITr.Comment & " ITVc Before");
+		ITr.Comment = UpperCase(Trim(ITr.Comment));
+		RecordStore(ITr,true);
+		logtext(0,ITr.Comment & " ITVc After");
+    end;
+	resetloop(ITr);
+	
+	DIr.Code = "";
+    while (LoopMain(DIr,1,true)) begin
+		logtext(0,DIr.Name & " DIVC Before");
+		DIr.Name = Trim(DIr.Name);
+		Upperstring = UpperCase(DIr.Name);
+		ITr.Comment = Upperstring;
+		if(ReadFirstKey("Comment",ITr,1,true))then begin
+			DIr.Name = Upperstring;
+			logtext(0,DIr.Name & " DIVC After uppercace");
+		end else begin
+			Ln = len(DIr.Name)-1;
+			Upperstring = UpperCase(left(DIr.Name,1)) & mid(DIr.Name,1,Ln);
+			DIr.Name = Upperstring;
+		end;
+		RecordStore(DIr,true);
+		logtext(0,DIr.Name & " DIVC After all " & DIr.Code);
+    end;
+	resetloop(DIr);
+	cnt = 0;
+	DIr.Code = "";
+    while(LoopMain(DIr,1,true))begin
+			if(DIVcRepeat[DIr.DispGroups & DIr.CType & DIr.Name]>0)then begin
+				testf = true;
+				for(i=0;i<=cnt;i=i+1) begin
+					if(RepeatStr[i]==DIr.DispGroups & DIr.CType & DIr.Name)then begin
+						testf = false;
+					end;
+				end;
+				if(testf)then begin 
+					RepeatStr[cnt] = DIr.DispGroups & DIr.CType & DIr.Name; 
+					cnt=cnt+1;
+				end;
+				DIVcRepeat[DIr.DispGroups & DIr.CType & DIr.Name] = DIVcRepeat[DIr.DispGroups & DIr.CType & DIr.Name] + 1;
+				DIVcRepeatCode[DIr.DispGroups & DIr.CType & DIr.Name] = DIVcRepeatCode[DIr.DispGroups & DIr.CType & DIr.Name] & DIr.Code & ",";
+			end;
+			if(DIVcRepeat[DIr.DispGroups & DIr.CType & DIr.Name]<=0)then begin
+				DIVcRepeat[DIr.DispGroups & DIr.CType & DIr.Name] = 1;
+				DIVcRepeatFirstCode[DIr.DispGroups & DIr.CType & DIr.Name] = DIr.Code;
+			end;
+		
+    end;
+	resetloop(DIr);
+	
+	INr.Code = "";
+	while(loopmain(INr,1,true))begin
+		changed = false;
+		for(i=0;i<cnt;i=i+1)begin
+			if(DIVcRepeat[RepeatStr[i]]>1)then begin
+				if(nonblank(INr.Disp1) and setinset(INr.Disp1,DIVcRepeatCode[RepeatStr[i]]))then begin
+					INr.Disp1 = DIVcRepeatFirstCode[RepeatStr[i]];
+					changed = true;
+				end;
+				if(nonblank(INr.Disp2) and setinset(INr.Disp2,DIVcRepeatCode[RepeatStr[i]]))then begin
+					INr.Disp2 = DIVcRepeatFirstCode[RepeatStr[i]];
+					changed = true;
+				end;
+				if(nonblank(INr.Disp3) and setinset(INr.Disp3,DIVcRepeatCode[RepeatStr[i]]))then begin
+					INr.Disp3 = DIVcRepeatFirstCode[RepeatStr[i]];
+					changed = true;
+				end;
+				if(nonblank(INr.Disp4) and setinset(INr.Disp4,DIVcRepeatCode[RepeatStr[i]]))then begin
+					INr.Disp4 = DIVcRepeatFirstCode[RepeatStr[i]];
+					changed = true;
+				end;
+				if(nonblank(INr.Disp5) and setinset(INr.Disp5,DIVcRepeatCode[RepeatStr[i]]))then begin
+					INr.Disp5 = DIVcRepeatFirstCode[RepeatStr[i]];
+					changed = true;
+				end;
+				if(nonblank(INr.Disp6) and setinset(INr.Disp6,DIVcRepeatCode[RepeatStr[i]]))then begin
+					INr.Disp6 = DIVcRepeatFirstCode[RepeatStr[i]];
+					changed = true;
+				end;
+				
+				
+			end;
+		end;
+		if(changed)then begin
+			recordstore(INr,true);
+			logtext(0,"INr stored " & INr.Code);
+		end;
+	end;
+	
+	
+	DIr.Code = "";
+	while(loopmain(DIr,1,true))begin
+		for(i=0;i<cnt;i=i+1)begin
+			if(DIVcRepeat[RepeatStr[i]]>1)then begin
+				if(setinset(DIr.Code,DIVcRepeatCode[RepeatStr[i]]))then begin
+					logtext(0,"Delete DIr " & DIr.Code & " name = " & DIr.Name);
+					recorddelete(DIr);
+					StepBack(DIr);
+				end;
+			end;
+		end;
+	end;*/
+	
+	INr.Code = "";
+	while(loopmain(INr,1,true))begin
+		INr.Disp1 = uppercase(INr.Disp1);
+		INr.Disp2 = uppercase(INr.Disp2);
+		INr.Disp3 = uppercase(INr.Disp3);
+		INr.Disp4 = uppercase(INr.Disp4);
+		INr.Disp5 = uppercase(INr.Disp5);
+		INr.Disp6 = uppercase(INr.Disp6);
+		
+		INr.DispGroups = uppercase(INr.DispGroups);
+		recordstore(INr,true);
+		
+	end;
+	
+return;
+end; 
+
+
+global updating procedure FixItemDiso()
+begin
+	record INVc INr;
+	record DIVc DIr;
+	array string 100 dicodes;
+	integer acnt,i;
+	boolean found,TrHs;
+	
+	while (TestEOF==false) begin
+    dicodes[acnt] = ImportField;
+    acnt = acnt + 1;
+    if (NextImportLine(true)) then begin
+    end;
+  end;
+	
+	INr.Code = "";
+	while(loopmain(INr,1,true))begin
+		found = false;
+		if(nonblank(INr.DispGroups))then begin
+			For(i=0;i<acnt;i=i+1) begin
+	  		if(nonblank(dicodes[i]))then begin
+	  			if(setinset(dicodes[i],INr.DispGroups))then begin
+	  				if(INr.Disp3==dicodes[i])then begin
+	  					DIr.Name = trim(INr.Disp3Name);
+	  					TrHs = true;
+	  					while(loopkey("Name",DIr,1,TrHs))begin
+	  						if(DIr.Name!=trim(INr.Disp3Name))then begin TrHs = false; end;
+	  						if(TrHs and DIr.CType=="DISP3" and DIr.DispGroups==INr.Disp2)then begin
+	  							INr.Disp3 = DIr.Code;
+	  						end;
+	  					end;
+	  					resetloop(DIr);
+	  				end;
+	  				
+	  				if(INr.Disp4==dicodes[i])then begin
+	  					DIr.Name = trim(INr.Disp4Name);
+	  					TrHs = true;
+	  					while(loopkey("Name",DIr,1,TrHs))begin
+	  						if(DIr.Name!=trim(INr.Disp4Name))then begin TrHs = false; end;
+	  						if(TrHs and DIr.CType=="DISP4" and DIr.DispGroups==INr.Disp3)then begin
+	  							INr.Disp4 = DIr.Code;
+	  						end;
+	  					end;
+	  					resetloop(DIr);
+	  				end;
+	  				
+	  				if(INr.Disp5==dicodes[i])then begin
+	  					DIr.Name = trim(INr.Disp5Name);
+	  					TrHs = true;
+	  					while(loopkey("Name",DIr,1,TrHs))begin
+	  						if(DIr.Name!=trim(INr.Disp5Name))then begin TrHs = false; end;
+	  						if(TrHs and DIr.CType=="DISP5" and DIr.DispGroups==INr.Disp4)then begin
+	  							INr.Disp5 = DIr.Code;
+	  						end;
+	  					end;
+	  					resetloop(DIr);
+	  				end;
+	  				
+	  				if(INr.Disp6==dicodes[i])then begin
+	  					DIr.Name = trim(INr.Disp6Name);
+	  					TrHs = true;
+	  					while(loopkey("Name",DIr,1,TrHs))begin
+	  						if(DIr.Name!=trim(INr.Disp6Name))then begin TrHs = false; end;
+	  						if(TrHs and DIr.CType=="DISP6" and DIr.DispGroups==INr.Disp5)then begin
+	  							INr.Disp6 = DIr.Code;
+	  						end;
+	  					end;
+	  					resetloop(DIr);
+	  				end;
+	  				
+	  				found = true;
+	  			end;
+	  		end;
+			end; 
+		end;
+		
+		if(found)then begin
+			logtext(0,INr.Code & "OldClass  " & INr.DispGroups);
+			if(nonblank(INr.Disp1))then begin
+				INr.DispGroups = INr.Disp1;
+			end;
+			if(nonblank(INr.Disp2))then begin
+				INr.DispGroups = INr.DispGroups & "," & INr.Disp2;
+			end;
+			if(nonblank(INr.Disp3))then begin
+				INr.DispGroups = INr.DispGroups & "," & INr.Disp3;
+			end;
+			if(nonblank(INr.Disp4))then begin
+				INr.DispGroups = INr.DispGroups & "," & INr.Disp4;//Item Type Name
+			end;
+			if(nonblank(INr.Disp5))then begin
+				INr.DispGroups = INr.DispGroups & "," & INr.Disp5;//Brand
+			end;
+			if(nonblank(INr.Disp6))then begin
+				INr.DispGroups = INr.DispGroups & "," & INr.Disp6;//Product Code
+			end;
+			logtext(0,INr.Code & "NewClass  " & INr.DispGroups);
+			logtext(0,"*****");
+		end;
+	end;
+
+
+return;
+end;
+
+
+
 global //Edit***************************Sasha2,13:07 01.08.2017 {
 updating procedure ActFromPUIfIntOrExists(record PUVc PUr,boolean delflag)
 begin
@@ -4418,5 +4663,202 @@ record UserVc User;
 		end;
 	end;
 
+return;
+end;
+
+
+global updating procedure FillINClass()
+begin
+	record SVOVc SVOr;
+	row SVOVc SVOrw;
+	record INVc INr;
+	vector boolean infound;
+	
+	SVOr.SerNr = 0;
+	while(loopmain(SVOr,1,true))begin
+		if(matrowcnt(SVOr)>0)then begin
+			matrowget(SVOr,0,SVOrw);
+			if(nonblank(SVOrw.ArtCode))then begin
+				INr.Code = SVOrw.ArtCode;
+				if(infound[INr.Code]==false)then begin
+					if(readfirstmain(INr,1,true))then begin
+						if((blank(INr.Disp2) and INr.Disp1=="USER" and blank(INr.Disp3)) or (blank(INr.Disp1) and INr.DispGroups=="USER"))then begin
+							INr.Disp2 = "SKLADU";
+							INr.Disp2Name = "Складируемый товар";
+							if(blank(INr.Disp3))then begin
+								INr.Disp3 = "УСТРОЙС001";
+								INr.Disp3Name = "Устройство клиента";
+							end;
+							if(blank(INr.Disp1))then begin
+								INr.Disp1 = "USER";
+								INr.Disp1Name = "Устройства клиентов";
+							end;
+							INr.DispGroups = "USER,SKLADU,УСТРОЙС001";
+							logtext(0,INr.Code & " " & INr.Name);
+							recordstore(INr,true);
+						end;
+					end;
+					infound[INr.Code] = true;
+				end;
+			end;
+		end;
+	end;
+	
+
+return;
+end;
+
+
+global updating procedure FillDisp4INClass()
+begin
+	record SVOVc SVOr;
+	row SVOVc SVOrw;
+	record INVc INr;
+	vector boolean infound;
+	record DIVc DIr;
+	array string 255 DINames;
+	array string 255 DICodes;
+	array string 255 DI5Names;
+	array string 255 DI5Codes;
+	array string 255 DI5Class;
+	integer acnt,i,a5cnt;
+	record ITVc ITr;
+	vector string 255 ITNames;
+	string 255 newdisp;
+	
+	DIr.Code = "";
+	while(loopmain(DIr,1,true))begin
+		if(DIr.CType=="DISP4" and DIr.DispGroups=="УСТРОЙС001")then begin
+			DINames[acnt] = trim(DIr.Name);
+			DICodes[acnt] = DIr.Code;
+			logtext(0,"*** " & DINames[acnt] & " " & DICodes[acnt]);
+			acnt = acnt + 1;
+		end;
+		if(DIr.CType=="DISP5")then begin
+			DI5Names[a5cnt] = trim(DIr.Name);
+			DI5Codes[a5cnt] = DIr.Code;
+			DI5Class[a5cnt] = DIr.DispGroups;
+			a5cnt = a5cnt + 1;
+		end;
+	end;
+	
+	ITr.Code = "";
+	while(loopmain(ITr,1,true))begin
+		ITNames[ITr.Code] = trim(ITr.Comment);
+	end;
+	
+	INr.Code = "";
+	while(loopmain(INr,1,true))begin
+		if(INr.Disp1=="USER" and INr.Disp3=="УСТРОЙС001" and blank(INr.Disp4))then begin
+			For(i=0;i<acnt;i=i+1) begin
+	  		if(DINames[i]==left(INr.Name,len(DINames[i])))then begin
+	  			INr.Disp4 = DICodes[i];
+	  			INr.Disp4Name = DINames[i];
+	  		end;
+			end; 
+			if(nonblank(INr.Disp4))then begin
+				Logtext(0,INr.Code & " " & INr.Name & " " & INr.Disp4 & " " & INr.Disp4Name);
+				recordstore(INr,true);
+			end;
+		end;
+	end;
+	resetloop(INr);
+	INr.Code = "";
+	while(loopmain(INr,1,true))begin
+		if(INr.Disp1=="USER" and INr.Disp3=="УСТРОЙС001" and nonblank(INr.Disp4) and blank(INr.Disp5))then begin
+			INr.DispGroups = INr.Disp1 & "," & INr.Disp2 & "," & INr.Disp3 & "," & INr.Disp4;
+			For(i=0;i<a5cnt;i=i+1) begin
+	  		if(DI5Names[i]==ITNames[INr.Group] and DI5Class[i]==INr.Disp4)then begin
+	  			INr.Disp5 = DI5Codes[i];
+	  			INr.Disp5Name = DI5Names[i];
+	  		end;
+			end;
+			INr.DispGroups = INr.DispGroups & "," & INr.Disp5;
+			logtext(0,INr.Code & " " & INr.Group & "  " & INr.Disp5);
+			recordstore(INr,true);
+		end;
+	end;
+	
+	resetloop(INr);
+	INr.Code = "";
+	while(loopmain(INr,1,true))begin
+		newdisp = "";
+		if(nonblank(INr.Disp1) and nonblank(INr.Disp2) and nonblank(INr.Disp3) and nonblank(INr.Disp4) and nonblank(INr.Disp5) and blank(INr.Disp6))then begin
+			newdisp = INr.Disp1 & "," & INr.Disp2 & "," & INr.Disp3 & "," & INr.Disp4 & "," & INr.Disp5;
+			if(newdisp!=INr.DispGroups)then begin
+				INr.DispGroups = newdisp;
+				recordstore(INr,true);
+			end;
+		end;
+	end;
+
+return;
+end;
+
+
+global updating procedure ItemswithnoclassRn()
+begin
+	record SVOVc SVOr;
+	row SVOVc SVOrw;
+	record INVc INr;
+	vector boolean infound;
+	record DIVc DIr;
+	array string 255 DINames;
+	array string 255 DICodes;
+	array string 255 DI5Names;
+	array string 255 DI5Codes;
+	array string 255 DI5Class;
+	integer acnt,i,a5cnt;
+	record ITVc ITr;
+	vector string 255 ITNames;
+	string 255 newdisp,brandname;
+	
+	startreportnoheaderjob("Товары без классификации");
+	
+	startformat(15);
+		outstring(0,0,"Код",false);
+		outstring(100,0,"Название",false);
+		outstring(200,0,"1",false);
+		outstring(225,0,"2",false);
+		outstring(250,0,"3",false);
+		outstring(275,0,"4",false);
+		outstring(300,0,"5",false);
+	endformat;
+	
+	while(loopmain(INr,1,true))begin
+		if(INr.Disp1=="USER" and INr.Disp3=="УСТРОЙС001" and (blank(INr.Disp4) or blank(INr.Disp5)))then begin
+			if(nonblank(INr.Disp4))then begin
+				/*if(nonblank(INr.Group))then begin
+					ITr.Code = INr.Group;
+					if(readfirstmain(ITr,1,true))then begin
+						brandname = trim(ITr.Comment);
+						newdisp = "";
+						INr.Disp5 = brandname;
+						CheckAndCreateClass(INr.Disp5,INr.Disp4,INr.Disp5Name,"DISP5");//Brand
+						if(nonblank(INr.Disp1) and nonblank(INr.Disp2) and nonblank(INr.Disp3) and nonblank(INr.Disp4) and nonblank(INr.Disp5))then begin
+							newdisp = INr.Disp1 & "," & INr.Disp2 & "," & INr.Disp3 & "," & INr.Disp4 & "," & INr.Disp5;
+							if(newdisp!=INr.DispGroups)then begin
+								INr.DispGroups = newdisp;
+								recordstore(INr,true);
+							end;
+						end;
+					end;
+				end;*/
+				
+			end;
+			startformat(15);
+				outstring(0,"DblINVc",INr.Code,false);
+				outstring(100,0,INr.Name,false);
+				outstring(200,0,INr.Disp1Name,false);
+				outstring(225,0,INr.Disp2Name,false);
+				outstring(250,0,INr.Disp3Name,false);
+				outstring(275,0,INr.Disp4Name,false);
+				outstring(300,0,INr.Disp5Name,false);
+			endformat;
+		end;
+	end;
+	
+	endjob;
+	
 return;
 end;

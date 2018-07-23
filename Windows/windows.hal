@@ -2044,6 +2044,37 @@ real h,v,vs;
   EndWindow;  
 end;
 
+
+window KIVIRnRClass:1	//Edit***************************Sasha2,17:17 06.01.2016 {
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+real h,v,vs; 
+  WindowBegin("Выполненые ремонты",KIVIRnRClass,CGRcW,RcType);
+    SetWRect(20,120,350,300);
+    h=100;
+    v = 40;
+    PeriodField(h,v,"Период");
+    
+		v=130;
+	  ButtonFrame(h,v,123,13,"Статус");  
+	  CheckBox(h,v,0,"Предварит.",flags[13]);//9
+	  CheckBox(h,v+=16,0,"В ожидании",flags[4]);//0
+	  CheckBox(h,v+=16,0,"На диагностике",flags[5]);//5
+	  CheckBox(h,v+=16,0,"На согласовании",flags[3]);//4
+	  CheckBox(h,v+=16,0,"Клиент думает",flags[18]);//12 Думает
+	  CheckBox(h,v+=16,0,"Согласовано",flags[14]);//7
+	  CheckBox(h,v+=16,0,"В ремонте",flags[9]);//1
+	  CheckBox(h,v+=16,0,"В удал. сервисе",flags[10]);//8
+	  CheckBox(h,v+=16,0,"Заказать запч.",flags[16]);//10// Edit ************************** Wednesday, 23 August 2017 17:17:05
+	  CheckBox(h,v+=16,0,"Ожидает запч.",flags[15]);//3
+	  CheckBox(h,v+=16,0,"Готов",flags[11]);//2 //Edit***************************Sasha2,14:55 15.05.2017 }
+	  CheckBox(h,v+=16,0,"Вернули на доработку",flags[17]); // 11 //Edit-------------------Vitalii 16:21 21.09.2017
+	  CheckBox(h,v+=16,0,"Отказ",flags[12]);//6 //Edit***************************Sasha2,14:55 15.05.2017 }
+  EndWindow;  
+end;
+
+
+
 window CallConversionRClass:1	//Edit***************************Sasha2,17:17 06.01.2016 {
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin

@@ -1,0 +1,89 @@
+external procedure AutomatedSalesOrderly(string);
+remote function Integer IVApprovalStatus(record IVVc,var record AcceptanceRulesVc);
+external function Boolean ArgEInvActiveField(record IVVc,integer,string,integer);
+external procedure PUCalcPerc(val,string,var val);
+remote function val IVVc_CalcTax2perCustomer(record RPCUTaxVc,var record IVVc);
+remote procedure IVVc_PastePrice(var record IVVc,record IVVc,Integer,var string);
+remote function Boolean IVVc_PasteCredOfficialSerNr(var record IVVc,Integer,var string);
+remote function Integer EditingAcceptanceRejectedAllowed(Integer,string,string,Integer,string);
+external updating function Boolean IVDClassivcashcommandOnEnterKey(Integer,Integer);
+external function Integer ERecordStatus(string,string,LongInt,string,var string);
+external procedure SpecialVAT2(val,var val);
+remote function Integer VATCalcRule(string);
+external procedure CalculateIVVcPoints(var record IVVc);
+external function val CalculateTotalVATFromTaxMatrix(record TaxMatrixVc,Integer);
+external procedure AddRowTaxMatrixToSumTaxMatrix(record TaxMatrixVc,var record TaxMatrixVc,Integer);
+external function Boolean UseTaxTemplatesforTaxCalc();
+external procedure MulVATIV(string,val,var val,var val,Integer,Integer);
+external function Boolean FindWHITTax(string,Date,var record WHITVc);
+external function roundmode SetRoundModeD(Integer);
+external procedure InvoiceCalculateFreightWeight(record IVVc,var val,var val,var val);
+remote procedure IVVc_PasteCurncyCode(var record IVVc,string,Integer,Boolean,Boolean);
+external function Boolean ReadFirstItem(string,var record INVc,Boolean,Boolean);
+external function Boolean FindRPCUTax(string,Date,var record RPCUTaxVc);
+external function roundmode DefaultRoundMode();
+remote function Boolean SerialNrForOneItem(string,var record SerBalVc);
+external procedure RecalcIVSubtotal(var record IVVc);
+external function val FindTAX1(string,val,Integer,Integer);
+external procedure SpecialVAT(string,var val);
+external procedure CalcVATBaseVAT(record SMVc,Integer,Integer,Integer,var val,var val);
+external procedure CalcVATBaseVAT2(record SMVc,Integer,Integer,Integer,Boolean,var val,var val);
+external procedure MulM4ProcVal(val,val,var val);
+external procedure GetCurncyRoundoff(string,string,string,var roundmode,var roundmode,var roundmode);
+external function val FindTAX2(val,val,Integer);
+external procedure CurValToOtherCur(Date,string,val,string,var val,roundmode);
+external procedure FindSalesExVat(record TaxMatrixVc,string,val,Integer,Integer,var val);
+external function val MulRateToBase1(var string,val,val,val,val,val,val,roundmode);
+external function val MulRateToBase2(var string,val,val,val,val,val,val,roundmode);
+external procedure SetupVATBase(var record SMVc,var Integer);
+external procedure AddVATBase(var record SMVc,string,val,val,Integer,Integer,Integer);
+external function val FindVAT(string,val,Integer,Integer);
+remote procedure IVVc_CalculatePayDate(var record IVVc);
+remote function Boolean IVVc_PasteOrdRow(var record IVVc,Integer,var string);
+external function Boolean TouchScreenLook();
+remote function Integer IVVc_PasteGiftCertificate(var record IVVc,Integer,Integer);
+external function Boolean IVDchrsum(var record IVVc,Integer);
+remote procedure IVVc_PasteUnitFactPrice(var record IVVc,Integer);
+remote function Boolean IVVc_PasteUnitFactQuant(var record IVVc,Integer);
+remote procedure IVVc_PasteUnitCode(var record IVVc,Integer);
+external procedure IVDchsum(var record IVVc,Integer);
+external function Boolean AllowCurChange(string,Boolean);
+remote procedure IVSumup(var record IVVc,Boolean);
+remote function Boolean FindLastInvoiceRowForSerial(LongInt,string ,string,var row IVVc);
+external function Integer ArgEInvLock(record IVVc,integer);
+external function Boolean UserCanChangePendingRecord(Integer);
+remote updating procedure HandleWSReceiptPrinting(record WSVc,var area);//Edit----------------------Dima  21.09.2015
+remote procedure HandleIVReceiptPrinting(record IVVc,var area);//Edit----------------------Dima  21.09.2015
+remote updating procedure HandleSVOReceiptPrinting(record SVOVc,var area); //Edit***************************Sasha2,13:20 13.10.2016
+external procedure MySortStringArray(var array string,integer);
+
+SetLangMode(LangRussian,"RUS",0);
+
+global
+procedure DI2SClassArrayOnOpen(string name,var array string astr,var array string astr2,var array string astr3)
+BEGIN
+  record DIVc Dir;
+  record LocationVc Locationr;
+  Boolean testf;
+  integer i;
+  vector boolean vName;
+  
+    DIr.Code = "";
+	i = 0;
+	while (LoopMain(DIr,1,true)) begin
+		if(nonblank(DIr.Name))then begin
+			if(SetInSet(name,DIr.Name) and DIr.CType=="DISP4")then begin
+				if(vName[uppercase(trim(DIr.Name))]==false)then begin
+					vName[uppercase(trim(DIr.Name))] = true;
+					astr[i] = trim(DIr.Name);
+					astr2[i] = DIr.Code;
+					astr3[i] = DIr.CType;
+					i=i+1;
+				end;
+			end;
+		end;
+	end;
+	MySortStringArray(astr,i);
+ 
+  RETURN;
+END;

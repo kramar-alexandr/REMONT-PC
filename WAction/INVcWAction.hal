@@ -10,6 +10,7 @@ external procedure FindMotherWindowLocation(Integer,var string,var Date);
 external procedure INrsRClassReportDef(var record RcVc);
 external procedure SendArtStat(string,string,string,val,val,val,Date,Integer);
 external procedure PasteFromSysList(Integer,Integer); //Edit***************************Sasha2,14:52 14.12.2015
+remote procedure DI2SClassArrayOnOpen(string,var Array string,var Array string,var Array string);
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -208,7 +209,7 @@ begin
     	if(readfirstmain(DIr,1,true))then begin
     		INr.Disp2Name = DIr.Name;
     	end;
-    	INr.Disp3 = "ìÒÚÓÈÒ001";
+    	INr.Disp3 = "ìëíêéâë001";
     	DIr.Code = INr.Disp3;
     	if(readfirstmain(DIr,1,true))then begin
     		INr.Disp3Name = DIr.Name;
@@ -1395,6 +1396,8 @@ BEGIN
   RETURN;
 END;
 
+
+
 global //Edit***************************Sasha2,14:20 14.12.2015 {
 function Boolean LocationClassificationSClassOnOpenWindow(Integer wn)
 begin
@@ -1506,6 +1509,44 @@ begin
   DISClassOnOpenWindow = true;
   return;
 end;
+
+global
+function Boolean DI2SClassOnOKWindow(Integer wn)
+begin
+  PasteFromSysList(wn,20);
+  DI2SClassOnOKWindow = false;
+  return;
+end;
+
+global
+function Boolean DI2SClassOnOpenWindow(Integer wn)
+begin
+  Array string 255 astr;
+  Array string 255 astr2;
+  Array string 255 astr3;
+  Array string 255 astr4;
+  Integer i,mwn;
+  record RcVc RepSpec;
+  record DIVc DIr;
+  
+  
+	mwn = MotherWindow(wn);
+	GetWindowRecord(mwn,RepSpec);
+		
+	DI2SClassArrayOnOpen(RepSpec.f9,astr,astr2,astr3);
+	
+    for (i=0;i<astr.length;i=i+1) begin
+      AddListRow(wn,"PDIDL",1,astr[i],0);
+      AddListData(wn,"PDIDL","Name",astr[i]);
+      //AddListData(wn,"PDIDL","Code",astr2[i]);
+      //AddListData(wn,"PDIDL","CType",astr3[i]);
+    end;
+ 
+  DI2SClassOnOpenWindow = false;
+  return;
+end;
+
+
 
 
 global updating procedure DeleteThisINDsm()

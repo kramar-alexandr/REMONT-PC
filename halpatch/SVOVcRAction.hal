@@ -813,7 +813,9 @@ BEGIN
 	
 	SGr.SGroupCode = SalesGroup;
 	if(readfirstmain(SGr,1,true))then begin
+		logtext(0,"GetNextInnerOrderNr " & SGr.InnerOrderNr);
 		NextM4Number(SGr.InnerOrderNr,InnerOrderNr);
+		logtext(0,"InnerOrderNr " & InnerOrderNr);
 		if (nonblank(InnerOrderNr)) then begin
 			SVOr.InnerOrderNr = InnerOrderNr;
 			if (ReadFirstKey("InnerOrderNr",SVOr,1,true)==false) then begin

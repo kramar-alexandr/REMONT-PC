@@ -1320,6 +1320,9 @@ BEGIN
   end;
   if(fieldname=="InnerOrderNr")then begin// Edit ************************** Monday, 24 July 2017 12:06:35
   	res = false;
+  	if(left(currentuser,2)=="SA")then begin
+  	
+  	end;
     goto LSVODClassActiveEditField;
   end;
   

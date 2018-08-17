@@ -2880,7 +2880,11 @@ BEGIN
   end;
   //SENDSMS(SVOr,SVO2r);// Edit ************************** Tuesday, 8 January 2013 10:20:35
   
-  rwcnt = MatRowCnt(SVOr); //for quick search
+  MatRowGet(SVOr,0,SVOrw);
+  SVOr.SpecTextSearch = SVOrw.Spec;
+  SVOr.SerialNrTextSearch = SVOrw.NewSerialNr;
+  SVOr.ArtCodeTextSearch = SVOrw.ArtCode;
+  /*rwcnt = MatRowCnt(SVOr); //for quick search
   if (rwcnt>0) then begin
     for (i=0;i<rwcnt;i=i+1) begin
       MatRowGet(SVOr,i,SVOrw);
@@ -2901,14 +2905,14 @@ BEGIN
         end;
         //if (Blank(SVOr.SerialNrTextSearch)) then begin// Edit ************************** Tuesday, 21 February 2017 11:27:50
           SVOr.SerialNrTextSearch = SVOrw.NewSerialNr;
-        /*end else begin
+        end else begin
           if (len(SVOr.SerialNrTextSearch & " " & SVOrw.SerialNr)<=255 and FindStringInString(SVOr.SerialNrTextSearch,SVOrw.SerialNr)==false) then begin
             SVOr.SerialNrTextSearch = SVOr.SerialNrTextSearch & " " & SVOrw.SerialNr;// Edit ************************** Tuesday, 21 February 2017 11:27:51
           end;
-        end;*/
+        end;
       end;
     end;
-  end;
+  end;*/
   
   switch(SVOr.OrderStatus)begin
   	case 0: SVOr.StatusText = USetStr(31044);

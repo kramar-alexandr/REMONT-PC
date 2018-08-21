@@ -4039,7 +4039,7 @@ begin
 return;
 end; //Edit***************************Sasha2,13:36 12.07.2017 }
 
-
+/*
 global
 updating procedure ReadImportTagRHistVc(string thetag)
 begin
@@ -4083,7 +4083,7 @@ begin
 	
 return;
 end;
-
+*/
 
 
 global updating procedure ClearOldDataMn()

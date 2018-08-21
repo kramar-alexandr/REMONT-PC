@@ -4039,6 +4039,75 @@ begin
 return;
 end; //Edit***************************Sasha2,13:36 12.07.2017 }
 
+
+global
+updating procedure ReadImportTagRHistVc(string thetag)
+begin
+	
+	 while (NextImportLine(false)) begin
+	 
+	 end;
+	
+return;
+end;
+
+global
+updating procedure ReadImportTagRHist(string thetag)
+begin
+	
+	 while (NextImportLine(false)) begin
+	 
+	 end;
+	
+return;
+end;
+
+global
+updating procedure ReadImportTagBinotelCallPushVc(string thetag)
+begin
+	
+	 while (NextImportLine(false)) begin
+	 
+	 end;
+	
+return;
+end;
+
+global
+updating procedure ReadImportTagBinotelCallPush(string thetag)
+begin
+	
+	 while (NextImportLine(false)) begin
+	 
+	 end;
+	
+return;
+end;
+
+
+
+global updating procedure ClearOldDataMn()
+begin
+	record RHistVc RHr;
+	record BinotelCallPushVc BCPr;
+	
+	while(loopmain(BCPr,1,true))begin
+		if(BCPr.TransDate<addday(currentdate,-14))then begin
+			recorddelete(BCPr);
+			stepback(BCPr);
+		end;
+	end;
+	
+	while(loopmain(RHr,1,true))begin
+		if(RHr.TransDate<addday(currentdate,-14))then begin
+			recorddelete(RHr);
+			stepback(BCPr);
+		end;
+	end;
+
+return;
+end;
+
 global
 updating procedure TrimUprcDIVcITVc(record RcVc RepSpec)
 begin

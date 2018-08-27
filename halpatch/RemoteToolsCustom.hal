@@ -4752,17 +4752,17 @@ begin
 				if(infound[INr.Code]==false)then begin
 					if(readfirstmain(INr,1,true))then begin
 						if((blank(INr.Disp2) and INr.Disp1=="USER" and blank(INr.Disp3)) or (blank(INr.Disp1) and INr.DispGroups=="USER"))then begin
-							INr.Disp2 = "SKLADU";
+							INr.Disp2 = "3059";
 							INr.Disp2Name = "Складируемый товар";
 							if(blank(INr.Disp3))then begin
-								INr.Disp3 = "УСТРОЙС001";
+								INr.Disp3 = "4124";
 								INr.Disp3Name = "Устройство клиента";
 							end;
 							if(blank(INr.Disp1))then begin
 								INr.Disp1 = "USER";
 								INr.Disp1Name = "Устройства клиентов";
 							end;
-							INr.DispGroups = "USER,SKLADU,УСТРОЙС001";
+							INr.DispGroups = "USER,SKLADU,4124";
 							logtext(0,INr.Code & " " & INr.Name);
 							recordstore(INr,true);
 						end;
@@ -4797,7 +4797,7 @@ begin
 	
 	DIr.Code = "";
 	while(loopmain(DIr,1,true))begin
-		if(DIr.CType=="DISP4" and DIr.DispGroups=="УСТРОЙС001")then begin
+		if(DIr.CType=="DISP4" and DIr.DispGroups=="4124")then begin
 			DINames[acnt] = trim(DIr.Name);
 			DICodes[acnt] = DIr.Code;
 			logtext(0,"*** " & DINames[acnt] & " " & DICodes[acnt]);
@@ -4818,7 +4818,7 @@ begin
 	
 	INr.Code = "";
 	while(loopmain(INr,1,true))begin
-		if(INr.Disp1=="USER" and INr.Disp3=="УСТРОЙС001" and blank(INr.Disp4))then begin
+		if(INr.Disp1=="USER" and INr.Disp3=="4124" and blank(INr.Disp4))then begin
 			For(i=0;i<acnt;i=i+1) begin
 	  		if(DINames[i]==left(INr.Name,len(DINames[i])))then begin
 	  			INr.Disp4 = DICodes[i];
@@ -4834,7 +4834,7 @@ begin
 	resetloop(INr);
 	INr.Code = "";
 	while(loopmain(INr,1,true))begin
-		if(INr.Disp1=="USER" and INr.Disp3=="УСТРОЙС001" and nonblank(INr.Disp4) and blank(INr.Disp5))then begin
+		if(INr.Disp1=="USER" and INr.Disp3=="4124" and nonblank(INr.Disp4) and blank(INr.Disp5))then begin
 			INr.DispGroups = INr.Disp1 & "," & INr.Disp2 & "," & INr.Disp3 & "," & INr.Disp4;
 			For(i=0;i<a5cnt;i=i+1) begin
 	  		if(DI5Names[i]==ITNames[INr.Group] and DI5Class[i]==INr.Disp4)then begin
@@ -4895,7 +4895,7 @@ begin
 	endformat;
 	
 	while(loopmain(INr,1,true))begin
-		if(INr.Disp1=="USER" and INr.Disp3=="УСТРОЙС001" and (blank(INr.Disp4) or blank(INr.Disp5)))then begin
+		if(INr.Disp1=="USER" and INr.Disp3=="4124" and (blank(INr.Disp4) or blank(INr.Disp5)))then begin
 			if(nonblank(INr.Disp4))then begin
 				/*if(nonblank(INr.Group))then begin
 					ITr.Code = INr.Group;

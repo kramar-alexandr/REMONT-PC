@@ -204,12 +204,12 @@ begin
     end;
     GetWindowRecord(wn,INr);
     if(INr.Disp1=="USER")then begin
-    	INr.Disp2 = "SKLADU";
+    	INr.Disp2 = "3059";
     	DIr.Code = INr.Disp2;
     	if(readfirstmain(DIr,1,true))then begin
     		INr.Disp2Name = DIr.Name;
     	end;
-    	INr.Disp3 = "ìëíêéâë001";
+    	INr.Disp3 = "4124";
     	DIr.Code = INr.Disp3;
     	if(readfirstmain(DIr,1,true))then begin
     		INr.Disp3Name = DIr.Name;

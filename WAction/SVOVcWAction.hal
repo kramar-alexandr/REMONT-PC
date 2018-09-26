@@ -867,6 +867,34 @@ BEGIN
   SelectWindow(wn);
   RETURN;
 END;
+
+global
+procedure JVCRnRClassReportDefaults(Integer wn)
+BEGIN
+  record RcVc RepSpec;
+  
+  DeselectWindow(wn,false);
+  GetWindowRecord(wn,RepSpec);
+  ReportDefaults(RepSpec,"JVCRnRClass");  
+  RepSpec.ArtMode = 0; //Edit***************************Sasha2,15:37 27.04.2015
+  RepSpec.flags[0] = 1;
+  RepSpec.flags[3] = 1; //Edit***************************Sasha2,15:37 27.04.2015
+  RepSpec.flags[4] = 1;
+  RepSpec.flags[5] = 1;
+  RepSpec.flags[9] = 1; //Edit***************************Sasha2,13:46 14.02.2017
+  RepSpec.flags[10] = 1; //Edit***************************Sasha2,13:46 14.02.2017
+  RepSpec.flags[11] = 1; //Edit***************************Sasha2,13:46 14.02.2017
+  RepSpec.flags[14] = 1;
+  RepSpec.flags[15] = 1;
+  RepSpec.flags[16] = 1;
+  RepSpec.flags[17] = 1;//Edit-------------------Vitalii 16:34 21.09.2017
+  RepSpec.flags[18] = 1;//Edit-------------------Vitalii 16:34 21.09.2017
+  PutWindowRecord(wn,RepSpec);
+  SelectWindow(wn);
+  RETURN;
+END;
+
+
 global
 procedure SVOCustStatDsm()
 BEGIN

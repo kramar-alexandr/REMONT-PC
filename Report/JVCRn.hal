@@ -1,0 +1,530 @@
+external procedure MySortStringArray(var array string,integer);
+external function boolean JVCFound(record SVOVc);
+SetLangMode(LangRussian,"RUS",0);
+external function Boolean IsDigit(string);
+
+global
+procedure FindJVCModel(var record INVc INr,String ArtCode,string Spec,var string diagstr,var string partnum)
+begin
+	integer i;
+	boolean diagfound;
+	
+	partnum = ArtCode;
+	INr.Code = ArtCode;
+	readfirstmain(INr,1,true);
+	if(left(partnum,5)=="JVC")then begin
+		partnum = mid(partnum,3,len(partnum)-3);
+	end;
+	if(left(partnum,13)=="КАМЕРА_JVC_")then begin
+		partnum = mid(partnum,12,len(partnum)-12);
+	end;
+					
+	if(nonblank(INr.Disp6Name))then begin
+		if(left(INr.Disp6Name,4)=="JVC ")then begin
+			partnum = mid(INr.Disp6Name,4,len(INr.Disp6Name)-4);
+		end;
+	end;
+	
+	
+	if(nonblank(partnum))then begin
+		for(i=0;i<len(partnum);i=i+1)begin
+			if(i<len(partnum)-1)then begin
+				diagstr = mid(partnum,i,2);
+				if(IsDigit(mid(diagstr,0,1)))then begin
+					if(IsDigit(mid(diagstr,1,1)))then begin
+						diagfound = true;
+						i = len(partnum);
+					end;
+				end;
+			end;
+		end;
+	end;
+	
+	if(diagfound)then begin
+		diagstr = diagstr & "\"";
+	end else begin
+		diagstr = "";
+	end;
+
+return;
+end;
+
+global procedure JVCRn(record RcVc RepSpec)
+begin
+	record SVOVc SVOr;
+	row SVOVc SVOrw;
+	date sd,ed;
+	boolean testf,TrHs,JVCf;
+	record LetVc Letr;
+	string 20 diagstr;
+	boolean diagfound;
+	record WSVc WSr;
+	record IVVc IVr;
+	row IVVc IVrw;
+	integer i,mtrw,vi,ivmtrw,artcnt,wokcnt;
+	boolean TrHs1,testf1;
+	array string 255 worklist,workname;
+	array val workprice,artprice;
+	vector boolean worktag;
+	vector integer workqty;
+	string 255 vkey,work,partnum;
+	
+	array string 255 artklist,artkname;
+	vector boolean artktag;
+	vector integer artkqty;
+	string 255 artk,newdiagstr;
+	
+	vector integer vsumworks;
+	array string 255 asumworks;
+	integer sumworkscnt;
+	vector boolean vbsumworks;
+	record INVc INr;
+	val sumprices,sumpricescur,sumpricesold;
+	
+	sd = RepSpec.sStartDate;
+	ed = RepSpec.sEndDate;
+	
+	startreportnoheaderjob("Отчет по JVC");
+	
+	startformat(15);
+		outstring(0,0,"№ заказа ",false);	
+		outstring(0,0,"Дата приема устройства",false);
+		outstring(0,0,"Дата завершения ремонта",false)//Edit_-_-_-_-_-_-_-_-Anton 12:12 25.04.2018
+		outstring(0,0,"Дата выдачи",false);
+		outstring(0,0,"Модель аппарата",false);
+		outstring(0,0,"Диагональ",false);
+		outstring(0,0,"Код",false);
+		outstring(0,0,"Имя",false);
+		outstring(0,0,"Серийный номер",false);
+		outstring(0,0,"Неисправность ",false);
+		outstring(0,0,"Выполненная работа ",false);
+		outstring(0,0,"Сумма",false);
+		outstring(0,0,"Наименование деталей",false);
+		//outstring(0,0,"Сумма",false);
+		outstring(0,0,"Выезд/Доставка",false);
+		outstring(0,0,"Город",false);
+		outstring(0,0,"ФИО,Адрес,тел.",false);
+		outstring(0,0,"Подменный аппарат  (модель и S/N, если выдавали)",false);
+		outstring(0,0,"Компенсация клиенту (замена на аналогичный)",false);
+		outstring(0,0,"Примечание",false);
+	endformat;
+	
+	TrHs = true;
+	SVOr.RegDate = sd;
+	while(loopkey("RegDate",SVOr,1,TrHs))begin
+		JVCf = JVCFound(SVOr);		
+		testf = JVCf;
+		if (testf) then begin 
+		  testf = false; 
+		  if (RepSpec.flags[13]==1) then begin /* Предварит */
+			if (SVOr.OrderStatus==9) then begin
+			  testf = true;
+			end;
+		  end;  
+		  if (RepSpec.flags[4]==1) then begin /* В ожидании */
+			if (SVOr.OrderStatus==0) then begin
+			  testf = true;
+			end;
+		  end;
+		  if (RepSpec.flags[5]==1) then begin /* На диагностике*/
+			if (SVOr.OrderStatus==5) then begin
+			  testf = true;
+			end;
+		  end;
+		  if (RepSpec.flags[3]==1) then begin /* На согласовании*/
+			if (SVOr.OrderStatus==4) then begin
+			  testf = true;
+			end;
+		  end;
+		  if (RepSpec.flags[14]==1) then begin /* Согласовано*/
+			if (SVOr.OrderStatus==7) then begin
+			  testf = true;
+			end;
+		  end;
+		  if (RepSpec.flags[9]==1) then begin /* В ремонте*/
+			if (SVOr.OrderStatus==1) then begin
+			  testf = true;
+			end;
+		  end;
+		  if (RepSpec.flags[10]==1) then begin /* В удал. сервисе*/
+			if (SVOr.OrderStatus==8) then begin
+			  testf = true;
+			end;
+		  end;
+		  if (RepSpec.flags[15]==1) then begin /* Ожидает запч.*/
+			if (SVOr.OrderStatus==3) then begin
+			  testf = true;
+			end;
+		  end;
+		  if (RepSpec.flags[16]==1) then begin /* Заказать запч.*/
+			if (SVOr.OrderStatus==10) then begin
+			  testf = true;
+			end;
+		  end;
+		  if (RepSpec.flags[11]==1) then begin /* Готов.*/
+			if (SVOr.OrderStatus==2) then begin
+			  testf = true;
+			end;
+		  end;
+		  if (RepSpec.flags[12]==1) then begin /* Отказ.*/
+			if (SVOr.OrderStatus==6) then begin
+			  testf = true;
+			end;
+		  end;
+		  if (RepSpec.flags[17]==1) then begin /* Вернули на доработку*/
+			if (SVOr.OrderStatus==11) then begin
+			  testf = true;
+			end;
+		  end;
+		  if (RepSpec.flags[18]==1) then begin /* Клиент думает*/
+			if (SVOr.OrderStatus==12) then begin
+			  testf = true;
+			end;
+		  end;
+		end;
+		if(SVOr.RegDate>ed)then begin TrHs = false; testf = false; end;
+		if(SVOr.RegDate<sd)then begin testf = false; end;
+		
+		
+		if(testf)then begin
+			startformat(15);
+				outstring(0,"DblSVOVcSer",SVOr.InnerOrderNr,false);
+				outstring(0,0,SVOr.GetItemDate,false);
+				outstring(0,0,SVOr.PlanShipDate,false);//Edit_-_-_-_-_-_-_-_-Anton 12:49 25.04.2018
+				outstring(80,0,SVOr.RegDate,false);
+				
+				if(matrowcnt(SVOr)>0)then begin
+					matrowget(SVOr,0,SVOrw);
+				end;
+				
+				
+				FindJVCModel(INr,SVOrw.ArtCode,SVOrw.Spec,diagstr,partnum);
+				outstring(130,0,partnum,false);
+				outstring(200,0,diagstr,false);
+
+				outstring(0,0,SVOrw.ArtCode,false);
+				outstring(0,0,SVOrw.Spec,false);
+				
+				/*if(left(currentuser,2)=="SA")then begin
+					outstring(220,0,SVOrw.Spec,false);
+				end;*/
+				outstring(220,0,SVOrw.NewSerialNr,false);
+				outstring(260,0,SVOr.Comment1,false);
+				
+				resetloop(IVr);
+				IVr.SVONr = SVOr.SerNr;
+				TrHs1 = true;
+				artcnt = 0;
+				wokcnt = 0;
+				while(loopkey("SVONr",IVr,1,TrHs1))begin
+					testf1 = true;
+					if(IVr.SVONr!=SVOr.SerNr)then begin testf1 = false; TrHs1 = false;  end;
+					if(IVr.OKFlag==0)then begin testf1 = false; end;
+					
+					if(testf1)then begin
+						ivmtrw = matrowcnt(IVr);
+						For(vi=0;vi<ivmtrw;vi=vi+1) begin
+	  					matrowget(IVr,vi,IVrw);
+	  					if(IVrw.stp==kInvoiceRowTypeNormal)then begin
+	  						if(nonblank(IVrw.ArtCode))then begin
+	  							INr.Code = IVrw.ArtCode;
+	  							if(readfirstmain(INr,1,true))then begin
+	  								if(INr.ItemType==0 or INr.ItemType==3)then begin
+	  									vkey = SVOr.SerNr & ":" & IVrw.ArtCode;
+	  									if(worktag[vkey])then begin
+	  										if(IVr.InvType==kInvoiceTypeCredit)then begin
+													workqty[vkey] = workqty[vkey] - IVrw.Quant;
+													for(i=0;i<wokcnt;i=i+1)begin
+														if(worklist[i]==vkey)then begin
+															workprice[i] = workprice[i] - IVrw.Sum;
+															sumprices = sumprices - IVrw.Sum;
+															if(DateInRange(IVr.InvDate,sd,ed))then begin
+																sumpricescur = sumpricescur - IVrw.Sum;
+															end else begin
+																sumpricesold = sumpricesold - IVrw.Sum;
+															end;
+														end;
+													end;
+	  										end else begin
+	  											workqty[vkey] = workqty[vkey] + IVrw.Quant;
+	  											for(i=0;i<wokcnt;i=i+1)begin
+														if(worklist[i]==vkey)then begin
+															workprice[i] = workprice[i] + IVrw.Sum;
+															sumprices = sumprices + IVrw.Sum;
+															if(DateInRange(IVr.InvDate,sd,ed))then begin
+																sumpricescur = sumpricescur + IVrw.Sum;
+															end else begin
+																sumpricesold = sumpricesold + IVrw.Sum;
+															end;
+														end;
+													end;
+	  										end;
+	  									end else begin
+	  										if(IVr.InvType==kInvoiceTypeCredit)then begin
+													workqty[vkey] = -IVrw.Quant;
+	  										end else begin
+	  											workqty[vkey] = IVrw.Quant;
+	  										end;
+	  										worktag[vkey] = true;
+	  										worklist[wokcnt] = vkey;
+	  										workname[wokcnt] = IVrw.Spec;
+	  										workprice[wokcnt] = IVrw.Sum;
+	  										sumprices = sumprices + IVrw.Sum;
+	  										if(DateInRange(IVr.InvDate,sd,ed))then begin
+													sumpricescur = sumpricescur + IVrw.Sum;
+												end else begin
+													sumpricesold = sumpricesold + IVrw.Sum;
+												end;
+	  										wokcnt = wokcnt + 1;
+	  									end;
+	  								end;
+	  								
+	  								
+	  								if(INr.ItemType==1)then begin
+	  									vkey = SVOr.SerNr & ":" & IVrw.ArtCode;
+	  									if(artktag[vkey])then begin
+	  										if(IVr.InvType==kInvoiceTypeCredit)then begin
+													artkqty[vkey] = artkqty[vkey] - IVrw.Quant;
+	  										end else begin
+	  											artkqty[vkey] = artkqty[vkey] + IVrw.Quant;
+	  										end;
+	  									end else begin
+	  										if(IVr.InvType==kInvoiceTypeCredit)then begin
+													artkqty[vkey] = -IVrw.Quant;
+	  										end else begin
+	  											artkqty[vkey] = IVrw.Quant;
+	  										end;
+	  										artktag[vkey] = true;
+	  										artklist[artcnt] = vkey;
+	  										artkname[artcnt] = INr.Name;
+	  										artprice[artcnt] = IVrw.Sum;
+	  										artcnt = artcnt + 1;
+	  									end;
+	  								end;
+	  								
+	  							end;
+	  						end;
+	  					end;
+						end; 
+					end;					
+				end;
+				
+				if(wokcnt>0)then begin
+					work = "";
+					For(vi=0;vi<wokcnt;vi=vi+1) begin
+						if(workqty[worklist[vi]]>0)then begin
+							if(stringtolongint(firstinrange(worklist[vi],20))==SVOr.SerNr)then begin
+								//outstring(350,0,workname[vi],false);
+								work = work & workname[vi] & ",";
+								
+								newdiagstr = "";
+								if(nonblank(diagstr))then begin
+									if(stringtoint(diagstr)<40)then begin
+										newdiagstr = "<40\"";
+									end;
+									if(stringtoint(diagstr)>39 and stringtoint(diagstr)<47)then begin
+										newdiagstr = "40\"-46\"";
+									end;
+									if(stringtoint(diagstr)>46)then begin
+										newdiagstr = ">46\"";
+									end;
+								end;
+								
+								vkey = workname[vi] & " " & newdiagstr;
+																
+								if(vbsumworks[vkey])then begin
+									vsumworks[vkey] = vsumworks[vkey] + workqty[worklist[vi]];
+								end else begin
+									vsumworks[vkey] = vsumworks[vkey] + workqty[worklist[vi]];
+									vbsumworks[vkey] = true;
+									asumworks[sumworkscnt] = vkey;
+									sumworkscnt = sumworkscnt + 1;
+								end;
+								
+							end;
+						end;
+					end;
+					if(workqty[worklist[0]]>0)then begin 
+						outstring(350,0,workname[0],false);
+						outstring(350,0,workprice[0],false);
+					end else begin
+						outstring(350,0,"",false);
+						outstring(350,0,"",false);
+					end;
+				end else begin
+					outstring(350,0,"",false);
+					outstring(350,0,"",false);
+				end;
+				
+				if(artcnt>0)then begin
+					artk = "";
+					For(vi=0;vi<artcnt;vi=vi+1) begin
+						if(artkqty[artklist[vi]]>0)then begin
+							if(stringtolongint(firstinrange(artklist[vi],20))==SVOr.SerNr)then begin
+								//outstring(350,0,workname[vi],false);
+								artk = artk & artkname[vi] & ",";
+							end;
+						end;
+					end; 
+					if(artkqty[artklist[0]]>0)then begin
+						outstring(350,0,artkname[0],false);
+					end else begin
+						outstring(350,0,"",false);
+					end;
+					//outstring(350,0,artprice[0],false);
+				end else begin
+					outstring(350,0,"",false);
+					//outstring(350,0,"",false);
+				end;
+				outstring(380,0,"",false);
+				outstring(390,0,"",false);
+				outstring(400,0,SVOr.Addr0 & " " & SVOr.Kontinfo1,false);
+			endformat;
+			
+			if(artcnt>1 or wokcnt>1)then begin
+				if(artcnt>=wokcnt)then begin
+					For(vi=1;vi<artcnt;vi=vi+1) begin
+						startformat(15);
+							outstring(0,0,"",false);
+							outstring(0,0,"",false);
+							outstring(0,0,"",false);
+							outstring(0,0,"",false);
+							outstring(0,0,"",false);
+							outstring(0,0,"",false);
+							outstring(0,0,"",false);
+							outstring(0,0,"",false);
+							outstring(0,0,"",false);
+							outstring(0,0,"",false);
+							if(vi<artcnt)then begin
+								if(workqty[worklist[vi]]>0)then begin
+									outstring(350,0,workname[vi],false);
+									outstring(350,0,workprice[vi],false);
+								end else begin
+									outstring(350,0,"",false);
+									outstring(350,0,"",false);
+								end;
+							end else begin
+								outstring(350,0,"",false);
+								outstring(350,0,"",false);
+							end;
+							IF(artkqty[artklist[vi]]>0)THEN BEGIN
+								outstring(350,0,artkname[vi],false);
+							end else begin
+								outstring(350,0,"",false);
+							end;
+							//outstring(350,0,artprice[vi],false);
+						endformat;
+					end;
+				end else begin
+					For(vi=1;vi<wokcnt;vi=vi+1) begin
+						startformat(15);
+							outstring(0,0,"",false);
+							outstring(0,0,"",false);
+							outstring(0,0,"",false);
+							outstring(0,0,"",false);
+							outstring(0,0,"",false);
+							outstring(0,0,"",false);
+							outstring(0,0,"",false);
+							outstring(0,0,"",false);
+							outstring(0,0,"",false);
+							outstring(0,0,"",false);
+							if(workqty[worklist[vi]]>0)then begin
+								outstring(350,0,workname[vi],false);
+								outstring(350,0,workprice[vi],false);
+							end else begin
+								outstring(350,0,"",false);
+								outstring(350,0,"",false);
+							end;
+							if(vi<artcnt)then begin
+								IF(artkqty[artklist[vi]]>0)THEN BEGIN
+									outstring(350,0,artkname[vi],false);
+								end else begin
+									outstring(350,0,"",false);
+								end;
+							end else begin
+								outstring(350,0,"",false);
+							end;
+							//outstring(350,0,artprice[vi],false);
+						endformat;
+					end;
+				end;
+			end;
+		end;
+		
+	end;
+	
+	startformat(15);
+		outstring(0,0,"",false);	
+		outstring(0,0,"",false);	
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"Всего",false);
+		outstring(0,0,sumprices,false);
+		outstring(0,0,"",false);
+		//outstring(0,0,"Сумма",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+	endformat;
+	startformat(15);
+		outstring(0,0,"",false);	
+		outstring(0,0,"",false);	
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"В этом периоде",false);
+		outstring(0,0,"Всего",false);
+		outstring(0,0,sumpricescur,false);
+		outstring(0,0,"",false);
+		//outstring(0,0,"Сумма",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+	endformat;
+	startformat(15);
+		outstring(0,0,"",false);	
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"Раньше",false);
+		outstring(0,0,"Всего",false);
+		outstring(0,0,sumpricesold,false);
+		outstring(0,0,"",false);
+		//outstring(0,0,"Сумма",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+	endformat;
+	
+	startformat(15);
+	endformat;
+	
+	MySortStringArray(asumworks,sumworkscnt);
+	For(i=0;i<sumworkscnt;i=i+1) begin	  
+		startformat(15);
+			outstring(0,0,asumworks[i],false);
+			outstring(150,0,vsumworks[asumworks[i]],false);
+		endformat;
+	end;
+	
+	endjob;
+
+return;
+end;

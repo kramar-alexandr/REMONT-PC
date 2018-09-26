@@ -24,6 +24,7 @@ begin
 
 	Report("Статистика предварительных заказов",CallConversionRClass,CallConversionRn,0,modSVO);
 	Report("KIVI отчет",KIVIRnRClass,KIVIRn,0,modSVO);
+	Report("JVC отчет",JVCRnRClass,JVCRn,0,modSVO);
 	Report("Выполненые ремонты",ServiceJobsRClass,ServiceJobsRn,0,modSVO);
 	Report("Binotel Short Report",ServiceJobsRClass,BinotelSimpleRepRn,0,modSVO);
 	Report("Binotel List Report",SimpleRClass,BinotelTrackListRn,0,modSVO);

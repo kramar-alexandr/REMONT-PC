@@ -350,6 +350,44 @@ return;
 end;
 
 
+global function boolean JVCFound(record SVOVc SVOr)
+begin
+	boolean res;
+	record LetVc Letr;
+	record INVc INr;
+	row SVOVc SVOrw;
+	
+	res = false;
+	if(SVOr.Region=="JVC")then begin res = true; end;
+	
+	if(matrowcnt(SVOr)>0)then begin
+		matrowget(SVOr,0,SVOrw);
+		recordnew(Letr);
+		AddToText(SVOrw.ArtCode,Letr);
+		AddToText(SVOrw.Spec,Letr);
+		
+		if(StringInText("JVC",Letr))then begin
+			res = true;
+		end;
+		INr.Code = SVOrw.ArtCode;
+		if(readfirstmain(INr,1,true))then begin
+			if(INr.Group=="JVC")then begin
+				res = true;
+			end;
+		end;
+		if(nonblank(INr.Disp5Name))then begin
+			if(left(INr.Disp5Name,4)!="JVC" and left(INr.Disp5Name,4)!="Jvc" and left(INr.Disp5Name,4)!="jvc")then begin
+				res = false;
+			end;
+		end;
+	end;
+	
+	JVCFound = res;
+
+return;
+end;
+
+
 
 
 //------------------------------------------------------- proc added by dima-f 22.09.17

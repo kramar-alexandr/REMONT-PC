@@ -613,6 +613,9 @@ begin
 		boolean iskivi;
 		
 		iskivi = KIVIFound(SVOr);
+		if(iskivi==false)then begin
+			iskivi = JVCFound(SVOr);
+		end;
 		
     mainPrsns="";
     commentee="";
@@ -627,7 +630,7 @@ begin
         if(SVOr.GetItemFlag>0)then begin
         	if(iskivi)then begin
         		if(blank(SVOr.Kontinfo1) or blank(SVOr.Kontinfo3) or blank(SVOr.Addr0))then begin
-							CreateCustomActivityFromSVO(SVOr,"KIVI",SVOr.Inspector,currentdate,"Внести данные KIVI","");
+							CreateCustomActivityFromSVO(SVOr,"KIVI",SVOr.Inspector,currentdate,"Внести данные KIVI/JVC","");
         		end;
         	end;
         end;
@@ -694,7 +697,7 @@ begin
         if(SVOr.GetItemFlag>0 and SVO2r.GetItemFlag==0)then begin
         	if(iskivi)then begin
         		if(blank(SVOr.Kontinfo1) or blank(SVOr.Kontinfo3) or blank(SVOr.Addr0))then begin
-							CreateCustomActivityFromSVO(SVOr,"KIVI",SVOr.Inspector,currentdate,"Внести данные KIVI","");
+							CreateCustomActivityFromSVO(SVOr,"KIVI",SVOr.Inspector,currentdate,"Внести данные KIVI/JVC","");
         		end;
         	end;
         end;

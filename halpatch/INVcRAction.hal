@@ -450,7 +450,7 @@ begin
   if (IN2r.UPrice1!=INr.UPrice1) then begin
     INr.LastBasePriceChange = CurrentDate;
   end;
-  if(setinset("SERV",INr.DispGroups))then begin// Edit ************************** BPI Ukraine - KramarAlexandr - Wednesday, 14 March 2018 15:21:20
+  if(setinset("SERV",INr.DispGroups) and !setinset("SERS",INr.DispGroups))then begin// Edit ************************** BPI Ukraine - KramarAlexandr - Wednesday, 14 March 2018 15:21:20
   	INr.UPrice1 = INr.InPrice;
   	INr.LastBasePriceChange = currentdate;
   end;

@@ -56,6 +56,7 @@ remote updating procedure HandleWSReceiptPrinting(record WSVc,var area);//Edit--
 remote procedure HandleIVReceiptPrinting(record IVVc,var area);//Edit----------------------Dima  21.09.2015
 remote updating procedure HandleSVOReceiptPrinting(record SVOVc,var area); //Edit***************************Sasha2,13:20 13.10.2016
 external procedure MySortStringArray(var array string,integer);
+external procedure PasteFromSysList(Integer,Integer);
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -87,3 +88,25 @@ BEGIN
  
   RETURN;
 END;
+
+
+
+global 
+procedure GarantySClassArrayOnOpen(var Array string astr,var Integer acnt)
+BEGIN
+  
+  Integer i,rwcnt,rwnr;
+  Boolean TrHs;
+	
+	
+	
+	
+	astr[0] ="çÖí";
+	astr[1] ="ÑÄ";
+	acnt = 2;
+					
+  RETURN;
+END;
+
+
+

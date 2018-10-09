@@ -11,6 +11,7 @@ external procedure INrsRClassReportDef(var record RcVc);
 external procedure SendArtStat(string,string,string,val,val,val,Date,Integer);
 external procedure PasteFromSysList(Integer,Integer); //Edit***************************Sasha2,14:52 14.12.2015
 remote procedure DI2SClassArrayOnOpen(string,var Array string,var Array string,var Array string);
+remote procedure GarantySClassArrayOnOpen(var Array string,var Integer);
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -1543,6 +1544,39 @@ begin
     end;
  
   DI2SClassOnOpenWindow = false;
+  return;
+end;
+
+
+
+
+
+global 
+function Boolean GarantySClassOnOpenWindow(Integer wn)
+BEGIN
+  LongInt i,mwn;
+  string 255 subset;
+  Array string 255 adi,astr;
+  Integer acnt,rwnr;
+	
+  
+  mwn = MotherWindow(wn);
+	if(mwn!=-1)then begin
+		GarantySClassArrayOnOpen(astr,acnt);
+		for (i=0;i<acnt;i=i+1) begin
+			SetListString(wn,len(astr[i]),astr[i],false);    
+		end;
+	end;
+ 
+  GarantySClassOnOpenWindow = true;
+  RETURN;
+END; 
+
+global
+function Boolean GarantySClassOnOKWindow(Integer wn)
+begin
+  PasteFromSysList(wn,3);
+  GarantySClassOnOKWindow = false;
   return;
 end;
 

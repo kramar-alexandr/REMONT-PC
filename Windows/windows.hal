@@ -2055,6 +2055,10 @@ real h,v,vs;
     v = 40;
     PeriodField(h,v,"Период");
     
+		
+		CheckBox(h,v+=40,0,"Учитывать негарантийные ремонты",flags[0]);
+		
+		
 		v=130;
 	  ButtonFrame(h,v,123,13,"Статус");  
 	  CheckBox(h,v,0,"Предварит.",flags[13]);//9
@@ -2082,6 +2086,10 @@ real h,v,vs;
     h=100;
     v = 40;
     PeriodField(h,v,"Период");
+		
+		
+		CheckBox(h,v+=40,0,"Учитывать негарантийные ремонты",flags[0]);
+		
     
 		v=130;
 	  ButtonFrame(h,v,123,13,"Статус");  

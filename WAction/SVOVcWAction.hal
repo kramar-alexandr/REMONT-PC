@@ -851,7 +851,7 @@ BEGIN
   GetWindowRecord(wn,RepSpec);
   ReportDefaults(RepSpec,"KIVIRnRClass");  
   RepSpec.ArtMode = 0; //Edit***************************Sasha2,15:37 27.04.2015
-  RepSpec.flags[0] = 1;
+  RepSpec.flags[0] = 0;
   RepSpec.flags[3] = 1; //Edit***************************Sasha2,15:37 27.04.2015
   RepSpec.flags[4] = 1;
   RepSpec.flags[5] = 1;
@@ -877,7 +877,7 @@ BEGIN
   GetWindowRecord(wn,RepSpec);
   ReportDefaults(RepSpec,"JVCRnRClass");  
   RepSpec.ArtMode = 0; //Edit***************************Sasha2,15:37 27.04.2015
-  RepSpec.flags[0] = 1;
+  RepSpec.flags[0] = 0;
   RepSpec.flags[3] = 1; //Edit***************************Sasha2,15:37 27.04.2015
   RepSpec.flags[4] = 1;
   RepSpec.flags[5] = 1;

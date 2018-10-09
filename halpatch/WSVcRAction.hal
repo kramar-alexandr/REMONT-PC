@@ -55,6 +55,8 @@ remote updating procedure CreateIVFromWS(record WSVc,var LongInt,var record IVVc
 external function boolean CheckUserLocation(string);//Edit----------------------Dima  09.12.2015
 external function Boolean IsEnoughRemQtyInHist(string,string,date,val,string); //Edit***************************Sasha2,11:38 04.03.2016
 //remote updating procedure ChangeCostOfWSsInSVO(Longint);//Edit-------------------Vitalii 10:13 25.11.2016
+remote function boolean KIVIFound(record SVOVc);
+remote function boolean JVCFound(record SVOVc);
 
 procedure GetWSStockAcc(Integer ItemGroupAccounts,string location,string MainStock,string itcode,string accusageacc,var string stockacc,var string locobjstr)
 begin  
@@ -424,6 +426,17 @@ begin
   record SalesGroupVc 	SGr;
   record UserVc 			USr;
   String 255				NewObject;
+	boolean iskivi;
+	
+	
+	SVOr.SerNr = WSp.SVONr;
+	if(ReadFirstMain(SVOr,1,true))then begin
+		iskivi = KIVIFound(SVOr);
+		if(iskivi==false)then begin
+			iskivi = JVCFound(SVOr);
+		end;
+	end;
+
   
   blockload(OAb);// Edit ************************** Monday, 21 August 2017 16:04:42
   
@@ -455,6 +468,11 @@ begin
     end;
     goto LWSVcRecordCheck;
   end;  
+	if(blank(WSp.Garanty) and iskivi) then begin
+		RecordCheckError(31517,"",-1,"Garanty");
+		res = -1;
+		goto LWSVcRecordCheck;
+	end;
   if (Date2Test("WSVc",WSp.TransDate,"TransDate",-1)==false) then begin
     res = -1;
     goto LWSVcRecordCheck;

@@ -699,7 +699,7 @@ BEGIN
     end else begin
 			switch (fieldname) begin
 				case "Garanty": 
-					res = UserCanAction("ChangeGarantyKIVIJVC",false);     
+					res = UserCanAction("ChangeGarantyKIVIJVC",false);  //Edit_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-Anton 16:06 11.10.2018   
 			end;
 		end;
     switch (fieldname) begin

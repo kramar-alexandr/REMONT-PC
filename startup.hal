@@ -561,6 +561,7 @@ StrSetText(AllowAddingINtoRet,"Добавлять товары в возвраты");
   StrSetText(AllowCheckinBeforePlanned,"Чекин до запланированной даты"); 
   StrSetText(AllowCheckoutBeforePlanned,"Чекин после запланированной даты"); 
   StrSetText(JobELockingSystem,"Электронная замочная система");
+	StrSetText(ChangeGarantyKIVIJVC,"Изменение типа работ KIVI/JVC(Гарантийые/Оплачиваемые)");
   EndStrSet;
 	
 	return;

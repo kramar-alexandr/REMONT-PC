@@ -696,7 +696,12 @@ BEGIN
           res = UserCanAction("ChangeUnitPrices",true);      
       end;
       goto LWSDClassActiveEditField;
-    end;
+    end else begin
+			switch (fieldname) begin
+				case "Garanty": 
+					res = UserCanAction("ChangeGarantyKIVIJVC",false);     
+			end;
+		end;
     switch (fieldname) begin
       case "LangCode": res = true;
     end;
@@ -709,7 +714,7 @@ BEGIN
       case "vRebate": 
         res = UserCanAction("AllowChangeRebate",false); //Edit***************************Sasha2,17:38 02.03.2017
       case "Sum": 
-        res = UserCanAction("ChangeUnitPrices",true);      
+        res = UserCanAction("ChangeUnitPrices",true);     
     end;
   end;
 LWSDClassActiveEditField:;  
@@ -750,7 +755,6 @@ LWSDClassActiveEditField:;
   
   switch (fieldname) begin
     case "SalesGroup": res = true;
-		case "Garanty": res = true; 	
   end;
   
   

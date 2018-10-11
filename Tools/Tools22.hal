@@ -385,7 +385,7 @@ BEGIN
       WSp.Comment2 = SVOp.Comment2;
       WSp.Comment3 = SVOp.Comment3;
       WSp.Comment4 = SVOp.Comment4;
-			WSp.Garanty = SVOp.Garanty;
+			//WSp.Garanty = SVOp.Garanty;
       WSp.InvoiceToCode = SVOp.InvoiceToCode;
       WSp.CustVATCode = SVOp.CustVATCode;
       WSp.CustTaxTemplateCode = SVOp.CustTaxTemplateCode;

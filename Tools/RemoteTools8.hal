@@ -201,22 +201,18 @@ L20MakeInvHeader:;
 	objstr = IVp.Objects;
 	if(WSr.Garanty=="…’")then begin
 		IVp.Objects = "";
-		for (i=0;i<len(objstr);i=i+1) begin
-			pos = 0;
-			ExtractObj(objstr,pos,obj);
-			while (nonblank(obj)) begin
-				if(!SetInSet(obj,"KIVI") or !SetInSet(obj,"JVC"))then begin
-					if(nonblank(IVp.Objects))then begin
-						IVp.Objects = IVp.Objects & "," & obj;
-					end else begin
-						IVp.Objects = obj;
-					end;
+		pos = 0;
+		ExtractObj(objstr,pos,obj);
+		while (nonblank(obj)) begin
+			if(obj!="KIVI" or obj!="JVC")then begin
+				if(nonblank(IVp.Objects))then begin
+					IVp.Objects = IVp.Objects & "," & obj;
+				end else begin
+					IVp.Objects = obj;
 				end;
-				ExtractObj(objstr,pos,obj);
 			end;
+			ExtractObj(objstr,pos,obj);
 		end;
-	end else begin
-		IVp.CustOrdNr = SVOp.CustOrdNr;
 	end;
   IVp.LangCode = SVOp.LangCode;
   IVp.InclVAT = SVOp.InclVAT;

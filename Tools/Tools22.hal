@@ -21,6 +21,9 @@ external procedure PUCalcPerc(val,string,var val);
 external procedure InputObjectsAccInWS(var record WSVc); //Edit***************************Sasha2,10:24 17.07.2015
 remote function string 50 GetPhone1SerNrByPhone(string); //Edit***************************Sasha2,16:02 28.02.2017
 external function Boolean PasteCUInWS(var record WSVc,var string); //Edit***************************Sasha2,14:32 11.08.2017
+external procedure ExtractObj(string,var Integer,var string);
+
+SetLangMode(LangRussian,"RUS",0);
 
 global
 procedure CalcCashDiscount(var record VIVc VIp)
@@ -344,7 +347,8 @@ BEGIN
   record WOVc WOr;
   string 50 phoneNum; //Edit***************************Sasha2,16:06 28.02.2017
   record Phone1Vc Phoner; //Edit***************************Sasha2,16:07 28.02.2017
-  string 255 warning; //Edit***************************Sasha2,14:31 11.08.2017
+  string 255 warning, objstr; //Edit***************************Sasha2,14:31 11.08.2017
+	integer i, pos;
   
   RecordCopy(oldSVOr,SVOp);
   BlockLoad(MSb);
@@ -365,7 +369,24 @@ BEGIN
       end;
       WSp.Addr0 = SVOp.Addr0;
       WSp.CustContact = SVOp.CustContact;
-      WSp.Objects = SVOp.Objects;
+			if((setinset("KIVI",SVOp.Objects) or setinset("JVC",SVOp.Objects)) and UpperCase(SVOp.Garanty)=="çÖí")then begin
+				for (i=0;i<len(SVOp.Objects);i=i+1) begin
+					pos = 0;
+          ExtractObj(SVOp.Objects,pos,objstr);
+          while (nonblank(objstr)) begin
+            if (!SetInSet(objstr,"KIVI") or !SetInSet(objstr,"JVC")) then begin
+							if(nonblank(WSp.Objects))then begin
+								WSp.Objects = WSp.Objects & "," & objstr;
+							end else begin
+								WSp.Objects = objstr;
+							end;
+            end;
+						ExtractObj(SVOp.Objects,pos,objstr);
+          end;
+				end;
+			end else begin
+				WSp.Objects = SVOp.Objects;
+			end;
       WSp.Phone = SVOp.Phone;
       WSp.Fax = SVOp.Fax;
       //WSp.EMCode = USr.Code;// Edit ************************** Friday, 22 September 2017 13:56:40

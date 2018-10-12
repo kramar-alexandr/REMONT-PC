@@ -369,24 +369,7 @@ BEGIN
       end;
       WSp.Addr0 = SVOp.Addr0;
       WSp.CustContact = SVOp.CustContact;
-			if((setinset("KIVI",SVOp.Objects) or setinset("JVC",SVOp.Objects)) and UpperCase(SVOp.Garanty)=="çÖí")then begin
-				for (i=0;i<len(SVOp.Objects);i=i+1) begin
-					pos = 0;
-          ExtractObj(SVOp.Objects,pos,objstr);
-          while (nonblank(objstr)) begin
-            if (!SetInSet(objstr,"KIVI") or !SetInSet(objstr,"JVC")) then begin
-							if(nonblank(WSp.Objects))then begin
-								WSp.Objects = WSp.Objects & "," & objstr;
-							end else begin
-								WSp.Objects = objstr;
-							end;
-            end;
-						ExtractObj(SVOp.Objects,pos,objstr);
-          end;
-				end;
-			end else begin
-				WSp.Objects = SVOp.Objects;
-			end;
+			WSp.Objects = SVOp.Objects;
       WSp.Phone = SVOp.Phone;
       WSp.Fax = SVOp.Fax;
       //WSp.EMCode = USr.Code;// Edit ************************** Friday, 22 September 2017 13:56:40

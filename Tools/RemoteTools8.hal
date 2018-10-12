@@ -65,6 +65,7 @@ external function string 255 StrReplace(string,string,string);
 external procedure AddPrepaymentRowsSVOR(var record IVVc,longint);// Edit ************************** Friday, 14 July 2017 12:55:03
 external updating procedure RecSVOMn(record RcVc);
 
+SetLangMode(LangRussian,"RUS",0);
 
 function Boolean IVRowItemEq(record IVVc IVp,record WSIVVc WSIVp,record INVc INp,string rowobjs,string SalesAcc,var Integer rownr)
 begin
@@ -129,7 +130,8 @@ begin
   record WSVc WSr; //Edit***************************Sasha2,17:43 31.05.2017
   record ITVc ITr;	
   record IPVc IPr;
-
+	string 255 objstr, obj; 
+	integer i, pos;
   BlockLoad(SVOAb);
 
   if (WSNum>-1) then begin //Edit***************************Sasha2,17:43 31.05.2017 {
@@ -196,7 +198,26 @@ L20MakeInvHeader:;
     ReadFirstMain(USr,1,true);
     IVp.Objects = USr.PersObjx;
   end;
-  IVp.CustOrdNr = SVOp.CustOrdNr;
+	objstr = IVp.Objects;
+	if(WSr.Garanty=="çÖí")then begin
+		IVp.Objects = "";
+		for (i=0;i<len(objstr);i=i+1) begin
+			pos = 0;
+			ExtractObj(objstr,pos,obj);
+			while (nonblank(obj)) begin
+				if(!SetInSet(obj,"KIVI") or !SetInSet(obj,"JVC"))then begin
+					if(nonblank(IVp.Objects))then begin
+						IVp.Objects = IVp.Objects & "," & obj;
+					end else begin
+						IVp.Objects = obj;
+					end;
+				end;
+				ExtractObj(objstr,pos,obj);
+			end;
+		end;
+	end else begin
+		IVp.CustOrdNr = SVOp.CustOrdNr;
+	end;
   IVp.LangCode = SVOp.LangCode;
   IVp.InclVAT = SVOp.InclVAT;
   if (IVp.NoTAXonVAT<0) then begin

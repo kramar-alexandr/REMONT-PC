@@ -199,7 +199,7 @@ L20MakeInvHeader:;
     IVp.Objects = USr.PersObjx;
   end;
 	objstr = IVp.Objects;
-	if(WSr.Garanty=="…’")then begin
+	if(UpperCase(WSr.Garanty)=="…’")then begin
 		IVp.Objects = "";
 		pos = 0;
 		ExtractObj(objstr,pos,obj);

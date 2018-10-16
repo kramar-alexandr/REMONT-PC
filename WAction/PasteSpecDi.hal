@@ -104,7 +104,8 @@ BEGIN
 	astr[0] ="çÖí";
 	astr[1] ="ÑÄ";
 	acnt = 2;
-					
+	MySortStringArray(astr,acnt);
+	
   RETURN;
 END;
 

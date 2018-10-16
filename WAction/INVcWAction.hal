@@ -1567,7 +1567,9 @@ BEGIN
 			SetListString(wn,len(astr[i]),astr[i],false);    
 		end;
 	end;
- 
+	DeselectWindow(wn,false);
+	SelectWindow(wn);
+
   GarantySClassOnOpenWindow = true;
   RETURN;
 END; 

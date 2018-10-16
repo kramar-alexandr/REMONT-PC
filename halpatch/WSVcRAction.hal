@@ -57,6 +57,7 @@ external function Boolean IsEnoughRemQtyInHist(string,string,date,val,string); /
 //remote updating procedure ChangeCostOfWSsInSVO(Longint);//Edit-------------------Vitalii 10:13 25.11.2016
 remote function boolean KIVIFound(record SVOVc);
 remote function boolean JVCFound(record SVOVc);
+external procedure ExtractObj(string,var Integer,var string);
 
 procedure GetWSStockAcc(Integer ItemGroupAccounts,string location,string MainStock,string itcode,string accusageacc,var string stockacc,var string locobjstr)
 begin  

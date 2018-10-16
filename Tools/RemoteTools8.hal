@@ -198,6 +198,7 @@ L20MakeInvHeader:;
     ReadFirstMain(USr,1,true);
     IVp.Objects = USr.PersObjx;
   end;
+	objstr = IVp.Objects;
   IVp.LangCode = SVOp.LangCode;
   IVp.InclVAT = SVOp.InclVAT;
   if (IVp.NoTAXonVAT<0) then begin
@@ -245,6 +246,21 @@ L20MakeInvHeader:;
     end;    
     IVp.SerNr = NextSerNr("IVVc",IVp.TransDate,newnr,false,IVp.LangCode);
   end;
+	if(WSr.Garanty=="…’")then begin
+		IVp.Objects = "";
+		pos = 0;
+		ExtractObj(objstr,pos,obj);
+		while (nonblank(obj)) begin
+			if(obj!="KIVI")then begin
+				if(nonblank(IVp.Objects))then begin
+					IVp.Objects = IVp.Objects & "," & obj;
+				end else begin
+					IVp.Objects = obj;
+				end;
+			end;
+			ExtractObj(objstr,pos,obj);
+		end;
+	end;
   return;
 end;
 
@@ -320,7 +336,6 @@ begin
   integer j, mtrw; //Edit***************************Sasha2,15:00 20.06.2014
   record PDVc PDr;// Edit ************************** Thursday, 25 May 2017 13:38:03
   record RcVc RepSpec;// Edit ************************** Friday, 14 July 2017 16:39:51
-	string 255 objstr; 
   
   RepSpec.f1 = SVOp.SerNr;
   RecSVOMn(RepSpec);
@@ -550,7 +565,6 @@ begin
     
 //  IVp.OfficialSerNr = FindNextLegalSerNr(IVp,CUr.Classification); //POSN
 LPasteSVOInInv:;
-	
   PasteSVOInInv = res;
   return;
 end;
@@ -566,8 +580,6 @@ begin
   Boolean testf;
   record CUVc CUr;
   record WSVc WSr; //Edit***************************Sasha2,15:57 10.06.2015
-	string 255 objstr, obj; 
-	integer i, pos;
  
   if (ReadFirstMain(SVOp,0,true)) then begin end;  
   RecordNew(IVp);
@@ -596,30 +608,6 @@ begin
       IVp.BranchID = SVOp.BranchID;
     end;
   end;
-	if (WSNum!=-1) then begin
-		WSr.SerNr = WSNum;
-		if (ReadFirstMain(WSr,1,true)) then begin
-			if(UpperCase(WSr.Garanty)=="…’")then begin
-				if(setinset("KIVI",IVp.Objects) or setinset("JVC",IVp.Objects))then begin
-					objstr = IVp.Objects;
-					IVp.Objects = "";
-					pos = 0;
-					ExtractObj(objstr,pos,obj);
-					while (nonblank(obj)) begin
-						if(obj!="KIVI" or obj!="JVC")then begin
-							if(nonblank(IVp.Objects))then begin
-								IVp.Objects = IVp.Objects & "," & obj;
-							end else begin
-								IVp.Objects = obj;
-							end;
-						end;
-						ExtractObj(objstr,pos,obj);
-					end;
-				end;
-			end;
-		end;
-	end;
-		
   if (MatRowCnt(IVp)>0) then begin
     if (RecordStore(IVp,false)) then begin
       RecordCopy(oldSVOr,SVOp);

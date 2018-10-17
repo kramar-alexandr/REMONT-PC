@@ -307,6 +307,57 @@ record WSVc WSr;
 return
 end;
 
+
+
+
+global 
+updating procedure ChangeYGarantyKIVIDsm()
+begin
+integer wn;
+record ActVc Actr;
+array longint sernr;
+integer count;
+record RcVc RepSpec;
+record WSVc WSr, OldWSr;
+	
+	wn = curwindow;
+	getwindowrecord(wn,WSr);
+	RecordCopy(OldWSr,WSr);
+	WSr.Garanty = "ÑÄ";
+	RecordUpdate(OldWSr,WSr,false);
+	putwindowrecord(wn,WSr);
+return
+end;
+
+
+
+
+global 
+updating procedure ChangeNGarantyKIVIDsm()
+begin
+integer wn;
+record ActVc Actr;
+array longint sernr;
+integer count;
+record RcVc RepSpec;
+record WSVc WSr, OldWSr;
+	
+	wn = curwindow;
+	getwindowrecord(wn,WSr);
+	RecordCopy(OldWSr,WSr);
+	WSr.Garanty = "çÖí";
+	RecordUpdate(OldWSr,WSr,false);
+	putwindowrecord(wn,WSr);
+return
+end;
+
+
+
+
+
+
+
+
 global updating procedure ConfirmChangeWSMasterDsm()
 begin
 	integer wn;

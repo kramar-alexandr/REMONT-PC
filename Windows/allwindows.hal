@@ -981,6 +981,8 @@ begin
   SpecialMenu("Печатать чек",' ',0,"PrintWSReceiptDsm");
   if(usercanaction("ChangeWSServMast",false))then begin// Edit ************************** Wednesday, 30 August 2017 11:29:45
   	SpecialMenu("Изменить сервисного мастера",' ',0,"ChangeWSSerMastDsm");
+		SpecialMenu("Вставить \"ДА\" в поле \"Гарантия KIVI/JVC\"",' ',0,"ChangeYGarantyKIVIDsm");
+		SpecialMenu("Вставить \"НЕТ\" в поле \"Гарантия KIVI/JVC\"",' ',0,"ChangeNGarantyKIVIDsm");
   end;
   SpecMenuGroup("",kSpecMenuGroupTypeExtendedPlusMenu,0);         
   if (HasModCRM) then begin

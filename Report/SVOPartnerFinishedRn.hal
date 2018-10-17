@@ -319,13 +319,14 @@ array longint sernr;
 integer count;
 record RcVc RepSpec;
 record WSVc WSr, OldWSr;
-	
-	wn = curwindow;
-	getwindowrecord(wn,WSr);
-	RecordCopy(OldWSr,WSr);
-	WSr.Garanty = "ÑÄ";
-	RecordUpdate(OldWSr,WSr,false);
-	putwindowrecord(wn,WSr);
+	if(UserCanAction("ChangeGarantyKIVIJVC",false))then begin
+		wn = curwindow;
+		getwindowrecord(wn,WSr);
+		RecordCopy(OldWSr,WSr);
+		WSr.Garanty = "ÑÄ";
+		RecordUpdate(OldWSr,WSr,false);
+		putwindowrecord(wn,WSr);
+	end;
 return
 end;
 
@@ -341,13 +342,14 @@ array longint sernr;
 integer count;
 record RcVc RepSpec;
 record WSVc WSr, OldWSr;
-	
-	wn = curwindow;
-	getwindowrecord(wn,WSr);
-	RecordCopy(OldWSr,WSr);
-	WSr.Garanty = "çÖí";
-	RecordUpdate(OldWSr,WSr,false);
-	putwindowrecord(wn,WSr);
+	if(UserCanAction("ChangeGarantyKIVIJVC",false))then begin
+		wn = curwindow;
+		getwindowrecord(wn,WSr);
+		RecordCopy(OldWSr,WSr);
+		WSr.Garanty = "çÖí";
+		RecordUpdate(OldWSr,WSr,false);
+		putwindowrecord(wn,WSr);
+	end;
 return
 end;
 

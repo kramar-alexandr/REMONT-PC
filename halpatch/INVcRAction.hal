@@ -1899,7 +1899,7 @@ allow
           if (found) then begin
             testf = true;
             if (IHr.StockAffectf==0) then begin testf = false; end;
-            if (testf) then begin
+            if (testf and currentuser!="SA") then begin
               RecordCheckError(1391," " & INr.Code,-1,"Code");      
               res = -1; 
               goto LINVcRecordCheck;

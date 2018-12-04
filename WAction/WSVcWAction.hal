@@ -512,7 +512,26 @@ BEGIN
   end;
   WSDClassLocationEFAfter = res;
   RETURN;
-END;//Edit***************************Sasha2,17:44 19.06.2014
+END;
+
+function Boolean WSDClassGarantyEFAfter(Integer wn,Integer changed) //Edit***************************Sasha2,17:43 19.06.2014
+BEGIN
+  record WSVc WSr;
+  Boolean res;
+  integer i,rwcnt;
+  
+  if (changed!=0) then begin
+    GetWindowRecord(wn,WSr);
+    rwcnt = matrowcnt(WSr);
+    For(i=0;i<rwcnt;i=i+1) begin
+	  	WSVc_PasteArtCode(WSr,i);
+		end; 
+    PutWindowRecord(wn,WSr);    
+  end;
+  WSDClassGarantyEFAfter = res;
+  RETURN;
+END;
+//Edit***************************Sasha2,17:44 19.06.2014
 
 global
 updating function Boolean WSDClassAfterEditField(Integer wn,string fieldname,Integer fn, Integer rownr,Integer changed)
@@ -541,6 +560,7 @@ BEGIN
     case "ItemType": res = WSDClassItemTypeEFAfter(wn,rownr,changed!=0);
     case "TaxTemplateCode": res = WSDClassTaxTemplateCodeEFAfter(wn,rownr,changed!=0);
     case "Location": res = WSDClassLocationEFAfter(wn,fn,rownr,changed); //Edit***************************Sasha2,17:44 19.06.2014
+  	case "Garanty": res = WSDClassGarantyEFAfter(wn,changed);// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 4 December 2018 18:03:54
   end;
   WSDClassAfterEditField = res;
   RETURN;

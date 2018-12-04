@@ -38,6 +38,9 @@ external function Boolean GetItemPriceDiscount3(string,val,var record INVc,strin
 external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
 external procedure GetSalesGroup(string,var string);
 external procedure GetUserName(string,var string);
+external function roundmode SetRoundModeD(Integer);// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 4 December 2018 17:58:42
+
+SetLangMode(LangRussian,"RUS",0);
 
 global
 procedure WSGetCalcItemPrice(record INVc INr,record WSVc WSp,Integer rownr,var val pricep)
@@ -258,6 +261,11 @@ BEGIN
           price,tstr,WSrw.vRebate,
           fakeVATCode,t,WSrw.SalesAcc,0,calcprice,WSp.TransDate,blankt,WSp.CustCode,true,dummyf,"",tax2code,tax2prc,"",WSp.Location,taxtemplatecode)) then begin 
       end;
+      if(WSp.Garanty!="„€")then begin// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 4 December 2018 17:58:45
+      	if(INr.Disp2=="3058" or INr.Disp2=="SKLADS")then begin
+      		price = round(price * 1.15,SetRoundModeD(0));
+      	end;
+      end;// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 4 December 2018 17:58:46
       WSrw.Price = price;          
     end;
     vatval = FindVAT(vatcode,price,0,0);
@@ -306,6 +314,11 @@ BEGIN
                             price,curitemname,vreb,vatcode,baseprice,salesacc,
                             WSr.ExportFlag,calcprice,WSr.TransDate,blankt,WSr.CustCode,false,dummyf,"",tax2code,tax2prc,"",WSr.Location,taxtemplatecode)) then begin
     WSrw.TaxTemplateCode = FillupTaxMatrix(0,"",WSr.CustCode,WSr.CustCat,"",taxtemplatecode,TMr);
+    if(WSr.Garanty!="„€")then begin// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 4 December 2018 17:58:45
+			if(INr.Disp2=="3058" or INr.Disp2=="SKLADS")then begin
+				price = round(price * 1.15,SetRoundModeD(0));
+			end;
+		end;// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 4 December 2018 17:58:46
     WSrw.Price = price;
     WSrw.Spec = curitemname;
     WSrw.vRebate = vreb;
@@ -469,6 +482,11 @@ BEGIN
 
     if (nonblank(WSp.PriceList)) then begin
       if (QtyDepPriceL(WSp.PriceList)) then begin
+      	if(WSp.Garanty!="„€")then begin// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 4 December 2018 17:58:45
+					if(INr.Disp2=="3058" or INr.Disp2=="SKLADS")then begin
+						price = round(price * 1.15,SetRoundModeD(0));
+					end;
+				end;// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 4 December 2018 17:58:46
         WSrw.Price = price;
       end;
     end;

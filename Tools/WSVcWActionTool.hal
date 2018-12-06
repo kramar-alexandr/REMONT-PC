@@ -262,7 +262,7 @@ BEGIN
           fakeVATCode,t,WSrw.SalesAcc,0,calcprice,WSp.TransDate,blankt,WSp.CustCode,true,dummyf,"",tax2code,tax2prc,"",WSp.Location,taxtemplatecode)) then begin 
       end;
       if(WSp.Garanty!="„€")then begin// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 4 December 2018 17:58:45
-      	if(INr.Disp2=="3058" or INr.Disp2=="SKLADS")then begin
+      	if(INr.ItemType==1)then begin
       		price = round(price * 1.15,SetRoundModeD(0));
       	end;
       end;// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 4 December 2018 17:58:46
@@ -315,7 +315,7 @@ BEGIN
                             WSr.ExportFlag,calcprice,WSr.TransDate,blankt,WSr.CustCode,false,dummyf,"",tax2code,tax2prc,"",WSr.Location,taxtemplatecode)) then begin
     WSrw.TaxTemplateCode = FillupTaxMatrix(0,"",WSr.CustCode,WSr.CustCat,"",taxtemplatecode,TMr);
     if(WSr.Garanty!="„€")then begin// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 4 December 2018 17:58:45
-			if(INr.Disp2=="3058" or INr.Disp2=="SKLADS")then begin
+			if(INr.ItemType==1)then begin
 				price = round(price * 1.15,SetRoundModeD(0));
 			end;
 		end;// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 4 December 2018 17:58:46

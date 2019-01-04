@@ -477,6 +477,7 @@ begin
 													
 													//SVOr.SerNr = IPrw.CUPNr;
 													if(svoexist[IPrw.CUPNr])then begin
+														logtext(0,"svoexist[IPrw.CUPNr] " & IPrw.CUPNr);
 														filter = true;
 														if(IVr.SalesMan==svocf7[IPrw.CUPNr])then begin
 															enginer = svoserman[IPrw.CUPNr];

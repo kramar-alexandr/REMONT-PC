@@ -11,6 +11,7 @@ external function Time TimeDiff(Time,Time);// Edit ************************** Tu
 external procedure ExtractObj(string,var Integer,var string);
 external procedure MySortStringArray(var array string,integer);
 external function boolean KIVIFound(record SVOVc);// Edit ************************** BPI Ukraine - KramarAlexandr - Friday, 30 March 2018 11:36:17
+external function boolean JVCFound(record SVOVc);
 external procedure FindKIVIModel(var record INVc,String,string,var string,var string);
 
 SetLangMode(LangRussian,"RUS",0);
@@ -864,6 +865,7 @@ begin
 	val callsum;
 	val answercnt;
 	array integer tb;
+	boolean iskivif;
 	
 	tb[0] = 0;
 	tb[1] = 90;
@@ -909,6 +911,15 @@ begin
 			if(blank(SVOr.SalesMan))then begin testf = false; end;
 			if(nonblank(RepSpec.f4) and SVOr.SalesMan!=RepSpec.f4)then begin
 				testf = false;
+			end;
+			if(testf)then begin
+				iskivif = KIVIFound(SVOr) or JVCFound(SVOr);
+				if(RepSpec.ArtMode==0)then begin
+					testf = !iskivif;
+				end;
+				if(RepSpec.ArtMode==1)then begin
+					testf = iskivif;
+				end;
 			end;
 			
 			if(testf)then begin

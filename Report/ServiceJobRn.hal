@@ -477,14 +477,17 @@ begin
 													
 													//SVOr.SerNr = IPrw.CUPNr;
 													if(svoexist[IPrw.CUPNr])then begin
+														logtext(0,"svoexist[IPrw.CUPNr] " & IPrw.CUPNr);
 														filter = true;
 														if(IVr.SalesMan==svocf7[IPrw.CUPNr])then begin
-															enginer = svoserman[IPrw.CUPNr];
+															//enginer = svoserman[IPrw.CUPNr];
 														end;
 					
 														if(nonblank(RepSpec.f1) and RepSpec.f1!=asvosg[IPrw.CUPNr])then begin filter = false; end;
-														if(nonblank(RepSpec.f3) and RepSpec.f3!=enginer)then begin filter = false; end;
+														if(nonblank(RepSpec.f3) and RepSpec.f3!=svoserman[IPrw.CUPNr])then begin filter = false; end;
 														if(nonblank(RepSpec.f4) and RepSpec.f4!=svocf7[IPrw.CUPNr])then begin filter = false; end;
+														
+														logtext(0,"svoexist[IPrw.CUPNr] enginer " & IPrw.CUPNr & "  " & enginer);
 														
 														if(filter)then begin
 															ivretsum[IPrw.CUPNr] = ivretsum[IPrw.CUPNr] - IPrw.RecVal;

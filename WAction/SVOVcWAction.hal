@@ -1914,6 +1914,7 @@ end;
 global procedure SVOLClassOpenAllSVOLClass()
 begin
 	record SVOVc SVOr;
+	record UserVc USr;
 	
 	OpenWindow("AllSVOLClass",0,0,"","",SVOr);
 	
@@ -1923,6 +1924,7 @@ end;
 global procedure SVOLClassOpenSVO2LClass()
 begin
 	record SVOVc SVOr;
+	record UserVc USr;
 	
 	OpenWindow("SVO2LClass",0,0,"","",SVOr);
 	
@@ -1932,6 +1934,7 @@ end;
 global procedure SVOLClassOpenSVO3LClass()
 begin
 	record SVOVc SVOr;
+	record UserVc USr;
 	
 	OpenWindow("SVO3LClass",0,0,"","",SVOr);
 	
@@ -1941,6 +1944,7 @@ end;
 global procedure SVOLClassOpenSVO4LClass()
 begin
 	record SVOVc SVOr;
+	record UserVc USr;
 	
 	OpenWindow("SVO4LClass",0,0,"","",SVOr);
 	
@@ -1961,6 +1965,78 @@ return;
 end;*/
 
 Global 
+function Boolean SVO2LClassOnOpenWindow(integer wn)
+begin
+	record UserVc USr;
+	
+	if(usercanaction("DisableListOgSVO",false))then begin
+		setwindowsubset(wn,"BLANK");
+	end;
+	if(usercanaction("SetSVOSUBSET",false))then begin
+		USr.Code = currentuser;
+		readfirstmain(USr,1,true);
+		if(nonblank(USr.SalesGroup))then begin
+			setwindowsubset(wn,USr.SalesGroup);
+		end;
+	end;
+return;
+end;
+
+Global 
+function Boolean SVO3LClassOnOpenWindow(integer wn)
+begin
+	record UserVc USr;
+	
+	if(usercanaction("DisableListOgSVO",false))then begin
+		setwindowsubset(wn,"BLANK");
+	end;
+	if(usercanaction("SetSVOSUBSET",false))then begin
+		USr.Code = currentuser;
+		readfirstmain(USr,1,true);
+		if(nonblank(USr.SalesGroup))then begin
+			setwindowsubset(wn,USr.SalesGroup);
+		end;
+	end;
+return;
+end;
+
+Global 
+function Boolean SVO4LClassOnOpenWindow(integer wn)
+begin
+	record UserVc USr;
+	
+	if(usercanaction("DisableListOgSVO",false))then begin
+		setwindowsubset(wn,"BLANK");
+	end;
+	if(usercanaction("SetSVOSUBSET",false))then begin
+		USr.Code = currentuser;
+		readfirstmain(USr,1,true);
+		if(nonblank(USr.SalesGroup))then begin
+			setwindowsubset(wn,USr.SalesGroup);
+		end;
+	end;
+return;
+end;
+
+Global 
+function Boolean AllSVOLClassOnOpenWindow(integer wn)
+begin
+	record UserVc USr;
+	
+	if(usercanaction("DisableListOgSVO",false))then begin
+		setwindowsubset(wn,"BLANK");
+	end;
+	if(usercanaction("SetSVOSUBSET",false))then begin
+		USr.Code = currentuser;
+		readfirstmain(USr,1,true);
+		if(nonblank(USr.SalesGroup))then begin
+			setwindowsubset(wn,USr.SalesGroup);
+		end;
+	end;
+return;
+end;
+
+Global 
 function Boolean SVOLClassOnOpenWindow(integer wn)
 begin
 	record UserVc USr;
@@ -1974,7 +2050,6 @@ begin
 		if(nonblank(USr.SalesGroup))then begin
 			setwindowsubset(wn,USr.SalesGroup);
 		end;
-		
 	end;
 return;
 end;

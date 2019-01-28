@@ -405,6 +405,8 @@ begin
   EnterSkip(CustCode);
 	if(UserCanAction("ViewPersonalData",false)) then begin
 		EditField(h2=240,v,180,"ФИО",Normal,Addr0,false,0);
+	end else begin
+		h2=240;
 	end;	
 	EditField(h2+250,v,70,"Создал",ViewOnly,SalesMan,false,0);
 	if(UserCanAction("ViewPersonalData",false)) then begin
@@ -811,6 +813,8 @@ begin
 		EditField(h=240,v=vm,-40,"Наименов.",Normal,Addr0,false,0);
 	end else begin 
 			v=v+20;
+			v=vm;
+			h=240;
 	end;	
   v = v+vs;
   CheckBox(h4=-100,v,0,"OK",OKFlag);
@@ -835,6 +839,7 @@ begin
 		EditField(h2,v=vm,135,"ФИО",Normal,EMName,false,0);
 		EditField(h2,v+=vs,135,"Конт. лицо кл.",Normal,CustContact,false,ContactSClass);
 	end else begin
+		v=vm;
 		v=v+vs;
 	end;	
   if(usercanaction("ViewCostPrice",false))then begin // Edit ************************** Tuesday, 10 February 2015 15:14:27
@@ -967,6 +972,8 @@ begin
 		EditField(h,vm=(v=6),150,"Телефон",Normal,Phone,false,0);
 		EditField(h,v+=vs,150,"Факс",Normal,Fax,false,0);
 	end else begin
+		v=6;
+		vm=v;
 		v=v+vs;
 	end;		
   if (IsEnterprise) then begin
@@ -1532,6 +1539,7 @@ if (true) then begin
 	end else begin 
 		v=v+20;
 		v=vm;
+		h=255;
 	end;	
 		EnterSkip(PayDeal);
   if (StandardHansa==false) then begin

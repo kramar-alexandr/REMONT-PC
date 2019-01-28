@@ -563,6 +563,7 @@ StrSetText(AllowAddingINtoRet,"Добавлять товары в возвраты");
   StrSetText(JobELockingSystem,"Электронная замочная система");
 	StrSetText(ChangeGarantyKIVIJVC,"Изменение типа работ KIVI/JVC(Гарантийые/Оплачиваемые)");
 	StrSetText(SetSVOSUBSET,"Ограничить просмотр заказов на обслуживание");
+	StrSetText(ViewPersonalData,"Разрешить просмотр информации о клиенте");
   EndStrSet;
 	
 	return;

@@ -403,13 +403,13 @@ begin
   Tile(0,160,false,"",CustCode);
   EditField(h=90,v=6, 82,"Номер",Normal,SerNr,false,TSerSClass);
   EnterSkip(CustCode);
-	if(UserCanAction("ViewPersonalData",false)) then begin
+	if(UserCanAction("ViewPersonalData",true)) then begin
 		EditField(h2=240,v,180,"ФИО",Normal,Addr0,false,0);
 	end else begin
 		h2=240;
 	end;	
 	EditField(h2+250,v,70,"Создал",ViewOnly,SalesMan,false,0);
-	if(UserCanAction("ViewPersonalData",false)) then begin
+	if(UserCanAction("ViewPersonalData",true)) then begin
 		EditField(h,vm=(v+=vs),82, "Клиент (телефон)",Normal,CustCode,false,CUSClass);
 		EditField(h,vm+50,100,"Карта лояльности",Normal,LoyCardCode,false,MyLoyCardSClass);
   end else begin
@@ -543,7 +543,7 @@ begin
   //if (left(CurrentUser,2)=="SA") then begin //Edit***************************Sasha2,17:33 05.09.2017
   //  EditField(725,v-20,70,"Фамилия (Видно SA)",Normal,Priynato,false,0);
   //end;
-	if(UserCanAction("ViewPersonalData",false)) then begin
+	if(UserCanAction("ViewPersonalData",true)) then begin
   EditField(590,v-20,-20,"SN Зарегистр.",Normal,CustomField8,false,0);
  	h=110;
  	EditField(h-50,v,200,"ФИО",Normal,Vlastnik,false,0);
@@ -808,7 +808,7 @@ begin
   h1 = 75;h2 = 290; h3 = 470; vs = 20;
   Tile(0,70,false,"",CustCode);
   EditField(75,vm=(v=6),95,"Номер",Normal,SerNr,false,TSerSClass);
-	if(UserCanAction("ViewPersonalData",false)) then begin
+	if(UserCanAction("ViewPersonalData",true)) then begin
 		EditField(75,v+=20,95,"Клиент",Normal,CustCode,false,CUSClass);
 		EditField(h=240,v=vm,-40,"Наименов.",Normal,Addr0,false,0);
 	end else begin 
@@ -835,7 +835,7 @@ begin
   EditField(h1,v+=vs,82,"Локация",Normal,Location,false,LocationSClass); 
   end;
   EditField(h1,v+=vs,82,"Код сч.",Normal,ACShort,false,ACShortSClass);
-	if(UserCanAction("ViewPersonalData",false)) then begin
+	if(UserCanAction("ViewPersonalData",true)) then begin
 		EditField(h2,v=vm,135,"ФИО",Normal,EMName,false,0);
 		EditField(h2,v+=vs,135,"Конт. лицо кл.",Normal,CustContact,false,ContactSClass);
 	end else begin
@@ -968,7 +968,7 @@ begin
   end; 
   Tile(tilenr,130,false,tilenr,Phone); tilenr = tilenr + 1;
   vs = 20;h = 75;h2 = 300;
-	if(UserCanAction("ViewPersonalData",false)) then begin
+	if(UserCanAction("ViewPersonalData",true)) then begin
 		EditField(h,vm=(v=6),150,"Телефон",Normal,Phone,false,0);
 		EditField(h,v+=vs,150,"Факс",Normal,Fax,false,0);
 	end else begin
@@ -1533,7 +1533,7 @@ if (true) then begin
   CommunicateButton;
   Tile(0,74,false,"",CustCode);
   EditField(75,vm=(v=6),95,"Номер",Normal,SerNr,false,TSerSClass);
-	if(UserCanAction("ViewPersonalData",false)) then begin
+	if(UserCanAction("ViewPersonalData",true)) then begin
 		EditField(75,v+=20,95,"Клиент",Normal,CustCode,false,CUSClass);
 		EditField(h=255,v=vm,-40,"Наим.",Normal,Addr0,false,0);
 	end else begin 
@@ -2258,7 +2258,7 @@ if (true) then begin
 */
   end else begin
 //    SpecialMenu("Статус товара",'I',0,"ItemStatusIVDsm");
-    if (HasCustomerStatusReport and UserCanAction("ViewPersonalData",false)) then begin 
+    if (HasCustomerStatusReport and UserCanAction("ViewPersonalData",true)) then begin 
     SpecialMenu("Справка по клиенту",'e',0,"CUStatusIVDsm"); 
     end;
     SpecialMenu("Поиск товара",'f',1,"ItemSearchDsm");

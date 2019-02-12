@@ -44,7 +44,19 @@ BEGIN
   CUr.Code = SVOp.CustCode;
   if (GetCustAndBal(CUr,limit,bal,0,0,0,0,0,0,limitdaysf)) then begin
     SVOp.DelAddrCode = "";
-    SVOp.Addr0 = CUr.Name;
+    if(blank(SVOp.Addr0))then begin
+			SVOp.Addr0 = CUr.Name;
+    end else begin
+    	if(CUr.Name!="Новый контакт")then begin
+    		SVOp.Addr0 = CUr.Name;
+    	end else begin
+    		if(SVOp.Addr0=="Новый контакт")then begin
+    			if(nonblank(SVOp.Vlastnik) and SVOp.Vlastnik!="Новый контакт")then begin
+    				SVOp.Addr0 = SVOp.Vlastnik;
+    			end;
+    		end;
+    	end;
+    end;
     SVOp.Addr1 = CUr.InvAddr0;
     SVOp.Addr2 = CUr.InvAddr1;
     SVOp.Addr3 = CUr.InvAddr2;
@@ -96,8 +108,13 @@ BEGIN
     //SVOp.Comment1 = CUr.OrderComment;
     SVOp.RebCode = CUr.RebCode;
     SVOp.ItemFrPartner = CUr.IsPartner; //Edit***************************Sasha2,16:21 15.12.2015 {
-    SVOp.Vlastnik = CUr.Name;
-    
+    if(blank(SVOp.Vlastnik))then begin
+    	SVOp.Vlastnik = CUr.Name;
+    end else begin
+    	if(CUr.Name!="Новый контакт")then begin
+    		SVOp.Vlastnik = CUr.Name;
+    	end;
+    end;
     pos = 0;
     cnt = 0;
     

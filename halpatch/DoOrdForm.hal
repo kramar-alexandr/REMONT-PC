@@ -79,6 +79,8 @@ external procedure PrintBranchData(string);
 external procedure ValToText(val,Integer,string,string,var string);// Edit ************************** Wednesday, July 9, 2014 at 13:25:32
 external procedure GetFullCurncyRate(var string,Date,var val,var val,var val,var val,var val);// Edit ************************** Wednesday, July 9, 2014 at 13:25:34
 
+SetLangMode(LangRussian,"RUS",0);
+
 // Edit Start ---------------------------------------------- Edit Start
 	//Monday, 5 January 2015 16:14:08
 function val conv(string curcode,string curcodefrom,date curdate)
@@ -1441,7 +1443,12 @@ BEGIN
      ValToText(t,M4Val,"UAHIB","UKR",tstr);
      OUTFORMFIELD("F_AMOUNTUAHIB",tstr);  
   end; 
-  
+  if(blank(ORr.Doljnost))then begin// Edit ************************** BPI Ukraine - KramarAlexandr - 02, 19 02 2019 y. at 5:52:16 PM
+  	ORr.Doljnost = "Директор";
+  end;
+  if(blank(ORr.DoljnostBig))then begin// Edit ************************** BPI Ukraine - KramarAlexandr - 02, 19 02 2019 y. at 5:52:16 PM
+  	ORr.DoljnostBig = "директора " & ORr.Comment;
+  end;
   OUTFORMFIELD("BPIF_DOLJN",ORr.Doljnost);// Edit ************************** BPI Ukraine - KramarAlexandr - 02, 19 02 2019 y. at 5:39:35 PM
   OUTFORMFIELD("BPIF_DOLJNINSTR",ORr.DoljnostBig);// Edit ************************** BPI Ukraine - KramarAlexandr - 02, 19 02 2019 y. at 5:39:37 PM
 	// Edit End ---------------------------------------------- Edit End

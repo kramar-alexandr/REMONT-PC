@@ -1365,10 +1365,12 @@ begin
     EditField(h1,v+=vs,80,"Кредитная карта",Normal,CreditCard,false,CreditCardSClass);
     EditField(h1,v+=vs,80,"Авторизация",Normal,AuthorizationCode,false,0);
   end;
-  EditField(h1,v+=vs,-20,"Комментарий",Normal,Comment,false,0);
+  EditField(h1,v+=vs,-20,"Комментарий/ФИО",Normal,Comment,false,0);
   EditField(h1,v+=vs,-20,"",Normal,Comment2,false,0);
   EditField(h1,v+=vs,-20,"",Normal,Comment3,false,0);
   EditField(h1,v+=vs,-20,"",Normal,Comment4,false,0);
+  EditField(h1,v+=vs,300,"Должность",Normal,Doljnost,false,0);
+  EditField(h1,v+=vs,300,"Должн. в строке",Normal,DoljnostBig,false,0);
   v = vm;
   if (HasSalesGroup) then begin
     EditField(h2,v,80,"Группа по продажам",Normal,SalesGroup,false,SalesGroupSClass);

@@ -984,6 +984,7 @@ BEGIN
   longint myint; // Edit ************************** Monday, 28 March 2011 17:20:05
 	val curncyCoef, multFactor,prodCoef; //Edit------------------------Dima 21.01.2015
 	val sumvat, sumnovat,sumwitjvat; //Edit------------------------Dima 21.01.2015
+	string 255 Doljnost,DoljnostBig;
 	
 	sumvat = 0; //Edit------------------------Dima 21.01.2015
 	sumnovat = 0; //Edit------------------------Dima 21.01.2015
@@ -1444,13 +1445,17 @@ BEGIN
      OUTFORMFIELD("F_AMOUNTUAHIB",tstr);  
   end; 
   if(blank(ORr.Doljnost))then begin// Edit ************************** BPI Ukraine - KramarAlexandr - 02, 19 02 2019 y. at 5:52:16 PM
-  	ORr.Doljnost = "Директор";
+  	Doljnost = "Директор";
+  end else begin
+  	Doljnost = ORr.Doljnost;
   end;
   if(blank(ORr.DoljnostBig))then begin// Edit ************************** BPI Ukraine - KramarAlexandr - 02, 19 02 2019 y. at 5:52:16 PM
-  	ORr.DoljnostBig = "директора " & ORr.Comment;
+  	DoljnostBig = "директора " & ORr.Comment;
+  end else begin
+  	DoljnostBig = ORr.DoljnostBig;
   end;
-  OUTFORMFIELD("BPIF_DOLJN",ORr.Doljnost);// Edit ************************** BPI Ukraine - KramarAlexandr - 02, 19 02 2019 y. at 5:39:35 PM
-  OUTFORMFIELD("BPIF_DOLJNINSTR",ORr.DoljnostBig);// Edit ************************** BPI Ukraine - KramarAlexandr - 02, 19 02 2019 y. at 5:39:37 PM
+  OUTFORMFIELD("BPIF_DOLJN",Doljnost);// Edit ************************** BPI Ukraine - KramarAlexandr - 02, 19 02 2019 y. at 5:39:35 PM
+  OUTFORMFIELD("BPIF_DOLJNINSTR",DoljnostBig);// Edit ************************** BPI Ukraine - KramarAlexandr - 02, 19 02 2019 y. at 5:39:37 PM
 	// Edit End ---------------------------------------------- Edit End
   
   if (FIELDINFORM("F_ORT")) then begin

@@ -78,7 +78,7 @@ begin
 	endformat;
 	startformat(15);
 		outstring(0,0,"Итого Наценка",false);
-		outstring(1,0,totsum,true);
+		outstring(1,0,totgp,true);
 	endformat;
 	
 	endjob;

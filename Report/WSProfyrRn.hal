@@ -1,3 +1,5 @@
+SetLangMode(LangRussian,"RUS",0);
+
 global procedure WSProfitRn(record RcVc RepSpec)
 begin
 	record SVOVc SVOr;
@@ -6,34 +8,62 @@ begin
 	boolean TrHs,testf;
 	integer i,mtrw;
 	record INVc INr;
+	val totsum,totgp,qty;
 	
 	startreportjob("WSProfitRn");
 	endheader;
+	
+	startformat(15);
+		outstring(0,0,"Таб.раб",false);
+		outstring(40,0,"Заказ",false);
+		outstring(80,0,"Запчасть",false);
+		outstring(200,0,"Инженер",false);
+		outstring(250,0,"Приемка",false);
+		outstring(360,0,"Сумма",false);
+		outstring(390,0,"Себест.",false);
+		outstring(420,0,"GP%",false);
+		outstring(1,0,"GP",true);
+	endformat;
+	
 	TrHs = true;
 	WSr.TransDate = RepSpec.sStartDate;
 	while(loopkey("TransDate",WSr,1,TrHs))begin
 		testf = true;
+		if(WSr.TransDate>RepSpec.sEndDate)then begin TrHs = false; testf = false; end;
 		if(WSr.OKFlag==0)then begin testf = false; end;
-		
+		SVOr.SerNr = WSr.SVONr;
+		readfirstmain(SVOr,1,true);
+		if(nonblank(RepSpec.f1) and WSr.Location!=RepSpec.f1)then begin testf = false; end;
+		if(nonblank(RepSpec.f2) and WSr.EMCode!=RepSpec.f2)then begin testf = false; end;
+		if(nonblank(RepSpec.f4) and SVOr.CustomField7!=RepSpec.f4)then begin testf = false; end;
 		if(testf)then begin
 			mtrw = matrowcnt(WSr);
 			
+			
+			
 			for(i=0;i<mtrw;i=i+1)begin
 				matrowget(WSr,i,WSrw);
-				if(nonblank(WSrw.ArtCode))then begin
+				if(nonblank(WSrw.ArtCode) and WSrw.ItemType==1)then begin
+					qty = blankval;
+					qty = WSrw.Quant - WSrw.Returned;
+					if(qty<WSrw.Quant)then begin
+						WSrw.Sum = WSrw.Sum / WSrw.Quant * qty;
+					end;
 					INr.Code = WSrw.ArtCode;
 					if(readfirstmain(INr,1,true))then begin
-						if(INr.ItemType==1)then begin
+						if(INr.ItemType==1 and qty>0)then begin
 							startformat(15);
 								outstring(0,"DblWSVc",WSr.SerNr,false);
-								outstring(40,"DblSVOc",WSr.SVONr,false);
+								outstring(40,"DblSVOVcSer",SVOr.InnerOrderNr,false);
 								outstring(80,"DblINVc",WSrw.ArtCode,false);
-								outstring(200,0,WSrw.Price,false);
-								outstring(230,0,WSrw.Quant,false);
-								outstring(260,0,WSrw.Sum,false);
-								outstring(290,0,WSrw.FIFO,false);
-								outstring(320,0,WSrw.FIFORowVal,false);
+								outstring(200,20,WSr.EMCode,false);
+								outstring(250,20,WSr.Location,false);
+								outstring(360,0,WSrw.Sum,false);
+								outstring(390,0,WSrw.FIFORowVal,false);
+								outstring(420,0,(1-WSrw.FIFORowVal/WSrw.Sum)*100,false);
 								outstring(1,0,WSrw.Sum - WSrw.FIFORowVal,true);
+								totsum = totsum + WSrw.Sum;
+								totgp = totgp + (WSrw.Sum - WSrw.FIFORowVal);
 							endformat;
 						end;
 					end;

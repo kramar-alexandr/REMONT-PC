@@ -2971,5 +2971,12 @@ begin
     SetWRect(20,120,350,300);
     h=100;
     PeriodField(h,20,"Период");
+    v = 20;
+    EditField(h,v+=16,150,"Приемка",Normal,f1,false,LocationSClass);
+    EditField(h,v+=16,150,"Мастер",Normal,f2,false,UserSClass);
+    EditField(h,v+=16,150,"Приемщик",Normal,f3,false,UserSClass);
+		CheckBox(h,v+=16,0,"Статистика Binotel",flags[0]);
+		CheckBox(h,v+=16,0,"Включая ремонты KIVI",flags[1]);
+		CheckBox(h,v+=16,0,"Только ремонты KIVI",flags[2]);
   EndWindow;
 end;

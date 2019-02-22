@@ -1,3 +1,6 @@
+external function boolean KIVIFound(record SVOVc);
+external function boolean JVCFound(record SVOVc);
+
 SetLangMode(LangRussian,"RUS",0);
 
 global procedure WSProfitRn(record RcVc RepSpec)
@@ -9,6 +12,7 @@ begin
 	integer i,mtrw;
 	record INVc INr;
 	val totsum,totgp,qty;
+	boolean kivi;
 	
 	startreportjob("WSProfitRn");
 	endheader;
@@ -33,9 +37,22 @@ begin
 		if(WSr.OKFlag==0)then begin testf = false; end;
 		SVOr.SerNr = WSr.SVONr;
 		readfirstmain(SVOr,1,true);
+		kivi = false;
+		kivi = KIVIFound(SVOr) or JVCFound(SVOr);
 		if(nonblank(RepSpec.f1) and WSr.Location!=RepSpec.f1)then begin testf = false; end;
 		if(nonblank(RepSpec.f2) and WSr.EMCode!=RepSpec.f2)then begin testf = false; end;
 		if(nonblank(RepSpec.f4) and SVOr.CustomField7!=RepSpec.f4)then begin testf = false; end;
+		if(RepSpec.flags[1]==0 and RepSpec.flags[2]==0)then begin
+			if(kivi)then begin 
+				testf = false;
+			end;
+		end;
+		if(RepSpec.flags[2]==1)then begin
+			if(!kivi)then begin 
+				testf = false;
+			end;
+		end;
+		
 		if(testf)then begin
 			mtrw = matrowcnt(WSr);
 			

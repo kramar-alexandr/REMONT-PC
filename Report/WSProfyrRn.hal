@@ -71,6 +71,16 @@ begin
 			end;
 		end;
 	end;
+	gray_divider(0,1);
+	startformat(15);
+		outstring(0,0,"Итого Сумма",false);
+		outstring(1,0,totsum,true);
+	endformat;
+	startformat(15);
+		outstring(0,0,"Итого Наценка",false);
+		outstring(1,0,totsum,true);
+	endformat;
+	
 	endjob;
 
 return;

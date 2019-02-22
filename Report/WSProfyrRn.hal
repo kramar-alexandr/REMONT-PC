@@ -1,0 +1,47 @@
+global procedure WSProfitRn(record RcVc RepSpec)
+begin
+	record SVOVc SVOr;
+	record WSVc WSr;
+	row WSVc WSrw;
+	boolean TrHs,testf;
+	integer i,mtrw;
+	record INVc INr;
+	
+	startreportjob("WSProfitRn");
+	endheader;
+	TrHs = true;
+	WSr.TransDate = RepSpec.sStartDate;
+	while(loopkey("TransDate",WSr,1,TrHs))begin
+		testf = true;
+		if(WSr.OKFlag==0)then begin testf = false; end;
+		
+		if(testf)then begin
+			mtrw = matrowcnt(WSr);
+			
+			for(i=0;i<mtrw;i=i+1)begin
+				matrowget(WSr,i,WSrw);
+				if(nonblank(WSrw.ArtCode))then begin
+					INr.Code = WSrw.ArtCode;
+					if(readfirstmain(INr,1,true))then begin
+						if(INr.ItemType==1)then begin
+							startformat(15);
+								outstring(0,"DblWSVc",WSr.SerNr,false);
+								outstring(40,"DblSVOc",WSr.SVONr,false);
+								outstring(80,"DblINVc",WSrw.ArtCode,false);
+								outstring(200,0,WSrw.Price,false);
+								outstring(230,0,WSrw.Quant,false);
+								outstring(260,0,WSrw.Sum,false);
+								outstring(290,0,WSrw.FIFO,false);
+								outstring(320,0,WSrw.FIFORowVal,false);
+								outstring(1,0,WSrw.Sum - WSrw.FIFORowVal,true);
+							endformat;
+						end;
+					end;
+				end;
+			end;
+		end;
+	end;
+	endjob;
+
+return;
+end;

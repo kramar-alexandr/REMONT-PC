@@ -160,5 +160,5 @@ end;
 updating global procedure DailyProcedure()
 begin
 	record RcVc RepSpec;
-	ClientStatusMn(RepSpec);
+	// ClientStatusMn(RepSpec);// oFF // Edit ************************** BPI Ukraine - KramarAlexandr - 01, 18 03 2019 y. at 10:11:34 AM
 end;

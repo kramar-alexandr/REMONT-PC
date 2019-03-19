@@ -2506,7 +2506,7 @@ WindowBegin("",OpenMessageSVOWClass,CGother,RcType);
   h = 20; v = -30;
   statictext(h,v-23,"На клиента есть предварительный заказ!",false);
   EditField(h,v-20,-20,"№",ViewOnly,f2,false,0);
-  HalPushButton(h,v,h+80,v+25,"DblSendSMSCancelDsm","Ok");
+  // HalPushButton(h,v,h+80,v+25,"DblSendSMSCancelDsm","Ok");
   HalPushButton(h+=100,v,h+80,v+25,"DblOpenMessageSVODsm","Открыть");
   
   EndWindow;

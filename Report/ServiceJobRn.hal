@@ -496,7 +496,7 @@ begin
 																vIngSum[svoserman[IPrw.CUPNr] & ":VOZVR:SERV"] = vIngSum[svoserman[IPrw.CUPNr] & ":VOZVR:SERV"] - IPrw.RecVal;
 																if(vIngExst[svoserman[IPrw.CUPNr]]==false)then begin
 																	vIngExst[svoserman[IPrw.CUPNr]] = true;
-																	aing[ingcnt] = SVOr.ServiceManager;
+																	aing[ingcnt] = svoserman[IPrw.CUPNr];
 																	ingcnt = ingcnt + 1;														
 																end;
 															end else begin

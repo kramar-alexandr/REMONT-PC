@@ -487,7 +487,7 @@ begin
 														if(nonblank(RepSpec.f3) and RepSpec.f3!=svoserman[IPrw.CUPNr])then begin filter = false; end;
 														if(nonblank(RepSpec.f4) and RepSpec.f4!=svocf7[IPrw.CUPNr])then begin filter = false; end;
 														
-														logtext(0,"svoexist[IPrw.CUPNr] enginer " & IPrw.CUPNr & "  " & enginer);
+														logtext(0,"svoexist[IPrw.CUPNr] enginer " & IPrw.CUPNr & "  " & svoserman[IPrw.CUPNr]);
 														
 														if(filter)then begin
 															ivretsum[IPrw.CUPNr] = ivretsum[IPrw.CUPNr] - IPrw.RecVal;

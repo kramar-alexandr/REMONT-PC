@@ -771,7 +771,7 @@ begin
 				filter = false;
 			end;
 			if(filter)then begin
-				if(SVOr.WSCost!=0 and ivsum[asvonr[i]]<=0)then begin
+				if(SVOr.WSCost>=0 and ivsum[asvonr[i]]<=0)then begin
 					svoout = false;
 					IVr.SVONr = SVOr.SerNr;
 					TrHs = true;

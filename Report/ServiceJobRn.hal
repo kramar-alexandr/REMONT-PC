@@ -749,11 +749,12 @@ begin
 		end;
 		For(i=0;i<k;i=i+1) begin
 			SVOr.SerNr = asvonr[i];
-			if(currentuser=="SA")then begin
-				LogText(0,"asvonr[i] " & asvonr[i]);
-				LogText(0,"svowscost[i] " & svowscost[asvonr[i]]);
+			
+			filter = true;
+			if(RepSpec.flags[3]==0)then begin
+				filter = svowscost[asvonr[i]]!=0;
 			end;
-			if(svowscost[asvonr[i]]>=0 and ivsum[asvonr[i]]<=0)then begin
+			if(filter and ivsum[asvonr[i]]<=0)then begin
 				readfirstmain(SVOr,1,true);
 				filter = true;
 			
@@ -771,7 +772,10 @@ begin
 				filter = false;
 			end;
 			if(filter)then begin
-				if(SVOr.WSCost>=0 and ivsum[asvonr[i]]<=0)then begin
+				if(RepSpec.flags[3]==0)then begin
+					filter = SVOr.WSCost!=0;
+				end;
+				if(filter and ivsum[asvonr[i]]<=0)then begin
 					svoout = false;
 					IVr.SVONr = SVOr.SerNr;
 					TrHs = true;
@@ -1168,7 +1172,11 @@ begin
 		end;
 		For(i=0;i<k;i=i+1) begin
 			SVOr.SerNr = asvonr[i];
-			if(svowscost[asvonr[i]]!=0 and ivsum[asvonr[i]]>0 and vsvodolg[asvonr[i]]==false)then begin
+			filter = true;
+			if(RepSpec.flags[3]==0)then begin
+				filter = svowscost[asvonr[i]]!=0;
+			end;
+			if(filter and ivsum[asvonr[i]]>0 and vsvodolg[asvonr[i]]==false)then begin
 				readfirstmain(SVOr,1,true);
 			
 				filter = true;
@@ -1187,7 +1195,10 @@ begin
 				filter = false;
 			end;
 			if(filter)then begin
-				if(SVOr.WSCost!=0 and ivsum[asvonr[i]]>0 and vsvodolg[asvonr[i]]==false)then begin				
+				if(RepSpec.flags[3]==0)then begin
+					filter = SVOr.WSCost!=0;
+				end;
+				if(filter and ivsum[asvonr[i]]>0 and vsvodolg[asvonr[i]]==false)then begin				
 					svoout = false;
 					IVr.SVONr = SVOr.SerNr;
 					TrHs = true;
@@ -1547,7 +1558,12 @@ begin
 		end;
 		For(i=0;i<k;i=i+1) begin
 			SVOr.SerNr = asvonr[i];
-			if(svowscost[asvonr[i]]!=0 and ivsum[asvonr[i]]>0 and vsvodolg[asvonr[i]])then begin
+			filter = true;
+			if(RepSpec.flags[3]==0)then begin
+				filter = svowscost[asvonr[i]]!=0;
+			end;
+			
+			if(filter and ivsum[asvonr[i]]>0 and vsvodolg[asvonr[i]])then begin
 				readfirstmain(SVOr,1,true);
 			
 				filter = true;
@@ -1566,7 +1582,10 @@ begin
 				filter = false;
 			end;
 			if(filter)then begin
-				if(SVOr.WSCost!=0 and ivsum[asvonr[i]]>0 and vsvodolg[asvonr[i]])then begin				
+				if(RepSpec.flags[3]==0)then begin
+					filter = SVOr.WSCost!=0;
+				end;
+				if(filter and ivsum[asvonr[i]]>0 and vsvodolg[asvonr[i]])then begin				
 					svoout = false;
 					IVr.SVONr = SVOr.SerNr;
 					TrHs = true;

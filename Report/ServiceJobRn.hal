@@ -751,7 +751,7 @@ begin
 			SVOr.SerNr = asvonr[i];
 			if(currentuser=="SA")then begin
 				LogText(0,"asvonr[i] " & asvonr[i]);
-				LogText(0,"svowscost[i] " & svowscost[i]);
+				LogText(0,"svowscost[i] " & svowscost[asvonr[i]]);
 			end;
 			if(svowscost[asvonr[i]]>=0 and ivsum[asvonr[i]]<=0)then begin
 				readfirstmain(SVOr,1,true);

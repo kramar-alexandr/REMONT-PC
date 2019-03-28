@@ -92,6 +92,8 @@ BEGIN
 					end;
 					//WindowDoOK(wn,0);
 				end;
+			end else begin
+				messagebox(0,"Дата выдачи должна быть пустой");
 			end;
     end else begin
     	messagebox(0,"Заказ должен быть в статусе Готов или Отказ");

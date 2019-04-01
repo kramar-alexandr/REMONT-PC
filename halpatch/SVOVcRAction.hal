@@ -42,7 +42,7 @@ external function Boolean GetItemPriceDiscount3(string,val,var record INVc,strin
                                                 var val,var string,var val,var string,var val,var string,Integer,var Boolean,Date,Time,
                                                 string,Boolean,var Boolean,string,var string,var val,string,string,var string);
 external procedure IVSumup(var record IVVc,Boolean);
-
+external procedure getlastRhist();// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 1 April 2019 18:35:49
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -224,7 +224,8 @@ begin
 			Actr.MainPersons = tmpusers;
 			
   		Actr.SerNr = NextSerNr("ActVc",Actr.TransDate,-1,false,"");
-  		
+  		logtext(0,"getlastRhist 1");
+  		getlastRhist;// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 1 April 2019 18:36:05
   		logtext(0,"CreateCustomActivityFromSVO " & SVOr.SerNr & " " & Actr.SerNr);
   		if(recordstore(Actr,true))then begin
   			CreateRecordLink(SVOr,CurrentCompany,Actr,CurrentCompany);  
@@ -612,6 +613,9 @@ begin
     string 128 mainPrsns,commentee;
 		boolean iskivi;
 		
+		logtext(0,"getlastRhist 2");
+  	getlastRhist;
+		
 		iskivi = KIVIFound(SVOr);
 		if(iskivi==false)then begin
 			iskivi = JVCFound(SVOr);
@@ -754,6 +758,10 @@ begin
         end;
         
     end;
+    
+    logtext(0,"getlastRhist 3");
+  	getlastRhist;
+    
 end;
 
 /* ------------------------------------------------------------------ outdated procs, should be removed
@@ -1273,6 +1281,8 @@ BEGIN
   record ActVc Actr,lActr;
   record RLinkVc RLr;
   
+  logtext(0,"getlastRhist 4");
+  		getlastRhist;
   
   resetloop(Actr);
   Actr.CUCode = SVOr.CustCode;
@@ -1413,6 +1423,9 @@ BEGIN
   //SENDFIRSTSMS(SVOr);
   PhonesFromSVO(SVOr.SerNr);//Edit-------------------Vitalii 17:10 03.11.2016
   
+  logtext(0,"getlastRhist 5");
+  		getlastRhist;
+  
   SVOVcRecordSaveAfter = res; 
   RETURN;
 END;
@@ -1423,12 +1436,16 @@ updating function LongInt SVOVcRecordUpdate(var record SVOVc SVOr,record SVOVc S
 BEGIN
   LongInt res;
   
+  logtext(0,"getlastRhist 6");
+  		getlastRhist;
   SetSVOFlags(SVOr);
   if (SVO2r.OrderStatus!=11 and SVOr.OrderStatus==11) then begin //Вернули на доработку
     SVOr.StatusReturnCnt = SVOr.StatusReturnCnt + 1;
   end;
   SVOr.WSCost = ChangeCostOfIVsInSVO(SVOr.SerNr,false);//Edit-------------------Vitalii 10:13 25.11.2016
 
+logtext(0,"getlastRhist 7");
+  		getlastRhist;
   SVOVcRecordUpdate = res; 
   RETURN;
 END;
@@ -1506,6 +1523,9 @@ BEGIN
   record ActVc Actr,oldActr,lActr;
   record RLinkVc RLr;
   integer counter;
+  
+  logtext(0,"getlastRhist 8");
+  		getlastRhist;
   
   if(SVOr.SerNr!=SVO2r.SerNr)then begin
   	Actr.SVOSerNr = SVO2r.SerNr;
@@ -1785,6 +1805,9 @@ BEGIN
   PhonesFromSVO(SVOr.SerNr);//Edit-------------------Vitalii 17:09 03.11.2016
   
   UpdateLoyCard(SVOr,SVO2r);
+  
+  logtext(0,"getlastRhist 9");
+  		getlastRhist;
   
   SVOVcRecordUpdateAfter = res;
   RETURN;
@@ -2193,12 +2216,17 @@ BEGIN
   record ARVc ARr;// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 19 March 2018 11:58:49
   val ivdolg,ivsum;// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 19 March 2018 11:58:47
 	boolean iskivi;
-		
+	
+	logtext(0,"getlastRhist 10");
+  		getlastRhist;
+	logtext(0,"getlastRhist 29");
+  		getlastRhist;
 		iskivi = KIVIFound(SVOr);
 		if(iskivi==false)then begin
 			iskivi = JVCFound(SVOr);
 		end;
-
+logtext(0,"getlastRhist 28");
+  		getlastRhist;
   res = 0;
   
   //Edit***************************Sasha2,16:57 18.05.2017 {
@@ -2208,10 +2236,13 @@ BEGIN
   
   if(SVOr.GetItemFlag==1 and SVOr.OrderStatus==9)then begin
   	SVOr.OrderStatus = 0;
+  	logtext(0,"getlastRhist 27");
+  		getlastRhist;
     SVOr.SerNr = NextSerNr("SVOVc",SVOr.TransDate,GetUserSerNrSeries(-1),false,""); //Edit***************************Sasha2,16:59 18.05.2017
   end;
   
-  
+  logtext(0,"getlastRhist 26");
+  		getlastRhist;
   if(nonblank(SVOr.Kontinfo1))then begin
   	SVOr.Kontinfo1 = trim(SVOr.Kontinfo1);
   end;
@@ -2275,7 +2306,8 @@ BEGIN
 			end;
   	end;
   end;
-  
+  logtext(0,"getlastRhist 25");
+  		getlastRhist;
   if(stat==updatemode)then begin
   	if(SVOr.GetItemFlag>0 and SVO2r.GetItemFlag==0)then begin// Edit ************************** Tuesday, 18 July 2017 15:50:38
 			SVOr.GetItemDate = currentdate;
@@ -2336,7 +2368,8 @@ BEGIN
   if(nonblankdate(SVOr.PlanShipDate))then begin
   	SVOr.OrderStatus=2;// Edit ************************** Thursday, 10 September 2015 17:31:49
   end;
- 
+ logtext(0,"getlastRhist 24");
+  		getlastRhist;
   
   /*if(blank(SVOr.Kontinfo2))then begin// Edit ************************** Friday, 16 October 2015 17:36:32
   	//SVOr.Kontinfo2 = USetStr(31047);
@@ -2500,7 +2533,8 @@ BEGIN
   end;
   
 	// Edit End ---------------------------------------------- Edit End
-	
+	logtext(0,"getlastRhist 23");
+  		getlastRhist;
   BlockLoad(SVOAccRec);
   oldnr = SVOr.SerNr;
   if (SVOr.DoneMark!=0) and (SVO2r.DoneMark==0) then begin
@@ -2541,7 +2575,8 @@ BEGIN
   		SVOr.CustomField9 = count;
   	end;
   end;
- 	
+ 	logtext(0,"getlastRhist 22");
+  		getlastRhist;
  	if(SVOr.OrderStatus==6 and blank(SVOr.RejectReason))then begin// Edit ************************** Wednesday, 7 June 2017 14:53:49
  		RecordCheckError(1058,"",-1,"RejectReason");
 		res = -1;
@@ -2589,7 +2624,8 @@ BEGIN
 	end;
  	
 	// 
-	
+	logtext(0,"getlastRhist 21");
+  		getlastRhist;
  	if(SVOr.GetItemFlag>0)then begin
  		
  		if(stat==Rs_insert)then begin
@@ -2633,7 +2669,8 @@ BEGIN
 			end;
 		end;
  	end;
- 	
+ 	logtext(0,"getlastRhist 20");
+  		getlastRhist;
  	if(nonblank(SVOr.InnerOrderNr))then begin
  		TrHs = true;
  		lSVOr.InnerOrderNr = SVOr.InnerOrderNr;
@@ -2650,7 +2687,8 @@ BEGIN
  			end;
  		end;
  	end;
- 	
+ 	logtext(0,"getlastRhist 19");
+  		getlastRhist;
  	rwcnt = MatRowCnt(SVOr);
     if (rwcnt>0) then begin
     	for (i=0;i<rwcnt;i=i+1) begin
@@ -2685,7 +2723,8 @@ BEGIN
 		end; 
   	
   end;
-  
+  logtext(0,"getlastRhist 18");
+  		getlastRhist;
   if(nonblank(SVOr.Phone2))then begin
   	if(left(SVOr.Phone2,1)!="0")then begin
   		RecordCheckError(31087,SVOr.Phone2,-1,"Phone2");
@@ -2717,7 +2756,8 @@ BEGIN
 		res = -1;
 		goto LSVOVcRecordCheck;
   end;
-  
+  logtext(0,"getlastRhist 17");
+  		getlastRhist;
 	// Edit End ---------------------------------------------- Edit End
   if (SVOr.DoneMark==1) then begin
     if (stat==Rs_insert) then begin transf = true; end;
@@ -2749,6 +2789,8 @@ BEGIN
       goto LSVOVcRecordCheck;
     end;
   end;
+  logtext(0,"getlastRhist 16");
+  		getlastRhist;
   //CUr.Code = SVOr.CustCode;
   if(FindCustByPhone(CUr,SVOr,tstr)==false)then begin
   //if (ReadFirstMain(CUr,1,true)==false) then begin
@@ -2789,7 +2831,8 @@ BEGIN
   	SVOr.Addr0 = SVOr.Vlastnik;
   end;
   
-  
+  logtext(0,"getlastRhist 15");
+  		getlastRhist;
   res = CheckCUVATNrMask(SVOr.CustCode,SVOr.VATNr,tstr);
   if (res!=0) then begin
     RecordCheckError(res,tstr,-1,"VATNr");      
@@ -2816,7 +2859,8 @@ BEGIN
       res = -1;
       goto LSVOVcRecordCheck;
   end;
-  
+  logtext(0,"getlastRhist 14");
+  		getlastRhist;
   CUr.Code = SVOr.CustCode;
   if(readfirstmain(CUr,1,true))then begin
   	if(CUr.blockedFlag>0)then begin
@@ -2937,7 +2981,8 @@ BEGIN
     end;
   end;
   //SENDSMS(SVOr,SVO2r);// Edit ************************** Tuesday, 8 January 2013 10:20:35
-  
+  logtext(0,"getlastRhist 13");
+  		getlastRhist;
   MatRowGet(SVOr,0,SVOrw);
   SVOr.SpecTextSearch = SVOrw.Spec;
   SVOr.SerialNrTextSearch = SVOrw.NewSerialNr;
@@ -2972,6 +3017,9 @@ BEGIN
     end;
   end;*/
   
+  logtext(0,"getlastRhist 12");
+  		getlastRhist;
+  
   switch(SVOr.OrderStatus)begin
   	case 0: SVOr.StatusText = USetStr(31044);
 		case 1: SVOr.StatusText = USetStr(31045);
@@ -3000,6 +3048,10 @@ BEGIN
   
 LSVOVcRecordCheck:;
   if (res!=0) then begin SVOr.SerNr = oldnr; end;
+  
+  logtext(0,"getlastRhist 11");
+  		getlastRhist;
+  
   SVOVcRecordCheck = res;
   RETURN;
 END;

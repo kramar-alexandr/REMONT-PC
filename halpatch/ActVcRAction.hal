@@ -38,6 +38,7 @@ external function Boolean ActivityIsForAbsence(record ActVc);
 external function Boolean DateLocked(Date,string);
 external function Boolean DateWarned(Date,string);
 external procedure RemoteUserFunction(string,string,string,string);// Edit ************************** Thursday, 20 July 2017 16:34:18
+external procedure getlastRhist();// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 1 April 2019 18:35:49
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -1356,7 +1357,10 @@ global
 updating function LongInt ActVcRecordSaveAfter(var record ActVc Actr,record ActVc Act2r,LongInt stat,LongInt long4)
 BEGIN
   LongInt res;
-
+	
+	
+	logtext(0,"getlastRhist 30");
+  		getlastRhist;
   if (Actr.OKFlag!=0) then begin
     ActOK(Actr);        // Swapped to fix order of operation with approval rules.
     CreateConsequences(Actr);
@@ -1365,10 +1369,12 @@ BEGIN
   if (Actr.OKFlag==0) then begin
     CreateAlarm(Actr);  
   end;
-  
+  logtext(0,"getlastRhist 31");
+  		getlastRhist;
   logtext(0,"ActVcRecordSaveAfter " & Actr.MainPersons & " UpdateToDoWclass");
   AllClientsRemoteAsync.RemoteUserFunction(Actr.MainPersons,"UpdateToDoWclass","","");
-  
+  logtext(0,"getlastRhist 32");
+  		getlastRhist;
   ActVcRecordSaveAfter = res;
   RETURN;
 END;

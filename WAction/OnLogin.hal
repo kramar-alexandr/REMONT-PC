@@ -215,6 +215,7 @@ begin
   record CurLicensesBlock CLb;
   record AprvlActMaintBlock AAMb;
   string 255 accessgroup,changeuser,changephone;// Edit ************************** Thursday, 30 March 2017 10:23:07
+  boolean ch;
   
   if (IsStandardProduct) then begin
     if (ClientMode) then begin
@@ -261,13 +262,18 @@ begin
 		if(nonblank(LMb.SalesGroup))then begin
 			if(blank(User.PersSalesGroup))then begin
 				User.PersSalesGroup = User.SalesGroup;
+				ch = true;
 			end;
-			User.SalesGroup = LMb.SalesGroup;
+			if(User.SalesGroup!=LMb.SalesGroup)then begin
+				User.SalesGroup = LMb.SalesGroup;
+				ch = true;
+			end;
 		end else begin
-			if(nonblank(User.PersSalesGroup))then begin
+			if(nonblank(User.PersSalesGroup) and User.SalesGroup!=User.PersSalesGroup)then begin
 				User.SalesGroup = User.PersSalesGroup;
+				ch = true;
 			end else begin
-				if(nonblank(User.SalesGroup))then begin
+				if(nonblank(User.SalesGroup) and User.PersSalesGroup!=User.SalesGroup)then begin
 					User.PersSalesGroup = User.SalesGroup;
 				end;
 			end;
@@ -276,14 +282,20 @@ begin
 		if(nonblank(LMb.DefLocation))then begin
 			if(blank(User.PersLocation))then begin
 				User.PersLocation = User.Location;
+				ch = true;
 			end;
-			User.Location = LMb.DefLocation;
+			if(User.Location!=LMb.DefLocation)then begin
+				User.Location = LMb.DefLocation;
+				ch = true;
+			end;
 		end else begin
-			if(nonblank(User.PersLocation))then begin
+			if(nonblank(User.PersLocation) and User.Location!=User.PersLocation)then begin
 				User.Location = User.PersLocation;
+				ch = true;
 			end else begin
 				if(nonblank(User.Location))then begin
 					User.PersLocation = User.Location;
+					ch = true;
 				end;
 			end;
 		end;
@@ -291,6 +303,7 @@ begin
 		if(nonblank(LMb.PersPhone2))then begin
 			if(blank(User.PersPhone2))then begin
 				User.PersPhone2 = User.Phone2;
+				ch = true;
 			end;
 			User.Phone2 = LMb.PersPhone2;
 			Messagebox(0,"За Вами закреплен телефон №" & User.Phone2);
@@ -302,13 +315,16 @@ begin
 					OpenWindow("ChangeBinotelPhoneWClass",1,0,"","",RepSpec);
 				end;
 			end else begin
-				if(nonblank(User.Phone2))then begin
+				if(nonblank(User.Phone2) and User.PersPhone2!=User.Phone2)then begin
 					User.PersPhone2 = User.Phone2;
+					ch = true;
 				end;
 			end;
 		end;
 		
-		recordstore(User,true);
+		if(ch)then begin
+			recordstore(User,true);
+		end;
 		logtext(0,"recordstore(User,true);");
 		if(nonblank(User.Phone2))then begin
 			changeuser = User.Code;// Edit ************************** Friday, 10 November 2017 12:14:01

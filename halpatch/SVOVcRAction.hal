@@ -2219,12 +2219,14 @@ BEGIN
 	
 	logtext(0,"getlastRhist 10");
   		getlastRhist;
-	
+	logtext(0,"getlastRhist 29");
+  		getlastRhist;
 		iskivi = KIVIFound(SVOr);
 		if(iskivi==false)then begin
 			iskivi = JVCFound(SVOr);
 		end;
-
+logtext(0,"getlastRhist 28");
+  		getlastRhist;
   res = 0;
   
   //Edit***************************Sasha2,16:57 18.05.2017 {

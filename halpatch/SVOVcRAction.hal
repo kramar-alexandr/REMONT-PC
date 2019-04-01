@@ -2237,7 +2237,8 @@ BEGIN
     SVOr.SerNr = NextSerNr("SVOVc",SVOr.TransDate,GetUserSerNrSeries(-1),false,""); //Edit***************************Sasha2,16:59 18.05.2017
   end;
   
-  
+  logtext(0,"getlastRhist 26");
+  		getlastRhist;
   if(nonblank(SVOr.Kontinfo1))then begin
   	SVOr.Kontinfo1 = trim(SVOr.Kontinfo1);
   end;
@@ -2301,7 +2302,8 @@ BEGIN
 			end;
   	end;
   end;
-  
+  logtext(0,"getlastRhist 25");
+  		getlastRhist;
   if(stat==updatemode)then begin
   	if(SVOr.GetItemFlag>0 and SVO2r.GetItemFlag==0)then begin// Edit ************************** Tuesday, 18 July 2017 15:50:38
 			SVOr.GetItemDate = currentdate;
@@ -2362,7 +2364,8 @@ BEGIN
   if(nonblankdate(SVOr.PlanShipDate))then begin
   	SVOr.OrderStatus=2;// Edit ************************** Thursday, 10 September 2015 17:31:49
   end;
- 
+ logtext(0,"getlastRhist 24");
+  		getlastRhist;
   
   /*if(blank(SVOr.Kontinfo2))then begin// Edit ************************** Friday, 16 October 2015 17:36:32
   	//SVOr.Kontinfo2 = USetStr(31047);
@@ -2526,7 +2529,8 @@ BEGIN
   end;
   
 	// Edit End ---------------------------------------------- Edit End
-	
+	logtext(0,"getlastRhist 23");
+  		getlastRhist;
   BlockLoad(SVOAccRec);
   oldnr = SVOr.SerNr;
   if (SVOr.DoneMark!=0) and (SVO2r.DoneMark==0) then begin
@@ -2567,7 +2571,8 @@ BEGIN
   		SVOr.CustomField9 = count;
   	end;
   end;
- 	
+ 	logtext(0,"getlastRhist 22");
+  		getlastRhist;
  	if(SVOr.OrderStatus==6 and blank(SVOr.RejectReason))then begin// Edit ************************** Wednesday, 7 June 2017 14:53:49
  		RecordCheckError(1058,"",-1,"RejectReason");
 		res = -1;
@@ -2615,7 +2620,8 @@ BEGIN
 	end;
  	
 	// 
-	
+	logtext(0,"getlastRhist 21");
+  		getlastRhist;
  	if(SVOr.GetItemFlag>0)then begin
  		
  		if(stat==Rs_insert)then begin
@@ -2659,7 +2665,8 @@ BEGIN
 			end;
 		end;
  	end;
- 	
+ 	logtext(0,"getlastRhist 20");
+  		getlastRhist;
  	if(nonblank(SVOr.InnerOrderNr))then begin
  		TrHs = true;
  		lSVOr.InnerOrderNr = SVOr.InnerOrderNr;
@@ -2676,7 +2683,8 @@ BEGIN
  			end;
  		end;
  	end;
- 	
+ 	logtext(0,"getlastRhist 19");
+  		getlastRhist;
  	rwcnt = MatRowCnt(SVOr);
     if (rwcnt>0) then begin
     	for (i=0;i<rwcnt;i=i+1) begin
@@ -2711,7 +2719,8 @@ BEGIN
 		end; 
   	
   end;
-  
+  logtext(0,"getlastRhist 18");
+  		getlastRhist;
   if(nonblank(SVOr.Phone2))then begin
   	if(left(SVOr.Phone2,1)!="0")then begin
   		RecordCheckError(31087,SVOr.Phone2,-1,"Phone2");
@@ -2743,7 +2752,8 @@ BEGIN
 		res = -1;
 		goto LSVOVcRecordCheck;
   end;
-  
+  logtext(0,"getlastRhist 17");
+  		getlastRhist;
 	// Edit End ---------------------------------------------- Edit End
   if (SVOr.DoneMark==1) then begin
     if (stat==Rs_insert) then begin transf = true; end;
@@ -2775,6 +2785,8 @@ BEGIN
       goto LSVOVcRecordCheck;
     end;
   end;
+  logtext(0,"getlastRhist 16");
+  		getlastRhist;
   //CUr.Code = SVOr.CustCode;
   if(FindCustByPhone(CUr,SVOr,tstr)==false)then begin
   //if (ReadFirstMain(CUr,1,true)==false) then begin
@@ -2815,7 +2827,8 @@ BEGIN
   	SVOr.Addr0 = SVOr.Vlastnik;
   end;
   
-  
+  logtext(0,"getlastRhist 15");
+  		getlastRhist;
   res = CheckCUVATNrMask(SVOr.CustCode,SVOr.VATNr,tstr);
   if (res!=0) then begin
     RecordCheckError(res,tstr,-1,"VATNr");      
@@ -2842,7 +2855,8 @@ BEGIN
       res = -1;
       goto LSVOVcRecordCheck;
   end;
-  
+  logtext(0,"getlastRhist 14");
+  		getlastRhist;
   CUr.Code = SVOr.CustCode;
   if(readfirstmain(CUr,1,true))then begin
   	if(CUr.blockedFlag>0)then begin
@@ -2963,7 +2977,8 @@ BEGIN
     end;
   end;
   //SENDSMS(SVOr,SVO2r);// Edit ************************** Tuesday, 8 January 2013 10:20:35
-  
+  logtext(0,"getlastRhist 13");
+  		getlastRhist;
   MatRowGet(SVOr,0,SVOrw);
   SVOr.SpecTextSearch = SVOrw.Spec;
   SVOr.SerialNrTextSearch = SVOrw.NewSerialNr;
@@ -2997,6 +3012,9 @@ BEGIN
       end;
     end;
   end;*/
+  
+  logtext(0,"getlastRhist 12");
+  		getlastRhist;
   
   switch(SVOr.OrderStatus)begin
   	case 0: SVOr.StatusText = USetStr(31044);

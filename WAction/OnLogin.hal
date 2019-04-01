@@ -309,6 +309,7 @@ begin
 		end;
 		
 		recordstore(User,true);
+		logtext(0,"recordstore(User,true);");
 		if(nonblank(User.Phone2))then begin
 			changeuser = User.Code;// Edit ************************** Friday, 10 November 2017 12:14:01
 			changephone = User.Phone2;

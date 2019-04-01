@@ -1662,7 +1662,7 @@ record RHistVc RHistr;
 		while(loopkey("RecidStr",RHistr,1,TrHs)) begin
 			if(RHistr.RecidStr!=rstr)then begin TrHs = false; end;
 			
-			if(TrHs and RHistr.User==USr.Code and RHistr.RecidStr==rstr)then begin
+			if(TrHs and (RHistr.User==USr.Code or blank(RHistr.User)) and RHistr.RecidStr==rstr)then begin
 				recorddelete(RHistr);
 				stepback(RHistr);
 				//logtext(0,"RHistr.TransTime " & RHistr.TransTime);

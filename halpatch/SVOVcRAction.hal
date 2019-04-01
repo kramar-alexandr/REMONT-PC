@@ -42,7 +42,7 @@ external function Boolean GetItemPriceDiscount3(string,val,var record INVc,strin
                                                 var val,var string,var val,var string,var val,var string,Integer,var Boolean,Date,Time,
                                                 string,Boolean,var Boolean,string,var string,var val,string,string,var string);
 external procedure IVSumup(var record IVVc,Boolean);
-
+external procedure getlastRhist();// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 1 April 2019 18:35:49
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -224,7 +224,8 @@ begin
 			Actr.MainPersons = tmpusers;
 			
   		Actr.SerNr = NextSerNr("ActVc",Actr.TransDate,-1,false,"");
-  		
+  		logtext(0,"getlastRhist 1");
+  		getlastRhist;// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 1 April 2019 18:36:05
   		logtext(0,"CreateCustomActivityFromSVO " & SVOr.SerNr & " " & Actr.SerNr);
   		if(recordstore(Actr,true))then begin
   			CreateRecordLink(SVOr,CurrentCompany,Actr,CurrentCompany);  
@@ -612,6 +613,9 @@ begin
     string 128 mainPrsns,commentee;
 		boolean iskivi;
 		
+		logtext(0,"getlastRhist 2");
+  	getlastRhist;
+		
 		iskivi = KIVIFound(SVOr);
 		if(iskivi==false)then begin
 			iskivi = JVCFound(SVOr);
@@ -754,6 +758,10 @@ begin
         end;
         
     end;
+    
+    logtext(0,"getlastRhist 3");
+  	getlastRhist;
+    
 end;
 
 /* ------------------------------------------------------------------ outdated procs, should be removed
@@ -1273,6 +1281,8 @@ BEGIN
   record ActVc Actr,lActr;
   record RLinkVc RLr;
   
+  logtext(0,"getlastRhist 4");
+  		getlastRhist;
   
   resetloop(Actr);
   Actr.CUCode = SVOr.CustCode;
@@ -1413,6 +1423,9 @@ BEGIN
   //SENDFIRSTSMS(SVOr);
   PhonesFromSVO(SVOr.SerNr);//Edit-------------------Vitalii 17:10 03.11.2016
   
+  logtext(0,"getlastRhist 5");
+  		getlastRhist;
+  
   SVOVcRecordSaveAfter = res; 
   RETURN;
 END;
@@ -1423,12 +1436,16 @@ updating function LongInt SVOVcRecordUpdate(var record SVOVc SVOr,record SVOVc S
 BEGIN
   LongInt res;
   
+  logtext(0,"getlastRhist 6");
+  		getlastRhist;
   SetSVOFlags(SVOr);
   if (SVO2r.OrderStatus!=11 and SVOr.OrderStatus==11) then begin //Вернули на доработку
     SVOr.StatusReturnCnt = SVOr.StatusReturnCnt + 1;
   end;
   SVOr.WSCost = ChangeCostOfIVsInSVO(SVOr.SerNr,false);//Edit-------------------Vitalii 10:13 25.11.2016
 
+logtext(0,"getlastRhist 7");
+  		getlastRhist;
   SVOVcRecordUpdate = res; 
   RETURN;
 END;
@@ -1506,6 +1523,9 @@ BEGIN
   record ActVc Actr,oldActr,lActr;
   record RLinkVc RLr;
   integer counter;
+  
+  logtext(0,"getlastRhist 8");
+  		getlastRhist;
   
   if(SVOr.SerNr!=SVO2r.SerNr)then begin
   	Actr.SVOSerNr = SVO2r.SerNr;
@@ -1785,6 +1805,9 @@ BEGIN
   PhonesFromSVO(SVOr.SerNr);//Edit-------------------Vitalii 17:09 03.11.2016
   
   UpdateLoyCard(SVOr,SVO2r);
+  
+  logtext(0,"getlastRhist 9");
+  		getlastRhist;
   
   SVOVcRecordUpdateAfter = res;
   RETURN;
@@ -2193,7 +2216,10 @@ BEGIN
   record ARVc ARr;// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 19 March 2018 11:58:49
   val ivdolg,ivsum;// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 19 March 2018 11:58:47
 	boolean iskivi;
-		
+	
+	logtext(0,"getlastRhist 10");
+  		getlastRhist;
+	
 		iskivi = KIVIFound(SVOr);
 		if(iskivi==false)then begin
 			iskivi = JVCFound(SVOr);
@@ -3000,6 +3026,10 @@ BEGIN
   
 LSVOVcRecordCheck:;
   if (res!=0) then begin SVOr.SerNr = oldnr; end;
+  
+  logtext(0,"getlastRhist 11");
+  		getlastRhist;
+  
   SVOVcRecordCheck = res;
   RETURN;
 END;

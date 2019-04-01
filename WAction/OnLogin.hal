@@ -176,6 +176,25 @@ begin
   
 end;
 
+
+global procedure getlastRhist()
+begin
+	record RHistVc RHistr;
+	record UserVc USr;
+	string 200 rstr;
+	
+	USr.Code = currentuser;
+	if(readfirstmain(USr,1,true))then begin
+		rstr = BuildRecordIdStr(USr,CurrentCompany);
+		RHistr.RecidStr = rstr;
+		if(readlastkey("RecidStr",RHistr,1,true))then begin
+			logtext(0,"RHistr.TransTime " & RHistr.TransTime);
+		end;
+		
+	end;
+return;
+end;
+
 global
 updating function Boolean OnLogin()
 begin

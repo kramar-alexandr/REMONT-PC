@@ -1655,6 +1655,7 @@ record RHistVc RHistr;
 	
 	USr.Code = "";
 	while(loopmain(USr,1,true)) begin
+		logtext(0,USr.Code);
 		rstr = BuildRecordIdStr(USr,CurrentCompany);
 		RHistr.RecidStr = rstr;
 		TrHs = true;

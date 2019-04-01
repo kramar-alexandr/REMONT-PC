@@ -1643,3 +1643,11 @@ BEGIN
   errcode = CheckObjsNew(AccStr,Objstr,otcheckaccs,otcheckobjtyps,otcheckcnt,errstr);     
   RETURN;
 END;
+
+
+global webpublic updating procedure WebDeleteRHistr()
+begin
+
+
+return;
+end;

@@ -1647,6 +1647,28 @@ END;
 
 global webpublic updating procedure WebDeleteRHistr()
 begin
+record RHistVc RHistr;
+	record UserVc USr;
+	string 200 rstr;
+	boolean TrHs;
+
+	
+	USr.Code = "";
+	while(loopmain(USr,1,true)) begin
+		rstr = BuildRecordIdStr(USr,CurrentCompany);
+		RHistr.RecidStr = rstr;
+		TrHs = true;
+		while(loopkey("RecidStr",RHistr,1,TrHs)) begin
+			if(RHistr.RecidStr!=rstr)then begin TrHs = false; end;
+			
+			if(TrHs and RHistr.User==USr.Code and RHistr.RecidStr==rstr)then begin
+				recorddelete(RHistr);
+				stepback(RHistr);
+				//logtext(0,"RHistr.TransTime " & RHistr.TransTime);
+			end;
+		end;
+		resetloop(RHistr);
+	end;
 
 
 return;

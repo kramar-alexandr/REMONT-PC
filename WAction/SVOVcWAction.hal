@@ -58,6 +58,7 @@ BEGIN
   Boolean testf;
   String 255 errMes; //Edit***************************Sasha2,14:00 09.06.2017
   record LocalMachineBlock LMb; //Edit***************************Sasha2,14:00 09.06.2017
+	record DispatchVc Dispatchr; 
 	
   wn = CurWindow;
   if (WindowState(wn)==Rs_normal) then begin
@@ -83,6 +84,13 @@ BEGIN
 						testf = false;
 					end;
 				end; //Edit***************************Sasha2,10:59 12.06.2017 }
+				
+				Dispatchr.SVONr = SVOr.SerNr;
+				if (ReadFirstKey("SVONr",Dispatchr,1,true) and Dispatchr.OKFlag==1) then begin
+				end else begin
+					testf = false;
+					messagebox(0,"Проблемы с созданием выдачи. Обратитесь к сис.админу");
+				end;
 				if (testf) then begin
 					RecordCopy(oldSVOr,SVOr);
 					SVOr.RegDate = currentDate;

@@ -1359,8 +1359,8 @@ BEGIN
   LongInt res;
 	
 	
-	logtext(0,"getlastRhist 30");
-  		getlastRhist;
+	//logtext(0,"getlastRhist 30");
+  //		getlastRhist;
   if (Actr.OKFlag!=0) then begin
     ActOK(Actr);        // Swapped to fix order of operation with approval rules.
     CreateConsequences(Actr);
@@ -1369,12 +1369,12 @@ BEGIN
   if (Actr.OKFlag==0) then begin
     CreateAlarm(Actr);  
   end;
-  logtext(0,"getlastRhist 31");
-  		getlastRhist;
+  //logtext(0,"getlastRhist 31");
+  //		getlastRhist;
   logtext(0,"ActVcRecordSaveAfter " & Actr.MainPersons & " UpdateToDoWclass");
   AllClientsRemoteAsync.RemoteUserFunction(Actr.MainPersons,"UpdateToDoWclass","","");
-  logtext(0,"getlastRhist 32");
-  		getlastRhist;
+  //logtext(0,"getlastRhist 32");
+  //		getlastRhist;
   ActVcRecordSaveAfter = res;
   RETURN;
 END;

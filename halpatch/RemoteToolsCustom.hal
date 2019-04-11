@@ -3772,8 +3772,6 @@ begin
 				end; 
       end;
       
-      
-      
       if (err==0) then begin
         rwcnt = MatRowCnt(SVOr);
         if (rwcnt>0) then begin

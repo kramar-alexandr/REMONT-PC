@@ -262,7 +262,7 @@ record RcVc RepSpec;
 	
 	wn = curwindow;
 	getwindowrecord(wn,SVOr);
-	RepSpec.f1 = SVOr.Kontinfo1;
+	RepSpec.f1 = SVOr.CustCode;
 	RepSpec.Media = mtScreen;
 	RepSpec.repname = "ServClientOrderRn";
 	runreport(RepSpec,0);

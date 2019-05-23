@@ -735,6 +735,12 @@ begin
 				
 			*/
 			
+			if(!setinset("ADM_V",USr.AccessGroup))then begin
+				if(nonblank(USr.SalesGroup))then begin
+					if(USr.SalesGroup!=SVOr.SalesGroup)then begin testf = false; end;
+				end;
+			end;
+			
 			if(SVOr.OrderStatus==12)then begin testf = false; end;
 			if(SVOr.OrderStatus==10)then begin testf = false; end;
 			if(SVOr.OrderStatus==9)then begin testf = false; end;

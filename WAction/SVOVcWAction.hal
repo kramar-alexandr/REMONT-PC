@@ -2418,8 +2418,8 @@ global updating procedure AsyncUpdateToDo()
 		record PeriodBlock Pb;
 		row PeriodBlock Prw;
 		
-		logtext(0,"getlastRhist 33");
-  		getlastRhist;
+		//logtext(0,"getlastRhist 33");
+  	//	getlastRhist;
 		
 		if(getminute(currenttime)==30)then begin
 			blockload(Pb);
@@ -2443,8 +2443,8 @@ global updating procedure AsyncUpdateToDo()
 		
     AllClientsRemoteAsync.UpdateMasterWClassOnKPIs("");
     
-    logtext(0,"getlastRhist 34");
-  		getlastRhist;
+    //logtext(0,"getlastRhist 34");
+  	//	getlastRhist;
 end;
 
 

@@ -373,10 +373,8 @@ begin
   
   if (UserCanAction("UnOKAll",false)) then begin //Edit***************************Sasha2,15:56 27.10.2016
     mode = Normal;
-    messagebox(0,"normal");
   end else begin
     mode = ViewOnly;
-    messagebox(0,"ViewOnly");
   end;
   
   if (Left(CurrentUser,2)=="SA") then begin
@@ -471,8 +469,8 @@ begin
   EditField(h2,v,60,"Время",mode,EndDiagnTime,false,0); //Edit***************************Sasha2,15:40 25.10.2016
   EditField(h1,v+=vs,60,"Дата заверш.рем.",mode,PlanShipDate,false,PasteCurDate);
   EditField(h2,v,60,"Время",mode,DoneTime,false,0);// Edit ************************** Monday, 24 October 2016 17:56:04
-  EditField(h1,v+=vs,60,"Дата выдачи",mode,RegDate,false,PasteCurDate);
-  EditField(h2,v,60,"Время",mode,OutTime,false,0);// Edit ************************** Monday, 24 October 2016 17:56:02
+  EditField(h1,v+=vs,60,"Дата выдачи",adminMode,RegDate,false,PasteCurDate);
+  EditField(h2,v,60,"Время",adminMode,OutTime,false,0);// Edit ************************** Monday, 24 October 2016 17:56:02
   EditField(h2+140,v,60,"Гаран. (мес.)",Normal,GarantyMes,false,0); // Edit **************** Tuesday, 30 January 2018 11:58
   EditField(h2+295,v,60,"Оконч гарантии",ViewOnly,GarantyToDate,false,0);
   EditField(h2+500,v,80,"Ориентировочное заверш",Normal,FinishDate,false,PasteCurDate); 

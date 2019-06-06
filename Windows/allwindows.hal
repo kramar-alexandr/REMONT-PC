@@ -377,6 +377,10 @@ begin
     mode = ViewOnly;
   end;
   
+  if(currentuser=="BTEST")then begin
+  	messagebox(0,mode);
+  end;
+  
   if (Left(CurrentUser,2)=="SA") then begin
     adminMode = Normal;
   end else begin

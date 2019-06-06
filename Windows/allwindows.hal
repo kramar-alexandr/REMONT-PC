@@ -373,12 +373,10 @@ begin
   
   if (UserCanAction("UnOKAll",false)) then begin //Edit***************************Sasha2,15:56 27.10.2016
     mode = Normal;
+    messagebox(0,"normal");
   end else begin
     mode = ViewOnly;
-  end;
-  
-  if(currentuser=="BTEST")then begin
-  	messagebox(0,mode);
+    messagebox(0,"ViewOnly");
   end;
   
   if (Left(CurrentUser,2)=="SA") then begin

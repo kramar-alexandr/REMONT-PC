@@ -3037,7 +3037,7 @@ BEGIN
   //for case when Dispatch is made but WindowDoOK(wn,0) returns false in PrintAndSetRegDateInSVODsm()
   if (BlankDate(SVOr.RegDate) and SVOr.SerNr>-1 and SVOr.GetItemFlag>0) then begin //Edit***************************Sasha2,14:13 01.08.2017 {
     Dispatchr.SVONr = SVOr.SerNr;
-    if (ReadFirstKey("SVONr",Dispatchr,1,true)and Dispatchr.OKFlag==1) then begin
+    if (ReadFirstKey("SVONr",Dispatchr,1,true) and Dispatchr.OKFlag==1) then begin
       SVOr.RegDate = Dispatchr.RegDate;
     end;
   end; //Edit***************************Sasha2,14:13 01.08.2017 }

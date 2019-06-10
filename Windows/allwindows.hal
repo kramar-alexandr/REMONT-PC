@@ -10890,3 +10890,25 @@ begin
   EndMatrix;
   EndWindow;
 end;
+
+window DispatchLClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  WindowBegin("Выдачи товара",DispatchLClass,CGmlist,-);
+  SpawnClass(DispatchDClass);
+  SetWRect(20,80,640,298);
+  Sizeable(-1,-1,0,0);
+  UseView(DispatchVc);
+  RecordList(4,17,-21,-39);
+  RlColKey(4,4,  "Номер",SerNr,false,SerNr);
+  RlColKey(71,66,"OK",OKCheck,false,OKCheck);
+  RlColKey(100,100,"Дата",TransDate,false,TransDate);
+  RlColKey(175,175,"Сервис№",SVONr,false,SVONr);
+  RlColKey(251,251, "Место",Site,false,Site);
+  RlCol(320,320,"Склад",Location,false);
+  RlColKey(380,380,"Клиент",CustCode,false,CustCode);
+  RlCol(465,465,"Наим.",Addr0,false);
+  RlColKey(570,570,      "Комментарий",Comment,false,Comment);
+  SearchField("Поиск");
+  EndWindow;
+end;

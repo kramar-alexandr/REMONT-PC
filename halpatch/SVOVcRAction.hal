@@ -2216,6 +2216,7 @@ BEGIN
   record ARVc ARr;// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 19 March 2018 11:58:49
   val ivdolg,ivsum;// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 19 March 2018 11:58:47
 	boolean iskivi;
+	date bdate;
 	
 	//logtext(0,"getlastRhist 10");
   //		getlastRhist;
@@ -3039,6 +3040,8 @@ BEGIN
     Dispatchr.SVONr = SVOr.SerNr;
     if (ReadFirstKey("SVONr",Dispatchr,1,true) and Dispatchr.OKFlag==1) then begin
       SVOr.RegDate = Dispatchr.RegDate;
+    end else begin
+    	SVOr.RegDate = bdate;
     end;
   end; //Edit***************************Sasha2,14:13 01.08.2017 }
   

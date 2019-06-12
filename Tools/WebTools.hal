@@ -1,68 +1,5 @@
 SetLangMode(LangRussian,"RUS",0);
 
-/*external updating procedure AutoRun();
-external updating procedure BuhExportEn();
-external procedure RetailSalesEn();
-external procedure ManagersFullStockEn();
-
-
-global webpublic updating Procedure WebRunRetailSalesEn() //Edit***************************Sasha2,15:18 04.07.2014
-begin
-	integer compnr;
-	
-	compnr = stringtoint(webgetarg("compnr"));
-	
-	SetCompany(compnr,false);
-		RetailSalesEn;
-	ResetCompany(compnr);  
-	
-return;
-end; 
-
-
-global webpublic updating Procedure WebRunManagersFullStockEnEn() //Edit***************************Sasha2,15:18 04.07.2014
-begin
-	integer compnr;
-	
-	compnr = stringtoint(webgetarg("compnr"));
-	
-	SetCompany(compnr,false);
-		ManagersFullStockEn;
-	ResetCompany(compnr);  
-	
-return;
-end; 
-
-global webpublic updating Procedure WebRunAutosendReports() //Edit***************************Sasha2,15:18 04.07.2014
-begin
-
-	AutoRun;
-
-return;
-end; 
-
-global webpublic updating procedure WebBuhExportEn()
-begin
-	string 10 compnr;
-	integer comp;
-	
-	compnr = webgetarg("compnr");
-	
-	if(blank(compnr))then begin
-		comp = 0;
-	end else begin
-		comp = stringtoint(compnr);
-	end;
-	
-	SetCompany(comp,false);
-		BuhExportEn;
-	ResetCompany(comp);  
-	
-
-return;
-end;*/
-
-
 global function string 255 NormalizeStrToJson (string Str)
 begin
 	integer strln,i;
@@ -82,8 +19,31 @@ begin
 	
 	NormalizeStrToJson = NormStr;
 	
-	return
+	return;
 end;
+
+function string 255 NormalizeStrToJsonMy(string input)
+begin
+	integer i;
+	string 5 c;
+	string 255 res;
+	
+	for(i=0;i<len(input);i=i+1)begin
+		c = mid(input,i,1);
+		if(c==chr(92))then begin
+			c = chr(92) & chr(92);
+		end;
+		
+		res = res & c;
+	end;
+	
+	NormalizeStrToJsonMy = NormalizeStrToJson(res);
+	
+return;
+end;
+
+
+
 
 
 global webpublic procedure WebCreateCUForImport()
@@ -117,7 +77,7 @@ begin
 		if(testf)then begin
 			counter = counter+1;
 		
-			if(counter>355)then begin
+			if(counter>1666)then begin
 				TrHs = false;
 			end;
 			if(coma)then begin
@@ -125,28 +85,28 @@ begin
 			end;
 			addtexttoarea("{",fill);
 				addtexttoarea("\"id\":" & counter,fill);addtexttoarea(",",fill);
-				addtexttoarea("\"fCode\":" & "\"" & NormalizeStrToJson(CUr.Code) & "\"",fill);addtexttoarea(",",fill);
-				addtexttoarea("\"fName\":" & "\"" & NormalizeStrToJson(CUr.Name) & "\"",fill);addtexttoarea(",",fill);
-				addtexttoarea("\"fCustCat\":" & "\"" & NormalizeStrToJson(CUr.CustCat) & "\"",fill);addtexttoarea(",",fill);
-				addtexttoarea("\"fVECat\":" & "\"" & NormalizeStrToJson(CUr.VECat) & "\"",fill);addtexttoarea(",",fill);
-				addtexttoarea("\"fCUType\":" & NormalizeStrToJson(CUr.CUType),fill);addtexttoarea(",",fill);
-				addtexttoarea("\"fVEType\":" & NormalizeStrToJson(CUr.VEType),fill);addtexttoarea(",",fill);
-				addtexttoarea("\"fEmployeeType\":" & NormalizeStrToJson(CUr.EmployeeType),fill);addtexttoarea(",",fill);
-				addtexttoarea("\"fInvAddr0\":" & "\"" & NormalizeStrToJson(CUr.InvAddr0) & "\"",fill);addtexttoarea(",",fill);
-				addtexttoarea("\"fPhone\":" & "\"" & NormalizeStrToJson(CUr.Phone) & "\"",fill);addtexttoarea(",",fill);
-				addtexttoarea("\"fPhone1\":" & "\"" & NormalizeStrToJson(CUr.Mobile) & "\"",fill);addtexttoarea(",",fill);
-				addtexttoarea("\"fEMail\":" & "\"" & NormalizeStrToJson(CUr.eMail) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fCode\":" & "\"" & NormalizeStrToJsonMy(CUr.Code) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fName\":" & "\"" & NormalizeStrToJsonMy(CUr.Name) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fCustCat\":" & "\"" & NormalizeStrToJsonMy(CUr.CustCat) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fVECat\":" & "\"" & NormalizeStrToJsonMy(CUr.VECat) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fCUType\":" & NormalizeStrToJsonMy(CUr.CUType),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fVEType\":" & NormalizeStrToJsonMy(CUr.VEType),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fEmployeeType\":" & NormalizeStrToJsonMy(CUr.EmployeeType),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fInvAddr0\":" & "\"" & NormalizeStrToJsonMy(CUr.InvAddr0) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fPhone\":" & "\"" & NormalizeStrToJsonMy(CUr.Phone) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fPhone1\":" & "\"" & NormalizeStrToJsonMy(CUr.Mobile) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fEMail\":" & "\"" & NormalizeStrToJsonMy(CUr.eMail) & "\"",fill);addtexttoarea(",",fill);
 			
-				addtexttoarea("\"fClassification\":" & "\"" & NormalizeStrToJson(CUr.Classification) & "\"",fill);addtexttoarea(",",fill);
-				addtexttoarea("\"fWwwAddr\":" & "\"" & NormalizeStrToJson(CUr.wwwAddr) & "\"",fill);addtexttoarea(",",fill);
-				addtexttoarea("\"fBlockedFlag\":" & NormalizeStrToJson(CUr.blockedFlag),fill);addtexttoarea(",",fill);
-				addtexttoarea("\"fOnHoldFlag\":" & NormalizeStrToJson(CUr.OnHoldFlag),fill);addtexttoarea(",",fill);
-				addtexttoarea("\"fPLCode\":" & "\"" & NormalizeStrToJson(CUr.PLCode) & "\"",fill);addtexttoarea(",",fill);
-				addtexttoarea("\"fRebCode\":" & "\"" & NormalizeStrToJson(CUr.RebCode) & "\"",fill);addtexttoarea(",",fill);
-				addtexttoarea("\"fAccAP\":" & "\"" & NormalizeStrToJson(CUr.AccAP) & "\"",fill);addtexttoarea(",",fill);
-				addtexttoarea("\"fAccCost\":" & "\"" & NormalizeStrToJson(CUr.AccCost) & "\"",fill);addtexttoarea(",",fill);
-				addtexttoarea("\"fOnAccAccAP\":" & "\"" & NormalizeStrToJson(CUr.OnAccAccAP) & "\"",fill);addtexttoarea(",",fill);
-				addtexttoarea("\"fObjects\":" & "\"" & NormalizeStrToJson(CUr.Objects) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fClassification\":" & "\"" & NormalizeStrToJsonMy(CUr.Classification) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fWwwAddr\":" & "\"" & NormalizeStrToJsonMy(CUr.wwwAddr) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fBlockedFlag\":" & NormalizeStrToJsonMy(CUr.blockedFlag),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fOnHoldFlag\":" & NormalizeStrToJsonMy(CUr.OnHoldFlag),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fPLCode\":" & "\"" & NormalizeStrToJsonMy(CUr.PLCode) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fRebCode\":" & "\"" & NormalizeStrToJsonMy(CUr.RebCode) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fAccAP\":" & "\"" & NormalizeStrToJsonMy(CUr.AccAP) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fAccCost\":" & "\"" & NormalizeStrToJsonMy(CUr.AccCost) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fOnAccAccAP\":" & "\"" & NormalizeStrToJsonMy(CUr.OnAccAccAP) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fObjects\":" & "\"" & NormalizeStrToJsonMy(CUr.Objects) & "\"",fill);addtexttoarea(",",fill);
 	
 			
 				addtexttoarea("\"datadef\":" & "\"Contacts\"",fill);

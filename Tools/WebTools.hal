@@ -293,3 +293,45 @@ begin
 	
 return;
 end;
+
+global webpublic procedure WebCreateCClassForImport()
+begin
+	record CClassVc CClassr;
+	area fill;
+	boolean coma;
+	longint counter;
+	boolean TrHs,testf;
+	
+	counter = 0;
+	setcompany(1,false);
+	setfileonserver(true);
+	addtexttoarea("{\"ContactClassifications\":[" & chr(13) & chr(10),fill);
+	TrHs = true;
+	while(loopmain(CClassr,1,TrHs))begin
+		testf = true;
+		
+		if(testf)then begin
+			counter = counter+1;
+		
+			if(coma)then begin
+				addtexttoarea("," & chr(13) & chr(10),fill);
+			end;
+			addtexttoarea("{",fill);
+				//text
+				addtexttoarea("\"fCode\":" & "\"" & NormalizeStrToJsonMy(CClassr.Code) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fComment\":" & "\"" & NormalizeStrToJsonMy(CClassr.Comment) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fCType\":" & "\"" & NormalizeStrToJsonMy(CClassr.CType) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"datadef\":" & "\"ContactClassifications\"",fill);
+				
+				addtexttoarea("}",fill);	
+				coma = true;
+			end;		
+		
+	end;
+	addtexttoarea(chr(13) & chr(10) & "]}",fill);
+	
+	writeareatofile(fill,"ContactClassifications.json",0);
+	
+return;
+end;
+

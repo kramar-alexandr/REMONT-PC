@@ -89,6 +89,7 @@ begin
 	Maintenance("WebCreateForImport_IN",MyVClass,WebCreateINForImport,modDBMain);
 	Maintenance("WebCreateForImport_CUIN",MyVClass,WebCreateCUINForImport,modDBMain);
 	Maintenance("WebCreateForImport_DI",MyVClass,WebCreateDIForImport,modDBMain);
+	Maintenance("WebCreateForImport_CClass",MyVClass,WebCreateCClassForImport,modDBMain);
 
 
 	

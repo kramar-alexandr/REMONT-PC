@@ -86,6 +86,10 @@ begin
 	Maintenance("Fill Item Disp4 Class",MyVClass,FillDisp4INClass,modSVO);
 	Maintenance("RecalcSearchMatrix",MyVClass,UpdateTextFieldsForQuickSearchMn,modSVO);
 	Maintenance("WebCreateForImport_CU",MyVClass,WebCreateCUForImport,modDBMain);
+	Maintenance("WebCreateForImport_IN",MyVClass,WebCreateINForImport,modDBMain);
+	Maintenance("WebCreateForImport_CUIN",MyVClass,WebCreateCUINForImport,modDBMain);
+	Maintenance("WebCreateForImport_DI",MyVClass,WebCreateDIForImport,modDBMain);
+
 
 	
   Import("Импорт контактов и заказов, выгруженных из ServiceMY",CUAndSVOInitSystemImportIClass,CUAndSVOInitSystemImportIn,modDBMain); //Edit***************************Sasha2,13:21 26.05.2017

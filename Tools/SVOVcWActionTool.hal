@@ -57,6 +57,8 @@ BEGIN
     		end;
     	end;
     end;
+    SVOp.TransDate = currentdate;
+    SVOp.RegTime = currenttime;
     SVOp.Addr1 = CUr.InvAddr0;
     SVOp.Addr2 = CUr.InvAddr1;
     SVOp.Addr3 = CUr.InvAddr2;

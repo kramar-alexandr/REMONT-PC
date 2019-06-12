@@ -370,6 +370,7 @@ begin
   real h,h1,h2,h3,h4,t,v,vm,vs,tvm;
   string 255 label;
   Integer mode,adminMode; //Edit***************************Sasha2,15:56 27.10.2016
+  record UserVc USr;
   
   if (UserCanAction("UnOKAll",false)) then begin //Edit***************************Sasha2,15:56 27.10.2016
     mode = Normal;
@@ -380,7 +381,16 @@ begin
   if (Left(CurrentUser,2)=="SA") then begin
     adminMode = Normal;
   end else begin
-    adminMode = ViewOnly;
+  	USr.Code = currentuser;
+  	adminMode = ViewOnly;
+  	if(readfirstmain(USr,1,true))then begin
+  		if(setinset("ADMIN",USr.AccessGroup))then begin
+  			adminMode = Normal;
+  		end;
+  		if(setinset("ADM_V",USr.AccessGroup))then begin
+  			adminMode = Normal;
+  		end;
+  	end;
   end;
   
 	WindowBegin("Заказ на обслуживание",SVODClass,CGview,-);

@@ -1,3 +1,5 @@
+SetLangMode(LangRussian,"RUS",0);
+
 /*external updating procedure AutoRun();
 external updating procedure BuhExportEn();
 external procedure RetailSalesEn();
@@ -59,3 +61,107 @@ begin
 
 return;
 end;*/
+
+
+global function string 255 NormalizeStrToJson (string Str)
+begin
+	integer strln,i;
+	string 255 NormStr;
+	
+
+	NormStr = "";
+	strln = len(Str);
+	for (i=0;i<strln;i=i+1)begin
+		if(mid(Str,i,1)==chr(34))then begin
+			NormStr = NormStr & chr(92) & mid(Str,i,1);
+		end else begin
+			NormStr = NormStr & mid(Str,i,1);
+		end;
+	end;
+	
+	
+	NormalizeStrToJson = NormStr;
+	
+	return
+end;
+
+
+global webpublic procedure WebCreateCUForImport()
+begin
+	record CUVc CUr;
+	area fill;
+	boolean coma;
+	longint counter;
+	boolean TrHs,testf;
+	
+	counter = 0;
+	setcompany(1,false);
+	setfileonserver(true);
+	addtexttoarea("{\"Contacts\":[" & chr(13) & chr(10),fill);
+	TrHs = true;
+	while(loopmain(CUr,1,TrHs))begin
+		
+		
+		
+		
+		testf = true;
+		
+		if(CUr.Name=="Ремзона")then begin
+			testf = false;
+		end;
+		if(CUr.Name=="Новый контакт")then begin
+			testf = false;
+		end;
+		
+		
+		if(testf)then begin
+			counter = counter+1;
+		
+			if(counter>355)then begin
+				TrHs = false;
+			end;
+			if(coma)then begin
+				addtexttoarea("," & chr(13) & chr(10),fill);
+			end;
+			addtexttoarea("{",fill);
+				addtexttoarea("\"id\":" & counter,fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fCode\":" & "\"" & NormalizeStrToJson(CUr.Code) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fName\":" & "\"" & NormalizeStrToJson(CUr.Name) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fCustCat\":" & "\"" & NormalizeStrToJson(CUr.CustCat) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fVECat\":" & "\"" & NormalizeStrToJson(CUr.VECat) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fCUType\":" & NormalizeStrToJson(CUr.CUType),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fVEType\":" & NormalizeStrToJson(CUr.VEType),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fEmployeeType\":" & NormalizeStrToJson(CUr.EmployeeType),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fInvAddr0\":" & "\"" & NormalizeStrToJson(CUr.InvAddr0) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fPhone\":" & "\"" & NormalizeStrToJson(CUr.Phone) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fPhone1\":" & "\"" & NormalizeStrToJson(CUr.Mobile) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fEMail\":" & "\"" & NormalizeStrToJson(CUr.eMail) & "\"",fill);addtexttoarea(",",fill);
+			
+				addtexttoarea("\"fClassification\":" & "\"" & NormalizeStrToJson(CUr.Classification) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fWwwAddr\":" & "\"" & NormalizeStrToJson(CUr.wwwAddr) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fBlockedFlag\":" & NormalizeStrToJson(CUr.blockedFlag),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fOnHoldFlag\":" & NormalizeStrToJson(CUr.OnHoldFlag),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fPLCode\":" & "\"" & NormalizeStrToJson(CUr.PLCode) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fRebCode\":" & "\"" & NormalizeStrToJson(CUr.RebCode) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fAccAP\":" & "\"" & NormalizeStrToJson(CUr.AccAP) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fAccCost\":" & "\"" & NormalizeStrToJson(CUr.AccCost) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fOnAccAccAP\":" & "\"" & NormalizeStrToJson(CUr.OnAccAccAP) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fObjects\":" & "\"" & NormalizeStrToJson(CUr.Objects) & "\"",fill);addtexttoarea(",",fill);
+	
+			
+				addtexttoarea("\"datadef\":" & "\"Contacts\"",fill);
+				addtexttoarea("}",fill);	
+				coma = true;
+			end;
+
+			
+			
+		
+		
+	end;
+	addtexttoarea(chr(13) & chr(10) & "]}",fill);
+	
+	writeareatofile(fill,"contacts.json",0);
+	
+return;
+end;

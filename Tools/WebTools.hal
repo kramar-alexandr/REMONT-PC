@@ -335,3 +335,263 @@ begin
 return;
 end;
 
+global webpublic procedure WebCreateACCForImport()
+begin
+	record AccVc Accr;
+	area fill;
+	boolean coma;
+	longint counter;
+	boolean TrHs,testf;
+	
+	counter = 0;
+	setcompany(1,false);
+	setfileonserver(true);
+	addtexttoarea("{\"Accounts\":[" & chr(13) & chr(10),fill);
+	TrHs = true;
+	while(loopmain(Accr,1,TrHs))begin
+		testf = true;
+		
+		if(testf)then begin
+			counter = counter+1;
+		
+			if(coma)then begin
+				addtexttoarea("," & chr(13) & chr(10),fill);
+			end;
+			addtexttoarea("{",fill);
+				//text
+				addtexttoarea("\"fAccNumber\":" & "\"" & NormalizeStrToJsonMy(Accr.AccNumber) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fComment\":" & "\"" & NormalizeStrToJsonMy(Accr.Comment) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fAccType\":" & "\"" & NormalizeStrToJsonMy(Accr.AccType) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fVATCode\":" & "\"" & NormalizeStrToJsonMy(Accr.VATCode) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fCurncy\":" & "\"" & NormalizeStrToJsonMy(Accr.Curncy) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fConsAccNumber\":" & "\"" & NormalizeStrToJsonMy(Accr.ConsAccNumber) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fObjects\":" & "\"" & NormalizeStrToJsonMy(Accr.Objects) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fSRUCode\":" & "\"" & NormalizeStrToJsonMy(Accr.SRUCode) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fPeriodCode\":" & "\"" & NormalizeStrToJsonMy(Accr.PeriodCode) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fTransAutCode\":" & "\"" & NormalizeStrToJsonMy(Accr.TransAutCode) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fAccClass\":" & "\"" & NormalizeStrToJsonMy(Accr.AccClass) & "\"",fill);addtexttoarea(",",fill);
+				
+				//vals
+				addtexttoarea("\"fNVD\":" & NormalizeStrToJsonMyNum(Accr.NVD),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fNVC\":" & NormalizeStrToJsonMyNum(Accr.NVC),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fblockedFlag\":" & NormalizeStrToJsonMyNum(Accr.blockedFlag),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fControlType\":" & NormalizeStrToJsonMyNum(Accr.ControlType),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fConspr\":" & NormalizeStrToJsonMyNum(Accr.Conspr),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fExclFrRep\":" & NormalizeStrToJsonMyNum(Accr.ExclFrRep),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fGroupAcc\":" & NormalizeStrToJsonMyNum(Accr.GroupAcc),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fNotBalSheet\":" & NormalizeStrToJsonMyNum(Accr.NotBalSheet),fill);addtexttoarea(",",fill);
+
+				addtexttoarea("\"datadef\":" & "\"Accounts\"",fill);
+				
+				addtexttoarea("}",fill);	
+				coma = true;
+			end;		
+		
+	end;
+	addtexttoarea(chr(13) & chr(10) & "]}",fill);
+	
+	writeareatofile(fill,"Accounts.json",0);
+	
+return;
+end;
+
+global webpublic procedure WebCreateObjForImport()
+begin
+	record ObjVc Objr;
+	area fill;
+	boolean coma;
+	longint counter;
+	boolean TrHs,testf;
+	
+	counter = 0;
+	setcompany(1,false);
+	setfileonserver(true);
+	addtexttoarea("{\"Objects\":[" & chr(13) & chr(10),fill);
+	TrHs = true;
+	while(loopmain(Objr,1,TrHs))begin
+		testf = true;
+		
+		if(testf)then begin
+			counter = counter+1;
+		
+			if(coma)then begin
+				addtexttoarea("," & chr(13) & chr(10),fill);
+			end;
+			addtexttoarea("{",fill);
+				//text
+				addtexttoarea("\"fCode\":" & "\"" & NormalizeStrToJsonMy(Objr.Code) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fComment\":" & "\"" & NormalizeStrToJsonMy(Objr.Comment) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fOTCode\":" & "\"" & NormalizeStrToJsonMy(Objr.OTCode) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fAutoObjects\":" & "\"" & NormalizeStrToJsonMy(Objr.AutoObjects) & "\"",fill);addtexttoarea(",",fill);
+				
+				//vals
+				addtexttoarea("\"fMultiYear\":" & NormalizeStrToJsonMyNum(Objr.MultiYear),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fTerminateFlag\":" & NormalizeStrToJsonMyNum(Objr.TerminateFlag),fill);addtexttoarea(",",fill);
+
+				addtexttoarea("\"datadef\":" & "\"Objects\"",fill);
+				
+				addtexttoarea("}",fill);	
+				coma = true;
+			end;		
+		
+	end;
+	addtexttoarea(chr(13) & chr(10) & "]}",fill);
+	
+	writeareatofile(fill,"Objects.json",0);
+	
+return;
+end;
+
+global webpublic procedure WebCreateAccBlockForImport()
+begin
+	record AccBlock Accr;
+	area fill;
+	boolean coma;
+	longint counter;
+	boolean TrHs,testf;
+	
+	counter = 0;
+	setcompany(1,false);
+	setfileonserver(true);
+	addtexttoarea("{\"AccountUsage\":[" & chr(13) & chr(10),fill);
+	TrHs = true;
+	blockload(Accr);
+	//while(loopmain(Objr,1,TrHs))begin
+		testf = true;
+		
+		if(testf)then begin
+			counter = counter+1;
+		
+			if(coma)then begin
+				addtexttoarea("," & chr(13) & chr(10),fill);
+			end;
+			addtexttoarea("{",fill);
+				//text
+				addtexttoarea("\"fARAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.ARAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fRndAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.RndAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fCredAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.CredAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fERebAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.ERebAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fVATBAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.VATBAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fCashAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.CashAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fVATERAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.VATERAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fIVRef\":" & "\"" & NormalizeStrToJsonMy(Accr.IVRef) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fIPRef\":" & "\"" & NormalizeStrToJsonMy(Accr.IPRef) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fExtraCostAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.ExtraCostAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fRateGainAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.RateGainAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fRateLossAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.RateLossAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fRateRndOffAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.RateRndOffAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fStockAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.StockAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fPurchAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.PurchAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fStockCostAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.StockCostAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fDomSalesAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.DomSalesAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fEUSalesAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.EUSalesAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fExpSalesAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.ExpSalesAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fOnAccAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.OnAccAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fVATCodeDom\":" & "\"" & NormalizeStrToJsonMy(Accr.VATCodeDom) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fVATCodeEU\":" & "\"" & NormalizeStrToJsonMy(Accr.VATCodeEU) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fVATCodeExp\":" & "\"" & NormalizeStrToJsonMy(Accr.VATCodeExp) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fStockGainAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.StockGainAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fPUExtraAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.PUExtraAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fPUFreightAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.PUFreightAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fPUCustomsAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.PUCustomsAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fOnAccVATAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.OnAccVATAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fReturnedAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.ReturnedAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fEMURndOffAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.EMURndOffAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fEMUWriteOffAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.EMUWriteOffAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fBaseRoundOffAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.BaseRoundOffAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fProdICostAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.ProdICostAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fProdWCostAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.ProdWCostAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fCashBackAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.CashBackAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fCommisionAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.CommisionAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fIPCostObj\":" & "\"" & NormalizeStrToJsonMy(Accr.IPCostObj) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fPUCost1\":" & "\"" & NormalizeStrToJsonMy(Accr.PUCost1) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fPUCost2\":" & "\"" & NormalizeStrToJsonMy(Accr.PUCost2) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fPUCost3\":" & "\"" & NormalizeStrToJsonMy(Accr.PUCost3) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fPUCost4\":" & "\"" & NormalizeStrToJsonMy(Accr.PUCost4) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fPUCost5\":" & "\"" & NormalizeStrToJsonMy(Accr.PUCost5) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fSalesVAT\":" & "\"" & NormalizeStrToJsonMy(Accr.SalesVAT) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fSalesTAX\":" & "\"" & NormalizeStrToJsonMy(Accr.SalesTAX) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fBadARAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.BadARAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fCredDomSalesAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.CredDomSalesAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fCredEUSalesAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.CredEUSalesAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fCredExpSalesAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.CredExpSalesAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fCredVATCodeDom\":" & "\"" & NormalizeStrToJsonMy(Accr.CredVATCodeDom) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fCredVATCodeEU\":" & "\"" & NormalizeStrToJsonMy(Accr.CredVATCodeEU) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fCredVATCodeExp\":" & "\"" & NormalizeStrToJsonMy(Accr.CredVATCodeExp) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fINTransferAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.INTransferAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fBankRateGainAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.BankRateGainAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fBankRateLossAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.BankRateLossAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fPreIPVATAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.PreIPVATAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fIntARAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.IntARAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fIntDomSalesAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.IntDomSalesAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fItemPriceVar\":" & "\"" & NormalizeStrToJsonMy(Accr.ItemPriceVar) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fCost1PriceVar\":" & "\"" & NormalizeStrToJsonMy(Accr.Cost1PriceVar) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fCost2PriceVar\":" & "\"" & NormalizeStrToJsonMy(Accr.Cost2PriceVar) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fCost3PriceVar\":" & "\"" & NormalizeStrToJsonMy(Accr.Cost3PriceVar) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fCost4PriceVar\":" & "\"" & NormalizeStrToJsonMy(Accr.Cost4PriceVar) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fCost5PriceVar\":" & "\"" & NormalizeStrToJsonMy(Accr.Cost5PriceVar) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fCustomsPriceVar\":" & "\"" & NormalizeStrToJsonMy(Accr.CustomsPriceVar) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fFreightPriceVar\":" & "\"" & NormalizeStrToJsonMy(Accr.FreightPriceVar) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fRetPUAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.RetPUAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fBookedDiscount\":" & "\"" & NormalizeStrToJsonMy(Accr.BookedDiscount) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fDiscountAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.DiscountAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fStockLossAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.StockLossAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fEUStockCostAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.EUStockCostAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fExpStockCostAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.ExpStockCostAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fEUPurchAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.EUPurchAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fExpPurchAcc\":" & "\"" & NormalizeStrToJsonMy(Accr.ExpPurchAcc) & "\"",fill);addtexttoarea(",",fill);
+				
+				
+				//vals
+				addtexttoarea("\"fDoCosts\":" & NormalizeStrToJsonMyNum(Accr.DoCosts),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fRevInclVAT\":" & NormalizeStrToJsonMyNum(Accr.RevInclVAT),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fSLAccTest\":" & NormalizeStrToJsonMyNum(Accr.SLAccTest),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fARUseObj\":" & NormalizeStrToJsonMyNum(Accr.ARUseObj),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fInvUpdStock\":" & NormalizeStrToJsonMyNum(Accr.InvUpdStock),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fCredUpdStockx\":" & NormalizeStrToJsonMyNum(Accr.CredUpdStockx),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fVATCodeCtrl\":" & NormalizeStrToJsonMyNum(Accr.VATCodeCtrl),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fBasePriceInclVAT\":" & NormalizeStrToJsonMyNum(Accr.BasePriceInclVAT),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fIPBookVAT\":" & NormalizeStrToJsonMyNum(Accr.IPBookVAT),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fDiscCashVAT\":" & NormalizeStrToJsonMyNum(Accr.DiscCashVAT),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fARonTR\":" & NormalizeStrToJsonMyNum(Accr.ARonTR),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fDemandPPNo\":" & NormalizeStrToJsonMyNum(Accr.DemandPPNo),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fUpdBaseRate\":" & NormalizeStrToJsonMyNum(Accr.UpdBaseRate),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fUpdForeginRate\":" & NormalizeStrToJsonMyNum(Accr.UpdForeginRate),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fCorSalesAcc\":" & NormalizeStrToJsonMyNum(Accr.CorSalesAcc),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fCredInvWithNo\":" & NormalizeStrToJsonMyNum(Accr.CredInvWithNo),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fForceUniquePP\":" & NormalizeStrToJsonMyNum(Accr.ForceUniquePP),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"CredSalesAccsf\":" & NormalizeStrToJsonMyNum(Accr.CredSalesAccs),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fIPTransBankRowPerCU\":" & NormalizeStrToJsonMyNum(Accr.IPTransBankRowPerCU),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fPreIPBookVAT\":" & NormalizeStrToJsonMyNum(Accr.PreIPBookVAT),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fBookCreditOnPurchAcc\":" & NormalizeStrToJsonMyNum(Accr.BookCreditOnPurchAcc),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fObjectonBankAcc\":" & NormalizeStrToJsonMyNum(Accr.ObjectonBankAcc),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fNoWarnOnDupVATnoOnCU\":" & NormalizeStrToJsonMyNum(Accr.NoWarnOnDupVATnoOnCU),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fNoTAXonVAT\":" & NormalizeStrToJsonMyNum(Accr.NoTAXonVAT),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fChronologyforInvNo\":" & NormalizeStrToJsonMyNum(Accr.ChronologyforInvNo),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fSkipObjectsOnIVFromHeader\":" & NormalizeStrToJsonMyNum(Accr.SkipObjectsOnIVFromHeader),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fVATUseObj\":" & NormalizeStrToJsonMyNum(Accr.VATUseObj),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fBookPriceVar\":" & NormalizeStrToJsonMyNum(Accr.BookPriceVar),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fUsePUAccInRetPU\":" & NormalizeStrToJsonMyNum(Accr.UsePUAccInRetPU),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fNoOverPayIV\":" & NormalizeStrToJsonMyNum(Accr.NoOverPayIV),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fBookVATOnlyFromDownpayment\":" & NormalizeStrToJsonMyNum(Accr.BookVATOnlyFromDownpayment),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fBookVATonRateGain\":" & NormalizeStrToJsonMyNum(Accr.BookVATonRateGain),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fNoAutAutoTransOnCredIV\":" & NormalizeStrToJsonMyNum(Accr.NoAutAutoTransOnCredIV),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fSetDisputedFlagsOnCredIV\":" & NormalizeStrToJsonMyNum(Accr.SetDisputedFlagsOnCredIV),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fPrintNegAmountsCredNote\":" & NormalizeStrToJsonMyNum(Accr.PrintNegAmountsCredNote),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fDueDateBasedOnServDelDate\":" & NormalizeStrToJsonMyNum(Accr.DueDateBasedOnServDelDate),fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fNoPasteVATToIP\":" & NormalizeStrToJsonMyNum(Accr.NoPasteVATToIP),fill);addtexttoarea(",",fill);
+				
+				addtexttoarea("\"datadef\":" & "\"AccountUsage\"",fill);
+				
+				addtexttoarea("}",fill);	
+				coma = true;
+			end;		
+		
+	//end;
+	addtexttoarea(chr(13) & chr(10) & "]}",fill);
+	
+	writeareatofile(fill,"AccountUsage.json",0);
+	
+return;
+end;
+

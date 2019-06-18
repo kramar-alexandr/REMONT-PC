@@ -595,3 +595,26 @@ begin
 return;
 end;
 
+
+global webpublic updating procedure WebDeleteOldRHist()
+begin
+	record RHistVc RHistr;
+	longint cnt;
+	
+	cnt = 0;
+	logtext(0,"WebDeleteOldRHist start");
+	while(loopmain(RHistr,1,true))begin
+		if(RHistr.TransDate<stringtodate("1/1/2019"))then begin
+			recorddelete(RHistr);
+			stepback(RHistr);
+			cnt = cnt + 1;
+			if(cnt>10000)then begin
+				cnt = 0;
+				logtext(0,"deleted 100 RH");
+			end;
+		end;
+	end;
+	logtext(0,"WebDeleteOldRHist Finish");
+
+return;
+end;

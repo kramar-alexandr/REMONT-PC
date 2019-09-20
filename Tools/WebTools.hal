@@ -595,6 +595,208 @@ begin
 return;
 end;
 
+global webpublic procedure WebCreateSalesGroupForImport()
+begin
+	record SalesGroupVc SGr;
+	area fill;
+	boolean coma;
+	longint counter;
+	boolean TrHs,testf;
+	
+	counter = 0;
+	setcompany(1,false);
+	setfileonserver(true);
+	addtexttoarea("{\"SalesGroup\":[" & chr(13) & chr(10),fill);
+	TrHs = true;
+	while(loopmain(SGr,1,TrHs))begin
+		testf = true;
+		
+		
+		if(testf)then begin
+			counter = counter+1;
+		
+			if(counter>1666)then begin
+				//TrHs = false;
+			end;
+			if(coma)then begin
+				addtexttoarea("," & chr(13) & chr(10),fill);
+			end;
+			addtexttoarea("{",fill);
+				//text
+				addtexttoarea("\"id\":" & counter,fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fSGroupCode\":" & "\"" & NormalizeStrToJsonMy(SGr.SGroupCode) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fSGroupName\":" & "\"" & NormalizeStrToJsonMy(SGr.SGroupName) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fSGroupSeries\":" & "\"" & NormalizeStrToJsonMy(SGr.SGroupSeries) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fObjects\":" & "\"" & NormalizeStrToJsonMy(SGr.Objects) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fInnerOrderNr\":" & "\"" & NormalizeStrToJsonMy(SGr.InnerOrderNr) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"datadef\":" & "\"SalesGroup\"",fill);
+				addtexttoarea("}",fill);	
+				coma = true;
+			end;		
+		
+	end;
+	addtexttoarea(chr(13) & chr(10) & "]}",fill);
+	
+	writeareatofile(fill,"SalesGroup.json",0);
+	
+return;
+end;
+
+global webpublic procedure WebCreateLocationsForImport()
+begin
+	area fill;
+	boolean coma;
+	longint counter;
+	boolean TrHs,testf;
+	record LocationVc Lr;
+	
+	counter = 0;
+	setcompany(1,false);
+	setfileonserver(true);
+	addtexttoarea("{\"Locations\":[" & chr(13) & chr(10),fill);
+	TrHs = true;
+	while(loopmain(Lr,1,TrHs))begin
+		testf = true;
+		
+		
+		if(testf)then begin
+			counter = counter+1;
+		
+			if(counter>1666)then begin
+				//TrHs = false;
+			end;
+			if(coma)then begin
+				addtexttoarea("," & chr(13) & chr(10),fill);
+			end;
+			addtexttoarea("{",fill);
+				//text
+				addtexttoarea("\"id\":" & counter,fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fCode\":" & "\"" & NormalizeStrToJsonMy(Lr.Code) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fName\":" & "\"" & NormalizeStrToJsonMy(Lr.Name) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fStockAcc\":" & "\"" & NormalizeStrToJsonMy(Lr.StockAcc) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"datadef\":" & "\"Locations\"",fill);
+				addtexttoarea("}",fill);	
+				coma = true;
+			end;		
+		
+	end;
+	addtexttoarea(chr(13) & chr(10) & "]}",fill);
+	
+	writeareatofile(fill,"Locations.json",0);
+	
+return;
+end;
+
+global webpublic procedure WebCreatePayModeForImport()
+begin
+	record PMBlock PMb;
+	row PMBlock PMrw;
+	area fill,fil;
+	boolean coma;
+	longint counter;
+	integer mtrw,i;
+	boolean TrHs,testf;
+	
+	blockload(PMb);
+	
+	addtexttoarea("{\"PaymentMode\":[" & chr(13) & chr(10),fill);
+		
+		
+			addtexttoarea("{",fill);
+				//text
+				addtexttoarea("\"id\":" & 1,fill);addtexttoarea(",",fill);
+				addtexttoarea("\"datadef\":" & "\"PaymentMode\"",fill);
+				addtexttoarea("}",fill);	
+	addtexttoarea(chr(13) & chr(10) & "]}",fill);
+	
+	writeareatofile(fill,"PaymentMode.json",0);
+	
+	mtrw = matrowcnt(PMb);
+	counter = 0;
+	setcompany(1,false);
+	setfileonserver(true);
+	addtexttoarea("{\"PaymentModeMatrix\":[" & chr(13) & chr(10),fil);
+	TrHs = true;
+	for (i=0;i<mtrw;i=i+1) begin
+		testf = true;
+		matrowget(PMb,i,PMrw);
+		
+		if(testf)then begin
+			counter = counter+1;
+		
+			if(counter>1666)then begin
+				//TrHs = false;
+			end;
+			if(coma)then begin
+				addtexttoarea("," & chr(13) & chr(10),fil);
+			end;
+			addtexttoarea("{",fil);
+				//text
+				addtexttoarea("\"id\":" & 1,fil);addtexttoarea(",",fil);
+				addtexttoarea("\"fCode\":" & "\"" & NormalizeStrToJsonMy(PMrw.Code) & "\"",fil);addtexttoarea(",",fil);
+				addtexttoarea("\"fComment\":" & "\"" & NormalizeStrToJsonMy(PMrw.Comment) & "\"",fil);addtexttoarea(",",fil);
+				addtexttoarea("\"fAccNr\":" & "\"" & NormalizeStrToJsonMy(PMrw.AccNr) & "\"",fil);addtexttoarea(",",fil);
+				addtexttoarea("\"position\":" & "\"" & counter & "\"",fil);addtexttoarea(",",fil);
+				addtexttoarea("\"recordId\":" & "\"" & counter & "\"",fil);addtexttoarea(",",fil);
+				addtexttoarea("\"datadef\":" & "\"PaymentModeMatrix\"",fil);
+				addtexttoarea("}",fil);	
+				coma = true;	
+		end;
+	end;
+	addtexttoarea(chr(13) & chr(10) & "]}",fil);
+	
+	writeareatofile(fil,"PaymentModeMatrix.json",0);
+	
+return;
+end;
+
+global webpublic procedure WebCreateUsersForImport()
+begin
+	record UserVc Ur;
+	area fill;
+	boolean coma;
+	longint counter;
+	boolean TrHs,testf;
+	
+	counter = 0;
+	setcompany(1,false);
+	setfileonserver(true);
+	addtexttoarea("{\"Users\":[" & chr(13) & chr(10),fill);
+	TrHs = true;
+	while(loopmain(Ur,1,TrHs))begin
+		testf = true;
+		
+		
+		if(testf)then begin
+			counter = counter+1;
+		
+			if(counter>1666)then begin
+				//TrHs = false;
+			end;
+			if(coma)then begin
+				addtexttoarea("," & chr(13) & chr(10),fill);
+			end;
+			addtexttoarea("{",fill);
+				//text
+				addtexttoarea("\"id\":" & counter,fill);addtexttoarea(",",fill);
+				addtexttoarea("\"login\":" & "\"" & NormalizeStrToJsonMy(Ur.Name) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"role\":" & "\"" & NormalizeStrToJsonMy(Ur.AccessGroup) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"defaultAccess\":" & "\"" & NormalizeStrToJsonMy(2) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"datadef\":" & "\"Users\"",fill);
+				addtexttoarea("}",fill);	
+				coma = true;
+			end;		
+		
+	end;
+	addtexttoarea(chr(13) & chr(10) & "]}",fill);
+	
+	writeareatofile(fill,"Users.json",0);
+	
+return;
+end;
+
+
+
 
 global webpublic updating procedure WebDeleteOldRHist()
 begin

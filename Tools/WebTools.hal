@@ -779,7 +779,8 @@ begin
 			addtexttoarea("{",fill);
 				//text
 				addtexttoarea("\"id\":" & counter,fill);addtexttoarea(",",fill);
-				addtexttoarea("\"login\":" & "\"" & NormalizeStrToJsonMy(Ur.Name) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"login\":" & "\"" & NormalizeStrToJsonMy(Ur.Code) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"firstName\":" & "\"" & NormalizeStrToJsonMy(Ur.Name) & "\"",fill);addtexttoarea(",",fill);
 				addtexttoarea("\"role\":" & "\"" & NormalizeStrToJsonMy(Ur.AccessGroup) & "\"",fill);addtexttoarea(",",fill);
 				addtexttoarea("\"defaultAccess\":" & "\"" & NormalizeStrToJsonMy(2) & "\"",fill);addtexttoarea(",",fill);
 				addtexttoarea("\"datadef\":" & "\"Users\"",fill);

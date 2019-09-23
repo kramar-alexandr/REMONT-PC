@@ -836,7 +836,7 @@ begin
 	addtexttoarea(chr(13) & chr(10) & "]}",fill);
 	
 	writeareatofile(fill,"ItemGroups.json",0);
-	
+	setfileonserver(false);
 return;
 end;
 

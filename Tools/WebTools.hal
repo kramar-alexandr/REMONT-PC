@@ -207,7 +207,7 @@ begin
 			counter = counter+1;
 		
 			if(counter>1666)then begin
-				TrHs = false;
+				//TrHs = false;
 			end;
 			if(coma)then begin
 				addtexttoarea("," & chr(13) & chr(10),fill);

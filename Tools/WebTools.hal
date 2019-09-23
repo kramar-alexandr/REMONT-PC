@@ -796,7 +796,49 @@ begin
 return;
 end;
 
-
+global webpublic procedure WebCreateGroupsForImport()
+begin
+	record ITVc ITr;
+	area fill;
+	boolean coma;
+	longint counter;
+	boolean TrHs,testf;
+	
+	counter = 0;
+	setcompany(1,false);
+	setfileonserver(true);
+	addtexttoarea("{\"ItemGroups\":[" & chr(13) & chr(10),fill);
+	TrHs = true;
+	while(loopmain(ITr,1,TrHs))begin
+		testf = true;
+		
+		
+		if(testf)then begin
+			counter = counter+1;
+		
+			if(counter>1666)then begin
+				//TrHs = false;
+			end;
+			if(coma)then begin
+				addtexttoarea("," & chr(13) & chr(10),fill);
+			end;
+			addtexttoarea("{",fill);
+				//text
+				addtexttoarea("\"id\":" & counter,fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fCode\":" & "\"" & NormalizeStrToJsonMy(ITr.Code) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"fComment\":" & "\"" & NormalizeStrToJsonMy(ITr.Comment) & "\"",fill);addtexttoarea(",",fill);
+				addtexttoarea("\"datadef\":" & "\"ItemGroups\"",fill);
+				addtexttoarea("}",fill);	
+				coma = true;
+			end;		
+		
+	end;
+	addtexttoarea(chr(13) & chr(10) & "]}",fill);
+	
+	writeareatofile(fill,"ItemGroups.json",0);
+	
+return;
+end;
 
 
 global webpublic updating procedure WebDeleteOldRHist()

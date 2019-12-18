@@ -76,8 +76,9 @@ begin
 				outstring(tabs[6],0,"Оповещение",false);
 				outstring(tabs[7],0,"Клиент",false);
 				outstring(tabs[8],0,"К оплате",false);
-				outstring(tabs[9],0,"Долг",false);
-				outstring(tabs[10],0,"Точка приёма",false);
+				outstring(tabs[9],0,"Оплачено",false);
+				outstring(tabs[10],0,"Долг",false);
+				outstring(tabs[11],0,"Точка приёма",false);
 			endformat;
 		end;
 		
@@ -175,21 +176,6 @@ begin
 												//outstring(tabs[5],0,SVOr.PlanShipDate,false);
 												outstring(tabs[6],0,SVOr.FastCash + SVOr.FastPMBN + SVOr.FastTerm,false);
 											endformat;
-										end else begin
-											StartFormat(15);
-												outstring(tabs[0],"DblSVOVcSer",aSerials[i],false);
-												outstring(tabs[1],0,SVOrw.Spec,false);
-												outstring(tabs[7],0,SVOrw.NewSerialNr,false);
-												outstring(tabs[2],0,vSerLoc[aSerials[i]],false);
-												outstring(tabs[3],0,SVOr.StatusText,false);
-												outstring(tabs[4],0,SVOr.GetItemDate,false);
-												outstring(tabs[5],0,SVOr.PlanShipDate,false);
-												outstring(tabs[6],0,SVOr.CallStatus,false);
-												outstring(tabs[7],0,SVOr.Addr0,false);
-												outstring(tabs[8],0,SVOr.WSCost,false);
-												outstring(tabs[9],0,dolg,false);
-												outstring(tabs[10],0,SGr.SGroupName,false);
-											endformat;
 										end;
 										dolg = blankval;
 										dolg = SVOr.WSCost - (SVOr.FastCash + SVOr.FastPMBN + SVOr.FastTerm);
@@ -214,8 +200,9 @@ begin
 												outstring(tabs[6],0,SVOr.CallStatus,false);
 												outstring(tabs[7],0,SVOr.Addr0,false);
 												outstring(tabs[8],0,SVOr.WSCost,false);
-												outstring(tabs[9],0,dolg,false);
-												outstring(tabs[10],0,SGr.SGroupName,false);
+												outstring(tabs[9],0,SVOr.FastCash + SVOr.FastPMBN + SVOr.FastTerm,false);
+												outstring(tabs[10],0,dolg,false);
+												outstring(tabs[11],0,SGr.SGroupName,false);
 											endformat;
 										end;
 										

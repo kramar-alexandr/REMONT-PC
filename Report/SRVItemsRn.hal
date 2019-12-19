@@ -79,6 +79,8 @@ begin
 				outstring(tabs[9],0,"Оплачено",false);
 				outstring(tabs[10],0,"Долг",false);
 				outstring(tabs[11],0,"Точка приёма",false);
+				outstring(tabs[12],0,"Дата приема",false);
+				outstring(tabs[13],0,"Дата готовности",false);
 			endformat;
 		end;
 		
@@ -203,6 +205,8 @@ begin
 												outstring(tabs[9],0,SVOr.FastCash + SVOr.FastPMBN + SVOr.FastTerm,false);
 												outstring(tabs[10],0,dolg,false);
 												outstring(tabs[11],0,SGr.SGroupName,false);
+												outstring(tabs[12],0,SVOr.GetItemDate,false);
+												outstring(tabs[13],0,SVOr.PlanShipDate,false);
 											endformat;
 										end;
 										

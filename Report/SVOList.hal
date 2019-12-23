@@ -883,9 +883,6 @@ begin
 	
 	
 	StartReportNoHeaderJob("Статистика предварительных заказов");
-		USr.Code = CurrentUser;
-		readfirstmain(USr,1,true);
-		
 		
 		startformat(15);
 			outstring(0,0,"Период:",false);

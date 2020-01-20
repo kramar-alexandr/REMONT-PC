@@ -2038,6 +2038,13 @@ real h,v,vs;
     //EditField(h,v+=16,150,"Склад",Normal,f2,false,LocationSClass);
     EditField(h,v+=16,150,"Мастер",Normal,f3,false,UserSClass);
     EditField(h,v+=16,150,"Приемщик",Normal,f4,false,UserSClass);
+		v = v + 16;
+		ButtonFrame(h,v+=16,140,3,"Гарантия");
+		RadioButton(h,v,0,0,"Все",flags[4]);
+    RadioButton(h,v+=16,1,0,"Гарантийные",flags[4]);
+    RadioButton(h,v+=16,2,0,"Негарантийные",flags[4]);
+    v = v + 16;
+		
 		CheckBox(h,v+=16,0,"Статистика Binotel",flags[0]);
 		CheckBox(h,v+=16,0,"Включая ремонты KIVI",flags[1]);
 		CheckBox(h,v+=16,0,"Только ремонты KIVI",flags[2]);

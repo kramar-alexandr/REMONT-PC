@@ -340,7 +340,7 @@ begin
 	array string 255 atags;
 	vector string 50 asvosg,svocf7,svoserman,svoinsp; 
 	vector val svowscost;
-	Integer pos;
+	Integer pos,isgaranty;
 	string 255 tstr;
 	
 	while(loopmain(User,1,true))begin
@@ -616,7 +616,14 @@ begin
 															filter = true;
 															enginer = "";
 															cnt=1;
+															isgaranty = 0;
 															while(ReadRecordLink(IVr,cnt,WSr,RLr)) begin
+																if(WSr.Garanty=="ÑÄ")then begin
+																	isgaranty = 1;
+																end;
+																if(WSr.Garanty=="çÖí")then begin
+																	isgaranty = 2;
+																end;
 																if(nonblank(WSr.EMCode))then begin
 																	If(WSr.EMCode!=IVr.SalesMan) then begin
 																		IVr.SalesMan = WSr.EMCode;
@@ -633,6 +640,9 @@ begin
 															if(nonblank(RepSpec.f1) and RepSpec.f1!=SVOr.SalesGroup)then begin filter = false; end;
 															if(nonblank(RepSpec.f3) and RepSpec.f3!=enginer)then begin filter = false; end;
 															if(nonblank(RepSpec.f4) and RepSpec.f4!=SVOr.CustomField7)then begin filter = false; end;
+															if(RepSpec.flags[4]==1 and isgaranty!=1)then begin filter = false; end;
+															if(RepSpec.flags[4]==2 and isgaranty!=2)then begin filter = false; end;
+															
 															
 															if(filter)then begin
 																ivretsum[IVr.SVONr] = ivretsum[IVr.SVONr] - IPrw.InvVal;
@@ -791,7 +801,14 @@ begin
 						if(testf)then begin
 							enginer = "";
 							cnt=1;
+							isgaranty = 0;
 							while(ReadRecordLink(IVr,cnt,WSr,RLr)) begin
+								if(WSr.Garanty=="ÑÄ")then begin
+									isgaranty = 1;
+								end;
+								if(WSr.Garanty=="çÖí")then begin
+									isgaranty = 2;
+								end;
 								if(nonblank(WSr.EMCode))then begin
 									If(WSr.EMCode!=IVr.SalesMan) then begin
 										IVr.SalesMan = WSr.EMCode;
@@ -809,6 +826,9 @@ begin
 							if(nonblank(RepSpec.f1) and RepSpec.f1!=SVOr.SalesGroup)then begin filter = false; end;
 							if(nonblank(RepSpec.f3) and RepSpec.f3!=enginer)then begin filter = false; end;
 							if(nonblank(RepSpec.f4) and RepSpec.f4!=SVOr.CustomField7)then begin filter = false; end;
+							if(RepSpec.flags[4]==1 and isgaranty!=1)then begin filter = false; end;
+							if(RepSpec.flags[4]==2 and isgaranty!=2)then begin filter = false; end;
+															
 							testf = filter;
 						
 							if(testf)then begin
@@ -1210,7 +1230,14 @@ begin
 					
 						enginer = "";
 						cnt=1;
+						isgaranty = 0;
 						while(ReadRecordLink(IVr,cnt,WSr,RLr)) begin
+							if(WSr.Garanty=="ÑÄ")then begin
+								isgaranty = 1;
+							end;
+							if(WSr.Garanty=="çÖí")then begin
+								isgaranty = 2;
+							end;
 							if(nonblank(WSr.EMCode))then begin
 								If(WSr.EMCode!=IVr.SalesMan) then begin
 									IVr.SalesMan = WSr.EMCode;
@@ -1232,7 +1259,10 @@ begin
 							if(nonblank(RepSpec.f1) and RepSpec.f1!=SVOr.SalesGroup)then begin filter = false; end;
 							if(nonblank(RepSpec.f3) and RepSpec.f3!=enginer)then begin filter = false; end;
 							if(nonblank(RepSpec.f4) and RepSpec.f4!=SVOr.CustomField7)then begin filter = false; end;
-						
+							if(RepSpec.flags[4]==1 and isgaranty!=1)then begin filter = false; end;
+							if(RepSpec.flags[4]==2 and isgaranty!=2)then begin filter = false; end;
+							
+							
 							testf = filter;
 							if(testf)then begin
 								if(vCuExist[SVOr.CustCode]==false)then begin
@@ -1598,7 +1628,14 @@ begin
 					
 						enginer = "";
 						cnt=1;
+						isgaranty = 0;
 						while(ReadRecordLink(IVr,cnt,WSr,RLr)) begin
+							if(WSr.Garanty=="ÑÄ")then begin
+								isgaranty = 1;
+							end;
+							if(WSr.Garanty=="çÖí")then begin
+								isgaranty = 2;
+							end;
 							if(nonblank(WSr.EMCode))then begin
 								If(WSr.EMCode!=IVr.SalesMan) then begin
 									IVr.SalesMan = WSr.EMCode;
@@ -1619,7 +1656,9 @@ begin
 							if(nonblank(RepSpec.f1) and RepSpec.f1!=SVOr.SalesGroup)then begin filter = false; end;
 							if(nonblank(RepSpec.f3) and RepSpec.f3!=enginer)then begin filter = false; end;
 							if(nonblank(RepSpec.f4) and RepSpec.f4!=SVOr.CustomField7)then begin filter = false; end;
-						
+							if(RepSpec.flags[4]==1 and isgaranty!=1)then begin filter = false; end;
+							if(RepSpec.flags[4]==2 and isgaranty!=2)then begin filter = false; end;
+							
 							testf = filter;
 						
 							if(testf)then begin

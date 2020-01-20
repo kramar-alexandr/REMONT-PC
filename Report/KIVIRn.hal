@@ -212,6 +212,8 @@ begin
 					wsnr = 1;
 					while (ReadRecordLink(IVr,wsnr,WSr,RLr)) begin
 						if(RepSpec.flags[0]==0 and WSr.Garanty=="ÑÄ")then begin testf = true; end;
+						if(RepSpec.flags[0]==1)then begin testf = true; end;
+						if(RepSpec.flags[0]==2 and WSr.Garanty=="çÖí")then begin testf = true; end;
 						wsnr = wsnr + 1;
 					end;
 				end;
@@ -254,7 +256,8 @@ begin
 					if(IVr.OKFlag==0)then begin testf1 = false; end;
 					wsnr = 1;
 					while (ReadRecordLink(IVr,wsnr,WSr,RLr)) begin
-						if(RepSpec.flags[0]==0 and WSr.Garanty!="ÑÄ")then begin testf1 = false; logtext(0,SVOr.SerNr); end;
+						if(RepSpec.flags[0]==0 and WSr.Garanty!="ÑÄ")then begin testf1 = false; end;
+						if(RepSpec.flags[0]==2 and WSr.Garanty=="ÑÄ")then begin testf1 = false; end;
 						wsnr = wsnr + 1;
 					end;
 					if(testf1)then begin

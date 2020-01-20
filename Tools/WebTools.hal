@@ -863,3 +863,122 @@ begin
 
 return;
 end;
+
+global webpublic procedure WebCreateTRVcCSV()
+begin
+	record TRVc TRr;
+	row TRVc TRrw;
+	area aheader,amatrix;
+	boolean coma;
+	longint headercounter,matrixcounter;
+	boolean TrHs,testf;
+	integer i,rwcnt;
+	string 100 regname;
+	
+	setcompany(1,false);
+	setfileonserver(true);
+	addtexttoarea("\"id\"|\"fNumber\"|\"fRegDate\"|\"fComment\"|\"fTransDate\"|\"fSign\"|\"fDSum\"|\"fCSum\"|\"fDiffVal\"|\"fRefStr\"|\"fXMainf\"|\"fIntYc\"|\"fXBalf\"|\"fExpf\"|\"",aheader);
+	addtexttoarea("fExportedFlag\"|\"fDSum2\"|\"fCSum2\"|\"fDiff2Val\"|\"fLastChangeDate\"|\"fFileName\"|\"fTransNr\"|\"fSeqNr\"|\"fRegTime\"|\"fChatId\"|\"createdAt\"|\"updatedAt\"|\"_search__fulltext\"" & chr(13) & chr(10),aheader);
+	addtexttoarea("\"id\"|\"fStp\"|\"fOvst\"|\"fAccNumber\"|\"fObjects\"|\"fDebVal\"|\"fCredVal\"|\"fVATCode\"|\"fQty\"|\"fCurDebVal\"|\"fCurCredVal\"|\"fToRateB1\"|\"fComment\"|\"fCurncy\"",amatrix);
+	addtexttoarea("|\"fBRSerNr\"|\"fBRRowNr\"|\"fNomVal\"|\"fCompCode\"|\"fTyp\"|\"fSerNr\"|\"fDueDate\"|\"fCorspSer\"|\"fUpdDate\"|\"fSign\"|\"fOldTransDate\"|\"fCorrNr\"|\"fCorrDate\"|\"fCorrYc\"|\"fReconsf\"|\"fFrRate\"",amatrix);
+	addtexttoarea("|\"fToRateB2\"|\"fDebVal2\"|\"fCredVal2\"|\"fBaseRate1\"|\"fBaseRate2\"|\"fACShort\"|\"fReconCode\"|\"fTAccNumber\"|\"fTFromFileName\"|\"fTFromCode\"|\"fSAFTType\"|\"fReconDate\"|\"fExtraComment\"|\"fRvrsVATCode\"|\"fUIDRows\"|\"recordId\"|\"position\"|\"createdAt\"|\"updatedAt\"" & chr(13) & chr(10),amatrix);
+	
+	matrixcounter = 1;
+	headercounter = 1;
+	
+	TrHs = true;
+	while(loopmain(TRr,1,TrHs))begin
+		testf = true;
+		
+		rwcnt = matrowcnt(TRr);
+		for(i=0;i<rwcnt;i=i+1)begin
+			matrowget(TRr,i,TRrw);
+			if(TRrw.stp==1 and TRrw.ovst==0 and nonblank(TRrw.AccNumber))then begin
+				addtexttoarea("" & matrixcounter & "|",amatrix);
+				addtexttoarea("" & TRrw.stp & "|",amatrix);
+				addtexttoarea("" & TRrw.ovst & "|",amatrix);
+				addtexttoarea("\"" & TRrw.AccNumber & "\"|",amatrix);
+				addtexttoarea("\"" & TRrw.Objects & "\"|",amatrix);
+				addtexttoarea("" & TRrw.DebVal & "|",amatrix);
+				addtexttoarea("" & TRrw.CredVal & "|",amatrix);
+				addtexttoarea("\"" & TRrw.VATCode & "\"|",amatrix);
+				addtexttoarea("" & TRrw.Qty & "|",amatrix);
+				addtexttoarea("" & TRrw.CurDebVal & "|",amatrix);
+				addtexttoarea("" & TRrw.CurCredVal & "|",amatrix);
+				addtexttoarea("" & TRrw.ToRateB1 & "|",amatrix);
+				addtexttoarea("\"" & TRrw.Comment & "\"|",amatrix);
+				addtexttoarea("\"" & TRrw.Curncy & "\"|",amatrix);
+				addtexttoarea("" & TRrw.BRSerNr & "|",amatrix);
+				addtexttoarea("" & TRrw.BRRowNr & "|",amatrix);
+				addtexttoarea("" & TRrw.NomVal & "|",amatrix);
+				addtexttoarea("\"" & TRrw.CompCode & "\"|",amatrix);
+				addtexttoarea("" & TRrw.Typ & "|",amatrix);
+				addtexttoarea("" & TRrw.SerNr & "|",amatrix);
+				addtexttoarea("\"" & TRrw.DueDate & "\"|",amatrix);
+				addtexttoarea("\"" & TRrw.CorspSer & "\"|",amatrix);
+				addtexttoarea("\"" & TRrw.UpdDate & "\"|",amatrix);
+				addtexttoarea("\"" & TRrw.Sign & "\"|",amatrix);
+				addtexttoarea("\"" & TRrw.OldTransDate & "\"|",amatrix);
+				addtexttoarea("\"" & TRrw.CorrNr & "\"|",amatrix);
+				addtexttoarea("\"" & TRrw.CorrDate & "\"|",amatrix);
+				addtexttoarea("\"" & TRrw.CorrYc & "\"|",amatrix);
+				addtexttoarea("\"" & TRrw.Reconsf & "\"|",amatrix);
+				addtexttoarea("" & TRrw.FrRate & "|",amatrix);
+				addtexttoarea("" & TRrw.ToRateB2 & "|",amatrix);
+				addtexttoarea("" & TRrw.DebVal2 & "|",amatrix);
+				addtexttoarea("" & TRrw.CredVal2 & "|",amatrix);
+				addtexttoarea("" & TRrw.BaseRate1 & "|",amatrix);
+				addtexttoarea("" & TRrw.BaseRate2 & "|",amatrix);
+				addtexttoarea("\"" & TRrw.ACShort & "\"|",amatrix);
+				addtexttoarea("\"" & TRrw.ReconCode & "\"|",amatrix);
+				addtexttoarea("\"" & TRrw.TAccNumber & "\"|",amatrix);
+				addtexttoarea("\"" & TRrw.TFromFileName & "\"|",amatrix);
+				addtexttoarea("\"" & TRrw.TFromCode & "\"|",amatrix);
+				addtexttoarea("\"" & TRrw.SAFTType & "\"|",amatrix);
+				addtexttoarea("\"" & TRrw.ReconDate & "\"|",amatrix);
+				addtexttoarea("\"" & TRrw.ExtraComment & "\"|",amatrix);
+				addtexttoarea("\"" & TRrw.RvrsVATCode & "\"|",amatrix);
+				addtexttoarea("\"\"|",amatrix);
+				addtexttoarea("" & headercounter & "|",amatrix);
+				addtexttoarea("" & i & "|",amatrix);
+				addtexttoarea("\"\"|",amatrix);
+				addtexttoarea("\"\"|",amatrix);
+				addtexttoarea(chr(13) & chr(10),amatrix);
+				matrixcounter = matrixcounter + 1;
+			end;
+		end;
+		
+		switch(TRr.IntYc)begin
+			case"":regname = "";
+		end;
+		
+		
+		addtexttoarea("" & headercounter & "|",aheader)
+		addtexttoarea("" & TRr.Number & "|",aheader)
+		addtexttoarea("\"" & TRr.RegDate & "\"|",aheader)
+		addtexttoarea("\"" & TRr.Comment & "\"|",aheader)
+		addtexttoarea("\"" & TRr.TransDate & "\"|",aheader)
+		addtexttoarea("\"" & TRr.Sign & "\"|",aheader)
+		addtexttoarea("" & TRr.DSum & "|",aheader)
+		addtexttoarea("" & TRr.CSum & "|",aheader)
+		addtexttoarea("" & TRr.DiffVal & "|",aheader)
+		addtexttoarea("\"" & TRr.RefStr & "\"|\"\"|",aheader)
+		addtexttoarea("\"" & regname & "\"|\"\"|",aheader)
+		addtexttoarea("\"" & TRr.Expf & "\"|",aheader)
+		addtexttoarea("" & TRr.ExportedFlag &  "|",aheader)
+		addtexttoarea("" & TRr.DSum2 & "|",aheader)
+		addtexttoarea("" & TRr.CSum2 & "|",aheader)
+		addtexttoarea("" & TRr.Diff2Val & "|",aheader)
+		addtexttoarea("\"" & TRr.LastChangeDate & "\"|",aheader)
+		addtexttoarea("\"" & TRr.FileName & "\"|",aheader)
+		addtexttoarea("" & TRr.TransNr & "|",aheader)
+		addtexttoarea("" & TRr.SeqNr & "|",aheader)
+		addtexttoarea("\"" & TRr.RegTime & "\"|\"\"|\"\"|\"\"|\"\"",aheader);
+		addtexttoarea(chr(13) & chr(10),aheader);
+		headercounter = headercounter + 1;
+	end;
+	writeareatofile(aheader,"Transactions.csv",0);
+	writeareatofile(amatrix,"TransactionsMatrix.csv",0);
+	setfileonserver(false);
+return;
+end;

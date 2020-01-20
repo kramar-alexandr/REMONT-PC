@@ -2056,11 +2056,14 @@ real h,v,vs;
     v = 40;
     PeriodField(h,v,"Период");
     
+		v=v+16;
+		//CheckBox(h,v+=40,0,"Учитывать негарантийные ремонты",flags[0]);
+		ButtonFrame(h,v+=16,140,3,"Гарантия");
+    RadioButton(h,v,0,0,"Гарантийные",flags[0]);
+    RadioButton(h,v+=16,2,0,"Негарантийные",flags[0]);
+    RadioButton(h,v+=16,1,0,"Все",flags[0]);
 		
-		CheckBox(h,v+=40,0,"Учитывать негарантийные ремонты",flags[0]);
-		
-		
-		v=130;
+		v=v+46;
 	  ButtonFrame(h,v,123,13,"Статус");  
 	  CheckBox(h,v,0,"Предварит.",flags[13]);//9
 	  CheckBox(h,v+=16,0,"В ожидании",flags[4]);//0
@@ -2089,10 +2092,14 @@ real h,v,vs;
     PeriodField(h,v,"Период");
 		
 		
-		CheckBox(h,v+=40,0,"Учитывать негарантийные ремонты",flags[0]);
+		v=v+16;
+		//CheckBox(h,v+=40,0,"Учитывать негарантийные ремонты",flags[0]);
+		ButtonFrame(h,v+=16,140,3,"Гарантия");
+    RadioButton(h,v,0,0,"Гарантийные",flags[0]);
+    RadioButton(h,v+=16,2,0,"Негарантийные",flags[0]);
+    RadioButton(h,v+=16,1,0,"Все",flags[0]);
 		
-    
-		v=130;
+		v=v+46;
 	  ButtonFrame(h,v,123,13,"Статус");  
 	  CheckBox(h,v,0,"Предварит.",flags[13]);//9
 	  CheckBox(h,v+=16,0,"В ожидании",flags[4]);//0

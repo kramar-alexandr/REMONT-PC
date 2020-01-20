@@ -621,7 +621,7 @@ begin
 																if(WSr.Garanty=="„€")then begin
 																	isgaranty = 1;
 																end;
-																if(WSr.Garanty=="…’")then begin
+																if(WSr.Garanty=="…’" or blank(WSr.Garanty))then begin
 																	isgaranty = 2;
 																end;
 																if(nonblank(WSr.EMCode))then begin
@@ -806,7 +806,7 @@ begin
 								if(WSr.Garanty=="„€")then begin
 									isgaranty = 1;
 								end;
-								if(WSr.Garanty=="…’")then begin
+								if(WSr.Garanty=="…’" or blank(WSr.Garanty))then begin
 									isgaranty = 2;
 								end;
 								if(nonblank(WSr.EMCode))then begin
@@ -1235,7 +1235,7 @@ begin
 							if(WSr.Garanty=="„€")then begin
 								isgaranty = 1;
 							end;
-							if(WSr.Garanty=="…’")then begin
+							if(WSr.Garanty=="…’" or blank(WSr.Garanty))then begin
 								isgaranty = 2;
 							end;
 							if(nonblank(WSr.EMCode))then begin
@@ -1633,7 +1633,7 @@ begin
 							if(WSr.Garanty=="„€")then begin
 								isgaranty = 1;
 							end;
-							if(WSr.Garanty=="…’")then begin
+							if(WSr.Garanty=="…’" or blank(WSr.Garanty))then begin
 								isgaranty = 2;
 							end;
 							if(nonblank(WSr.EMCode))then begin

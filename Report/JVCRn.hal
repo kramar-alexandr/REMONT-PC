@@ -185,7 +185,7 @@ begin
 		end;
 		if(SVOr.RegDate>ed)then begin TrHs = false; testf = false; end;
 		if(SVOr.RegDate<sd)then begin testf = false; end;
-		if(testf and RepSpec.flags[0]==0)then begin
+		if(testf and RepSpec.flags[0]==0 or  RepSpec.flags[0]==2)then begin
 			testf = false;
 			resetloop(IVr);
 			IVr.SVONr = SVOr.SerNr;
@@ -198,6 +198,8 @@ begin
 					wsnr = 1;
 					while (ReadRecordLink(IVr,wsnr,WSr,RLr)) begin
 						if(RepSpec.flags[0]==0 and WSr.Garanty=="„€")then begin testf = true; end;
+						if(RepSpec.flags[0]==1)then begin testf = true; end;
+						if(RepSpec.flags[0]==2 and WSr.Garanty=="…’")then begin testf = true; end;
 						wsnr = wsnr + 1;
 					end;
 				end;
@@ -239,6 +241,12 @@ begin
 					testf1 = true;
 					if(IVr.SVONr!=SVOr.SerNr)then begin testf1 = false; TrHs1 = false;  end;
 					if(IVr.OKFlag==0)then begin testf1 = false; end;
+					wsnr = 1;
+					while (ReadRecordLink(IVr,wsnr,WSr,RLr)) begin
+						if(RepSpec.flags[0]==0 and WSr.Garanty!="„€")then begin testf1 = false; end;
+						if(RepSpec.flags[0]==2 and WSr.Garanty=="„€")then begin testf1 = false; end;
+						wsnr = wsnr + 1;
+					end;
 					
 					if(testf1)then begin
 						ivmtrw = matrowcnt(IVr);

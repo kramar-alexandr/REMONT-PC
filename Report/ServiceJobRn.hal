@@ -1,6 +1,7 @@
 external function LongInt DateDiff(Date,Date);
 external function LongInt CountWorkingDays(Date,Date,string,string);
 external function boolean KIVIFound(record SVOVc);
+external function boolean JVCFound(record SVOVc);
 external procedure ExtractObjWithSeparator(string,string,Boolean,var Integer,var string);
 
 SetLangMode(LangRussian,"RUS",0);
@@ -405,10 +406,10 @@ begin
 												svoinsp[IVr.SVONr] = SVOr.Inspector;
 												svowscost[IVr.SVONr] = SVOr.WSCost;
 												if(RepSpec.flags[1]==0)then begin
-													svoiskivi[IVr.SVONr] = KIVIFound(SVOr);
+													svoiskivi[IVr.SVONr] = KIVIFound(SVOr) or JVCFound(SVOr);
 												end;
 												if(RepSpec.flags[2]==1)then begin
-													svoiskivi[IVr.SVONr] = !KIVIFound(SVOr);
+													svoiskivi[IVr.SVONr] = !(KIVIFound(SVOr) or JVCFound(SVOr));
 												end;
 												IF(nonblankdate(SVOr.RegDate) and SVOr.RegDate<=ed and SVOr.RegDate>=sd)THEN BEGIN
 													vsvodolg[IVr.SVONr] = TRUE;
@@ -464,10 +465,10 @@ begin
 															svoinsp[IPrw.CUPNr] = SVOr.Inspector;
 															svowscost[IPrw.CUPNr] = SVOr.WSCost;
 															if(RepSpec.flags[1]==0)then begin
-																svoiskivi[IPrw.CUPNr] = KIVIFound(SVOr);
+																svoiskivi[IPrw.CUPNr] = KIVIFound(SVOr) or JVCFound(SVOr);
 															end;
 															if(RepSpec.flags[2]==1)then begin
-																svoiskivi[IPrw.CUPNr] = !KIVIFound(SVOr);
+																svoiskivi[IPrw.CUPNr] = !(KIVIFound(SVOr) or JVCFound(SVOr));
 															end;
 															IF(nonblankdate(SVOr.RegDate) and SVOr.RegDate<=ed and SVOr.RegDate>=sd)THEN BEGIN
 																vsvodolg[IPrw.CUPNr] = TRUE;
@@ -544,10 +545,10 @@ begin
 															svoinsp[IVr.SVONr] = SVOr.Inspector;
 															svowscost[IVr.SVONr] = SVOr.WSCost;
 															if(RepSpec.flags[1]==0)then begin
-																svoiskivi[IVr.SVONr] = KIVIFound(SVOr);
+																svoiskivi[IVr.SVONr] = KIVIFound(SVOr) or JVCFound(SVOr);
 															end;
 															if(RepSpec.flags[2]==1)then begin
-																svoiskivi[IVr.SVONr] = !KIVIFound(SVOr);
+																svoiskivi[IVr.SVONr] = !(KIVIFound(SVOr) or JVCFound(SVOr));
 															end;
 															IF(nonblankdate(SVOr.RegDate) and SVOr.RegDate<=ed and SVOr.RegDate>=sd)THEN BEGIN
 																vsvodolg[IVr.SVONr] = TRUE;
@@ -1992,12 +1993,12 @@ begin
 			
 			
 			if(RepSpec.flags[1]==0)then begin
-				if(KIVIFound(SVOr))then begin
+				if(KIVIFound(SVOr) or JVCFound(SVOr))then begin
 					testf = false;
 				end;
 			end;
 			if(RepSpec.flags[2]==1)then begin
-				if(KIVIFound(SVOr)==false)then begin
+				if((KIVIFound(SVOr) or JVCFound(SVOr))==false)then begin
 					testf = false;
 				end;
 			end;

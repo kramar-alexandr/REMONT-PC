@@ -760,7 +760,7 @@ begin
 	
 	node = "requestType";
 	if(JSONNodeExists(jobj,node))then begin
-		if(JSONGet(jobj,node)=="gettingCallSettings")then begin
+		if(JSONGet(jobj,node)=="apiCallSettings")then begin
 			if(JSONNodeExists(jobj,"externalNumber"))then begin
 				inphone = JSONGet(jobj,"externalNumber");
 				CUr.Code = inphone;

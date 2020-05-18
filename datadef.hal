@@ -106,7 +106,8 @@ end;
 begin 
   RecordAddBegin(CUVc,"CUVc_Custom");
     // record field "Partner" already added in 8.3
-    RecordField(IsPartner,M4Mark,0,0); 
+    RecordField(IsPartner,M4Mark,0,0);
+    RecordField(ERPJSuuid,M4Str,255,0); // Edit ************************** BPI Ukraine - KramarAlexandr - 01, 18 05 2020 y. at 10:38:50 PM
   EndRecordAdd; 
   
   RecordAddBegin(ItemHistVc,"ItemHistVc_Custom");
@@ -362,7 +363,10 @@ begin
     RecordField(KIVIAddr,M4Str,255,0);    
 		RecordField(FinishDate,M4Date,0,0); // Edit ************************ Tuesday, 30 January 2018 11:55
 	  RecordField(LoyCardCode,M4Code,50,0);// Edit ************************** BPI Ukraine - KramarAlexandr - 04, 15 03 2018 y. о 18:45:39
-
+		
+		RecordField(SendToPartner,M4Code,50,0);// Edit ************************** BPI Ukraine - KramarAlexandr - 01, 18 05 2020 y. at 10:37:52 PM
+		RecordField(SendedToPartner,M4Mark,0,0);// Edit ************************** BPI Ukraine - KramarAlexandr - 01, 18 05 2020 y. at 10:38:16 PM
+    
     ArrayField(NewSerialNr,M4Str,60,0);// Edit ************************** Friday, 9 June 2017 09:29:41
     
     SubsetKeyBegin2(RegDate);// Edit ************************** Wednesday, 15 February 2017 19:31:45

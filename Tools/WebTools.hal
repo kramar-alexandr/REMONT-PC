@@ -1,3 +1,5 @@
+external function boolean MySendWebRequest(string,integer,longint,boolean,string,string,string,string,boolean,area,var area,integer);
+
 SetLangMode(LangRussian,"RUS",0);
 
 global function string 255 NormalizeStrToJson (string Str)
@@ -980,5 +982,51 @@ begin
 	writeareatofile(aheader,"Transactions.csv",0);
 	writeareatofile(amatrix,"TransactionsMatrix.csv",0);
 	setfileonserver(false);
+return;
+end;
+
+procedure addParamToJSONArea(string param, string value, var area req)
+begin
+
+AddTextToArea("\"" & param & "\":" &  "\"" & value & "\",",req);
+
+return;
+end;
+
+procedure delLastComaInArea(var area req)
+begin
+	longint alen;
+	string 1 lastsymb;
+	
+	alen = getarealength(req);
+	lastsymb = getstringfromarea(req,alen-1,1);
+	if(lastsymb==",")then begin
+		getareafromarea(req,0,alen-1,req);
+	end;
+
+return;
+end;
+
+global updating procedure SendSVOToERPJs(var record SVOVc SVOr)
+begin
+	area req,reply;
+	string 150 host,page;
+	
+	
+	AddTextToArea("{",req);
+		
+	addParamToJSONArea("SerNr",SVOr.SerNr,req);
+	addParamToJSONArea("CustCode",SVOr.CustCode,req);
+	addParamToJSONArea("Phone",SVOr.Kontinfo1,req);
+	addParamToJSONArea("Phone2",SVOr.Phone2,req);
+	delLastComaInArea(req);
+	AddTextToArea("}",req);
+	//https://s.erpjs.biz/service4/web/getJSONToCreate
+	writeareatofile(req,"ERPJSSentRequest.txt",0);
+	host = "s.erpjs.biz";
+	page = "/service4/web/getJSONToCreate";
+	MySendWebRequest(host,443,-1,true,"POST",page,"application/json","",false,req,reply,5);
+	
+
 return;
 end;

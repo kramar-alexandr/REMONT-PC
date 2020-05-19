@@ -997,11 +997,14 @@ procedure delLastComaInArea(var area req)
 begin
 	longint alen;
 	string 1 lastsymb;
+	area tmpar;
 	
 	alen = getarealength(req);
 	lastsymb = getstringfromarea(req,alen-1,1);
 	if(lastsymb==",")then begin
-		getareafromarea(req,0,alen-1,req);
+		getareafromarea(req,0,alen-1,tmpar);
+		setareazerosize(req);
+		getareafromarea(tmpar,0,getarealength(tmpar),req);
 	end;
 
 return;
@@ -1026,7 +1029,7 @@ begin
 	host = "s.erpjs.biz";
 	page = "/service4/web/getJSONToCreate";
 	MySendWebRequest(host,443,-1,true,"POST",page,"application/json","",false,req,reply,5);
-	
+	writeareatofile(reply,"ERPJSSentReply.txt",0);
 
 return;
 end;

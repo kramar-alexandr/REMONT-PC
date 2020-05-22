@@ -459,34 +459,36 @@ begin
   RadioButton(h+595,vm+=16,11,0,"Вернули на дораб.",OrderStatus);//Edit-------------------Vitalii 15:56 21.09.2017
   RadioButton(h+595,vm+=16,6,0,"Отказ",OrderStatus);
   
-    
+  v=vm+20;
   vm = 36;//vm + 32;
   
   //EditField(h+350,vm+20,100,"К оплате",ViewOnly,WSCost,false,0);
   
   CheckBox(-50,16,0,"Завер.",DoneMark);
-  statictext(50,240,"_",false);// Edit ************************** Thursday, 24 November 2016 11:54:03!!!!!!!!!!!!!!!!!!!!!!!!!!!!!SIZEEEEEE
-  TileButton(1,"Дата");
-  TileButton(2,"Товары");
+  //statictext(50,240,"_",false);// Edit ************************** Thursday, 24 November 2016 11:54:03!!!!!!!!!!!!!!!!!!!!!!!!!!!!!SIZEEEEEE
+  //TileButton(1,"Дата");
+  //TileButton(2,"Товары");
   //TileButton(3,"Валюта");
-  Tile(1,90,false,"1",CustContact);
+  //Tile(1,90,false,"1",CustContact);
 
-  EditField(h1=120,v=vm-20,60,"Дата заказа",mode,TransDate,false,PasteCurDate);
+  EditField(h1=120,v,60,"Дата заказа",mode,TransDate,false,PasteCurDate);
   h2=h2-10;
   EditField(h2,v,60,"Время",mode,RegTime,false,0);// Edit ************************** Friday, 17 December 2010 09:38:48
-  EditField(h2+145,v+40,130,"Конт. лицо",Normal,CustContact,false,ContactSClass);
+  EditField(h2+145,v,130,"Конт. лицо",Normal,CustContact,false,ContactSClass);
   EditField(h1,v+=vs,60,"Дата заверш.диагн.",mode,EndDiagnDate,false,PasteCurDate); //Edit***************************Sasha2,15:40 25.10.2016
   EditField(h2,v,60,"Время",mode,EndDiagnTime,false,0); //Edit***************************Sasha2,15:40 25.10.2016
+	EditField(h2+140,v,60,"Гаран. (мес.)",Normal,GarantyMes,false,0); // Edit **************** Tuesday, 30 January 2018 11:58
   EditField(h1,v+=vs,60,"Дата заверш.рем.",mode,PlanShipDate,false,PasteCurDate);
   EditField(h2,v,60,"Время",mode,DoneTime,false,0);// Edit ************************** Monday, 24 October 2016 17:56:04
+	EditField(h2+140,v,60,"Оконч гарантии",ViewOnly,GarantyToDate,false,0);
   EditField(h1,v+=vs,60,"Дата выдачи",adminMode,RegDate,false,PasteCurDate);
   EditField(h2,v,60,"Время",adminMode,OutTime,false,0);// Edit ************************** Monday, 24 October 2016 17:56:02
-  EditField(h2+140,v,60,"Гаран. (мес.)",Normal,GarantyMes,false,0); // Edit **************** Tuesday, 30 January 2018 11:58
-  EditField(h2+295,v,60,"Оконч гарантии",ViewOnly,GarantyToDate,false,0);
   EditField(h2+500,v,80,"Ориентировочное заверш",Normal,FinishDate,false,PasteCurDate); 
-  /*if(currentuser=="SA")then begin
-		EditField(-200,v,-20,"OldPhone",ViewOnly,OldPhone,false,0);
-  end;*/
+	EditField(h1,v + 20,110,"Отправить партнеру:",Normal,SendToPartner,false,0);
+	checkbox(h2,v + 20,0,"Отправлено",SendedToPartner);
+  if(currentuser=="SA")then begin
+		EditField(h3-60,v,-20,"OldPhone",ViewOnly,OldPhone,false,0);
+  end;
   
   EditField(h3+140,v-40,-20,"Статус оповещения:",Normal,CallStatus,false,CallStatusSClass);
   //vm=vm+20;
@@ -497,25 +499,25 @@ begin
 
   EditField(h3+140,v-20,-20,"Причина отказа:",Normal,RejectReason,false,RejectReason2SClass);
 
-  
-  v=vm-20;
-  halpushbutton(h2+220,v,h2+325,v+50,"FastPaySVODsm","Быстрая оплата");// Edit ************************** Friday, 25 November 2016 11:32:03 
+ 
+  //v=vm-20;
+  halpushbutton(h2+220,v-20,h2+325,v+50,"FastPaySVODsm","Быстрая оплата");// Edit ************************** Friday, 25 November 2016 11:32:03 
   //halpushbutton(h2+220,v+25,h2+325,v+65,"KIVISVODsm","KIVI Реквизиты");// Edit ************************** Friday, 25 November 2016 11:32:03 
 
   EditField(h2+145,v,60, "Наличные",adminMode,FastCash,false,0);
-  EditField(h2+400,v,60, "Предопл.",adminMode,PrepaySum,false,0);
+  EditField(h2+400,v+=20,60, "Предопл.",adminMode,PrepaySum,false,0);
   EditField(h2+510,v,60, "Безнал.",adminMode,FastPMBN,false,0);
-  EditField(h2+145,v+=20,60, "Терминал",adminMode,FastTerm,false,0);
+  EditField(h2+145,v,60, "Терминал",adminMode,FastTerm,false,0);
   //EditField(h2+125,v+=20,60, "PlanShip",Normal,PlanShip,false,0);/////////
   EnterSkip(Math);
   if(windowsmode==1)then begin
-  	Tile(2,260,false,"2",Math);
+  	//Tile(2,260,false,"2",Math);
   end else begin
-  	Tile(2,340,false,"2",Math);
+  	//Tile(2,340,false,"2",Math);
   end;
 
-  v = 24;
-  MatrixBegin(3,v,-50,v+45,-,1);
+  //v = 24;
+  MatrixBegin(3,v + 40,-50,v+75,-,1);
   MatTypedRow(stp);
   Flip(0);
   MatCol(t=1,32,"Устройство",0,ArtCode,false,INUsersSClass);
@@ -536,36 +538,44 @@ begin
   DeleteRowTest;
   EndMatrix;
   vs = 20;
-  v = 18; VTab(-35,v,-16,v+vs,ToolFlip,1,"A");
-  v=v+vs;  VTab(-35,v,-16,v+vs,ToolFlip,2,"B");
-  v = v + 40;
-  checkbox(20,v-20,0,"VIP",VIPStatus);
-  checkbox(60,v-20,0,"Товар от партнера",ItemFrPartner); //Edit***************************Sasha2,14:19 08.12.2015
+	//v = v - 200;
+  //v = 18; 
+	//VTab(-35,v,-16,v+vs,ToolFlip,1,"A");
+  //v=v+vs;  //VTab(-35,v,-16,v+vs,ToolFlip,2,"B");
+  //v = v + 40;
+  checkbox(20,v+=75,0,"VIP",VIPStatus);
+  checkbox(60,v,0,"Товар от партнера",ItemFrPartner); //Edit***************************Sasha2,14:19 08.12.2015
   if(left(CurrentUSer,2)=="SA")then begin
-  	EditField(250,v-20,30,"Доработок",Normal,StatusReturnCnt,false,0);
+  	EditField(250,v,30,"Доработок",Normal,StatusReturnCnt,false,0);
   end else begin
-  	EditField(250,v-20,30,"Доработок",ViewOnly,StatusReturnCnt,false,0);
+  	EditField(250,v,30,"Доработок",ViewOnly,StatusReturnCnt,false,0);
   end;
   
-  CheckBox(290,v-20,0,"Без СМС",NoSMS);
- 	EditField(420,v-20,20,"Пост.Кл.",Normal,CustomField9,false,0);	// Edit ************************** Thursday, 30 June 2016 10:21:49
-  HalPushButton(450,v-20,500,v+15,"ServClientOrderDsm","Отчет");
+  CheckBox(290,v,0,"Без СМС",NoSMS);
+ 	EditField(420,v,20,"Пост.Кл.",Normal,CustomField9,false,0);	// Edit ************************** Thursday, 30 June 2016 10:21:49
+  HalPushButton(450,v,500,v+15,"ServClientOrderDsm","Отчет");
   //if (left(CurrentUser,2)=="SA") then begin //Edit***************************Sasha2,17:33 05.09.2017
   //  EditField(725,v-20,70,"Фамилия (Видно SA)",Normal,Priynato,false,0);
   //end;
+	//v=v-100;
 	if(UserCanAction("ViewPersonalData",true)) then begin
-  EditField(590,v-20,-20,"SN Зарегистр.",Normal,CustomField8,false,0);
+  EditField(590,v+=20,-20,"SN Зарегистр.",Normal,CustomField8,false,0);
  	h=110;
  	EditField(h-50,v,200,"ФИО",Normal,Vlastnik,false,0);
  	
  	
-	EditField(500,v,70,"Тел.1",Normal,Kontinfo1,false,0);	
+	EditField(500,v+=20,70,"Тел.1",Normal,Kontinfo1,false,0);	
 	HalPushButton(580,v+3,640,v+15,"CallToClientDsm","Звонок");
 	EditField(680,v,70,"Тел.2",Normal,Phone2,false,0);	
 	HalPushButton(770,v+3,830,v+15,"CallToClient2Dsm","Звонок");
 	
 	EditField(320,v,120,"e-mail",Normal,Kontinfo2,false,0);	
 	EditField(h,v+=vs,300,"Адрес клиента",Normal,Kontinfo3,false,0);
+		if(windowsmode==1)then begin
+  	TextField(h+310,v + 10,-10,150,Math2,0);
+  end else begin
+  	TextField(h+310,v + 10,-10,265,Math2,0);
+  end;
 	end else begin
 		v=v+vs; h=110;
 	end;	
@@ -579,11 +589,6 @@ begin
   EditField(h+180,v,70,"Зар. устройство:",Normal,Zaryadka,false,0);
   EditField(h,v+=vs,300,"Другое:",Normal,Inshe,false,0);
   
-  if(windowsmode==1)then begin
-  	TextField(h+310,105,-10,150,Math2,0);
-  end else begin
-  	TextField(h+310,105,-10,265,Math2,0);
-  end;
   //v=v+10;
   EditField(h,v+=vs,50,"Производитель",Normal,Region,false,ITSClass);
   

@@ -1020,7 +1020,7 @@ begin
 	
 	//https://s.erpjs.biz/service4/web/getJSONToCreate
 	//host = "s.erpjs.biz";
-	host = "127.0.0.1";
+	host = "localhost";
 	page = "/web/getJSONToCreate";
 	//MySendWebRequest(host,443,-1,true,"POST",page,"application/json","",false,req,reply,5);
 	addtexttoarea("POST " & "/web/getJSONToCreate" & chr(13) & chr(10),req);

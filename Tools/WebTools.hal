@@ -1021,11 +1021,14 @@ begin
 	//https://s.erpjs.biz/service4/web/getJSONToCreate
 	host = "s.erpjs.biz";
 	//host = "127.0.0.1";
-	page = "/web/getJSONToCreate";
+	page = "/56b963d8-70d5-4527-a57f-1561ec5d1763/web/getJSONToCreate";
 	//MySendWebRequest(host,443,-1,true,"POST",page,"application/json","",false,req,reply,5);
 	//addtexttoarea("POST " & "/web/getJSONToCreate" & chr(13) & chr(10),req);
  	//addtexttoarea("host: " & host & chr(13) & chr(10),req);
-	addtexttoarea("Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.hY62dZfW2QkxGkrS2p6GGj_AVqGuYRqmXsx4V3SDhyw" & chr(13) & chr(10),req);
+	
+	//addtexttoarea("Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.hY62dZfW2QkxGkrS2p6GGj_AVqGuYRqmXsx4V3SDhyw" & chr(13) & chr(10),req);
+	addtexttoarea("Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1OTAxNTkyMTMsImV4cCI6MTYyMTYwODgxM30.L2VyiZzCVS6R16HiGmLQ62g7mZg3rHmkd_bmw9teaV8" & chr(13) & chr(10),req);
+
 	AddTextToArea("" & chr(13) & chr(10),req);
 	AddTextToArea("{",req);
 		

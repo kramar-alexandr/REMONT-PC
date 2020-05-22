@@ -1020,10 +1020,10 @@ begin
 	
 	//https://s.erpjs.biz/service4/web/getJSONToCreate
 	//host = "s.erpjs.biz";
-	host = "localhost";
-	page = "/web/getJSONToCreate";
+	host = "127.0.0.1";
+	page = "/getJSONToCreate";
 	//MySendWebRequest(host,443,-1,true,"POST",page,"application/json","",false,req,reply,5);
-	addtexttoarea("POST " & "/web/getJSONToCreate" & chr(13) & chr(10),req);
+	addtexttoarea("POST " & "/getJSONToCreate" & chr(13) & chr(10),req);
  	addtexttoarea("host: " & host & chr(13) & chr(10),req);
 	addtexttoarea("Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.hY62dZfW2QkxGkrS2p6GGj_AVqGuYRqmXsx4V3SDhyw" & chr(13) & chr(10),req);
 	AddTextToArea("" & chr(13) & chr(10),req);

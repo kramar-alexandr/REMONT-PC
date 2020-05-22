@@ -108,6 +108,7 @@ begin
     // record field "Partner" already added in 8.3
     RecordField(IsPartner,M4Mark,0,0);
     RecordField(ERPJSuuid,M4Str,255,0); // Edit ************************** BPI Ukraine - KramarAlexandr - 01, 18 05 2020 y. at 10:38:50 PM
+		RecordField(ERPJStoken,M4Str,255,0); // Edit ************************** BPI Ukraine - KramarAlexandr - 01, 18 05 2020 y. at 10:38:50 PM
   EndRecordAdd; 
   
   RecordAddBegin(ItemHistVc,"ItemHistVc_Custom");

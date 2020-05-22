@@ -1022,12 +1022,11 @@ begin
 	if(ReadFirstMain(CUr,1,true)) then begin
 		if(nonblank(CUr.ERPJSuuid) and nonblank(CUr.ERPJStoken) and SVOr.SendedToPartner==0) then begin
 			//https://s.erpjs.biz/service4/web/getJSONToCreate
-			host = "s.erpjs.biz/" & CUr.ERPJSuuid;
+			host = "s.erpjs.biz";
 			//host = "127.0.0.1";
-			page = "/web/getJSONToCreate";
+			page = "/" & CUr.ERPJSuuid & "/web/getJSONToCreate";
 			//MySendWebRequest(host,443,-1,true,"POST",page,"application/json","",false,req,reply,5);
-			//addtexttoarea("POST " & "/web/getJSONToCreate" & chr(13) & chr(10),req);
-			//addtexttoarea("host: " & host & chr(13) & chr(10),req);
+
 			addtexttoarea("Authorization: Bearer " & CUr.ERPJStoken & chr(13) & chr(10),req);
 			AddTextToArea("" & chr(13) & chr(10),req);
 			AddTextToArea("{",req);
@@ -1082,11 +1081,10 @@ begin
 				//SendRawWebRequest(host,port,false,"POST","/xccsp","text/xml","",false,req,reply,10)
 				//end;
 				al = GetAreaLength(reply);
-				if(getstringfromarea(reply,al-7,7)=="Success") then begin
+				if(getstringfromarea(reply,al-9,7)=="Success") then begin
 					SVOr.SendedToPartner = 1;
 					RecordStore(SVOr,false);
 				end;				
-				AddTextToArea("getstringfromarea(reply,al-7,7) = " & getstringfromarea(reply,al-7,7) ,reply);
 				writeareatofile(req,"ERPJSSentRequest.txt",0);
 				writeareatofile(reply,"ERPJSSentReply.txt",0);
 		end else begin

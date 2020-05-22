@@ -1021,9 +1021,9 @@ begin
 	//https://s.erpjs.biz/service4/web/getJSONToCreate
 	//host = "s.erpjs.biz";
 	host = "localhost";
-	page = "web/getJSONToCreate";
+	page = "/web/getJSONToCreate/";
 	//MySendWebRequest(host,443,-1,true,"POST",page,"application/json","",false,req,reply,5);
-	addtexttoarea("POST " & "web/getJSONToCreate" & chr(13) & chr(10),req);
+	addtexttoarea("POST " & "/web/getJSONToCreate/" & chr(13) & chr(10),req);
  	addtexttoarea("host: " & host & chr(13) & chr(10),req);
 	addtexttoarea("Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.hY62dZfW2QkxGkrS2p6GGj_AVqGuYRqmXsx4V3SDhyw" & chr(13) & chr(10),req);
 	AddTextToArea("" & chr(13) & chr(10),req);
@@ -1073,10 +1073,10 @@ begin
 	AddTextToArea("}",req);
  
 	
-	MySendRawWebRequest(host,3001,-1,false,"POST",page,"text/plain","",false,req,reply,5);
-	//if(MySendWebRequest(host,443,-1,true,"POST",page,"application/json","",false,req,reply,5))then begin  //WORK!
+	//MySendRawWebRequest(host,3001,-1,false,"POST",page,"text/plain","",false,req,reply,5);
+	if(MySendWebRequest(host,3001,-1,true,"POST",page,"application/json","",false,req,reply,5))then begin  //WORK!
 	//SendRawWebRequest(host,port,false,"POST","/xccsp","text/xml","",false,req,reply,10)
-		//end;
+		end;
 		writeareatofile(req,"ERPJSSentRequest.txt",0);
 		writeareatofile(reply,"ERPJSSentReply.txt",0);
 return;

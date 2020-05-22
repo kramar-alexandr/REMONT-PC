@@ -6778,6 +6778,8 @@ begin
     EditField(h+135,v,50,"Шабл. нал.(пок.) ",Normal,VETaxTemplateCode,false,TaxTemplateSClass);
   end;
   EditField(h,v+=vs,50,"Язык",Normal,LangCode,false,LangSClass);
+	EditField(h,v+=vs,360,"Ключ партнера",Normal,ERPJStoken,false,0);
+	EditField(h,v+=vs,200,"ID партнера",Normal,ERPJSuuid,false,0);
   if (HasLocalization("ARG")) then begin
     ButtonFrame(h+125,v+=20,177,4,"Условия налогообложения");
     RadioButton(h+125,v,2,0,"Неподготовленное",TaxCondition);

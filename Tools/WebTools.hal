@@ -1074,7 +1074,7 @@ begin
  
 	
 		//MySendRawWebRequest(host,3001,-1,false,"POST",page,"text/plain","",false,req,reply,5);
-		if(MySendWebRequest(host,3001,-1,false,"POST",page,"application/json","",false,req,reply,5))then begin  //WORK!
+		if(MySendWebRequest(host,3001,-1,false,"POST",page,"text/plain","",false,req,reply,5))then begin  //WORK!
 		//SendRawWebRequest(host,port,false,"POST","/xccsp","text/xml","",false,req,reply,10)
 		end;
 		writeareatofile(req,"ERPJSSentRequest.txt",0);

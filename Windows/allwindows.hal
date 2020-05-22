@@ -484,7 +484,7 @@ begin
   EditField(h1,v+=vs,60,"Дата выдачи",adminMode,RegDate,false,PasteCurDate);
   EditField(h2,v,60,"Время",adminMode,OutTime,false,0);// Edit ************************** Monday, 24 October 2016 17:56:02
   EditField(h2+500,v,80,"Ориентировочное заверш",Normal,FinishDate,false,PasteCurDate); 
-	EditField(h1,v + 20,110,"Отправить партнеру:",Normal,SendToPartner,false,0);
+	EditField(h1,v + 20,110,"Отправить партнеру:",Normal,SendToPartner,false,CUSClass);
 	checkbox(h2,v + 20,0,"Отправлено",SendedToPartner);
   if(currentuser=="SA")then begin
 		EditField(h3-60,v,-20,"OldPhone",ViewOnly,OldPhone,false,0);

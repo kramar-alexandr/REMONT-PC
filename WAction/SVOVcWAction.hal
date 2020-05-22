@@ -1345,6 +1345,18 @@ begin
 end;
 
 global
+function Boolean SVODClassSendedToPartnerButtonAction(Integer wn,Integer value)
+begin
+  Boolean res;
+  Integer normalmode,updatemode;
+
+   res = false;
+ 
+  SVODClassSendedToPartnerButtonAction = res;
+  return;
+end;
+
+global
 function Boolean SVODClassActiveEditField(Integer wn,string fieldname,Integer fn,Integer wnst,Integer rownr,Integer changed)
 BEGIN
   Boolean res;
@@ -1368,7 +1380,6 @@ BEGIN
   	end;
     goto LSVODClassActiveEditField;
   end;
-  
   insertmode = 1;//Rs_insert
   updatemode = 2;//Rs_update
   res = true;
@@ -1437,7 +1448,6 @@ BEGIN
     //if (NonBlank(StringFromText(SVOr,0,255))) then begin
       res = UsercanAction("AllowEditCommentsAndTextFieldSVO",false);// Edit ************************** Friday, 25 November 2016 12:57:36
     //end;
-    
   end;
   if (rownr>=0) then begin
     switch (fieldname) begin

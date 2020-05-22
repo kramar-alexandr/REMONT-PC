@@ -1030,6 +1030,7 @@ begin
 		
 	addParamToJSONArea("fSerNr",SVOr.SerNr,req);
 	addParamToJSONArea("fCustCode",SVOr.CustCode,req);
+	addParamToJSONArea("fAddr0",SVOr.Addr0,req);
 	addParamToJSONArea("fPhone",SVOr.Kontinfo1,req);
 	addParamToJSONArea("fPhone2",SVOr.Phone2,req);
 	addParamToJSONArea("fCustomField7",SVOr.CustomField7,req);

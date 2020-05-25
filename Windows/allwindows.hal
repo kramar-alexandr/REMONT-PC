@@ -572,7 +572,7 @@ begin
 	EditField(320,v,120,"e-mail",Normal,Kontinfo2,false,0);	
 	EditField(h,v+=vs,300,"Адрес клиента",Normal,Kontinfo3,false,0);
 		if(windowsmode==1)then begin
-  	TextField(h+310,v + 10,-10,140,Math2,0);
+  	TextField(h+310,v + 10,-10,135,Math2,0);
   end else begin
   	TextField(h+310,v + 10,-10,145,Math2,0);
   end;

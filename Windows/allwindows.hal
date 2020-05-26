@@ -559,26 +559,27 @@ begin
   //end;
 	//v=v-100;
 	if(UserCanAction("ViewPersonalData",true)) then begin
-  EditField(590,v+=20,-20,"SN Зарегистр.",Normal,CustomField8,false,0);
- 	h=110;
- 	EditField(h-50,v,200,"ФИО",Normal,Vlastnik,false,0);
- 	
- 	
-	EditField(500,v+=20,70,"Тел.1",Normal,Kontinfo1,false,0);	
-	HalPushButton(580,v+3,640,v+15,"CallToClientDsm","Звонок");
-	EditField(680,v,70,"Тел.2",Normal,Phone2,false,0);	
-	HalPushButton(770,v+3,830,v+15,"CallToClient2Dsm","Звонок");
+		EditField(590,v+=20,-20,"SN Зарегистр.",Normal,CustomField8,false,0);
+		h=110;
+		EditField(h-50,v,200,"ФИО",Normal,Vlastnik,false,0);
 	
-	EditField(320,v,120,"e-mail",Normal,Kontinfo2,false,0);	
-	EditField(h,v+=vs,300,"Адрес клиента",Normal,Kontinfo3,false,0);
+	
+		EditField(500,v+=20,70,"Тел.1",Normal,Kontinfo1,false,0);	
+		HalPushButton(580,v+3,640,v+15,"CallToClientDsm","Звонок");
+		EditField(680,v,70,"Тел.2",Normal,Phone2,false,0);	
+		HalPushButton(770,v+3,830,v+15,"CallToClient2Dsm","Звонок");
+	
+		EditField(320,v,120,"e-mail",Normal,Kontinfo2,false,0);	
+		EditField(h,v+=vs,300,"Адрес клиента",Normal,Kontinfo3,false,0);
+	end else begin
+		v=v+vs; h=110;
+	end;	
 	if(windowsmode==1)then begin
   	TextField(h+310,v + 10,-10,105,Math2,0);
   end else begin
   	TextField(h+310,v + 10,-10,145,Math2,0);
   end;
-	end else begin
-		v=v+vs; h=110;
-	end;	
+	
   EditField(h,v+=vs,300,"Жалобы собств-ка",Normal,Comment1,false,0);
   EditField(h,v+=vs,300,"Внешний вид",Normal,Comment3,false,0);
   //v=v+10;

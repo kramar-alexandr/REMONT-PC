@@ -1029,7 +1029,7 @@ begin
 			if(nonblank(CUr.ERPJSuuid)) then begin page = "/" & CUr.ERPJSuuid & "/web/getJSONToCreate"; end;
 		
 			//MySendWebRequest(host,443,-1,true,"POST",page,"application/json","",false,req,reply,5);
-			if(currentUser=="SA") then begin addtexttoarea("Authorization: Bearer " & "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.hY62dZfW2QkxGkrS2p6GGj_AVqGuYRqmXsx4V3SDhyw" & chr(13) & chr(10),req); end;
+			if(currentUser=="SA" and blank(CUr.ERPJStoken)) then begin addtexttoarea("Authorization: Bearer " & "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.hY62dZfW2QkxGkrS2p6GGj_AVqGuYRqmXsx4V3SDhyw" & chr(13) & chr(10),req); end;
 			if(nonblank(CUr.ERPJStoken)) then begin addtexttoarea("Authorization: Bearer " & CUr.ERPJStoken & chr(13) & chr(10),req); end;
 			AddTextToArea("" & chr(13) & chr(10),req);
 			AddTextToArea("{",req);

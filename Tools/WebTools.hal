@@ -1018,6 +1018,7 @@ begin
 	integer i,al;
 	record CUVc CUr;
 	string 255 token;
+	record INVc INr;
 	
 	CUr.Code = SVOr.SendToPartner;
 	if(ReadFirstMain(CUr,1,true) or CurrentUser=="SA") then begin
@@ -1071,6 +1072,11 @@ begin
 			end;	
 			AddTextToArea("\",",req);
 			matrowget(SVOr,0,SVOrw);
+			INr.Code = SVOrw.ArtCode;
+			if(ReadFirstMain(INr,1,true)) then begin
+				addParamToJSONArea("Brand",NormalizeStrToJson(INr.Disp5),req);
+				addParamToJSONArea("BrandName",NormalizeStrToJson(INr.Disp5Name),req);
+			end;
 			addParamToJSONArea("mArtCode",NormalizeStrToJson(SVOrw.ArtCode),req);
 			addParamToJSONArea("mNewSerialNr",SVOrw.NewSerialNr,req);
 			addParamToJSONArea("mSpec",NormalizeStrToJson(SVOrw.Spec),req);

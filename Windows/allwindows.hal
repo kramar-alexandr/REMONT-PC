@@ -620,9 +620,9 @@ begin
   SpecialMenu("Счет клиенту",' ',0,"ORFromSVODsm");
   if(currentuser=="SA")then begin
 		SpecialMenu("Вотановить эту запись из истории",' ',0,"SVOFromHistHardDsm");
-		SpecialMenu("ERPJS",' ',0,"SVOtoERPJSDsm");
+		
   end;
-
+	SpecialMenu("ERPJS",' ',0,"SVOtoERPJSDsm");
   
   EndWindow;
 end;

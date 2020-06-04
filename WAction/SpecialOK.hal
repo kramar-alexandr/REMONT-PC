@@ -37,6 +37,7 @@ external function Boolean TouchScreenLook();
 remote function Boolean FindItemVAR(string,var string,var string,var string,var string);
 external procedure StripEndingSpaces(var string);
 external procedure DisplayStrArray(array string);
+external procedure PartnerSClassArrayOnOpen(var Array string,var integer);
 SetLangMode(LangRussian,"RUS",0);
 global
 procedure PasteFromWn(Integer wn,string paststr)
@@ -1332,6 +1333,36 @@ begin
   return;
 end;
 
+global
+function Boolean PartnerSClassOnOKWindow(Integer wn)
+begin  
+  LongInt l;
+  string 255 subset;
+	array string 255 astr;
+  Array string 255 adi;
+  Integer i,acnt;
+    
+  PasteFromSysList(wn,2);
+  PartnerSClassOnOKWindow = false;
+  return;
+end;
+
+global
+function Boolean PartnerSClassOnOpenWindow(Integer wn)
+begin
+  Array string 255 astr,astr2,astr3;
+  Array val av;
+  Integer i,mwn,acnt;
+  
+  mwn = MotherWindow(wn);
+  PartnerSClassArrayOnOpen(astr,acnt);
+  
+	for (i=0;i<acnt;i=i+1) begin
+		SetListString(wn,len(astr[i]),astr[i],false);    
+	end;
+  PartnerSClassOnOpenWindow = true;
+  return;
+end;
 procedure FillVarMatrxEntryQuantitys(record VarMatrxEntryVc VMEr,Array string avariety,vector val varsq)
 begin
   row VarMatrxEntryVc VMErw;

@@ -1023,3 +1023,19 @@ HasProjects = /*HasBooleanWTag("HasProjects");*/ false;
 
 return;
 end;
+
+global
+procedure PartnerSClassArrayOnOpen(var Array string astr,var Integer acnt)
+begin
+  record CUVc CUr;
+  Integer i,rwcnt;
+  
+  CUr.Code = "";
+  while(LoopMain(CUr,1,true)) begin
+		if(CUr.IsPartner!=0) then begin
+			astr[acnt] = CUr.Code;
+			acnt = acnt + 1;
+		end;
+  end;
+  return;
+end;

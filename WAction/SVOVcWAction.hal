@@ -1349,9 +1349,11 @@ function Boolean SVODClassSendedToPartnerButtonAction(Integer wn,Integer value)
 begin
   Boolean res;
   Integer normalmode,updatemode;
-
+	if(CurrentUser != "SA") then begin
    res = false;
- 
+	end else begin
+		res = true;
+	end;
   SVODClassSendedToPartnerButtonAction = res;
   return;
 end;
@@ -1645,6 +1647,7 @@ begin
   if (WindowState(wn)==0) then begin//Rs_normal
     GetWindowRecord(wn,SVOr);
     SendSVOToERPJs(SVOr);
+		PutWindowRecord(wn,SVOr);
   end;
   return;
 end;

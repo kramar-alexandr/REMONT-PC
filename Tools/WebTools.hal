@@ -1090,9 +1090,8 @@ begin
 				//SendRawWebRequest(host,port,false,"POST","/xccsp","text/xml","",false,req,reply,10)
 				//end;
 				al = GetAreaLength(reply);
-				if(getstringfromarea(reply,al-9,7)=="Success") then begin
+				if(getstringfromarea(reply,al-7,7)=="Success") then begin
 					SVOr.SendedToPartner = 1;
-					RecordStore(SVOr,false);
 				end;				
 				writeareatofile(req,"ERPJSSentRequest.txt",0);
 				writeareatofile(reply,"ERPJSSentReply.txt",0);

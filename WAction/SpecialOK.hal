@@ -1343,7 +1343,7 @@ begin
   Array string 255 adi;
   Integer i,acnt;
     
-  PasteFromSysList(wn,2);
+  PasteFromSysList(wn,-2);
   PartnerSClassOnOKWindow = false;
   return;
 end;

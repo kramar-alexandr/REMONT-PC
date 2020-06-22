@@ -37,7 +37,7 @@ external function Boolean TouchScreenLook();
 remote function Boolean FindItemVAR(string,var string,var string,var string,var string);
 external procedure StripEndingSpaces(var string);
 external procedure DisplayStrArray(array string);
-external procedure PartnerSClassArrayOnOpen(var Array string,var integer);
+remote procedure PartnerSClassArrayOnOpen(var Array string,var integer);
 SetLangMode(LangRussian,"RUS",0);
 global
 procedure PasteFromWn(Integer wn,string paststr)

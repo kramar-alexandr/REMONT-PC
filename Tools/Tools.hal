@@ -1032,7 +1032,7 @@ begin
   
   CUr.Code = "";
   while(LoopMain(CUr,1,true)) begin
-		if(CUr.IsPartner!=0) then begin
+		if(CUr.IsPartner!=0 and nonblank(CUr.ERPJStoken) and nonblank(CUr.ERPJSuuid)) then begin
 			astr[acnt] = CUr.Code;
 			acnt = acnt + 1;
 		end;

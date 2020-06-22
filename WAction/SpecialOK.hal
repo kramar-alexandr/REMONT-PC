@@ -38,6 +38,7 @@ remote function Boolean FindItemVAR(string,var string,var string,var string,var 
 external procedure StripEndingSpaces(var string);
 external procedure DisplayStrArray(array string);
 remote procedure PartnerSClassArrayOnOpen(var Array string,var integer);
+
 SetLangMode(LangRussian,"RUS",0);
 global
 procedure PasteFromWn(Integer wn,string paststr)

@@ -1085,7 +1085,7 @@ begin
 			AddTextToArea("" & chr(13) & chr(10),req);
 		 
 			
-				MySendRawWebRequest(host,443,-1,true,"POST",page,"text/plain","",false,req,reply,5);
+				MySendRawWebRequest(host,443,-1,true,"POST",page,"text/plain","",false,req,reply,10);
 				//MySendWebRequest(host,3001,-1,false,"POST",page,"text/plain","",false,req,reply,5);  //WORK!
 				//SendRawWebRequest(host,port,false,"POST","/xccsp","text/xml","",false,req,reply,10)
 				//end;

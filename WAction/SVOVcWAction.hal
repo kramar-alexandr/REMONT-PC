@@ -1648,7 +1648,9 @@ begin
     GetWindowRecord(wn,SVOr);
     SendSVOToERPJs(SVOr);
 		PutWindowRecord(wn,SVOr);
-  end;
+  end else begin
+		messagebox(0,"Cохраните документ перед отправкой");
+	end;
   return;
 end;
 

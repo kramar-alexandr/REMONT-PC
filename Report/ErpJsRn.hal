@@ -26,7 +26,7 @@ begin
 	TrHs = true;
 	while(loopkey("TransDate",SVOr,1,TrHs))begin
 		testf = true;
-		if(SVOr.TransDate>RepSpec.sStartDate)then begin TrHs = false; testf = false; end;
+		if(SVOr.TransDate>RepSpec.sEndDate)then begin TrHs = false; testf = false; end;
 		if(blank(SVOr.SendToPartner))then begin testf = false; end;
 		if(SVOr.SendedToPartner==0)then begin testf = false; end;
 		

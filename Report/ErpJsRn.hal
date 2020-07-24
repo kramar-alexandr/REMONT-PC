@@ -21,8 +21,24 @@ begin
 		outstring(60,0,RepSpec.sStartDate,false);
 		outstring(120,0,RepSpec.sEndDate,false);
 	endformat;
-			black_divider(0,1);
-
+	black_divider(0,1);
+	
+	startformat(15);
+		outstring(0,0,"Код парт.",false);
+		outstring(50,0,"Назв. парт.",false);
+		outstring(150,0,"Тел. партн.",false);
+	endformat;
+	
+	startformat(15);
+		outstring(0,0,"Дата",false);
+		outstring(50,0,"Заказ",false);
+		outstring(90,0,"Клиент",false);
+		outstring(180,0,"Телефон",false);
+		outstring(220,0,"Артикул устр.",false);
+		outstring(250,0,"Устройство",false);
+		outstring(350,0,"Жалобы",false);
+	endformat;
+	
 	SVOr.TransDate = RepSpec.sStartDate;
 	TrHs = true;
 	while(loopkey("TransDate",SVOr,1,TrHs))begin

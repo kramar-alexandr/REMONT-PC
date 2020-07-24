@@ -21,7 +21,8 @@ begin
 		outstring(60,0,RepSpec.sStartDate,false);
 		outstring(120,0,RepSpec.sEndDate,false);
 	endformat;
-	
+			black_divider(0,1);
+
 	SVOr.TransDate = RepSpec.sStartDate;
 	TrHs = true;
 	while(loopkey("TransDate",SVOr,1,TrHs))begin

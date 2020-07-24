@@ -9,7 +9,7 @@ begin
 	vector string 100 vOrders;
 	record CUVc CUr;
 	vector boolean vPartners;
-	vector string 255 vClient,vPhone,vDevice,vSpec,vComment1;
+	vector string 255 vClient,vPhone,vDevice,vSpec,vComment1,vDate;
 	array string 255 aPartners,aOrders;
 	integer i,j;
 	
@@ -32,6 +32,7 @@ begin
 		
 		if(testf)then begin
 			vOrders[SVOr.SerNr] = SVOr.SendToPartner;
+			vDate[SVOr.SerNr] = SVOr.TransDate;
 			vPartners[SVOr.SendToPartner] = true;
 			vClient[SVOr.SerNr] = SVOr.Addr0;
 			vPhone[SVOr.SerNr] = SVOr.Kontinfo1;
@@ -59,7 +60,8 @@ begin
 			for(j=0;j<aOrders.length;j=j+1)begin
 				if(vOrders[aOrders[j]]==aPartners[i])then begin
 					startformat(15);
-						outstring(10,"DblSVOVc",aOrders[j],false);
+						outstring(0,0,vDate[aOrders[j]],false);
+						outstring(15,"DblSVOVc",aOrders[j],false);
 						outstring(50,0,vClient[aOrders[j]],false);
 						outstring(150,0,vPhone[aOrders[j]],false);
 						outstring(200,0,vDevice[aOrders[j]],false);

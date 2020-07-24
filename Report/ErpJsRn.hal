@@ -63,7 +63,7 @@ begin
 						outstring(0,0,vDate[aOrders[j]],false);
 						outstring(50,"DblSVOVc",aOrders[j],false);
 						outstring(90,0,vClient[aOrders[j]],false);
-						outstring(140,0,vPhone[aOrders[j]],false);
+						outstring(180,0,vPhone[aOrders[j]],false);
 						outstring(220,0,vDevice[aOrders[j]],false);
 						outstring(250,0,vSpec[aOrders[j]],false);
 						outstring(350,0,vComment1[aOrders[j]],false);

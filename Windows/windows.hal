@@ -2088,6 +2088,18 @@ real h,v,vs;
   EndWindow;  
 end;
 
+window ErpJsRClass:1	//Edit***************************Sasha2,17:17 06.01.2016 {
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+real h,v,vs; 
+  WindowBegin("Заказы партнерам",ErpJsRClass,CGRcW,RcType);
+    SetWRect(20,120,350,300);
+    h=100;
+    v = 40;
+    PeriodField(h,v,"Период");
+  EndWindow;  
+end;
+
 window JVCRnRClass:1	//Edit***************************Sasha2,17:17 06.01.2016 {
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin

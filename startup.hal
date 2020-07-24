@@ -24,6 +24,7 @@ begin
 
 	Report("Статистика предварительных заказов",CallConversionRClass,CallConversionRn,0,modSVO);
 	Report("KIVI отчет",KIVIRnRClass,KIVIRn,0,modSVO);
+	Report("Заказы партнерам",ErpJsRClass,ErpJsRn,0,modSVO);// Edit ************************** BPI Ukraine - KramarAlexandr - 05, 24 07 2020 y. at 8:51:31 PM
 	Report("Наценка по запчастям",WSProfitRClass,WSProfitRn,0,modSVO);
 	Report("JVC отчет",JVCRnRClass,JVCRn,0,modSVO);
 	Report("Выполненые ремонты",ServiceJobsRClass,ServiceJobsRn,0,modSVO);

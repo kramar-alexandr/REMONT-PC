@@ -1,0 +1,79 @@
+SetLangMode(LangRussian,"RUS",0);
+
+
+global procedure ErpJsRn(record RcVc RepSpec)
+begin
+	record SVOVc SVOr;
+	row SVOVc SVOrw;
+	boolean TrHs,testf;
+	vector string 100 vOrders;
+	record CUVc CUr;
+	vector boolean vPartners;
+	vector string 255 vClient,vPhone,vDevice,vSpec,vComment1;
+	array string 255 aPartners,aOrders;
+	integer i,j;
+	
+	
+	startreportnoheaderjob("Переданные заказы партерам");
+	
+	startformat(15);
+		outstring(0,0,"Период:",false);
+		outstring(60,0,RepSpec.sStartDate,false);
+		outstring(120,0,RepSpec.sEndDate,false);
+	endformat;
+	
+	SVOr.TransDate = RepSpec.sStartDate;
+	TrHs = true;
+	while(loopkey("TransDate",SVOr,1,TrHs))begin
+		testf = true;
+		if(SVOr.TransDate>RepSpec.sStartDate)then begin TrHs = false; testf = false; end;
+		if(blank(SVOr.SendToPartner))then begin testf = false; end;
+		if(SVOr.SendedToPartner==0)then begin testf = false; end;
+		
+		if(testf)then begin
+			vOrders[SVOr.SerNr] = SVOr.SendToPartner;
+			vPartners[SVOr.SendToPartner] = true;
+			vClient[SVOr.SerNr] = SVOr.Addr0;
+			vPhone[SVOr.SerNr] = SVOr.Kontinfo1;
+			if(matrowcnt(SVOr)>0)then begin
+				matrowget(SVOr,0,SVOrw);
+			end;
+			vDevice[SVOr.SerNr] = SVOrw.ArtCode;
+			vSpec[SVOr.SerNr] = SVOrw.Spec;
+			vComment1[SVOr.SerNr] = SVOr.Comment1;
+		end;			
+	end;
+	
+	getVectorTags(vPartners,aPartners);
+	getVectorTags(vOrders,aOrders);
+	for(i=0;i<aPartners.length;i=i+1)begin
+		CUr.Code = aPartners[i];
+		if(readfirstmain(CUr,1,true))then begin
+			startformat(15);
+				outstring(0,0,CUr.Code,false);
+				outstring(50,0,CUr.Name,false);
+				outstring(150,0,CUr.Phone,false);
+			endformat;
+			
+			
+			for(j=0;j<aOrders.length;j=j+1)begin
+				if(vOrders[aOrders[j]]==aPartners[i])then begin
+					startformat(15);
+						outstring(10,"DblSVOVc",aOrders[j],false);
+						outstring(50,0,vClient[aOrders[j]],false);
+						outstring(150,0,vPhone[aOrders[j]],false);
+						outstring(200,0,vDevice[aOrders[j]],false);
+						outstring(250,0,vSpec[aOrders[j]],false);
+						outstring(350,0,vComment1[aOrders[j]],false);
+					endformat;
+				end;
+			end;
+			
+		end;
+		
+	end;
+	
+	
+	endjob;
+return;
+end;

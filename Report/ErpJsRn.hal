@@ -62,7 +62,7 @@ begin
 					startformat(15);
 						outstring(0,0,vDate[aOrders[j]],false);
 						outstring(30,"DblSVOVc",aOrders[j],false);
-						outstring(80,0,vClient[aOrders[j]],false);
+						outstring(70,0,vClient[aOrders[j]],false);
 						outstring(190,0,vPhone[aOrders[j]],false);
 						outstring(220,0,vDevice[aOrders[j]],false);
 						outstring(250,0,vSpec[aOrders[j]],false);

@@ -74,11 +74,11 @@ begin
 			end;
 			startformat(15);
 				outstring(0,0,"Всего ремонтов",false);
-				outstring(50,0,qty,false);
+				outstring(70,0,qty,false);
 			endformat;
 			
 		end;
-		
+		black_divider(0,1);
 	end;
 	
 	

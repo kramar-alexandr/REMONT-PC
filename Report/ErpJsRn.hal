@@ -11,7 +11,7 @@ begin
 	vector boolean vPartners;
 	vector string 255 vClient,vPhone,vDevice,vSpec,vComment1,vDate;
 	array string 255 aPartners,aOrders;
-	integer i,j;
+	integer i,j,qty;
 	
 	
 	startreportnoheaderjob("Переданные заказы партерам");
@@ -48,6 +48,7 @@ begin
 	getVectorTags(vPartners,aPartners);
 	getVectorTags(vOrders,aOrders);
 	for(i=0;i<aPartners.length;i=i+1)begin
+		qty = 0;
 		CUr.Code = aPartners[i];
 		if(readfirstmain(CUr,1,true))then begin
 			startformat(15);
@@ -59,6 +60,7 @@ begin
 			
 			for(j=0;j<aOrders.length;j=j+1)begin
 				if(vOrders[aOrders[j]]==aPartners[i])then begin
+					qty = qty + 1;
 					startformat(15);
 						outstring(0,0,vDate[aOrders[j]],false);
 						outstring(50,"DblSVOVc",aOrders[j],false);
@@ -70,6 +72,10 @@ begin
 					endformat;
 				end;
 			end;
+			startformat(15);
+				outstring(0,0,"Всего ремонтов",false);
+				outstring(50,0,qty,false);
+			endformat;
 			
 		end;
 		

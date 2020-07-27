@@ -1762,7 +1762,7 @@ begin
 			goto LCUVcRecordCheck;
 		end; //Edit***************************Sasha2,15:21 03.07.2017 }
   end;
-  if (blank(CUr.Code)) then begin
+  /*if (blank(CUr.Code)) then begin// Edit ************************** BPI Ukraine - KramarAlexandr - 01, 27 07 2020 y. at 12:45:43 PM
     if (GetNextCustNr(tstr)) then begin end;
     CUr.Code = tstr;
     lCUr.Code = CUr.Code;
@@ -1782,7 +1782,7 @@ begin
         CUr.Name = CUr.Name & CUr.Salutation2;
       end;
     end;
-  end;
+  end;*/
   if (blank(CUr.Name)) then begin
     RecordCheckError(1058,CUr.Name,-1,"Name");      
     res = -1; 

@@ -1042,7 +1042,7 @@ begin
 			AddTextToArea("{",req);
 				
 			addParamToJSONArea("fSerNr",SVOr.SerNr,req);
-			addParamToJSONArea("fCustCode",SVOr.CustCode,req);
+			addParamToJSONArea("fCustCode",SVOr.Kontinfo1,req);
 			addParamToJSONArea("fAddr0",SVOr.Addr0,req);
 			addParamToJSONArea("fPhone",SVOr.Kontinfo1,req);
 			addParamToJSONArea("fPhone2",SVOr.Phone2,req);

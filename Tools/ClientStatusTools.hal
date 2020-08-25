@@ -1,5 +1,6 @@
 external function LongInt DateDiff(Date,Date);
 external procedure ExtractObj(string,var Integer,var string);
+external updating procedure RepasteStatusSVOFromERP();
 
 updating
 global procedure SetStatus(var record CUVc CUr, string to_chage)
@@ -160,5 +161,7 @@ end;
 updating global procedure DailyProcedure()
 begin
 	record RcVc RepSpec;
+	
+	RepasteStatusSVOFromERP;
 	// ClientStatusMn(RepSpec);// oFF // Edit ************************** BPI Ukraine - KramarAlexandr - 01, 18 03 2019 y. at 10:11:34 AM
 end;

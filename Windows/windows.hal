@@ -837,6 +837,16 @@ WindowBegin("Maintenance",MyVClass,CGMnt,RcType);
   EndWindow;
 end;
 
+window MyDateVClass:1 // Edit ************************** Friday, 17 October 2014 11:47:19
+ wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+ begin
+WindowBegin("Maintenance",MyDateVClass,CGMnt,RcType);
+  SetWRect(20,120,360,420);
+	EditFieldTL(80,10 ,70,"From date", M4Date,Normal,21,sStartDate,false,0);
+	EditFieldTL(80,30,70,"To date", M4Date,Normal,21,sEndDate,false,0);
+  EndWindow;
+end;
+
 window BinotelCallStatVClass:1 // Edit ************************** Friday, 17 October 2014 11:47:19
  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
  begin

@@ -1,5 +1,5 @@
 external updating procedure StockBalDiffMn(string); 
-
+external updating procedure RepasteStatusSVOFromERP();
 //------------------------------------------------------------------------------------------------------------------------------
 global updating procedure AutoRun()
 begin
@@ -20,7 +20,8 @@ idistribuEsti = 11;
 
     logtext(0,currentcompany & " StockBalDiffMn");
     StockBalDiffMn("SA,STRELKOVA,AUDITOR,CHAYKOVSKA,IRA_FM");
-
+		
+	RepasteStatusSVOFromERP;
 /*
   if (SetCompany(iStore,false)) then begin
   	logtext(0,currentcompany & " FullStockEn");

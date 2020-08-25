@@ -1,5 +1,11 @@
 external function boolean MySendWebRequest(string,integer,longint,boolean,string,string,string,string,boolean,area,var area,integer);
 external function boolean MySendRawWebRequest(string,integer,longint,boolean,string,string,string,string,boolean,area,var area,integer);
+external function Boolean PasteCustInInv(var record IVVc);
+external procedure ExtractObj(string,var Integer,var string);
+external procedure IVVc_PasteItem(record IVVc,Integer,Integer);
+external function Boolean IVVc_PasteQuantity(var record IVVc,Integer);
+external function Boolean IVVc_PasteArtCode(var record IVVc,Integer,var string,var string,Boolean,var Integer);
+external procedure IVSumup(var record IVVc,Boolean);
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -1040,9 +1046,10 @@ begin
 			end;
 			AddTextToArea("" & chr(13) & chr(10),req);
 			AddTextToArea("{",req);
-				
+			
 			addParamToJSONArea("fSerNr",SVOr.SerNr,req);
-			addParamToJSONArea("fCustCode",SVOr.Kontinfo1,req);
+			addParamToJSONArea("fInnerOrderNr",SVOr.SerNr,req);
+			addParamToJSONArea("fCustCode",SVOr.CustCode,req);
 			addParamToJSONArea("fAddr0",SVOr.Addr0,req);
 			addParamToJSONArea("fPhone",SVOr.Kontinfo1,req);
 			addParamToJSONArea("fPhone2",SVOr.Phone2,req);
@@ -1178,3 +1185,289 @@ begin
 */
 return;
 end;
+
+global updating procedure RepasteStatusSVOFromERP()
+begin
+	area req,reply,mainRequest, chatText;
+	string 150 host,page,page1;
+	record SVOVc SVOr;
+	row SVOVc SVOrw;
+	longint i,al,j,l;
+	record CUVc CUr;
+	string 255 token;
+	record INVc INr;
+	boolean TrHs,testf;
+	integer status;
+	area a_req,replyarea,atmp,tArea;
+	integer jsonNodeCnt;	
+	string 10 ssl,forDate; 
+	json jsonArea,js;
+	string 255 node,transNumber,tstr;
+	string 1 c,c1;
+	longint alen;  
+	CUr.CustCat = "ERPJS";
+	TrHs = true;
+	while(LoopKey("Group",CUr,1,TrHs)) begin
+		if(CUr.CustCat!="ERPJS") then begin TrHs = false; end;
+		if(nonblank(CUr.ERPJSuuid) and nonblank(CUr.ERPJStoken)) then begin
+			logtext(0,CUr.Code);
+			//https://s.erpjs.biz/service4/web/getJSONToCreate
+			host = "s.erpjs.biz";
+			setareazerosize(req);
+			//host = "127.0.0.1";
+			if(currentUser=="SA") then begin page = "/v1/ServiceOrders"; end;
+			if(nonblank(CUr.ERPJSuuid)) then begin 
+				CUr.ERPJSuuid = trim(CUr.ERPJSuuid);
+				page = "/v1/ServiceOrders"; 
+			end;
+			//MySendWebRequest(host,443,-1,true,"POST",page,"application/json","",false,req,reply,5);
+			//if(currentUser=="SA") then begin addtexttoarea("Authorization: Bearer " & "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZXJ2ZXJJZCI6IjAzY2RkMDY1LTgxMWUtNDBiYi1iNjNjLTU5MWFkNjU0NThmOSIsImlhdCI6MTU5Mjk4OTAzNywiZXhwIjoxNjAwNzY1MDM3fQ.7szLIOiM1Xf9DRtwymNEh9xEBN2zP-WLkrHBY_P_m-k" & chr(13) & chr(10),req); end;
+			if(nonblank(CUr.ERPJStoken)) then begin 
+				CUr.ERPJStoken = trim(CUr.ERPJStoken);
+				page1 = "/cabinet/dcr/api-token?id=" & CUr.ERPJSuuid;
+				addtexttoarea("Authorization: Bearer " & "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiYW50b24ifQ.a9UBUIASYzpjvwkz36JVzebIXyfUKDqmgOjrhJLCtGw" & chr(13) & chr(10),req); 
+				AddTextToArea("" & chr(13) & chr(10),req);
+				MySendRawWebRequest(host,443,-1,true,"GET",page1,"application/json","",false,req,reply,10);
+				setareazerosize(req);
+				for(i=0;i<getarealength(reply);i=i+1)begin
+					c = getstringfromarea(reply,i,1);
+					c1 = getstringfromarea(reply,i+1,1);
+					if(c==chr(13) and c1==chr(10)) then begin
+						c = getstringfromarea(reply,i+2,1);
+						c1 = getstringfromarea(reply,i+3,1);
+						if(c==chr(13) and c1==chr(10)) then begin
+							addtexttoarea("Authorization: Bearer " & getstringfromarea(reply,i+4,getarealength(reply)-i-3) & chr(13) & chr(10),req); 
+							i = getarealength(reply);
+						end;
+					end;
+				end;
+				//addtexttoarea("Authorization: Bearer " & CUr.ERPJStoken & chr(13) & chr(10),req); 
+			end;
+			setareazerosize(reply);
+			addtexttoarea(chr(13) & chr(10),req);
+			
+			//AddTextToArea("" & chr(13) & chr(10),req);
+			//AddTextToArea("{",req);
+			//addParamToJSONArea("fInnerOrderNr",SVOr.SerNr,req);
+			//delLastComaInArea(req);
+			//AddTextToArea("}",req);
+			//AddTextToArea("" & chr(13) & chr(10),req);
+		 
+			
+				//MySendRawWebRequest(host,443,-1,true,"POST",page,"application/json","",false,req,reply,10);
+				//MySendRawRequest(host,443,-1,true,"GET",page,"text/plain","",false,req,reply,10);
+				MySendRawWebRequest(host,443,-1,true,"GET",page,"application/json","",false,req,reply,10);
+				alen = getarealength(reply);
+				for(i=0;i<alen;i=i+1)begin
+					c = getstringfromarea(reply,i,1);
+					if(c=="{")then begin
+						l = i;
+					end;
+					if(c=="}") then begin
+						setareazerosize(atmp);
+						getareafromarea(reply,l,i-l+1,atmp);
+						jsonArea = parsejsonarea(atmp);
+						SVOr.SerNr = StringToLongInt(JSONGet(jsonArea,"fInnerOrderNr"));	
+						if(StringToLongInt(JSONGet(jsonArea,"fInnerOrderNr"))>0 and ReadFirstMain(SVOr,1,true)) then begin
+							if(SVOr.OrderStatus==6 and JSONGet(jsonArea,"fOrderStatus")!="11") then begin
+								SVOr.TransDate = currentDate;
+							end;
+							switch(JSONGet(jsonArea,"fOrderStatus")) begin
+							case "0": SVOr.OrderStatus = 0;
+							case "1": SVOr.OrderStatus = 5;
+							case "2": SVOr.OrderStatus = 4;
+							case "3": SVOr.OrderStatus = 12;
+							case "4": SVOr.OrderStatus = 7;
+							case "5": SVOr.OrderStatus = 1;
+							case "6": SVOr.OrderStatus = 8;
+							case "7": SVOr.OrderStatus = 10;
+							case "8": SVOr.OrderStatus = 3;
+							case "9": SVOr.OrderStatus = 2;
+							case "10": SVOr.OrderStatus = 11;
+							case "11": SVOr.OrderStatus = 6;
+							end;
+							RecordStore(SVOr,true);
+						end;
+					end;
+				end;
+				//MySendWebRequest(host,3001,-1,false,"POST",page,"text/plain","",false,req,reply,5);  //WORK!
+				//SendRawWebRequest(host,port,false,"POST","/xccsp","text/xml","",false,req,reply,10)
+				//end;
+					
+				writeareatofile(req,"ERPJSRequestStatus.txt",0);
+				writeareatofile(reply,"ERPJSReplyStatus.txt",0);
+		end;
+	end;
+return;
+end;
+
+global updating procedure SendIVToERPJs(record IVVc IVr)
+begin
+	area req,reply,mainRequest, chatText;
+	string 150 host,page,page1;
+	row SVOVc SVOrw;
+	integer i,al;
+	record CUVc CUr;
+	string 255 token, bear;
+	record INVc INr;
+	row IVVc IVrw;
+	string 1 c,c1;
+	area a_req,replyarea,atmp,tArea;
+	
+	CUr.Code = IVr.CustCode;
+	if(ReadFirstMain(CUr,1,true) or CurrentUser=="SA") then begin
+		if((nonblank(CUr.ERPJSuuid) and nonblank(CUr.ERPJStoken)) or currentUser == "SA") then begin
+			//https://s.erpjs.biz/service4/web/getJSONToCreate
+			host = "s.erpjs.biz";
+			//host = "127.0.0.1";
+			if(currentUser=="SA") then begin page = "/service4/web/getJSONToCreateVI"; end;
+			if(nonblank(CUr.ERPJSuuid)) then begin 
+				CUr.ERPJSuuid = trim(CUr.ERPJSuuid);
+				page = "/" & CUr.ERPJSuuid & "/web/getJSONToCreateVI"; 
+			end;
+			//MySendWebRequest(host,443,-1,true,"POST",page,"application/json","",false,req,reply,5);
+			// if(currentUser=="SA" /*and blank(CUr.ERPJStoken)*/) then begin addtexttoarea("Authorization: Bearer " & "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.hY62dZfW2QkxGkrS2p6GGj_AVqGuYRqmXsx4V3SDhyw" & chr(13) & chr(10),req); end;
+			if(nonblank(CUr.ERPJStoken)) then begin 
+				CUr.ERPJStoken = trim(CUr.ERPJStoken);
+				setareazerosize(req);
+				addtexttoarea("Authorization: Bearer " & CUr.ERPJStoken & chr(13) & chr(10),req); 
+			end;
+			AddTextToArea("" & chr(13) & chr(10),req);
+			AddTextToArea("{",req);
+			for(i=0;i<matrowcnt(IVr);i=i+1) begin
+				matrowget(IVr,i,IVrw);
+				AddTextToArea("\"" & i+1 & "\":" & "{",req);
+				addParamToJSONArea("Sum",IVrw.Sum,req);
+				addParamToJSONArea("Spec",NormalizeStrToJson(IVrw.Spec),req);
+				delLastComaInArea(req);
+				AddTextToArea("}",req);
+			end;
+			delLastComaInArea(req);
+			AddTextToArea("}",req);
+			AddTextToArea("" & chr(13) & chr(10),req);
+				MySendRawWebRequest(host,443,-1,true,"POST",page,"text/plain","",false,req,reply,10);
+				//MySendWebRequest(host,3001,-1,false,"POST",page,"text/plain","",false,req,reply,5);  //WORK!
+				//SendRawWebRequest(host,port,false,"POST","/xccsp","text/xml","",false,req,reply,10)
+
+
+				//end;	
+				writeareatofile(req,"ERPJSSentIVRequest.txt",0);
+				writeareatofile(reply,"ERPJSSentIVReply.txt",0);
+		end else begin
+			logtext(0,"Заполните реквизиты в карточке партнера! " & CUr.Code);
+		end;
+	end;
+return;
+end;
+
+global updating procedure CreatePartnersIV(record RcVc RepSpec)
+begin
+	area req,reply,mainRequest, chatText;
+	string 150 host,page;
+	record SVOVc SVOr;
+	row SVOVc SVOrw;
+	longint i,al,j,l;
+	record CUVc CUr;
+	string 255 token;
+	record INVc INr;
+	boolean TrHs,testf;
+	integer status;
+	area a_req,replyarea,atmp,tArea;
+	integer pos;	
+	string 10 ssl,forDate; 
+	json jsonArea,js;
+	string 255 node,transNumber,tstr;
+	string 1 c;
+	array string 255 tags;
+	record IVVc IVr,oldIVr;
+	row IVVc IVrw;
+  string 255 warning,errstr,prepstr,invdatewarn,transdatewarn;
+	Boolean serportf;
+  record LSerialPortDeviceVc LSPDr;
+	longint alen; 
+	vector string 255 SVOrToIV;
+	string 255 inwarning;
+  Integer sernrf;
+	
+	SVOr.TransDate = RepSpec.sEndDate;
+	TrHs = true;
+	while(LoopBackKey("AllTransDate",SVOr,1,TrHs)) begin
+		testf = true;
+		if(SVOr.TransDate<RepSpec.sStartDate) then begin TrHs = false; testf = false; end;
+		if(SVOr.SendedToPartner==0) then begin testf = false; end; 
+		if(testf) then begin
+			CUr.Code = SVOr.SendToPartner;
+			if(ReadFirstMain(CUr,1,true)) then begin
+				if((nonblank(CUr.ERPJSuuid) and nonblank(CUr.ERPJStoken) and SVOr.SendedToPartner>1) or currentUser == "SA") then begin
+					if(nonblank(SVOrToIV[CUr.Code])) then begin 
+						SVOrToIV[CUr.Code] = SVOrToIV[CUr.Code] & "," & SVOr.SerNr;
+					end else begin
+						SVOrToIV[CUr.Code] = SVOr.SerNr;
+					end;
+				end;
+			end;
+		end;
+	end;
+	ResetLoop(SVOr);
+	getvectortags(SVOrToIV,tags);
+	for(i=0;i<tags.length;i=i+1) begin
+		RecordNew(IVr);
+		IVr.CustCode = tags[i];
+		PasteCustInInv(IVr);
+		pos = 0;
+		IVr.UpdStockFlag = 0;
+		CUr.Code = tags[i];
+		if(ReadfirstMain(CUr,1,true) and CUr.CUType==0) then begin
+			CUr.CUType = 1;
+			RecordStore(CUr,true);
+		end;
+		ExtractObj(SVOrToIV[tags[i]],pos,tstr);
+		while(nonblank(tstr)) begin
+			SVOR.SerNr = tstr;
+			if(ReadFirstMain(SVOr,1,true)) then begin
+				matrowget(SVOr,0,SVOrw);
+				INr.Code = "ORD_SALE";
+				if(ReadFirstMain(INr,1,true)) then begin
+					IVrw.stp = 1;
+					IVrw.ArtCode = INr.Code;
+					IVrw.Quant = 1;
+					IVrw.Spec = "Продажа заказов партнерам " & SVOR.SerNr & " " & SVOrw.ArtCode;
+					IVrw.Price = INr.UPrice1;
+					IVrw.Sum = INr.UPrice1;
+					IVrw.VATCode = "0%";
+					matrowput(IVr,0,IVrw); 
+				end;
+			end;
+			ExtractObj(SVOrToIV[tags[i]],pos,tstr);
+		end;
+		SendIVToERPJs(IVr);
+		IVSumup(IVr,true);
+		RecordStore(IVr,true);
+		RecordCopy(oldIVr,IVr);
+    IVr.OKFlag = 1;
+    RecordUpdate(oldIVr,IVr,true);
+	end;
+return;
+end;
+
+global updating procedure CreateCUCatERPJS()
+begin
+	area req,reply,mainRequest, chatText;
+	string 150 host,page;
+	record SVOVc SVOr;
+	row SVOVc SVOrw;
+	longint i,al,j,l;
+	record CUVc CUr;
+	string 255 token;
+	record INVc INr;
+
+	CUr.Code = "";
+	while(LoopMain(CUr,1,true)) begin
+		if(nonblank(CUr.ERPJSuuid) and nonblank(CUr.ERPJStoken)) then begin
+			CUr.CustCat = "ERPJS";
+			RecordStore(CUr,true);
+		end;
+	end;
+return;
+end;
+

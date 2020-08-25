@@ -1762,6 +1762,10 @@ begin
 			goto LCUVcRecordCheck;
 		end; //Edit***************************Sasha2,15:21 03.07.2017 }
   end;
+	if(nonblank(CUr.ERPJSuuid) and nonblank(CUr.ERPJStoken)) then begin
+		CUr.CustCat = "ERPJS";
+	end;
+	
   /*if (blank(CUr.Code)) then begin// Edit ************************** BPI Ukraine - KramarAlexandr - 01, 27 07 2020 y. at 12:45:43 PM
     if (GetNextCustNr(tstr)) then begin end;
     CUr.Code = tstr;

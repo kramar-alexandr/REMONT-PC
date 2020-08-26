@@ -1340,7 +1340,7 @@ begin
 				addParamToJSONArea("Sum",IVrw.Sum,req);
 				addParamToJSONArea("Spec",NormalizeStrToJson(IVrw.Spec),req);
 				delLastComaInArea(req);
-				AddTextToArea("}",req);
+				AddTextToArea("},",req);
 			end;
 			delLastComaInArea(req);
 			AddTextToArea("}",req);

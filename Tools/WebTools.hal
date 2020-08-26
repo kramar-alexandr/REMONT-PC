@@ -1371,7 +1371,7 @@ begin
 	string 255 token;
 	record INVc INr;
 	boolean TrHs,testf;
-	integer status;
+	integer statusr,rownr;
 	area a_req,replyarea,atmp,tArea;
 	integer pos;	
 	string 10 ssl,forDate; 
@@ -1422,6 +1422,7 @@ begin
 			RecordStore(CUr,true);
 		end;
 		ExtractObj(SVOrToIV[tags[i]],pos,tstr);
+		rownr = 0;
 		while(nonblank(tstr)) begin
 			SVOR.SerNr = tstr;
 			if(ReadFirstMain(SVOr,1,true)) then begin
@@ -1435,14 +1436,15 @@ begin
 					IVrw.Price = INr.UPrice1;
 					IVrw.Sum = INr.UPrice1;
 					IVrw.VATCode = "0%";
-					matrowput(IVr,0,IVrw); 
+					matrowput(IVr,rownr,IVrw); 
+					rownr = rownr + 1;
 				end;
 			end;
 			ExtractObj(SVOrToIV[tags[i]],pos,tstr);
 		end;
-		SendIVToERPJs(IVr);
 		IVSumup(IVr,true);
 		RecordStore(IVr,true);
+		SendIVToERPJs(IVr);
 		RecordCopy(oldIVr,IVr);
     IVr.OKFlag = 1;
     RecordUpdate(oldIVr,IVr,true);

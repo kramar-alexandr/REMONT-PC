@@ -1029,9 +1029,12 @@ procedure PartnerSClassArrayOnOpen(var Array string astr,var Integer acnt)
 begin
   record CUVc CUr;
   Integer i,rwcnt;
+	boolean TrHs;
   
-  CUr.Code = "";
-  while(LoopMain(CUr,1,true)) begin
+  CUr.CustCat = "ERPJS";
+	TrHs = true;
+  while(LoopKey("CustCat",CUr,1,TrHs)) begin
+		if(CUr.CustCat!="ERPJS") then begin TrHs = false; end;
 		if(CUr.IsPartner!=0 and nonblank(CUr.ERPJStoken) and nonblank(CUr.ERPJSuuid)) then begin
 			astr[acnt] = CUr.Code;
 			acnt = acnt + 1;

@@ -1394,7 +1394,7 @@ begin
 	while(LoopBackKey("AllTransDate",SVOr,1,TrHs)) begin
 		testf = true;
 		if(SVOr.TransDate<RepSpec.sStartDate) then begin TrHs = false; testf = false; end;
-		if(SVOr.SendedToPartner==0) then begin testf = false; end; 
+		if(SVOr.SendedToPartner==0 or SVOr.OrderStatus==6) then begin testf = false; end; 
 		if(testf) then begin
 			CUr.Code = SVOr.SendToPartner;
 			if(ReadFirstMain(CUr,1,true)) then begin

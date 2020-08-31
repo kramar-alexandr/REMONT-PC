@@ -1033,7 +1033,7 @@ begin
   
   CUr.CustCat = "ERPJS";
 	TrHs = true;
-  while(LoopKey("CustCat",CUr,1,TrHs)) begin
+  while(LoopKey("Group",CUr,1,TrHs)) begin
 		if(CUr.CustCat!="ERPJS") then begin TrHs = false; end;
 		if(CUr.IsPartner!=0 and nonblank(CUr.ERPJStoken) and nonblank(CUr.ERPJSuuid)) then begin
 			astr[acnt] = CUr.Code;

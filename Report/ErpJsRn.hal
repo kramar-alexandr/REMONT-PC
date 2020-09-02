@@ -9,7 +9,7 @@ begin
 	vector string 100 vOrders;
 	record CUVc CUr;
 	vector boolean vPartners;
-	vector string 255 vClient,vPhone,vDevice,vSpec,vComment1,vDate;
+	vector string 255 vClient,vPhone,vDevice,vSpec,vComment1,vDate,StatusText;
 	array string 255 aPartners,aOrders;
 	integer i,j,qty;
 	
@@ -37,6 +37,7 @@ begin
 		outstring(220,0,"Артикул устр.",false);
 		outstring(250,0,"Устройство",false);
 		outstring(350,0,"Жалобы",false);
+		outstring(400,0,"Статус",false);
 	endformat;
 	
 	SVOr.TransDate = RepSpec.sStartDate;
@@ -59,6 +60,21 @@ begin
 			vDevice[SVOr.SerNr] = SVOrw.ArtCode;
 			vSpec[SVOr.SerNr] = SVOrw.Spec;
 			vComment1[SVOr.SerNr] = SVOr.Comment1;
+			switch(SVOr.OrderStatus)begin
+				case 0: StatusText[SVOr.SerNr] = USetStr(31044);
+				case 1: StatusText[SVOr.SerNr] = USetStr(31045);
+				case 3: StatusText[SVOr.SerNr] = USetStr(31050);
+				case 2: StatusText[SVOr.SerNr] = USetStr(31046);
+				case 4: StatusText[SVOr.SerNr] = USetStr(31061);
+				case 5: StatusText[SVOr.SerNr] = USetStr(31085);
+				case 6: StatusText[SVOr.SerNr] = USetStr(31095);
+				case 7: StatusText[SVOr.SerNr] = USetStr(31096);
+				case 8: StatusText[SVOr.SerNr] = USetStr(31097);
+				case 9: StatusText[SVOr.SerNr] = USetStr(31501);
+				case 10: StatusText[SVOr.SerNr] = USetStr(31506);
+				case 11: StatusText[SVOr.SerNr] = USetStr(31509);
+				case 12: StatusText[SVOr.SerNr] = USetStr(31510);
+			end;
 		end;			
 	end;
 	
@@ -86,6 +102,7 @@ begin
 						outstring(220,0,vDevice[aOrders[j]],false);
 						outstring(250,0,vSpec[aOrders[j]],false);
 						outstring(350,0,vComment1[aOrders[j]],false);
+						outstring(400,0,StatusText[aOrders[j]],false);
 					endformat;
 				end;
 			end;

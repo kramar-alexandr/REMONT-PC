@@ -1399,10 +1399,12 @@ begin
 			CUr.Code = SVOr.SendToPartner;
 			if(ReadFirstMain(CUr,1,true)) then begin
 				if((nonblank(CUr.ERPJSuuid) and nonblank(CUr.ERPJStoken) and SVOr.SendedToPartner>1) or currentUser == "SA") then begin
-					if(nonblank(SVOrToIV[CUr.Code])) then begin 
-						SVOrToIV[CUr.Code] = SVOrToIV[CUr.Code] & "," & SVOr.SerNr;
-					end else begin
-						SVOrToIV[CUr.Code] = SVOr.SerNr;
+					if(blank(RepSpec.f1) or RepSpec.f1==CUr.Code) then begin
+						if(nonblank(SVOrToIV[CUr.Code])) then begin 
+							SVOrToIV[CUr.Code] = SVOrToIV[CUr.Code] & "," & SVOr.SerNr;
+						end else begin
+							SVOrToIV[CUr.Code] = SVOr.SerNr;
+						end;
 					end;
 				end;
 			end;

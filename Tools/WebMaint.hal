@@ -6,6 +6,7 @@ begin
 	logtext(0,"WebFixPartnersSVO");
 	
 	SVOr.TransDate = currentdate;
+	TrHs = true;
 	while(loopbackkey("TransDate",SVOr,1,TrHs))begin
 		if(SVOr.TransDate<stringtodate("01/04/2020"))then begin TrHs = false; end;
 		

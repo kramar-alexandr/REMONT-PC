@@ -1269,23 +1269,23 @@ begin
 						jsonArea = parsejsonarea(atmp);
 						SVOr.SerNr = StringToLongInt(JSONGet(jsonArea,"fInnerOrderNr"));	
 						if(StringToLongInt(JSONGet(jsonArea,"fInnerOrderNr"))>0 and ReadFirstMain(SVOr,1,true)) then begin
-							if(SVOr.OrderStatus!=stringtoint(JSONGet(jsonArea,"fOrderStatus"))) then begin
+							if((SVOr.OrderStatus==6 and stringtoint(JSONGet(jsonArea,"fOrderStatus"))!=11) or (stringtoint(JSONGet(jsonArea,"fOrderStatus"))==11 and SVOr.OrderStatus!=6)) then begin
 								if(SVOr.OrderStatus==6 and JSONGet(jsonArea,"fOrderStatus")!="11") then begin
 									SVOr.TransDate = currentDate;
 								end;
 								switch(JSONGet(jsonArea,"fOrderStatus")) begin
-								case "0": SVOr.OrderStatus = 0;
-								case "1": SVOr.OrderStatus = 5;
-								case "2": SVOr.OrderStatus = 4;
-								case "3": SVOr.OrderStatus = 12;
-								case "4": SVOr.OrderStatus = 7;
-								case "5": SVOr.OrderStatus = 1;
-								case "6": SVOr.OrderStatus = 8;
-								case "7": SVOr.OrderStatus = 10;
-								case "8": SVOr.OrderStatus = 3;
-								case "9": SVOr.OrderStatus = 2;
-								case "10": SVOr.OrderStatus = 11;
-								case "11": SVOr.OrderStatus = 6;
+								case "0": SVOr.OrderStatus = 0; SVOr.StatusText = USetStr(31044);
+								case "1": SVOr.OrderStatus = 0; SVOr.StatusText = USetStr(31044);
+								case "2": SVOr.OrderStatus = 0; SVOr.StatusText = USetStr(31044);
+								case "3": SVOr.OrderStatus = 0; SVOr.StatusText = USetStr(31044);
+								case "4": SVOr.OrderStatus = 0; SVOr.StatusText = USetStr(31044);
+								case "5": SVOr.OrderStatus = 0; SVOr.StatusText = USetStr(31044);
+								case "6": SVOr.OrderStatus = 0; SVOr.StatusText = USetStr(31044);
+								case "7": SVOr.OrderStatus = 0; SVOr.StatusText = USetStr(31044);
+								case "8": SVOr.OrderStatus = 0; SVOr.StatusText = USetStr(31044);
+								case "9": SVOr.OrderStatus = 0; SVOr.StatusText = USetStr(31044);
+								case "10": SVOr.OrderStatus = 0; SVOr.StatusText = USetStr(31044);
+								case "11": SVOr.OrderStatus = 6; SVOr.StatusText = USetStr(31095); 
 								end;
 								RecordStore(SVOr,true);
 							end;

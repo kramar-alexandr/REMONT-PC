@@ -11,8 +11,8 @@ begin
 		
 		if(TrHs)then begin
 			if(nonblank(SVOr.SendToPartner))then begin
-				if(SVOr.OrderStatus==1)then begin
-					SVOr.OrderStatus = 0;
+				if(SVOr.OrderStatus==0)then begin
+					SVOr.OrderStatus = 9;
 					recordstore(SVOr,true);
 				end;
 				if(SVOr.OrderStatus==6)then begin

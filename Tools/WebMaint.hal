@@ -1,0 +1,29 @@
+global webpublic updating procedure WebFixPartnersSVO()
+begin
+	record SVOVc SVOr;
+	boolean TrHs;
+	
+	logtext(0,"WebFixPartnersSVO");
+	
+	SVOr.TransDate = currentdate;
+	while(loopbackkey("TransDate",SVOr,1,TrHs))begin
+		if(SVOr.TransDate<stringtodate("01/04/2020"))then begin TrHs = false; end;
+		
+		if(TrHs)then begin
+			if(nonblank(SVOr.SendToPartner))then begin
+				if(SVOr.OrderStatus==1)then begin
+					SVOr.OrderStatus = 0;
+					recordstore(SVOr,true);
+				end;
+				if(SVOr.OrderStatus==6)then begin
+					SVOr.StatusText = USetStr(31095);
+					recordstore(SVOr,true);
+				end;
+			end;
+		end;
+		
+	end;
+	
+	
+return;
+end;

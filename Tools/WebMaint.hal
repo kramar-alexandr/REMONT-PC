@@ -6,13 +6,14 @@ begin
 	logtext(0,"WebFixPartnersSVO");
 	
 	SVOr.TransDate = currentdate;
+	TrHs = true;
 	while(loopbackkey("TransDate",SVOr,1,TrHs))begin
 		if(SVOr.TransDate<stringtodate("01/04/2020"))then begin TrHs = false; end;
 		
 		if(TrHs)then begin
 			if(nonblank(SVOr.SendToPartner))then begin
-				if(SVOr.OrderStatus==1)then begin
-					SVOr.OrderStatus = 0;
+				if(SVOr.OrderStatus!=6 and SVOr.OrderStatus!=9)then begin
+					SVOr.OrderStatus = 9;
 					recordstore(SVOr,true);
 				end;
 				if(SVOr.OrderStatus==6)then begin

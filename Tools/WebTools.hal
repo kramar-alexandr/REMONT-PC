@@ -1390,6 +1390,7 @@ begin
 	vector string 255 SVOrToIV;
 	string 255 inwarning;
   Integer sernrf;
+	record RlinkVc RLr;
 	
 	SVOr.TransDate = RepSpec.sEndDate;
 	TrHs = true;
@@ -1431,13 +1432,15 @@ begin
 		while(nonblank(tstr)) begin
 			SVOR.SerNr = tstr;
 			if(ReadFirstMain(SVOr,1,true)) then begin
+				CreateRecordLink(SVOR,CurrentCompany,IVr,CurrentCompany);
+				CreateRecordLink(IVr,CurrentCompany,SVOR,CurrentCompany);
 				matrowget(SVOr,0,SVOrw);
 				INr.Code = "ORD_SALE";
 				if(ReadFirstMain(INr,1,true)) then begin
 					IVrw.stp = 1;
 					IVrw.ArtCode = INr.Code;
 					IVrw.Quant = 1;
-					IVrw.Spec = "Продажа заказов партнерам " & SVOR.SerNr & " " & SVOrw.ArtCode;
+					IVrw.Spec = "Продажа заказов партнерам " & SVOR.SerNr & " " & SVOrw.ArtCode " " & SVOrw.Spec;
 					IVrw.Price = INr.UPrice1;
 					IVrw.Sum = INr.UPrice1;
 					IVrw.VATCode = "0%";

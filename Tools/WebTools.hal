@@ -1325,14 +1325,14 @@ begin
 			if(currentUser=="SA") then begin page = "/service4/web/getJSONToCreateVI"; end;
 			if(nonblank(CUr.ERPJSuuid)) then begin 
 				CUr.ERPJSuuid = trim(CUr.ERPJSuuid);
-				page = "/71d2d0db-2bc6-4314-9764-2898fcc55b59" /*& CUr.ERPJSuuid*/ & "/web/getJSONToCreateVI"; 
+				page = /*71d2d0db-2bc6-4314-9764-2898fcc55b59"*/  "/" & CUr.ERPJSuuid & "/web/getJSONToCreateVI"; 
 			end;
 			//MySendWebRequest(host,443,-1,true,"POST",page,"application/json","",false,req,reply,5);
 			// if(currentUser=="SA" /*and blank(CUr.ERPJStoken)*/) then begin addtexttoarea("Authorization: Bearer " & "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.hY62dZfW2QkxGkrS2p6GGj_AVqGuYRqmXsx4V3SDhyw" & chr(13) & chr(10),req); end;
 			if(nonblank(CUr.ERPJStoken)) then begin 
 				CUr.ERPJStoken = trim(CUr.ERPJStoken);
 				setareazerosize(req);
-				addtexttoarea("Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1OTg4NTgzNDcsImV4cCI6MTYzMDMwNzk0N30.SLyGGkgmyqtt8k4aJQDI3Oy1MYuPoJpeDtBzZpzNS9A" /*& CUr.ERPJStoken*/ & chr(13) & chr(10),req); 
+				addtexttoarea("Authorization: Bearer "/*eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1OTg4NTgzNDcsImV4cCI6MTYzMDMwNzk0N30.SLyGGkgmyqtt8k4aJQDI3Oy1MYuPoJpeDtBzZpzNS9A*/ & CUr.ERPJStoken & chr(13) & chr(10),req); 
 			end;
 			AddTextToArea("" & chr(13) & chr(10),req);
 			AddTextToArea("{",req);

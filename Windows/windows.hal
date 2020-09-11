@@ -842,9 +842,12 @@ window MyDateVClass:1 // Edit ************************** Friday, 17 October 2014
  begin
 WindowBegin("Maintenance",MyDateVClass,CGMnt,RcType);
   SetWRect(20,120,360,420);
-	EditFieldTL(80,10 ,70,"From date", M4Date,Normal,21,sStartDate,false,0);
-	EditFieldTL(80,30,70,"To date", M4Date,Normal,21,sEndDate,false,0);
-	EditFieldTL(80,50,70,"Partner", M4Str,Normal,21,f1,false,PartnerSClass);
+	EditFieldTL(80,10 ,70,"С даты", M4Date,Normal,21,sStartDate,false,0);
+	EditFieldTL(80,30,70,"На дату", M4Date,Normal,21,sEndDate,false,0);
+	EditFieldTL(80,50,70,"Партнер", M4Str,Normal,21,f1,false,PartnerSClass);
+	if(currentUser=="SA") then begin
+		CheckBox(80,70,70,"Запустить на SA",flags[1]);
+	end;
   EndWindow;
 end;
 

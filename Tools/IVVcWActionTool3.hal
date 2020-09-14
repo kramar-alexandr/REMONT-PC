@@ -51,6 +51,7 @@ external procedure CalcSum(val,val,val,val,var val,Integer);
 external procedure FindUserMailboxName(string,var string,var string);
 external function Boolean FindCustomerRelation(string,string,var record CUVc);
 external procedure GetPayDealText(string,string,var string);
+external procedure SendIVToERPJs(record IVVc,record RcVc);
 
 function val FEIVQuantFract(LongInt curfeivnr,LongInt ordernr,LongInt ivsernr,Integer rownr)
 BEGIN
@@ -2914,5 +2915,40 @@ begin
     end;
   end;
   IVDuplicateClient = res;
+  return;
+end;
+
+global 
+procedure CreateIVPartnerDsm()
+begin
+  record IVVc IVr;
+  Integer wn;
+	record RcVc RepSpec;
+  
+  wn = CurWindow;
+  DeselectWindow(wn,false);
+  GetWindowRecord(wn,IVr);
+  if (IVr.OKFlag!=0) then begin
+    SendIVToERPJs(IVr,RepSpec);
+    PutWindowRecord(wn,IVr);
+  end;
+  return;
+end;
+
+global 
+procedure CreateIVPartnerSADsm()
+begin
+  record IVVc IVr;
+  Integer wn;
+	record RcVc RepSpec;
+  
+	RepSpec.flags[1] = 1;
+  wn = CurWindow;
+  DeselectWindow(wn,false);
+  GetWindowRecord(wn,IVr);
+  if (IVr.OKFlag!=0) then begin
+    SendIVToERPJs(IVr,RepSpec);
+    PutWindowRecord(wn,IVr);
+  end;
   return;
 end;

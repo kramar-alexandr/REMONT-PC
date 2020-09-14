@@ -2368,7 +2368,11 @@ if (true) then begin
     //  SpecialMenu("Test Mex E-Invoices",'1',0,"TestMexEInvoices");
     end;
     SpecialMenu("Добавить клиента",' ',0,"AddCustomerIVDsm");         
-    SpecialMenu("Добавить товар",' ',0,"AddItemIVDsm");           
+    SpecialMenu("Добавить товар",' ',0,"AddItemIVDsm"); 
+		SpecialMenu("Создать сч/ф партнеру",'',2,"CreateIVPartnerDsm");
+		if(currentUser=="SA") then begin
+			SpecialMenu("Создать сч/ф для тестирования",'',2,"CreateIVPartnerSADsm");
+		end;		
   end;
 
 end else begin

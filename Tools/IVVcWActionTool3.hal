@@ -2917,38 +2917,3 @@ begin
   IVDuplicateClient = res;
   return;
 end;
-
-global 
-procedure CreateIVPartnerDsm()
-begin
-  record IVVc IVr;
-  Integer wn;
-	record RcVc RepSpec;
-  
-  wn = CurWindow;
-  DeselectWindow(wn,false);
-  GetWindowRecord(wn,IVr);
-  if (IVr.OKFlag!=0) then begin
-    SendIVToERPJs(IVr,RepSpec);
-    PutWindowRecord(wn,IVr);
-  end;
-  return;
-end;
-
-global 
-procedure CreateIVPartnerSADsm()
-begin
-  record IVVc IVr;
-  Integer wn;
-	record RcVc RepSpec;
-  
-	RepSpec.flags[1] = 1;
-  wn = CurWindow;
-  DeselectWindow(wn,false);
-  GetWindowRecord(wn,IVr);
-  if (IVr.OKFlag!=0) then begin
-    SendIVToERPJs(IVr,RepSpec);
-    PutWindowRecord(wn,IVr);
-  end;
-  return;
-end;

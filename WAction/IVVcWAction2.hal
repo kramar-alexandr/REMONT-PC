@@ -55,6 +55,7 @@ external function Boolean UserCanChangePendingRecord(Integer);
 remote updating procedure HandleWSReceiptPrinting(record WSVc,var area);//Edit----------------------Dima  21.09.2015
 remote procedure HandleIVReceiptPrinting(record IVVc,var area);//Edit----------------------Dima  21.09.2015
 remote updating procedure HandleSVOReceiptPrinting(record SVOVc,var area); //Edit***************************Sasha2,13:20 13.10.2016
+external procedure SendIVToERPJs(record IVVc, record RcVc);
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -2230,4 +2231,39 @@ begin
 		end else begin
 		  MessageBox(1356,"");
 		end; 
+end;
+
+global 
+procedure CreateIVPartnerDsm()
+begin
+  record IVVc IVr;
+  Integer wn;
+	record RcVc RepSpec;
+  
+  wn = CurWindow;
+  DeselectWindow(wn,false);
+  GetWindowRecord(wn,IVr);
+  if (IVr.OKFlag!=0) then begin
+    SendIVToERPJs(IVr,RepSpec);
+    PutWindowRecord(wn,IVr);
+  end;
+  return;
+end;
+
+global 
+procedure CreateIVPartnerSADsm()
+begin
+  record IVVc IVr;
+  Integer wn;
+	record RcVc RepSpec;
+  
+	RepSpec.flags[1] = 1;
+  wn = CurWindow;
+  DeselectWindow(wn,false);
+  GetWindowRecord(wn,IVr);
+  if (IVr.OKFlag!=0) then begin
+    SendIVToERPJs(IVr,RepSpec);
+    PutWindowRecord(wn,IVr);
+  end;
+  return;
 end;

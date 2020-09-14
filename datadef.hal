@@ -1091,6 +1091,7 @@ begin
     RecordField(PrintedFlag,M4Mark,0,0); //Edit***************************Sasha2,10:36 11.01.2016
     RecordField(PrintedSum4,M4Val,0,0); //Edit***************************Sasha2,10:35 11.01.2016
   	RecordField(IgnoreBlankFIFO,M4Mark,0,0);//Edit----------------------Dima  09.02.2016
+		RecordField(SendedToPartner,M4Mark,0,0);//Edit----------------------Anton 14.09.2020
   EndRecordAdd;
   
   RecordAddBegin(SHVc,"SHVc_Custom");

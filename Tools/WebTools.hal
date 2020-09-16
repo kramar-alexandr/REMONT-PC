@@ -1464,9 +1464,9 @@ begin
 		IVSumup(IVr,true);
 		RecordStore(IVr,true);
 		// SendIVToERPJs(IVr,RepSpec);
-		RecordCopy(oldIVr,IVr);
-    IVr.OKFlag = 1;
-    RecordUpdate(oldIVr,IVr,true);
+		//RecordCopy(oldIVr,IVr);
+    //IVr.OKFlag = 1;
+    //RecordUpdate(oldIVr,IVr,true);
 	end;
 return;
 end;

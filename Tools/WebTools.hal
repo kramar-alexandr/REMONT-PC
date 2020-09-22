@@ -1422,6 +1422,9 @@ begin
 			CUr.Code = SVOr.SendToPartner;
 			if(ReadFirstMain(CUr,1,true)) then begin
 				logtext(0,"Check SVO " & SVOr.SerNr);
+				logtext(0,"CUr.ERPJSuuid " & CUr.ERPJSuuid);
+				logtext(0,"CUr.ERPJStoken " & CUr.ERPJStoken);
+				logtext(0,"SVOr.SendedToPartner" & SVOr.SendedToPartner);
 				
 				if((nonblank(CUr.ERPJSuuid) and nonblank(CUr.ERPJStoken) and SVOr.SendedToPartner>1)) then begin
 					logtext(0,"CUr.Code == RepSpec.f1" & CUr.Code & " == " & RepSpec.f1);

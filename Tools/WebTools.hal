@@ -1403,6 +1403,10 @@ begin
   Integer sernrf;
 	record RlinkVc RLr;
 	
+	logtext(0,"CreatePartnersIV");
+	logtext(0,"RepSpec.sStartDate " & RepSpec.sStartDate);
+	logtext(0,"RepSpec.sEndDate " & RepSpec.sEndDate);
+	
 	SVOr.TransDate = RepSpec.sEndDate;
 	TrHs = true;
 	while(LoopBackKey("AllTransDate",SVOr,1,TrHs)) begin
@@ -1416,8 +1420,10 @@ begin
 					if(blank(RepSpec.f1) or RepSpec.f1==CUr.Code) then begin
 						if(nonblank(SVOrToIV[CUr.Code])) then begin 
 							SVOrToIV[CUr.Code] = SVOrToIV[CUr.Code] & "," & SVOr.SerNr;
+							logtext(0,"SVOr.SerNr " & SVOr.SerNr);
 						end else begin
 							SVOrToIV[CUr.Code] = SVOr.SerNr;
+							logtext(0,"SVOr.SerNr " & SVOr.SerNr);
 						end;
 					end;
 				end;
@@ -1440,6 +1446,8 @@ begin
 		end;
 		ExtractObj(SVOrToIV[tags[i]],pos,tstr);
 		rownr = 0;
+		RecordStore(IVr,true);
+		logtext(0,"IVr.SerNr " & IVr.SerNr);
 		while(nonblank(tstr)) begin
 			SVOR.SerNr = tstr;
 			if(ReadFirstMain(SVOr,1,true)) then begin
@@ -1463,10 +1471,7 @@ begin
 		end;
 		IVSumup(IVr,true);
 		RecordStore(IVr,true);
-		// SendIVToERPJs(IVr,RepSpec);
-		//RecordCopy(oldIVr,IVr);
-    //IVr.OKFlag = 1;
-    //RecordUpdate(oldIVr,IVr,true);
+
 	end;
 return;
 end;

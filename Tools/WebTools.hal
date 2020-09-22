@@ -1426,7 +1426,7 @@ begin
 				logtext(0,"CUr.ERPJStoken " & CUr.ERPJStoken);
 				logtext(0,"SVOr.SendedToPartner" & SVOr.SendedToPartner);
 				
-				if((nonblank(CUr.ERPJSuuid) and nonblank(CUr.ERPJStoken) and SVOr.SendedToPartner>1)) then begin
+				if((nonblank(CUr.ERPJSuuid) and nonblank(CUr.ERPJStoken) and SVOr.SendedToPartner>=1)) then begin
 					logtext(0,"CUr.Code == RepSpec.f1" & CUr.Code & " == " & RepSpec.f1);
 					if(blank(RepSpec.f1) or RepSpec.f1==CUr.Code) then begin
 						if(nonblank(SVOrToIV[CUr.Code])) then begin 

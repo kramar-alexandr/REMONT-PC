@@ -1410,6 +1410,7 @@ begin
 	logtext(0,"CreatePartnersIV");
 	logtext(0,"RepSpec.sStartDate " & RepSpec.sStartDate);
 	logtext(0,"RepSpec.sEndDate " & RepSpec.sEndDate);
+	logtext(0,"RepSpec.f1 " & RepSpec.f1);
 	
 	SVOr.TransDate = RepSpec.sEndDate;
 	TrHs = true;

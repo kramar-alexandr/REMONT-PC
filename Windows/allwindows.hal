@@ -1568,8 +1568,9 @@ if (true) then begin
       EditField(h,vm=(v+=20),135,"Офиц. Нo.",Normal,OfficialSerNr,false,LegalInvNrSClass);
     end;
     if (CurrentUser=="SA") then begin
-      EditField(h+200,v,100,"LocOKNr",Normal,LocOKNr,false,0); //Edit***************************Sasha2,14:56 15.02.2016
+      //EditField(h+200,v,100,"LocOKNr",Normal,LocOKNr,false,0); //Edit***************************Sasha2,14:56 15.02.2016
     end;
+		CheckBox(h+200,v,100,"Отпр. партнеру",SendedToPartner);
     if (HasLocalization("BRA")) then begin
       EditField(500,vm,135,"Bank Receipt No.",ViewOnly,BankReceiptNr,false,0); 
     end;

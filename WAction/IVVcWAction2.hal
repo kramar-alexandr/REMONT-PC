@@ -900,6 +900,20 @@ LIVDClassActiveEditField:;
 END;
 
 global
+function Boolean IVDClassSendedToPartnerButtonAction(Integer wn,Integer value)
+begin
+  Boolean res;
+  Integer normalmode,updatemode;
+	if(CurrentUser != "SA") then begin
+   res = false;
+	end else begin
+		res = true;
+	end;
+  IVDClassSendedToPartnerButtonAction = res;
+  return;
+end;
+
+global
 function Boolean IVDClassPriceEFAfter(Integer wn,Integer fn,Integer rownr,Integer changed)
 begin  
   record IVVc IVr;

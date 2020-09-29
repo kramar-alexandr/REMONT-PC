@@ -1071,6 +1071,7 @@ begin
 			//addParamToJSONArea("fRejectReason",NormalizeStrToJson(SVOr.RejectReason),req);
 			//addParamToJSONArea("fCashSum",SVOr.FastCash,req);
 			//addParamToJSONArea("fPrepaySum",SVOr.PrepaySum,req);
+			addParamToJSONArea("fGetItemFlag",0,req);
 			addParamToJSONArea("fGarNo",SVOr.GarNo,req);
 			addParamToJSONArea("fBatary",NormalizeStrToJson(SVOr.Batary),req);
 			addParamToJSONArea("fZaryadka",NormalizeStrToJson(SVOr.Zaryadka),req);

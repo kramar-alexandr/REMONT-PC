@@ -1078,11 +1078,7 @@ begin
 			addParamToJSONArea("fInshe",NormalizeStrToJson(SVOr.Inshe),req);
 			addParamToJSONArea("fComment1",NormalizeStrToJson(SVOr.Comment1),req);
 			addParamToJSONArea("fComment2",NormalizeStrToJson(SVOr.Comment2),req);
-			if(nonblank(SVOr.Comment3))then begin
-				addParamToJSONArea("fComment3",NormalizeStrToJson(SVOr.Comment3),req);
-			end else begin
-				addParamToJSONArea("fComment3",NormalizeStrToJson("_"),req);
-			end;
+			addParamToJSONArea("fComment3",NormalizeStrToJson(SVOr.Comment3),req);
 			addParamToJSONArea("fVlastnik",NormalizeStrToJson(SVOr.Vlastnik),req);
 			AddTextToArea("\"Text\":" &  "\"",req);
 			for(i=0;i<LineTextCnt(SVOr); i = i+1) begin

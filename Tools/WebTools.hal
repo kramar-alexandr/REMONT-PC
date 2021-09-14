@@ -1,5 +1,6 @@
 external function boolean MySendWebRequest(string,integer,longint,boolean,string,string,string,string,boolean,area,var area,integer);
 external function boolean MySendRawWebRequest(string,integer,longint,boolean,string,string,string,string,boolean,area,var area,integer);
+// external function boolean SendWebRequest(string,integer,longint,boolean,string,string,string,string,boolean,area,var area,integer);
 external function Boolean PasteCustInInv(var record IVVc);
 external procedure ExtractObj(string,var Integer,var string);
 external procedure IVVc_PasteItem(record IVVc,Integer,Integer);
@@ -1513,6 +1514,63 @@ end;
 
 global procedure FindService()
 begin
+
+
+return;
+end;
+
+
+global procedure FindContacts()
+begin
+	area req;
+	area reply;
+	record CUVc CUr;
+	boolean TrHs,testf;
+	string 255 key,id;
+	string 255 staticKey,serverId;
+	string 150 host,page;
+	string 255 oldtoken;
+	string 255 tstr;
+	
+
+	TrHs = true;
+	CUr.Code = "";
+	
+	key = "Xw1caC5L45iHv8TaDHwmvdpYusu8U7OGhnMSKbNgUrSVzNHoRCqWKOygwfxzSvnsdAh";
+	
+	while(LoopMain(CUr,1,TrHs))begin
+		if(nonblank(CUr.ERPJStoken) and nonblank(CUr.ERPJSuuid))then begin
+			
+			oldtoken = CUr.ERPJStoken;
+			id = CUr.ERPJSuuid;
+			
+			host = "erpjs.biz";
+			page = "/cabinet/pub/generate-web-token";
+			
+			staticKey = "\"staticKey\":" & "\"" & key & "\"";
+			serverId = "\"serverId\":" & "\"" & id & "\"";
+			
+			AddTextToArea("{",req);
+			AddTextToArea(staticKey & ",",req);
+			AddTextToArea(serverId,req);
+			AddTextToArea("}",req);
+			
+			MySendWebRequest(host,443,-1,true,"POST",page,"application/json","",false,req,reply,10);
+
+			WriteAreaToFile(reply,"ERPJSCallBack.txt",0);
+			WriteAreaToFile(req,"ERPJSreq.txt",0);
+			
+			tstr = GetLineFromArea(reply,0);
+			if(len(tstr)>100)then begin
+				CUr.ERPJStoken = tstr;
+				// RecordStore(CUr,true);
+			end;			
+			
+			logtext(0,"User - " & CUr.Code & "/oldtoken - " & oldtoken);
+			logtext(0,"User - " & CUr.Code & "/newtoken - " & CUr.ERPJStoken);
+			logtext(0,"User - " & CUr.Code & "/id - " & CUr.ERPJSuuid);
+		end;
+	end;
 
 
 return;

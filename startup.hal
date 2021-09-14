@@ -97,6 +97,7 @@ begin
   Maintenance("StatusSVOFromERP",MyVClass,RepasteStatusSVOFromERP,modDBMain);
 	Maintenance("Создать сч.ф на партнеров",MyDateVClass,CreatePartnersIV,modSVO);
 	Maintenance("Создать партнеров",MyVClass,CreateCUCatERPJS,modDBMain);
+	Maintenance("Найти контакты",MyVClass,FindContacts,modDBMain);//Edit **********************************************Vas-P	14/09/2021
 	
   Import("Импорт контактов и заказов, выгруженных из ServiceMY",CUAndSVOInitSystemImportIClass,CUAndSVOInitSystemImportIn,modDBMain); //Edit***************************Sasha2,13:21 26.05.2017
 	Import("Импорт BINOTEL",CUAndSVOInitSystemImportIClass,ImportBinotel,modDBMain); //Edit***************************Sasha2,13:21 26.05.2017
